@@ -30,8 +30,6 @@ import com.baiyi.caesar.factory.ticket.ITicketSubscribe;
 import com.baiyi.caesar.factory.ticket.WorkorderTicketFactory;
 import com.baiyi.caesar.factory.ticket.WorkorderTicketSubscribeFactory;
 import com.baiyi.caesar.service.auth.OcAuthRoleService;
-import com.baiyi.caesar.service.ram.OcAliyunRamPolicyService;
-import com.baiyi.caesar.service.ram.OcAliyunRamUserService;
 import com.baiyi.caesar.service.server.OcServerGroupService;
 import com.baiyi.caesar.service.ticket.OcWorkorderTicketEntryService;
 import com.baiyi.caesar.service.ticket.OcWorkorderTicketFlowService;
@@ -80,12 +78,6 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
 
     @Resource
     private OcAuthRoleService ocAuthRoleService;
-
-    @Resource
-    private OcAliyunRamPolicyService ocAliyunRamPolicyService;
-
-    @Resource
-    private OcAliyunRamUserService ocAliyunRamUserService;
 
     @Resource
     private WorkorderTicketDecorator workorderTicketDecorator;

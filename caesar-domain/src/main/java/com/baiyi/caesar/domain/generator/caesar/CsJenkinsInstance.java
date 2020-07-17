@@ -30,6 +30,12 @@ public class CsJenkinsInstance {
     private String token;
 
     /**
+     * 有效
+     */
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -127,6 +133,24 @@ public class CsJenkinsInstance {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+
+    /**
+     * 获取有效
+     *
+     * @return is_active - 有效
+     */
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    /**
+     * 设置有效
+     *
+     * @param isActive 有效
+     */
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     /**

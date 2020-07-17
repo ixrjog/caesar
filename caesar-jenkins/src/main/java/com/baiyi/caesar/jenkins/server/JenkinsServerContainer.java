@@ -1,11 +1,14 @@
 package com.baiyi.caesar.jenkins.server;
 
+import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
+import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -21,18 +24,52 @@ public class JenkinsServerContainer implements InitializingBean {
 
     private static Map<String, JenkinsServer> serverContainer;
 
-    private void initialServer(String url, String username, String passwordOrToken) {
-        JenkinsServerContainer.serverContainer = Maps.newConcurrentMap();
+    @Resource
+    private CsJenkinsInstanceService csJenkinsInstanceService;
+
+    private JenkinsServer buildServer(CsJenkinsInstance jenkinsInstance) {
         try {
-            URI host = new URI(url);
-            JenkinsServer jenkins = new JenkinsServer(host, username, passwordOrToken);
-            serverContainer.put("aaa", jenkins);
+            URI host = new URI(jenkinsInstance.getUrl());
+            return new JenkinsServer(host, jenkinsInstance.getUsername(), jenkinsInstance.getToken());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    private void initialServer() {
+        JenkinsServerContainer.serverContainer = Maps.newHashMap();
+        csJenkinsInstanceService.queryAll().forEach(e -> {
+            try {
+                JenkinsServer jenkinsServer = buildServer(e);
+                if (jenkinsServer != null)
+                    JenkinsServerContainer.serverContainer.put(e.getName(), jenkinsServer);
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    public static JenkinsServer getJenkinsServer(String name) {
+        if (JenkinsServerContainer.serverContainer.containsKey(name))
+            return JenkinsServerContainer.serverContainer.get(name);
+        return null;
+    }
+
+    /**
+     * 重置server,用于配置修改后
+     */
+    public void reset() {
+        if (serverContainer != null && !serverContainer.isEmpty())
+            serverContainer.keySet().forEach(k -> {
+                JenkinsServer jenkinsServer = serverContainer.get(k);
+                serverContainer.remove(k);
+                serverContainer = null;
+            });
+        initialServer();
     }
 
     @Override
     public void afterPropertiesSet() {
+        initialServer();
     }
 }
