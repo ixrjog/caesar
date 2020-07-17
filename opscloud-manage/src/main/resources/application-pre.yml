@@ -1,0 +1,50 @@
+logging:
+  level:
+    # swagger 警告日志忽略
+    io.swagger.models.parameters.AbstractSerializableParameter: error
+  file:
+    path: /logs/opscloud
+
+# 白名单配置
+white:
+  urls: /*.js;/*.css;/*.jpg;/swagger-resources/*;/error;/webjars/*;/swagger-ui/*;v2/*;
+
+opscloud:
+  version: 3.0
+  openTask: true
+
+spring:
+  profiles:
+    include: common,account-pre,zabbix-pre,ldap-pre,jumpserver-pre,aliyun-pre,aws-pre,gitlab-pre,vcsa-pre,cloud,ansible-pre,xterm-pre,tencent-cloud-pre,kubernetes-pre
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-wait: 5000
+        max-idle: 20
+        max-active: 100
+        min-idle: 0
+    password:
+  jackson:
+    time-zone: GMT+8
+
+app:
+  datasource:
+    opscloud:
+      url: jdbc:mysql://rm-bp1x04709pb2t44p4125010.mysql.rds.aliyuncs.com:3306/opscloud-pre?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=UTC&allowMultiQueries=true
+      username: opscloud_pre
+      password: ENC(tphcAyBC3+vzEgnFf8ZCPAiSLbaUDWxsqH0vtw5uujo=)
+      driver-class-name: com.mysql.jdbc.Driver
+      minimum-idle: 3
+      maximum-pool-size: 15
+      max-lifetime: 30000
+      connection-test-query: SELECT 1
+
+
+
+# java -jar -Djasypt.encryptor.password=${password}
+#jasypt:
+#  encryptor:
+#    password: ${password}
+
