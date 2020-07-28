@@ -91,9 +91,16 @@
 
         <!--
 cs_jenkins_instance
+cs_gitlab_instance
+cs_gitlab_project
+cs_application
+cs_application_scm_member
+cs_application
+cs_job_tpl
+cs_dingtalk
        -->
 
-        <table tableName="cs_jenkins_instance">
+        <table tableName="cs_dingtalk">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

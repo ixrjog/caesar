@@ -1,0 +1,4 @@
+# https://oapi.dingtalk.com/robot/send?access_token=${DINGTALK_TOKEN}
+
+dingtalk:
+  url: https://oapi.dingtalk.com/robot/send

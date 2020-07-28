@@ -9,7 +9,6 @@ import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
-import com.baiyi.caesar.domain.generator.caesar.OcBusinessTag;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerAttribute;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
@@ -181,9 +180,7 @@ public class ServerFacadeImpl implements ServerFacade {
         // 清理缓存
         serverCacheFacade.evictServerCache(ocServer);
         // 删除server的Tag
-        List<OcBusinessTag> ocBusinessTagList = tagFacade.queryOcBusinessTagByBusinessTypeAndBusinessId(BusinessType.SERVER.getType(), id);
-        if (!ocBusinessTagList.isEmpty())
-            tagFacade.deleteTagByList(ocBusinessTagList);
+        tagFacade.clearBusinessTags(BusinessType.SERVER.getType(), id);
         // 删除server的属性
         List<OcServerAttribute> serverAttributeList = serverAttributeFacade.queryServerAttributeById(id);
         if (!serverAttributeList.isEmpty())

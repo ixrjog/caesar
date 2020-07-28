@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author baiyi
@@ -21,11 +23,32 @@ public class KubernetesConfig {
 
     private String version;
     private String dataPath;
-    private KubernetesNamespaceConfig namespace;
-    private KubernetesApplicationConfig application;
+    private Namespace namespace;
+    private Application application;
 
-    private KubernetesDeploymentConfig deployment;
-    private KubernetesDeploymentConfig service;
+    private Deployment deployment;
+    private Deployment service;
+
+    @Data
+    public static class Application {
+        private Map<String, List<String>> envLabel;
+    }
+
+    @Data
+    public static class Namespace {
+        private Set<String> filter;
+    }
+
+    @Data
+    public static class Deployment {
+        private Nomenclature nomenclature;
+    }
+
+    @Data
+    public static class Nomenclature {
+        private String prefix;
+        private String suffix;
+    }
 
     private static final String DATA_PATH = "/data/opscloud-data/kubernetes";
 
@@ -39,7 +62,7 @@ public class KubernetesConfig {
         return getInstanceNameByNomenclature(service.getNomenclature(), serivceName);
     }
 
-    private String getInstanceNameByNomenclature(KubernetesNomenclatureConfig nomenclature, String name) {
+    private String getInstanceNameByNomenclature(Nomenclature nomenclature, String name) {
         if (!StringUtils.isEmpty(nomenclature.getPrefix())) {
             String prefix = Joiner.on("").join("^", nomenclature.getPrefix(), "-");
             name = name.replaceAll(prefix, "");

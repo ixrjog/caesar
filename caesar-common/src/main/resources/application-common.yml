@@ -13,6 +13,10 @@ oc-server-attributes:
           value: 22
           content: "ssh端口"
         -
+          name: admin_account
+          value:
+          content: "高权限账户"
+        -
           name: platform
           value: Linux
           content: "平台类型"

@@ -1,6 +1,8 @@
 package com.baiyi.caesar.service.jenkins;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
+import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
 
 import java.util.List;
 
@@ -12,4 +14,14 @@ import java.util.List;
 public interface CsJenkinsInstanceService {
 
     List<CsJenkinsInstance> queryAll();
+
+    CsJenkinsInstance queryCsJenkinsInstanceById(int id);
+
+    DataTable<CsJenkinsInstance> queryCsJenkinsInstanceByParam(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery);
+
+    void addCsJenkinsInstance(CsJenkinsInstance csJenkinsInstance);
+
+    void updateCsJenkinsInstance(CsJenkinsInstance csJenkinsInstance);
+
+    void deleteCsJenkinsInstanceById(int id);
 }

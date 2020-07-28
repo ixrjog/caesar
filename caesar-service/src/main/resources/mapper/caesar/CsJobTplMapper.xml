@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsJobTplMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsJobTpl">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="jenkins_instance_id" jdbcType="INTEGER" property="jenkinsInstanceId" />
+    <result column="tpl_name" jdbcType="VARCHAR" property="tplName" />
+    <result column="tpl_type" jdbcType="VARCHAR" property="tplType" />
+    <result column="tpl_version" jdbcType="INTEGER" property="tplVersion" />
+    <result column="tpl_hash" jdbcType="VARCHAR" property="tplHash" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="tpl_content" jdbcType="LONGVARCHAR" property="tplContent" />
+    <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+
+    <select id="queryCsJobTplByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobTplParam$JobTplPageQuery" resultMap="BaseResultMap">
+        select * from cs_job_tpl
+        <where>
+            <if test="queryName != null and queryName != ''">
+                name like "%" #{queryName} "%" or comment like "%" #{queryName} "%"
+            </if>
+        </where>
+    </select>
+
+</mapper>

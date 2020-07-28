@@ -1,6 +1,5 @@
 package com.baiyi.caesar.domain.vo.user;
 
-import com.baiyi.caesar.domain.vo.cloud.AliyunRAMVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -34,8 +33,6 @@ public class UserVO {
         private List<UserApiTokenVO.UserApiToken> apiTokens; // 只显示有效的ApiToken
 
         private Map<String, Object> attributeMap;
-
-        private List<AliyunRAMVO.RAMUser> ramUsers;
 
         @ApiModelProperty(value = "主键")
         private Integer id;

@@ -2,7 +2,6 @@ package com.baiyi.caesar.account;
 
 import com.baiyi.caesar.account.builder.UserBuilder;
 import com.baiyi.caesar.account.config.AuthConfig;
-import com.baiyi.caesar.account.config.OpscloudAdmin;
 import com.baiyi.caesar.account.factory.AccountFactory;
 import com.baiyi.caesar.common.util.UUIDUtils;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -221,7 +220,7 @@ public class AccountCenter implements InitializingBean {
      */
     private void tryInitialAdmin() {
         if (authConfig.getAdmin() == null) return;
-        OpscloudAdmin admin = authConfig.getAdmin();
+        AuthConfig.Admin admin = authConfig.getAdmin();
         if (StringUtils.isEmpty(admin.getUsername())) return;
         if (StringUtils.isEmpty(admin.getPassword())) return;
         OcUser ocUser = ocUserService.queryOcUserByUsername(admin.getUsername());

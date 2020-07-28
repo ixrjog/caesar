@@ -130,6 +130,12 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
             preServerAttribute.setId(checkServerAttribute.getId());
             ocServerAttributeService.updateOcServerAttribute(preServerAttribute);
         }
+        if (serverAttribute.getBusinessType() == BusinessType.SERVER.getType()) {
+            redisUtil.del(getServerCacheKey(serverAttribute.getBusinessId()));
+        }
+        if (serverAttribute.getBusinessType() == BusinessType.SERVERGROUP.getType()) {
+            redisUtil.del(getServerGroupCacheKey(serverAttribute.getBusinessId()));
+        }
         return BusinessWrapper.SUCCESS;
     }
 
@@ -203,6 +209,16 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
         if (map.containsKey(Global.SERVER_ATTRIBUTE_GLOBAL_SSH_PORT))
             return map.get(Global.SERVER_ATTRIBUTE_GLOBAL_SSH_PORT);
         return "22";
+    }
+
+    @Override
+    public String getAdminAccount(OcServer ocServer) {
+        Map<String, String> map = getServerAttributeMap(ocServer);
+        if (map == null)
+            return "";
+        if (map.containsKey(Global.SERVER_ATTRIBUTE_GLOBAL_ADMIN_ACCOUNT))
+            return map.get(Global.SERVER_ATTRIBUTE_GLOBAL_ADMIN_ACCOUNT);
+        return "";
     }
 
 }

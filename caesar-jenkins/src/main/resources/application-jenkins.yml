@@ -1,0 +1,7 @@
+jenkins:
+  chanelog:
+    rss: https://www.jenkins.io/changelog/rss.xml
+    rssZh: https://www.jenkins.io/zh/changelog/rss.xml
+  template:
+    prefix: tpl_
+

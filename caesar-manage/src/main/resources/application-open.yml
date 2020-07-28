@@ -3,7 +3,7 @@ logging:
     # swagger 警告日志忽略
     io.swagger.models.parameters.AbstractSerializableParameter: error
   file:
-    path: /log
+    path: /logs/opscloud
 
 # 白名单配置
 white:
@@ -15,7 +15,7 @@ opscloud:
 
 spring:
   profiles:
-    include: common,account-open,zabbix-open,ldap-open,jumpserver-open,aliyun-open,aws-open,gitlab-open,vcsa-open,cloud,ansible-open,xterm-open,tencent-cloud-open,kubernetes-open
+    include: common,account-open,ldap-open,gitlab-open,ansible-open,xterm-open,kubernetes-open,dingtalk
   redis:
     host: redis.opscloud.top
     port: 6379
@@ -31,7 +31,7 @@ spring:
 
 app:
   datasource:
-    opscloud:
+    caesar:
       url: jdbc:mysql://mysql.opscloud.top:3306/opscloud?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=UTC&allowMultiQueries=true
       username: opscloud
       password: 123456

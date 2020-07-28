@@ -11,8 +11,20 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="token" jdbcType="VARCHAR" property="token" />
     <result column="is_active" jdbcType="BIT" property="isActive" />
+    <result column="server_id" jdbcType="INTEGER" property="serverId" />
+    <result column="node_server_group_id" jdbcType="INTEGER" property="nodeServerGroupId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
+
+  <select id="queryCsJenkinsInstanceByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam$JenkinsInstancePageQuery" resultMap="BaseResultMap">
+    select * from cs_jenkins_instance
+    <where>
+      <if test="queryName != null and queryName != ''">
+        name like "%" #{queryName} "%" or comment like "%" #{queryName} "%"
+      </if>
+    </where>
+  </select>
+
 </mapper>

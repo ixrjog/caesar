@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsApplicationMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsApplication">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="application_key" jdbcType="VARCHAR" property="applicationKey" />
+    <result column="kubernetes_application_id" jdbcType="INTEGER" property="kubernetesApplicationId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+
+  <select id="queryCsApplicationByParam"
+          parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery" resultMap="BaseResultMap">
+    select * from cs_application
+    <where>
+      <if test="queryName != null and queryName != ''">
+        name like "%" #{queryName} "%" or application_key like "%" #{queryName} "%"
+      </if>
+    </where>
+  </select>
+
+</mapper>

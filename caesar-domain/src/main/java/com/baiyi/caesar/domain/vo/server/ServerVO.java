@@ -1,6 +1,5 @@
 package com.baiyi.caesar.domain.vo.server;
 
-import com.baiyi.caesar.domain.vo.cloud.CloudServerVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,8 +28,6 @@ public class ServerVO {
         private EnvVO.Env env;
 
         private ServerGroupVO.ServerGroup serverGroup;
-
-        private CloudServerVO.CloudServer cloudServer;
 
         @ApiModelProperty(value = "主键",example="1")
         private Integer id;

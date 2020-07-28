@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsGitlabProjectMapper">
+    <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsGitlabProject">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="instance_id" jdbcType="INTEGER" property="instanceId"/>
+        <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="project_visibility" jdbcType="VARCHAR" property="projectVisibility"/>
+        <result column="namespace_id" jdbcType="INTEGER" property="namespaceId"/>
+        <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName"/>
+        <result column="namespace_path" jdbcType="VARCHAR" property="namespacePath"/>
+        <result column="namespace_kind" jdbcType="VARCHAR" property="namespaceKind"/>
+        <result column="namespace_full_path" jdbcType="VARCHAR" property="namespaceFullPath"/>
+        <result column="ssh_url" jdbcType="VARCHAR" property="sshUrl"/>
+        <result column="web_url" jdbcType="VARCHAR" property="webUrl"/>
+        <result column="http_url" jdbcType="VARCHAR" property="httpUrl"/>
+        <result column="default_branch" jdbcType="VARCHAR" property="defaultBranch"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="description" jdbcType="LONGVARCHAR" property="description"/>
+    </resultMap>
+
+    <select id="queryCsGitlabProjectByParam"
+            parameterType="com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam$PageQuery" resultMap="BaseResultMap">
+        select * from cs_gitlab_project
+        <where>
+            <if test="instanceId != null">
+                instance_id = #{instanceId}
+            </if>
+            <if test="queryName != null and queryName != ''">
+                and ( name like "%" #{queryName} "%" or namespace_full_path like "%" #{queryName} "%" )
+            </if>
+        </where>
+    </select>
+</mapper>

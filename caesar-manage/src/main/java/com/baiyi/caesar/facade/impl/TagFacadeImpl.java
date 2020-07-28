@@ -100,10 +100,10 @@ public class TagFacadeImpl implements TagFacade {
         if (!IDUtils.isEmpty(businessTag.getBusinessId()))
             return updateBusinessTagById(businessTag);
         businessTag.getBusinessIds().forEach(id -> {
-                    BusinessTagVO.BusinessTag pre = BeanCopierUtils.copyProperties(businessTag, BusinessTagVO.BusinessTag.class);
-                    pre.setBusinessId(id);
-                    updateBusinessTagById(pre);
-                });
+            BusinessTagVO.BusinessTag pre = BeanCopierUtils.copyProperties(businessTag, BusinessTagVO.BusinessTag.class);
+            pre.setBusinessId(id);
+            updateBusinessTagById(pre);
+        });
         return BusinessWrapper.SUCCESS;
     }
 
@@ -133,6 +133,14 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public List<OcBusinessTag> queryOcBusinessTagByBusinessTypeAndBusinessId(int businessType, int businessId) {
         return ocBusinessTagService.queryOcBusinessTagByBusinessTypeAndBusinessId(businessType, businessId);
+    }
+
+    @Override
+    public void clearBusinessTags(int businessType, int businessId) {
+        // 删除server的Tag
+        List<OcBusinessTag> ocBusinessTagList = queryOcBusinessTagByBusinessTypeAndBusinessId(businessType, businessId);
+        if (!ocBusinessTagList.isEmpty())
+            deleteTagByList(ocBusinessTagList);
     }
 
     @Override

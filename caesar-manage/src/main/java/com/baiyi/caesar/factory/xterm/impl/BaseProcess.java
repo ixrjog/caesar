@@ -21,6 +21,7 @@ import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.model.HostSystem;
 import com.baiyi.caesar.xterm.model.JSchSessionMap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.Resource;
@@ -91,13 +92,10 @@ public abstract class BaseProcess implements IXTermProcess, InitializingBean {
         ocUserPermission.setBusinessType(BusinessType.SERVER_ADMINISTRATOR_ACCOUNT.getType());
 
         boolean loginType = false;
-        if (baseMessage.getLoginUserType() == 1) {
+        if (baseMessage.getLoginUserType() == 1)
             loginType = isAdmin || ocUserPermissionService.queryOcUserPermissionByUniqueKey(ocUserPermission) != null;
-        }
 
-        SSHKeyCredential sshKeyCredential = loginType ? keyboxFacade.getSSHKeyCredential(settingFacade.querySetting(SettingName.SERVER_HIGH_AUTHORITY_ACCOUNT))
-                : keyboxFacade.getSSHKeyCredential(ocServer.getLoginUser());
-
+        SSHKeyCredential sshKeyCredential = acqCredential(ocServer,loginType);
         HostSystem hostSystem = new HostSystem();
         hostSystem.setHost(host);
         // 自定义 ssh 端口
@@ -106,6 +104,20 @@ public abstract class BaseProcess implements IXTermProcess, InitializingBean {
         hostSystem.setInitialMessage(baseMessage);
 
         return hostSystem;
+    }
+
+    private SSHKeyCredential acqCredential(OcServer ocServer, boolean loginType) {
+        String account;
+        if (loginType) {
+            account = serverAttributeFacade.getAdminAccount(ocServer);
+            if (StringUtils.isEmpty(account))
+                account = settingFacade.querySetting(SettingName.SERVER_HIGH_AUTHORITY_ACCOUNT);
+
+        } else {
+            account = ocServer.getLoginUser();
+        }
+        return keyboxFacade.getSSHKeyCredential(account);
+
     }
 
     protected Boolean isBatch(OcTerminalSession ocTerminalSession) {

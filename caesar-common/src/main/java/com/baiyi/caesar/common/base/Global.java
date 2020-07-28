@@ -12,6 +12,7 @@ public class Global {
     public static final String SERVER_ATTRIBUTE_GLOBAL_ENABLE_PUBLIC_IP_MGMT = "global_enable_public_ip_mgmt";
 
     public static final String SERVER_ATTRIBUTE_GLOBAL_SSH_PORT = "ssh_port";
+    public static final String SERVER_ATTRIBUTE_GLOBAL_ADMIN_ACCOUNT = "admin_account";
 
     public static final String SERVER_ATTRIBUTE_ANSIBLE_SUBGROUP = "ansible_subgroup";
 

@@ -17,6 +17,7 @@
         <module>caesar-xterm</module>
         <module>caesar-kubernetes</module>
         <module>caesar-jenkins</module>
+        <module>caesar-dingtalk</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -204,6 +205,12 @@
             <dependency>
                 <groupId>com.baiyi</groupId>
                 <artifactId>caesar-jenkins</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baiyi</groupId>
+                <artifactId>caesar-dingtalk</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

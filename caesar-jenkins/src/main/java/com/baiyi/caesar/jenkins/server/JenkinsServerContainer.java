@@ -5,6 +5,7 @@ import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,13 @@ public class JenkinsServerContainer implements InitializingBean {
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
 
+    @Resource
+    private StringEncryptor stringEncryptor;
+
     private JenkinsServer buildServer(CsJenkinsInstance jenkinsInstance) {
         try {
             URI host = new URI(jenkinsInstance.getUrl());
-            return new JenkinsServer(host, jenkinsInstance.getUsername(), jenkinsInstance.getToken());
+            return new JenkinsServer(host, jenkinsInstance.getUsername(), stringEncryptor.decrypt(jenkinsInstance.getToken()));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -62,9 +66,9 @@ public class JenkinsServerContainer implements InitializingBean {
         if (serverContainer != null && !serverContainer.isEmpty())
             serverContainer.keySet().forEach(k -> {
                 JenkinsServer jenkinsServer = serverContainer.get(k);
-                serverContainer.remove(k);
-                serverContainer = null;
+                jenkinsServer = null;
             });
+        serverContainer = null;
         initialServer();
     }
 

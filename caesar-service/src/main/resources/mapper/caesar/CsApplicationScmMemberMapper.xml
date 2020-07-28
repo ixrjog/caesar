@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsApplicationScmMemberMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
+    <result column="scm_type" jdbcType="VARCHAR" property="scmType" />
+    <result column="scm_id" jdbcType="INTEGER" property="scmId" />
+    <result column="scm_ssh_url" jdbcType="VARCHAR" property="scmSshUrl" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+</mapper>

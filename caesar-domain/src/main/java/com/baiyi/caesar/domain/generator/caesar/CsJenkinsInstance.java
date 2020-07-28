@@ -36,6 +36,18 @@ public class CsJenkinsInstance {
     private Boolean isActive;
 
     /**
+     * 绑定服务器id
+     */
+    @Column(name = "server_id")
+    private Integer serverId;
+
+    /**
+     * 绑定节点服务器组
+     */
+    @Column(name = "node_server_group_id")
+    private Integer nodeServerGroupId;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -151,6 +163,42 @@ public class CsJenkinsInstance {
      */
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    /**
+     * 获取绑定服务器id
+     *
+     * @return server_id - 绑定服务器id
+     */
+    public Integer getServerId() {
+        return serverId;
+    }
+
+    /**
+     * 设置绑定服务器id
+     *
+     * @param serverId 绑定服务器id
+     */
+    public void setServerId(Integer serverId) {
+        this.serverId = serverId;
+    }
+
+    /**
+     * 获取绑定节点服务器组
+     *
+     * @return node_server_group_id - 绑定节点服务器组
+     */
+    public Integer getNodeServerGroupId() {
+        return nodeServerGroupId;
+    }
+
+    /**
+     * 设置绑定节点服务器组
+     *
+     * @param nodeServerGroupId 绑定节点服务器组
+     */
+    public void setNodeServerGroupId(Integer nodeServerGroupId) {
+        this.nodeServerGroupId = nodeServerGroupId;
     }
 
     /**

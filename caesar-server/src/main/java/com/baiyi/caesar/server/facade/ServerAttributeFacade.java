@@ -22,7 +22,7 @@ public interface ServerAttributeFacade {
 
     List<OcServerAttribute> queryServerAttributeById(int serverId);
 
-   void deleteServerAttributeByList(List<OcServerAttribute> serverAttributeList);
+    void deleteServerAttributeByList(List<OcServerAttribute> serverAttributeList);
 
     BusinessWrapper<Boolean> saveServerAttribute(ServerAttributeVO.ServerAttribute serverAttribute);
 
@@ -34,5 +34,11 @@ public interface ServerAttributeFacade {
 
     String getSSHPort(OcServer ocServer);
 
-    // Map<String, String> getServerAttributeMap(int serverId);
+    /**
+     * 管理员账户
+     * @param ocServer
+     * @return
+     */
+    String getAdminAccount(OcServer ocServer);
+
 }

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.account.builder;
 
 import com.baiyi.caesar.account.bo.UserBO;
-import com.baiyi.caesar.account.config.OpscloudAdmin;
+import com.baiyi.caesar.account.config.AuthConfig;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.ldap.entry.Person;
@@ -25,7 +25,7 @@ public class UserBuilder {
         return convert(bo);
     }
 
-    public static OcUser build(OpscloudAdmin admin) {
+    public static OcUser build(AuthConfig.Admin admin) {
         UserBO bo = UserBO.builder()
                 .username(admin.getUsername())
                 .displayName(admin.getUsername())

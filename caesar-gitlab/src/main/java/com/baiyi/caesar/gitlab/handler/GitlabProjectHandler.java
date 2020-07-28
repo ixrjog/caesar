@@ -1,10 +1,9 @@
 package com.baiyi.caesar.gitlab.handler;
 
-import com.baiyi.caesar.gitlab.factory.GitlabFactory;
+import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
 import org.gitlab.api.models.GitlabProject;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -17,14 +16,11 @@ import java.util.List;
 @Component
 public class GitlabProjectHandler {
 
-    @Resource
-    private GitlabFactory gitlabFactory;
-
-    public List<GitlabProject> getProjects() {
-        return gitlabFactory.getAPI().getAllProjects();
+    public List<GitlabProject> getProjects(String gitlabName) {
+        return  GitlabServerContainer.getGitlabAPI(gitlabName).getAllProjects();
     }
 
-    public GitlabProject getProject(Serializable projectId) throws IOException {
-        return gitlabFactory.getAPI().getProject(projectId);
+    public GitlabProject getProject(String gitlabName, Serializable projectId) throws IOException {
+        return GitlabServerContainer.getGitlabAPI(gitlabName).getProject(projectId);
     }
 }

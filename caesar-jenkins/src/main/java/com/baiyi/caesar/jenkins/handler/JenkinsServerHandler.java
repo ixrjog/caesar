@@ -3,6 +3,7 @@ package com.baiyi.caesar.jenkins.handler;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.Job;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,16 @@ import java.util.Map;
 @Component
 public class JenkinsServerHandler {
 
+    public JenkinsVersion getVersion(String serverName) {
+        try {
+            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            assert jenkinsServer != null;
+            return jenkinsServer.getVersion();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * 获取job
      *
@@ -30,6 +41,17 @@ public class JenkinsServerHandler {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
             return jenkinsServer.getJob(jobName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getJobXml(String serverName, String jobName) {
+        try {
+            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            assert jenkinsServer != null;
+            return jenkinsServer.getJobXml(jobName);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

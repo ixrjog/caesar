@@ -15,7 +15,12 @@ public enum BusinessType {
     SERVER_ADMINISTRATOR_ACCOUNT(6),
     ALIYUN_RAM_ACCOUNT(7),
     /** 应用授权 **/
-    APPLICATION(8)
+    APPLICATION(8),
+    /** Gitlab项目 **/
+    GITLAB_PROJECT(9),
+    JENKINS_TPL(10),
+    DINGTALK(11)
+
     ;
 
     private int type;

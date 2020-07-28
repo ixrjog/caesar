@@ -32,6 +32,13 @@ public interface TagFacade {
 
     List<OcBusinessTag> queryOcBusinessTagByBusinessTypeAndBusinessId(int businessType, int businessId);
 
+    /**
+     * 清除所有业务标签
+     * @param businessType
+     * @param businessId
+     */
+    void clearBusinessTags(int businessType, int businessId);
+
     void deleteTagByList(List<OcBusinessTag> ocBusinessTagList);
 
 }

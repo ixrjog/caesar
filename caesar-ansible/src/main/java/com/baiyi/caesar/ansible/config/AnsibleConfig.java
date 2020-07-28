@@ -44,7 +44,6 @@ public class AnsibleConfig {
         return Joiner.on("/").join(dataPath, "private_key/id_rsa");
     }
 
-
     public String getPlaybookPath(OcAnsiblePlaybook ocAnsiblePlaybook) {
         return Joiner.on("/").join(acqPlaybookPath(), ocAnsiblePlaybook.getPlaybookUuid() + ".yml");
     }

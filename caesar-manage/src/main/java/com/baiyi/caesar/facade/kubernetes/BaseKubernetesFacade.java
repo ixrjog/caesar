@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @Component
-public class  BaseKubernetesFacade {
+public class BaseKubernetesFacade {
 
     @Resource
     private OcKubernetesClusterService ocKubernetesClusterService;
@@ -49,14 +49,14 @@ public class  BaseKubernetesFacade {
     }
 
 
-    protected void invokeBaseProperty(BaseKubernetesApplicationVO.BaseProperty baseProperty){
-        if ( baseProperty.getApplicationId() != 0){
-            OcKubernetesApplication ocKubernetesApplication =  ocKubernetesApplicationService.queryOcKubernetesApplicationById(baseProperty.getApplicationId());
-            baseProperty.setApplication(BeanCopierUtils.copyProperties(ocKubernetesApplication,KubernetesApplicationVO.Application.class));
+    protected void invokeBaseProperty(BaseKubernetesApplicationVO.BaseProperty baseProperty) {
+        if (baseProperty.getApplicationId() != 0) {
+            OcKubernetesApplication ocKubernetesApplication = ocKubernetesApplicationService.queryOcKubernetesApplicationById(baseProperty.getApplicationId());
+            baseProperty.setApplication(BeanCopierUtils.copyProperties(ocKubernetesApplication, KubernetesApplicationVO.Application.class));
         }
-        if (baseProperty.getInstanceId() != 0){
-            OcKubernetesApplicationInstance ocKubernetesApplicationInstance =  ocKubernetesApplicationInstanceService.queryOcKubernetesApplicationInstanceById(baseProperty.getInstanceId());
-            baseProperty.setInstance(kubernetesApplicationInstanceDecorator.decorator(ocKubernetesApplicationInstance,0));
+        if (baseProperty.getInstanceId() != 0) {
+            OcKubernetesApplicationInstance ocKubernetesApplicationInstance = ocKubernetesApplicationInstanceService.queryOcKubernetesApplicationInstanceById(baseProperty.getInstanceId());
+            baseProperty.setInstance(kubernetesApplicationInstanceDecorator.decorator(ocKubernetesApplicationInstance, 0));
         }
     }
 

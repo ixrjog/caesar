@@ -15,7 +15,7 @@ opscloud:
 
 spring:
   profiles:
-    include: common,account-pre,zabbix-pre,ldap-pre,jumpserver-pre,aliyun-pre,aws-pre,gitlab-pre,vcsa-pre,cloud,ansible-pre,xterm-pre,tencent-cloud-pre,kubernetes-pre
+    include: common,account-pre,ldap-pre,gitlab-pre,ansible-pre,xterm-pre,kubernetes-pre,jenkins,dingtalk
   redis:
     host: 127.0.0.1
     port: 6379
@@ -31,7 +31,7 @@ spring:
 
 app:
   datasource:
-    opscloud:
+    caesar:
       url: jdbc:mysql://rm-bp1x04709pb2t44p4125010.mysql.rds.aliyuncs.com:3306/opscloud-pre?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=UTC&allowMultiQueries=true
       username: opscloud_pre
       password: ENC(tphcAyBC3+vzEgnFf8ZCPAiSLbaUDWxsqH0vtw5uujo=)

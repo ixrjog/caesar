@@ -4,20 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.WorkorderTicketEntryBO;
 import com.baiyi.caesar.common.base.WorkorderKey;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.domain.generator.caesar.*;
+import com.baiyi.caesar.domain.generator.caesar.OcAuthRole;
+import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
+import com.baiyi.caesar.domain.generator.caesar.OcUserGroup;
+import com.baiyi.caesar.domain.generator.caesar.OcWorkorderTicketEntry;
 import com.baiyi.caesar.domain.param.workorder.WorkorderTicketEntryParam;
 import com.baiyi.caesar.domain.vo.auth.RoleVO;
-import com.baiyi.caesar.domain.vo.cloud.AliyunAccountVO;
-import com.baiyi.caesar.domain.vo.cloud.AliyunRAMVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
 import com.baiyi.caesar.domain.vo.workorder.WorkorderTicketEntryVO;
 import com.baiyi.caesar.factory.ticket.entry.AuthRoleEntry;
-import com.baiyi.caesar.factory.ticket.entry.RAMPolicyEntry;
 import com.baiyi.caesar.factory.ticket.entry.ServerGroupEntry;
 import com.baiyi.caesar.factory.ticket.entry.UserGroupEntry;
-
-import java.util.List;
 
 /**
  * @Author baiyi
@@ -80,30 +78,6 @@ public class WorkorderTicketEntryBuilder {
                 .businessId(ocUserGroup.getId())
                 .entryKey(WorkorderKey.USER_GROUP.getKey())
                 .comment(ocUserGroup.getComment())
-                .ticketEntry(entry)
-                .entryDetail(JSON.toJSONString(entry))
-                .build();
-        return covertVO(workorderTicketEntryBO);
-    }
-
-
-    public static WorkorderTicketEntryVO.Entry build(int ticketId, OcAliyunRamPolicy ocAliyunRamPolicy, List<AliyunAccountVO.AliyunAccount> aliyunAccounts) {
-        AliyunRAMVO.RAMPolicy ramPolicy = BeanCopierUtils.copyProperties(ocAliyunRamPolicy, AliyunRAMVO.RAMPolicy.class);
-        ramPolicy.setCreateDate(null);
-        ramPolicy.setUpdateDate(null);
-        aliyunAccounts.forEach(e->{
-            if(e.getUid().equals(ramPolicy.getAccountUid()))
-                ramPolicy.setAccountName(e.getName());
-        });
-        RAMPolicyEntry entry = RAMPolicyEntry.builder()
-                .ramPolicy(ramPolicy)
-                .build();
-        WorkorderTicketEntryBO workorderTicketEntryBO = WorkorderTicketEntryBO.builder()
-                .workorderTicketId(ticketId)
-                .name(ocAliyunRamPolicy.getPolicyName())
-                .businessId(ocAliyunRamPolicy.getId())
-                .entryKey(WorkorderKey.RAM_POLICY.getKey())
-                .comment(ocAliyunRamPolicy.getDescription())
                 .ticketEntry(entry)
                 .entryDetail(JSON.toJSONString(entry))
                 .build();
