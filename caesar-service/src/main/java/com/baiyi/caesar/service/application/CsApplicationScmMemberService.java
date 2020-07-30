@@ -15,6 +15,8 @@ public interface CsApplicationScmMemberService {
 
     CsApplicationScmMember queryCsApplicationScmMemberByUniqueKey(int applicationId,int scmId);
 
+    CsApplicationScmMember queryCsApplicationScmMemberById(int id);
+
     void addCsApplicationScmMember(CsApplicationScmMember csApplicationScmMember);
 
     void updateCsApplicationScmMember(CsApplicationScmMember csApplicationScmMember);

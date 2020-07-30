@@ -20,7 +20,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/dingtalk")
-@Api(tags = "应用配置")
+@Api(tags = "钉钉配置")
 public class DingtalkController {
 
     @Resource
@@ -42,6 +42,12 @@ public class DingtalkController {
     @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> updateDingtalk(@RequestBody @Valid DingtalkVO.Dingtalk dingtalk) {
         return new HttpResult<>(dingtalkFacade.updateDingtalk(dingtalk));
+    }
+
+    @ApiOperation(value = "测试Dingtalk配置")
+    @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> testDingtalkById(@Valid int id) {
+        return new HttpResult<>(dingtalkFacade.testDingtalkById(id));
     }
 
     @ApiOperation(value = "删除Dingtalk配置")

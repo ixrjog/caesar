@@ -2,13 +2,11 @@ package com.baiyi.caesar.gitlab;
 
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.facade.GitlabFacade;
+import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabNamespace;
-import org.gitlab.api.models.GitlabProject;
-import org.gitlab.api.models.GitlabVersion;
+import org.gitlab.api.models.*;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -34,6 +32,9 @@ public class GitlabTest extends BaseUnit {
 
     @Resource
     private GitlabFacade gitlabFacade;
+
+    @Resource
+    private GitlabBranchHandler gitlabBranchHandler;
 
     @Test
     void versionTest() {
@@ -69,4 +70,19 @@ public class GitlabTest extends BaseUnit {
     void syncProjectTest() {
         gitlabFacade.syncGitlabInstanceProject(1);
     }
+
+    @Test
+    void getBranchesTest() {
+        // name  commit.id/commit.message
+
+        List<GitlabBranch> list = gitlabBranchHandler.getBranches("gitlab-1", 1661);
+        System.err.println(list);
+    }
+
+    @Test
+    void getTagsTest() {
+        List<GitlabTag> list = gitlabBranchHandler.getTags("gitlab-1", 1661);
+        System.err.println(list);
+    }
+
 }

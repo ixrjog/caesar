@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 
@@ -25,4 +26,6 @@ public interface GitlabFacade {
     void syncGitlabInstanceProject(int instanceId);
 
     DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.PageQuery pageQuery);
+
+    BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag);
 }

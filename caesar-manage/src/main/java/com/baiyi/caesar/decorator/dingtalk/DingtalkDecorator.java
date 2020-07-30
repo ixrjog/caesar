@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 @Component
 public class DingtalkDecorator {
 
-
     @Resource
     private TagDecorator tagDecorator;
 

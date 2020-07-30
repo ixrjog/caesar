@@ -14,9 +14,13 @@ public interface DingtalkFacade {
 
     DataTable<DingtalkVO.Dingtalk> queryDingtalkPage(DingtalkParam.DingtalkPageQuery pageQuery);
 
+    String acqDingtalkTokenById(int id);
+
     BusinessWrapper<Boolean> addDingtalk(DingtalkVO.Dingtalk dingtalk);
 
     BusinessWrapper<Boolean> updateDingtalk(DingtalkVO.Dingtalk dingtalk);
 
     BusinessWrapper<Boolean> deleteDingtalkById(int id);
+
+    BusinessWrapper<Boolean> testDingtalkById(int id);
 }

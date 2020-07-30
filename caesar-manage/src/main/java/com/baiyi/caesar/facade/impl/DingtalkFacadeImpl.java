@@ -1,7 +1,12 @@
 package com.baiyi.caesar.facade.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.dingtalk.DingtalkDecorator;
+import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
+import com.baiyi.caesar.dingtalk.content.DingtalkContent;
+import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
+import com.baiyi.caesar.dingtalk.model.TestMessage;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsDingtalk;
@@ -14,6 +19,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +40,12 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
     @Resource
     private StringEncryptor stringEncryptor;
 
+    @Resource
+    private DingtalkHandler dingtalkHandler;
+
+    @Resource
+    private DingtalkConfig dingtalkConfig;
+
     @Override
     public DataTable<DingtalkVO.Dingtalk> queryDingtalkPage(DingtalkParam.DingtalkPageQuery pageQuery) {
         DataTable<CsDingtalk> table = csDingtalkService.queryCsDingtalkByParam(pageQuery);
@@ -47,6 +59,12 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
         csDingtalk.setDingtalkToken(stringEncryptor.encrypt(dingtalk.getDingtalkToken()));
         csDingtalkService.addCsDingtalk(csDingtalk);
         return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public String acqDingtalkTokenById(int id) {
+        CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(id);
+        return stringEncryptor.decrypt(csDingtalk.getDingtalkToken());
     }
 
     @Override
@@ -65,6 +83,20 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
     @Override
     public BusinessWrapper<Boolean> deleteDingtalkById(int id) {
         csDingtalkService.deleteCsDingtalkById(id);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> testDingtalkById(int id) {
+        DingtalkContent content = DingtalkContent.builder()
+                .msg(JSON.toJSONString(TestMessage.builder().build()))
+                .webHook(dingtalkConfig.getWebHook(acqDingtalkTokenById(id)))
+                .build();
+        try {
+            dingtalkHandler.doNotify(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return BusinessWrapper.SUCCESS;
     }
 }

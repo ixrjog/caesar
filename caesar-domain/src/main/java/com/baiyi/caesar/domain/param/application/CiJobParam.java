@@ -10,15 +10,20 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @Author baiyi
- * @Date 2020/7/21 2:54 下午
+ * @Date 2020/7/29 11:50 上午
  * @Version 1.0
  */
-public class ApplicationParam {
+public class CiJobParam {
+
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ApplicationPageQuery extends PageParam {
+    public static class CiJobPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "应用id",example = "1")
+        @NotNull(message = "必须指定应用id")
+        private Integer applicationId;
 
         @ApiModelProperty(value = "关键字查询")
         private String queryName;
@@ -28,18 +33,5 @@ public class ApplicationParam {
 
     }
 
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class ScmMemberBranchQuery {
 
-        @ApiModelProperty(value = "scm成员id")
-        @NotNull
-        private Integer scmMemberId;
-
-        @ApiModelProperty(value = "启用tag")
-        @NotNull
-        private Boolean enableTag;
-
-    }
 }

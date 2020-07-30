@@ -84,4 +84,10 @@ public class JenkinsController {
         return new HttpResult<>(jenkinsFacade.deleteJobTplById(id));
     }
 
+    @ApiOperation(value = "读取任务模版配置")
+    @GetMapping(value = "/tpl/read", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> readJobTplById(@Valid int id) {
+        return new HttpResult<>(jenkinsFacade.readJobTplById(id));
+    }
+
 }

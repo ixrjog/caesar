@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class GitlabBranchHandler {
 
-    public List<GitlabBranch> getBranchs(String gitlabName, Integer projectId) {
+    public List<GitlabBranch> getBranches(String gitlabName, Integer projectId) {
         return GitlabServerContainer.getGitlabAPI(gitlabName).getBranches(projectId);
     }
 

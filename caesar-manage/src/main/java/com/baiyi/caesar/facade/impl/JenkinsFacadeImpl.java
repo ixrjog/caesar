@@ -6,6 +6,7 @@ import com.baiyi.caesar.decorator.jenkins.JenkinsInstanceDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
@@ -23,6 +24,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,11 +104,11 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     @Override
     public BusinessWrapper<Boolean> addJobTpl(JobTplVO.JobTpl jobTpl) {
         CsJobTpl csJobTpl = BeanCopierUtils.copyProperties(jobTpl, CsJobTpl.class);
-        try{
+        try {
             String xml = jenkinsTplFacade.getJobContent(jobTpl.getJenkinsInstanceId(), jobTpl.getTplName());
             csJobTpl.setTplContent(xml);
             csJobTpl.setTplHash(HashUtils.MD5(xml));
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
         }
         csJobTplService.addCsJobTpl(csJobTpl);
         return BusinessWrapper.SUCCESS;
@@ -129,4 +131,17 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     public List<JenkinsJobVO.Job> queryJobTplByInstanceId(int instanceId) {
         return jenkinsTplFacade.queryJenkinsInstanceTpl(instanceId);
     }
+
+    @Override
+    public BusinessWrapper<Boolean> readJobTplById(int id) {
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(id);
+        try {
+            String xml = jenkinsTplFacade.getJobContent(csJobTpl.getJenkinsInstanceId(), csJobTpl.getTplName());
+            return new BusinessWrapper(xml);
+        } catch (IOException e) {
+            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_TPL_READ_ERROR);
+        }
+    }
+
+
 }

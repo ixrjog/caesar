@@ -47,15 +47,10 @@ public class JenkinsServerHandler {
         }
     }
 
-    public String getJobXml(String serverName, String jobName) {
-        try {
+    public String getJobXml(String serverName, String jobName) throws IOException {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
             return jenkinsServer.getJobXml(jobName);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public Map<String, Job> getJobs(String serverName) {

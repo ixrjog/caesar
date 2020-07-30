@@ -38,6 +38,11 @@ public class CsApplicationScmMemberServiceImpl implements CsApplicationScmMember
     }
 
     @Override
+    public CsApplicationScmMember queryCsApplicationScmMemberById(int id) {
+        return csApplicationScmMemberMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public void addCsApplicationScmMember(CsApplicationScmMember csApplicationScmMember) {
         csApplicationScmMemberMapper.insert(csApplicationScmMember);
     }

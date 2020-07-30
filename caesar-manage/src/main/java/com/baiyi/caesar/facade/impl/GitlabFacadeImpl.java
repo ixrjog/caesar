@@ -3,6 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.builder.GitlabProjectBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabProjectDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -11,14 +12,17 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
+import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.models.GitlabProject;
@@ -59,6 +63,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private GitlabProjectHandler gitlabProjectHandler;
+
+    @Resource
+    private GitlabBranchHandler gitlabBranchHandler;
 
     @Resource
     private GitlabServerContainer gitlabServerContainer;
@@ -103,7 +110,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    public   DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.PageQuery pageQuery){
+    public DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.PageQuery pageQuery) {
         DataTable<CsGitlabProject> table = csGitlabProjectService.queryCsGitlabProjectByParam(pageQuery);
         List<GitlabProjectVO.Project> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabProjectVO.Project.class);
         return new DataTable<>(page.stream().map(e -> gitlabProjectDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
@@ -137,7 +144,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         projectMap.keySet().forEach(k -> {
             CsGitlabProject csGitlabProject = projectMap.get(k);
             // 清除业务标签
-            tagFacade.clearBusinessTags(BusinessType.GITLAB_PROJECT.getType(),csGitlabProject.getId());
+            tagFacade.clearBusinessTags(BusinessType.GITLAB_PROJECT.getType(), csGitlabProject.getId());
             csGitlabProjectService.deleteCsGitlabProjectById(csGitlabProject.getId());
         });
     }
@@ -146,6 +153,23 @@ public class GitlabFacadeImpl implements GitlabFacade {
         List<CsGitlabProject> projects = csGitlabProjectService.queryCsGitlabProjectByInstanceId(instanceId);
         if (CollectionUtils.isEmpty(projects)) return Maps.newHashMap();
         return projects.stream().collect(Collectors.toMap(CsGitlabProject::getProjectId, a -> a, (k1, k2) -> k1));
+    }
+
+    @Override
+    public BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag) {
+        CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
+        List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
+        GitlabBranchVO.Repository repository = new GitlabBranchVO.Repository();
+        List<GitlabBranchVO.Option> options = Lists.newArrayList();
+        options.add(GitlabBranchConvert.build("Branches",branches));
+        if (enableTag) {
+            List<GitlabBranchVO.BaseBranch> tags = GitlabBranchConvert.convertTags(gitlabBranchHandler.getTags(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
+            options.add(GitlabBranchConvert.build("Tags",tags));
+        }
+        repository.setOptions( options);
+        return new BusinessWrapper<>(repository);
+
     }
 
 }

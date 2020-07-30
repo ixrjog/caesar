@@ -1,6 +1,7 @@
 package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.common.base.BusinessType;
+import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
@@ -31,8 +32,10 @@ public class ApplicationDecorator {
     private TagDecorator tagDecorator;
 
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
+        if (extend == 0) return application;
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
         application.setTags(acqTagsByMembers(members));
+        application.setScmMembers(BeanCopierUtils.copyListProperties(members,ApplicationVO.ScmMember.class));
         return application;
     }
 

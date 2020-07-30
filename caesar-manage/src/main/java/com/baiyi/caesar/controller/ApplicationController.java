@@ -3,7 +3,10 @@ package com.baiyi.caesar.controller;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,6 +60,12 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.queryApplicationScmMemberByApplicationId(applicationId));
     }
 
+    @ApiOperation(value = "查询应用SCM分支详情")
+    @PostMapping(value = "/scm/member/branch/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery) {
+        return new HttpResult<>(applicationFacade.queryApplicationSCMMemberBranch(scmMemberBranchQuery));
+    }
+
     @ApiOperation(value = "新增应用SCM配置")
     @PutMapping(value = "/scm/member/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addApplicationSCMMember(@Valid int applicationId, @Valid int projectId) {
@@ -68,5 +77,24 @@ public class ApplicationController {
     public HttpResult<Boolean> removeApplicationSCMMember(@Valid int id) {
         return new HttpResult<>(applicationFacade.removeApplicationSCMMember(id));
     }
+
+    @ApiOperation(value = "分页查询持续集成任务配置")
+    @PostMapping(value = "/ci/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<CiJobVO.CiJob>> queryCiJobPage(@RequestBody @Valid CiJobParam.CiJobPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryCiJobPage(pageQuery));
+    }
+
+    @ApiOperation(value = "新增持续集成任务配置")
+    @PostMapping(value = "/ci/job/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addCiJob(@RequestBody @Valid CiJobVO.CiJob ciJob) {
+        return new HttpResult<>(applicationFacade.addCiJob(ciJob));
+    }
+
+    @ApiOperation(value = "更新持续集成任务配置")
+    @PutMapping(value = "/ci/job/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateCiJob(@RequestBody @Valid CiJobVO.CiJob ciJob) {
+        return new HttpResult<>(applicationFacade.updateCiJob(ciJob));
+    }
+
 
 }

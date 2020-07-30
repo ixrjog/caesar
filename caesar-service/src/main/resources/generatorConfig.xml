@@ -98,9 +98,10 @@ cs_application_scm_member
 cs_application
 cs_job_tpl
 cs_dingtalk
+cs_ci_job
        -->
 
-        <table tableName="cs_dingtalk">
+        <table tableName="cs_ci_job">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

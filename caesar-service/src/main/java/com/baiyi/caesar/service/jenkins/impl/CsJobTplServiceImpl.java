@@ -8,6 +8,7 @@ import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,6 +29,19 @@ public class CsJobTplServiceImpl implements CsJobTplService {
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
         List<CsJobTpl> list = csJobTplMapper.queryCsJobTplByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
+    }
+
+    @Override
+    public  List<CsJobTpl> queryCsJobTplByInstanceId(int instanceId){
+        Example example = new Example(CsJobTpl.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("jenkinsInstanceId", instanceId);
+        return csJobTplMapper.selectByExample(example);
+    }
+
+    @Override
+    public CsJobTpl queryCsJobTplById(int id) {
+        return csJobTplMapper.selectByPrimaryKey(id);
     }
 
     @Override
