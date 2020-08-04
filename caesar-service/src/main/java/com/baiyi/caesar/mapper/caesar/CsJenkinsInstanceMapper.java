@@ -7,6 +7,5 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.List;
 
 public interface CsJenkinsInstanceMapper extends Mapper<CsJenkinsInstance> {
-
     List<CsJenkinsInstance> queryCsJenkinsInstanceByParam(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery);
 }

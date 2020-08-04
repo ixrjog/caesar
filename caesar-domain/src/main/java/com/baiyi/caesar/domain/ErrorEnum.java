@@ -180,6 +180,8 @@ public enum ErrorEnum {
 
 
     JENKINS_JOB_TPL_READ_ERROR(80001,"读取任务模版错误！"),
+
+    APPLICATION_SCM_NOT_EXIST(70001, "应用仓库配置不存在！"),
     ;
 
     private int code;

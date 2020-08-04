@@ -38,4 +38,22 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob);
 
     BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
+
+    List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId);
+
+    /**
+     * 应用引擎配置（engineType决定）
+     *
+     * @param applicationId
+     * @return
+     */
+    List<ApplicationVO.Engine> acqApplicationEngineByApplicationId(int applicationId);
+
+    BusinessWrapper<Boolean> addApplicationEngine(int applicationId, int jenkinsInstanceId);
+
+    BusinessWrapper<Boolean> removeApplicationEngine(int id);
+
+    BusinessWrapper<Boolean> createCiJobEngine(int ciJobId);
+
+    List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId);
 }

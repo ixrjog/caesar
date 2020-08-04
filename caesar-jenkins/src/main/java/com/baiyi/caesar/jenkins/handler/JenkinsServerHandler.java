@@ -4,7 +4,9 @@ import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
+import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.Job;
+import com.offbytwo.jenkins.model.JobWithDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,8 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JenkinsServerHandler {
+
+    public static final boolean CRUMB_FLAG = true;
 
     public JenkinsVersion getVersion(String serverName) {
         try {
@@ -36,7 +40,7 @@ public class JenkinsServerHandler {
      * @param jobName
      * @return
      */
-    public Job getJob(String serverName, String jobName) {
+    public JobWithDetails getJob(String serverName, String jobName) {
         try {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
@@ -47,10 +51,23 @@ public class JenkinsServerHandler {
         }
     }
 
-    public String getJobXml(String serverName, String jobName) throws IOException {
+
+    public Map<String, Computer> getComputerMap(String serverName) {
+        try {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
-            return jenkinsServer.getJobXml(jobName);
+            return jenkinsServer.getComputers();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public String getJobXml(String serverName, String jobName) throws IOException {
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
+        return jenkinsServer.getJobXml(jobName);
     }
 
     public Map<String, Job> getJobs(String serverName) {
@@ -64,5 +81,11 @@ public class JenkinsServerHandler {
         return Maps.newHashMap();
     }
 
+
+    public void createJob(String serverName, String jobName, String jobXml) throws IOException {
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
+        jenkinsServer.createJob(jobName, jobXml, CRUMB_FLAG);
+    }
 
 }

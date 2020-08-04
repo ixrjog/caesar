@@ -1,0 +1,18 @@
+# 阿里云AK配置
+# uid 企业别名（主账户id）
+# regionIds 数组可以写多个
+aliyun:
+  account:
+    uid: ENC(3VvI4lEDCLqiuMqHiDlIjrPInYndTlZybFMBoMOZFTo=)
+    master: true
+    name: '主账户'
+    accessKeyId: ENC(fp/faa6maHVzbrG9y0JkDVfyhvSZKR8AVaWO3hE1/UsSIj07oTvMLA==)
+    secret: ENC(fSKtDCmkLBtszyTVR2sxAJvOSsVeP+5qrxRJiCdT3LaVOLg0gJxbiA==)
+    regionId: cn-hangzhou
+    regionIds:
+      - cn-shanghai
+      - cn-hongkong
+      - us-west-1
+      - cn-hangzhou
+  oss:
+    endpoint: http://oss-cn-hangzhou.aliyuncs.com

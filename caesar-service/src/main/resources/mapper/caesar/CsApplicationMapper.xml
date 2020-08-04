@@ -9,13 +9,13 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="application_key" jdbcType="VARCHAR" property="applicationKey" />
     <result column="kubernetes_application_id" jdbcType="INTEGER" property="kubernetesApplicationId" />
+    <result column="engine_type" jdbcType="INTEGER" property="engineType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-  <select id="queryCsApplicationByParam"
-          parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery" resultMap="BaseResultMap">
+  <select id="queryCsApplicationByParam" parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery" resultMap="BaseResultMap">
     select * from cs_application
     <where>
       <if test="queryName != null and queryName != ''">

@@ -2,15 +2,15 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
+import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
 import com.baiyi.caesar.decorator.application.ApplicationScmMemberDecorator;
 import com.baiyi.caesar.decorator.application.CiJobDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
-import com.baiyi.caesar.domain.generator.caesar.CsApplication;
-import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
+import com.baiyi.caesar.domain.ErrorEnum;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
@@ -18,6 +18,8 @@ import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
+import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
+import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
@@ -43,6 +45,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Resource
+    private CsApplicationEngineService csApplicationEngineService;
+
+    @Resource
     private ApplicationDecorator applicationDecorator;
 
     @Resource
@@ -59,6 +64,12 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private GitlabFacade gitlabFacade;
+
+    @Resource
+    private ApplicationEngineDecorator applicationEngineDecorator;
+
+    @Resource
+    private JenkinsCiJobFacade jenkinsCiJobFacade;
 
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
@@ -121,6 +132,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        if (ciJob.getJobTpl() != null)
+            csCiJob.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.addCsCiJob(csCiJob);
         return BusinessWrapper.SUCCESS;
     }
@@ -128,6 +141,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        if (IDUtils.isEmpty(csCiJob.getJobTplId()) && ciJob.getJobTpl() != null)
+            csCiJob.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.updateCsCiJob(csCiJob);
         return BusinessWrapper.SUCCESS;
     }
@@ -135,7 +150,60 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery) {
         CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberBranchQuery.getScmMemberId());
+        if (csApplicationScmMember == null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
         return gitlabFacade.queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag());
+    }
+
+    @Override
+    public List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId) {
+        List<CsApplicationEngine> list = csApplicationEngineService.queryCsApplicationEngineByApplicationId(applicationId);
+        return list.stream().map(e ->
+                applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), 1)
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ApplicationVO.Engine> acqApplicationEngineByApplicationId(int applicationId) {
+        CsApplication csApplication = csApplicationService.queryCsApplicationById(applicationId);
+        if (csApplication.getEngineType() == 0) {
+            List<CsApplicationEngine> list = csApplicationEngineService.selectAll();
+            return list.stream().map(e ->
+                    applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), 1)
+            ).collect(Collectors.toList());
+        } else {
+            return queryApplicationEngineByApplicationId(applicationId);
+        }
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> addApplicationEngine(int applicationId, int jenkinsInstanceId) {
+        CsApplicationEngine pre = csApplicationEngineService.queryCsApplicationEngineByUniqueKey(applicationId, jenkinsInstanceId);
+        if (pre != null)
+            return BusinessWrapper.SUCCESS;
+        pre = new CsApplicationEngine();
+        pre.setApplicationId(applicationId);
+        pre.setJenkinsInstanceId(jenkinsInstanceId);
+        csApplicationEngineService.addCsApplicationEngine(pre);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> removeApplicationEngine(int id) {
+        csApplicationEngineService.deleteCsApplicationById(id);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> createCiJobEngine(int ciJobId) {
+        jenkinsCiJobFacade.createJobEngine(ciJobId);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId) {
+        return jenkinsCiJobFacade.queryJobEngine(ciJobId);
+
     }
 
 }

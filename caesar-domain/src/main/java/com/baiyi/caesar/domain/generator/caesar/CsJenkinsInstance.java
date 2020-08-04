@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "cs_jenkins_instance")
 public class CsJenkinsInstance {
@@ -46,6 +46,12 @@ public class CsJenkinsInstance {
      */
     @Column(name = "node_server_group_id")
     private Integer nodeServerGroupId;
+
+    /**
+     * 实例状态
+     */
+    @Column(name = "instance_status")
+    private Integer instanceStatus;
 
     /**
      * 创建时间
@@ -199,6 +205,24 @@ public class CsJenkinsInstance {
      */
     public void setNodeServerGroupId(Integer nodeServerGroupId) {
         this.nodeServerGroupId = nodeServerGroupId;
+    }
+
+    /**
+     * 获取实例状态
+     *
+     * @return instance_status - 实例状态
+     */
+    public Integer getInstanceStatus() {
+        return instanceStatus;
+    }
+
+    /**
+     * 设置实例状态
+     *
+     * @param instanceStatus 实例状态
+     */
+    public void setInstanceStatus(Integer instanceStatus) {
+        this.instanceStatus = instanceStatus;
     }
 
     /**

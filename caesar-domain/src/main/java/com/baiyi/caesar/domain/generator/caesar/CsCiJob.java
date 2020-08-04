@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "cs_ci_job")
 public class CsCiJob {
@@ -64,6 +64,12 @@ public class CsCiJob {
     private Boolean hide;
 
     /**
+     * 模版id
+     */
+    @Column(name = "job_tpl_id")
+    private Integer jobTplId;
+
+    /**
      * 部署任务id
      */
     @Column(name = "deployment_job_id")
@@ -74,6 +80,12 @@ public class CsCiJob {
      */
     @Column(name = "at_all")
     private Boolean atAll;
+
+    /**
+     * 对象存储id
+     */
+    @Column(name = "oss_bucket_id")
+    private Integer ossBucketId;
 
     /**
      * 钉钉id
@@ -295,6 +307,24 @@ public class CsCiJob {
     }
 
     /**
+     * 获取模版id
+     *
+     * @return job_tpl_id - 模版id
+     */
+    public Integer getJobTplId() {
+        return jobTplId;
+    }
+
+    /**
+     * 设置模版id
+     *
+     * @param jobTplId 模版id
+     */
+    public void setJobTplId(Integer jobTplId) {
+        this.jobTplId = jobTplId;
+    }
+
+    /**
      * 获取部署任务id
      *
      * @return deployment_job_id - 部署任务id
@@ -328,6 +358,24 @@ public class CsCiJob {
      */
     public void setAtAll(Boolean atAll) {
         this.atAll = atAll;
+    }
+
+    /**
+     * 获取对象存储id
+     *
+     * @return oss_bucket_id - 对象存储id
+     */
+    public Integer getOssBucketId() {
+        return ossBucketId;
+    }
+
+    /**
+     * 设置对象存储id
+     *
+     * @param ossBucketId 对象存储id
+     */
+    public void setOssBucketId(Integer ossBucketId) {
+        this.ossBucketId = ossBucketId;
     }
 
     /**

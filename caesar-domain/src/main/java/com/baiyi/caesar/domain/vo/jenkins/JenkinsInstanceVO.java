@@ -64,6 +64,9 @@ public class JenkinsInstanceVO {
         @NotNull
         private Integer nodeServerGroupId;
 
+        @ApiModelProperty(value = "实例状态")
+        private Integer instanceStatus;
+
         private Date createTime;
 
         private Date updateTime;

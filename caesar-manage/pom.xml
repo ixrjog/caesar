@@ -58,6 +58,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.baiyi</groupId>
+            <artifactId>caesar-aliyun-oss</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>

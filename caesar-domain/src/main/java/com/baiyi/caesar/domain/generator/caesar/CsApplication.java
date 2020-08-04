@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "cs_application")
 public class CsApplication {
@@ -25,6 +25,12 @@ public class CsApplication {
      */
     @Column(name = "kubernetes_application_id")
     private Integer kubernetesApplicationId;
+
+    /**
+     * jenkins引擎类型
+     */
+    @Column(name = "engine_type")
+    private Integer engineType;
 
     /**
      * 创建时间
@@ -109,6 +115,24 @@ public class CsApplication {
      */
     public void setKubernetesApplicationId(Integer kubernetesApplicationId) {
         this.kubernetesApplicationId = kubernetesApplicationId;
+    }
+
+    /**
+     * 获取jenkins引擎类型
+     *
+     * @return engine_type - jenkins引擎类型
+     */
+    public Integer getEngineType() {
+        return engineType;
+    }
+
+    /**
+     * 设置jenkins引擎类型
+     *
+     * @param engineType jenkins引擎类型
+     */
+    public void setEngineType(Integer engineType) {
+        this.engineType = engineType;
     }
 
     /**

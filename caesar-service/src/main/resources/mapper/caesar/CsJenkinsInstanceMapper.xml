@@ -13,6 +13,7 @@
     <result column="is_active" jdbcType="BIT" property="isActive" />
     <result column="server_id" jdbcType="INTEGER" property="serverId" />
     <result column="node_server_group_id" jdbcType="INTEGER" property="nodeServerGroupId" />
+    <result column="instance_status" jdbcType="INTEGER" property="instanceStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />

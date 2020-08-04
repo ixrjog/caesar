@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.application;
 
+import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class ApplicationVO {
         private String name;
         private String applicationKey;
         private Integer kubernetesApplicationId;
+        private Integer engineType;
         private Date createTime;
         private Date updateTime;
         private String comment;
@@ -47,5 +49,21 @@ public class ApplicationVO {
         private Date updateTime;
         private String comment;
     }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class Engine {
+
+        private JenkinsInstanceVO.Instance instance;
+
+        private Integer id;
+        private Integer applicationId;
+        private Integer jenkinsInstanceId;
+        private Date createTime;
+        private Date updateTime;
+        private String comment;
+    }
+
 
 }

@@ -96,5 +96,34 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.updateCiJob(ciJob));
     }
 
+    @ApiOperation(value = "创建任务工作引擎")
+    @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> createCiJobEngine(@Valid int ciJobId) {
+        return new HttpResult<>(applicationFacade.createCiJobEngine(ciJobId));
+    }
+
+    @ApiOperation(value = "查询任务工作引擎")
+    @GetMapping(value = "/ci/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<CiJobVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
+        return new HttpResult<>(applicationFacade.queryCiJobEngine(ciJobId));
+    }
+
+    @ApiOperation(value = "查询应用工作引擎配置")
+    @GetMapping(value = "/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<ApplicationVO.Engine>> queryApplicationEngine(@Valid int applicationId) {
+        return new HttpResult<>(applicationFacade.queryApplicationEngineByApplicationId(applicationId));
+    }
+
+    @ApiOperation(value = "新增应用工作引擎配置")
+    @PutMapping(value = "/engine/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addApplicationEngine(@Valid int applicationId, @Valid int jenkinsInstanceId) {
+        return new HttpResult<>(applicationFacade.addApplicationEngine(applicationId, jenkinsInstanceId));
+    }
+
+    @ApiOperation(value = "移除应用工作引擎配置")
+    @DeleteMapping(value = "/engine/remove", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> removeApplicationEngine(@Valid int id) {
+        return new HttpResult<>(applicationFacade.removeApplicationEngine(id));
+    }
 
 }

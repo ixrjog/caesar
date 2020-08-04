@@ -31,6 +31,11 @@ public class CsApplicationServiceImpl implements CsApplicationService {
     }
 
     @Override
+    public CsApplication queryCsApplicationById(int id) {
+        return csApplicationMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public void addCsApplication(CsApplication csApplication) {
         csApplicationMapper.insert(csApplication);
     }

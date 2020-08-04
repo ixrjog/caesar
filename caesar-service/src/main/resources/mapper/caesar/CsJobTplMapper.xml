@@ -19,7 +19,8 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-    <select id="queryCsJobTplByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobTplParam$JobTplPageQuery" resultMap="BaseResultMap">
+    <select id="queryCsJobTplByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobTplParam$JobTplPageQuery"
+            resultMap="BaseResultMap">
         select * from cs_job_tpl
         <where>
             <if test="queryName != null and queryName != ''">
