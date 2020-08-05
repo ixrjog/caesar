@@ -10,7 +10,7 @@ public enum JobType {
     IOS("IOS"),
     ANDROID("ANDROID"),
     SPRINGBOOT("SPRINGBOOT"),
-    H5("H5")
+    HTML5("HTML5")
     ;
 
     private String type;

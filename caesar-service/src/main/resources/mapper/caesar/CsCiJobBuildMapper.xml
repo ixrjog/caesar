@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsCiJobBuildMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ci_job_id" jdbcType="INTEGER" property="ciJobId" />
+    <result column="job_engine_id" jdbcType="INTEGER" property="jobEngineId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
+    <result column="branch" jdbcType="VARCHAR" property="branch" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
+    <result column="engine_build_number" jdbcType="INTEGER" property="engineBuildNumber" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+    <result column="version_desc" jdbcType="VARCHAR" property="versionDesc" />
+    <result column="commit" jdbcType="VARCHAR" property="commit" />
+    <result column="build_phase" jdbcType="VARCHAR" property="buildPhase" />
+    <result column="build_status" jdbcType="VARCHAR" property="buildStatus" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="finalized" jdbcType="BIT" property="finalized" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="parameters" jdbcType="LONGVARCHAR" property="parameters" />
+    <result column="dingtalk_msg" jdbcType="LONGVARCHAR" property="dingtalkMsg" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+</mapper>

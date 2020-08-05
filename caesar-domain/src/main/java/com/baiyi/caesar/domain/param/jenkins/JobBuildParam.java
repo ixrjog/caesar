@@ -19,7 +19,7 @@ public class JobBuildParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CiJobBuild {
+    public static class CiBuildParam {
 
         @ApiModelProperty(value = "任务id")
         @NotNull

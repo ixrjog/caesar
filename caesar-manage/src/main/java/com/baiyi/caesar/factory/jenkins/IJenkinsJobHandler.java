@@ -10,7 +10,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
  */
 public interface IJenkinsJobHandler {
 
-    BusinessWrapper<Boolean> build(JobBuildParam.CiJobBuild ciJobBuild);
+    BusinessWrapper<Boolean> build(JobBuildParam.CiBuildParam buildParam);
 
     String getKey();
 }

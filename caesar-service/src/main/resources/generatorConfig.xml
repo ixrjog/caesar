@@ -102,9 +102,10 @@ cs_dingtalk
 cs_ci_job
 cs_oss_bucket
 cs_ci_job_engine
+cs_ci_job_build
        -->
 
-        <table tableName="cs_ci_job_engine">
+        <table tableName="cs_ci_job_build">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
