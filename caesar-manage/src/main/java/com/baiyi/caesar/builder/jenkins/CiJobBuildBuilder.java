@@ -2,11 +2,14 @@ package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.CiJobBuildBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
 import com.google.common.base.Joiner;
+import org.springframework.util.StringUtils;
 
 /**
  * @Author baiyi
@@ -15,16 +18,22 @@ import com.google.common.base.Joiner;
  */
 public class CiJobBuildBuilder {
 
-    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, CiJobVO.JobEngine jobEngine) {
+    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, CiJobVO.JobEngine jobEngine, JobParamDetail jobParamDetail) {
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
+        Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
+        String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", engineBuildNumber) : jobParamDetail.getVersionName();
 
         CiJobBuildBO bo = CiJobBuildBO.builder()
                 .applicationId(csApplication.getId())
                 .jobName(jobName)
                 .ciJobId(csCiJob.getId())
+                .username(SessionUtils.getUsername())
+                .branch(jobParamDetail.getParams().getOrDefault("branch", ""))
                 .jobEngineId(jobEngine.getId())
                 .jobBuildNumber(csCiJob.getJobBuildNumber() + 1)
-                .engineBuildNumber(jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber())
+                .engineBuildNumber(engineBuildNumber)
+                .versionName(versionName)
+                .versionDesc(jobParamDetail.getVersionDesc())
                 .build();
         return covert(bo);
     }

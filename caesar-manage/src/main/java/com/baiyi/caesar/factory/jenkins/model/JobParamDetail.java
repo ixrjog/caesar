@@ -15,6 +15,9 @@ import java.util.Map;
 @Builder
 public class JobParamDetail {
 
+    private String versionName;
+    private String versionDesc;
+
     private JenkinsJobParameters jenkinsJobParameters;
     private Map<String, String> params;
 

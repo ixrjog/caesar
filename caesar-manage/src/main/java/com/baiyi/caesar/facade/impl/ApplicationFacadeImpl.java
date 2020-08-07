@@ -117,6 +117,11 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
+    public CsApplicationScmMember queryScmMemberById(int scmMemberId) {
+        return csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberId);
+    }
+
+    @Override
     public BusinessWrapper<Boolean> removeApplicationSCMMember(int id) {
         csApplicationScmMemberService.deleteCsApplicationScmMemberById(id);
         return BusinessWrapper.SUCCESS;

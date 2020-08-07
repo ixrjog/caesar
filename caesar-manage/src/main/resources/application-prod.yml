@@ -17,9 +17,9 @@ spring:
   profiles:
     include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core
   redis:
-    host: ENC(sBuaHDKOePEPRK1vHNSljfdIJ/74yA0UdxZSwHcV1v4JO72BD25l7McR88uLE6RcZPiZFhjh4Qg=)
+    host: r-bp160u8e1bcl0ul97z.redis.rds.aliyuncs.com
     port: 6379
-    password: ENC(9UKYRdhJ4j1RUBbuiJJRwefDjwWmgjvrMI1h+xYZvvA=)
+    password: ENC(JyLASH9abGLjivZEV1mJkob63XE+h+gJ+o2mx/5ALEgFMUUMWGz8FD+BzoEOvOj4)
     jedis:
       pool:
         max-wait: 5000

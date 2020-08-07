@@ -28,6 +28,12 @@ public class JobBuildParam {
         @ApiModelProperty(value = "分支")
         private String branch;
 
+        @ApiModelProperty(value = "版本名称")
+        private String versionName;
+
+        @ApiModelProperty(value = "版本说明")
+        private String versionDesc;
+
         private Map<String,String> paramMap;
 
     }

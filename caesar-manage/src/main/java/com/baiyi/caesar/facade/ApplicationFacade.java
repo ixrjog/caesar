@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
@@ -28,6 +29,8 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> deleteApplicationById(int id);
 
     BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId);
+
+    CsApplicationScmMember queryScmMemberById(int scmMemberId) ;
 
     BusinessWrapper<Boolean> removeApplicationSCMMember(int id);
 
