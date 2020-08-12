@@ -1,6 +1,8 @@
 package com.baiyi.caesar.service.jenkins;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ import java.util.List;
  * @Version 1.0
  */
 public interface CsCiJobBuildService {
+
+    DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery);
 
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);
 

@@ -19,5 +19,7 @@ public interface CsCiJobEngineService {
 
     List<CsCiJobEngine> queryCsCiJobEngineByJobId(int ciJobId);
 
+    CsCiJobEngine queryCsCiJobEngineById(int id);
+
     CsCiJobEngine queryCsCiJobEngineByUniqueKey(int ciJobId,int jenkinsInstanceId);
 }

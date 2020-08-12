@@ -30,7 +30,7 @@ public class CiJobBuildBuilder {
                 .username(SessionUtils.getUsername())
                 .branch(jobParamDetail.getParams().getOrDefault("branch", ""))
                 .jobEngineId(jobEngine.getId())
-                .jobBuildNumber(csCiJob.getJobBuildNumber() + 1)
+                .jobBuildNumber(csCiJob.getJobBuildNumber())
                 .engineBuildNumber(engineBuildNumber)
                 .versionName(versionName)
                 .versionDesc(jobParamDetail.getVersionDesc())

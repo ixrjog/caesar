@@ -17,6 +17,8 @@ public interface CsJenkinsInstanceService {
 
     CsJenkinsInstance queryCsJenkinsInstanceById(int id);
 
+    CsJenkinsInstance queryCsJenkinsInstanceByName(String name);
+
     DataTable<CsJenkinsInstance> queryCsJenkinsInstanceByParam(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery);
 
     void addCsJenkinsInstance(CsJenkinsInstance csJenkinsInstance);

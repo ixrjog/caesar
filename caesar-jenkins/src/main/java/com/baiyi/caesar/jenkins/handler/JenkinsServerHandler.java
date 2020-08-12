@@ -10,6 +10,7 @@ import com.offbytwo.jenkins.model.JobWithDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 
@@ -22,12 +23,14 @@ import java.util.Map;
 @Component
 public class JenkinsServerHandler {
 
+    @Resource
+    private JenkinsServerContainer jenkinsServerContainer;
+
     public static final boolean CRUMB_FLAG = true;
 
     public JenkinsVersion getVersion(String serverName) {
         try {
-            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
-            assert jenkinsServer != null;
+            JenkinsServer jenkinsServer = jenkinsServerContainer.getJenkinsServer(serverName);
             return jenkinsServer.getVersion();
         } catch (Exception e) {
             return null;
@@ -42,20 +45,16 @@ public class JenkinsServerHandler {
      */
     public JobWithDetails getJob(String serverName, String jobName) {
         try {
-            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
-            assert jenkinsServer != null;
-            return jenkinsServer.getJob(jobName);
+            return jenkinsServerContainer.getJenkinsServer(serverName).getJob(jobName);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-
     public Map<String, Computer> getComputerMap(String serverName) {
         try {
-            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
-            assert jenkinsServer != null;
+            JenkinsServer jenkinsServer = jenkinsServerContainer.getJenkinsServer(serverName);
             return jenkinsServer.getComputers();
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,14 +64,14 @@ public class JenkinsServerHandler {
 
 
     public String getJobXml(String serverName, String jobName) throws IOException {
-        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        JenkinsServer jenkinsServer = jenkinsServerContainer.getJenkinsServer(serverName);
         assert jenkinsServer != null;
         return jenkinsServer.getJobXml(jobName);
     }
 
     public Map<String, Job> getJobs(String serverName) {
         try {
-            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            JenkinsServer jenkinsServer = jenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
             return jenkinsServer.getJobs();
         } catch (IOException e) {
@@ -83,7 +82,7 @@ public class JenkinsServerHandler {
 
 
     public void createJob(String serverName, String jobName, String jobXml) throws IOException {
-        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        JenkinsServer jenkinsServer = jenkinsServerContainer.getJenkinsServer(serverName);
         assert jenkinsServer != null;
         jenkinsServer.createJob(jobName, jobXml, CRUMB_FLAG);
     }

@@ -11,7 +11,6 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
  */
 public interface CsCiJobService {
 
-
     DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobPageQuery pageQuery);
 
     void addCsCiJob(CsCiJob csCiJob);

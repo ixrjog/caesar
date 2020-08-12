@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.param.jenkins;
 
+import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,6 +15,24 @@ import java.util.Map;
  * @Version 1.0
  */
 public class JobBuildParam {
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class JobBuildPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "任务id")
+        @NotNull
+        private Integer ciJobId;
+
+        @ApiModelProperty(value = "关键字查询")
+        private String queryName;
+
+        @ApiModelProperty(value = "扩展属性", example = "1")
+        private Integer extend;
+
+    }
+
 
 
     @Data

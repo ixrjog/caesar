@@ -8,6 +8,7 @@ import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,6 +32,15 @@ public class CsJenkinsInstanceServiceImpl implements CsJenkinsInstanceService {
     @Override
     public CsJenkinsInstance queryCsJenkinsInstanceById(int id) {
         return csJenkinsInstanceMapper.selectByPrimaryKey(id);
+    }
+
+
+    @Override
+    public  CsJenkinsInstance queryCsJenkinsInstanceByName(String name){
+        Example example = new Example(CsJenkinsInstance.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("name", name);
+        return csJenkinsInstanceMapper.selectOneByExample(example);
     }
 
     @Override

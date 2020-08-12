@@ -44,6 +44,11 @@ public class CsCiJobEngineServiceImpl implements CsCiJobEngineService {
     }
 
     @Override
+    public  CsCiJobEngine queryCsCiJobEngineById(int id){
+        return csCiJobEngineMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public  CsCiJobEngine queryCsCiJobEngineByUniqueKey(int ciJobId,int jenkinsInstanceId){
         Example example = new Example(CsCiJobEngine.class);
         Example.Criteria criteria = example.createCriteria();

@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade.jenkins;
 
 import com.baiyi.caesar.builder.jenkins.CiJobEngineBuilder;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
 import com.baiyi.caesar.decorator.application.CiJobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
@@ -14,6 +15,7 @@ import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.springframework.stereotype.Component;
 
@@ -46,10 +48,16 @@ public class JenkinsCiJobFacade {
     private CsJobTplService csJobTplService;
 
     @Resource
+    private CsJenkinsInstanceService csJenkinsInstanceService;
+
+    @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
     @Resource
     private CiJobEngineDecorator ciJobEngineDecorator;
+
+    @Resource
+    private ApplicationEngineDecorator applicationEngineDecorator;
 
     /**
      * 创建Job引擎配置
@@ -59,14 +67,22 @@ public class JenkinsCiJobFacade {
     public void createJobEngine(int ciJobId) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJobId);
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csCiJob.getApplicationId());
-
-        // 应用引擎配置
-        List<ApplicationVO.Engine> engines = applicationFacade.queryApplicationEngineByApplicationId(csCiJob.getApplicationId());
-
-        engines.forEach(e -> {
-            createJobEngine(csApplication, csCiJob, e);
-        });
-        // List<CsCiJobEngine> csCiJobEngines = csCiJobEngineService.queryCsCiJobEngineByJobId(ciJobId);
+        List<ApplicationVO.Engine> engines;
+        if (csApplication.getEngineType() == 0) {
+            engines = csJenkinsInstanceService.queryAll()
+                    .stream().map(e -> {
+                        ApplicationVO.Engine engine = new ApplicationVO.Engine();
+                        engine.setApplicationId(csApplication.getId());
+                        engine.setJenkinsInstanceId(e.getId());
+                        return  applicationEngineDecorator.decorator(engine,1);
+                    }).collect(Collectors.toList());
+        } else {
+            // 应用引擎配置
+            engines = applicationFacade.queryApplicationEngineByApplicationId(csCiJob.getApplicationId());
+        }
+        engines.forEach(e ->
+                createJobEngine(csApplication, csCiJob, e)
+        );
     }
 
     private void createJobEngine(CsApplication csApplication, CsCiJob csCiJob, ApplicationVO.Engine engine) {

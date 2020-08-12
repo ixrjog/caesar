@@ -28,4 +28,13 @@
     <result column="dingtalk_msg" jdbcType="LONGVARCHAR" property="dingtalkMsg" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
+
+  <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobBuildParam$JobBuildPageQuery" resultMap="BaseResultMap">
+    select * from cs_ci_job_build
+    <where>
+      ci_job_id = #{ciJobId}
+      order by job_build_number desc
+    </where>
+  </select>
+
 </mapper>

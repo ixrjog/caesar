@@ -1,6 +1,8 @@
 package com.baiyi.caesar.service.jenkins.impl;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.mapper.caesar.CsCiJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.github.pagehelper.Page;
@@ -21,6 +23,13 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
 
     @Resource
     private CsCiJobBuildMapper csCiJobBuildMapper;
+
+    @Override
+    public DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery) {
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<CsCiJobBuild> list = csCiJobBuildMapper.queryCsCiJobByParam(pageQuery);
+        return new DataTable<>(list, page.getTotal());
+    }
 
     @Override
     public void addCsCiJobBuild(CsCiJobBuild csCiJobBuild) {
@@ -50,7 +59,7 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     public List<CsCiJobBuild> queryCsCiJobBuildByLastSize(int size) {
         Example example = new Example(CsCiJobBuild.class);
         example.setOrderByClause("job_build_number");
-        Page page = PageHelper.startPage(1, size);
+        PageHelper.startPage(1, size);
         return csCiJobBuildMapper.selectByExample(example);
     }
 

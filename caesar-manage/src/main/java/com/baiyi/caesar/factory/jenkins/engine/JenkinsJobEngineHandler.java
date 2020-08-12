@@ -2,9 +2,8 @@ package com.baiyi.caesar.factory.jenkins.engine;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.offbytwo.jenkins.model.JobWithDetails;
+import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
 
 /**
  * @Author baiyi
@@ -21,8 +20,6 @@ public interface JenkinsJobEngineHandler {
      */
     BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob);
 
-
-    void trackJobBuild(CsCiJobBuild csCiJobBuild, CiJobVO.JobEngine jobEngine, JobWithDetails job);
-
+    void trackJobBuild(JobBuildContext jobBuildContext);
 
 }

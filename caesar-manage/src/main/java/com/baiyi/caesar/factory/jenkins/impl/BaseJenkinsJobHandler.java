@@ -5,18 +5,17 @@ import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.domain.BusinessWrapper;
-import com.baiyi.caesar.domain.generator.caesar.CsApplication;
-import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
 import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
 import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
+import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
@@ -53,34 +52,47 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
     private CsCiJobBuildService csCiJobBuildService;
 
     @Resource
-    private CsApplicationService csApplicationService;
+    protected CsApplicationService csApplicationService;
+
+    @Resource
+    private CsOssBucketService csOssBucketService;
 
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
-        // CsCiJob csCiJob = csCiJobService.queryCsCiJobById(buildParam.getCiJobId());
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csCiJob.getApplicationId());
         BusinessWrapper<CiJobVO.JobEngine> wrapper = acqJobEngine(csCiJob);
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         CiJobVO.JobEngine jobEngine = wrapper.getBody();
-        JobParamDetail jobParamDetail = acqBaseBuildParams(csCiJob, buildParam);
+        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
+        raiseCsCiJobBuildNumber(csCiJob); // buildNumber +1
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail);
-        JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName());
         try {
+            JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             QueueReference queueReference = build(job, jobParamDetail.getParams());
         } catch (IOException e) {
             e.printStackTrace();
-            return new BusinessWrapper(100001, "执行任务失败: " + e.getMessage());
+            return new BusinessWrapper<>(100001, "执行任务失败: " + e.getMessage());
         }
-
         try {
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
-            jenkinsJobEngineHandler.trackJobBuild(csCiJobBuild, jobEngine, job); // 追踪任务
+            JobBuildContext jobBuildContext = JobBuildContext.builder()
+                    .csCiJob(csCiJob)
+                    .csCiJobBuild(csCiJobBuild)
+                    .jobEngine(jobEngine)
+                    .build();
+
+            jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
         return BusinessWrapper.SUCCESS;
+    }
+
+    private void raiseCsCiJobBuildNumber(CsCiJob csCiJob) {
+        csCiJob.setJobBuildNumber(csCiJob.getJobBuildNumber() + 1);
+        csCiJobService.updateCsCiJob(csCiJob);
     }
 
     /**
@@ -89,12 +101,18 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
      * @param csCiJob
      * @return
      */
-    private JobParamDetail acqBaseBuildParams(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
+    private JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
-        if(csApplicationScmMember != null)
-            params.put("sshUrl",csApplicationScmMember.getScmSshUrl());
+        if (csApplicationScmMember != null)
+            params.put("sshUrl", csApplicationScmMember.getScmSshUrl());
+        params.put("branch", buildParam.getBranch());
+        params.put("applicationName", csApplication.getApplicationKey());
+
+        CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
+        params.put("bucketName", csOssBucket.getName());
+
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
                 .params(params)

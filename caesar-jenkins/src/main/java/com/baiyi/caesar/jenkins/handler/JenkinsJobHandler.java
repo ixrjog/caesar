@@ -7,7 +7,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @Author baiyi
@@ -19,18 +18,17 @@ public class JenkinsJobHandler {
 
     @Retryable(value = RuntimeException.class, maxAttempts = 100, backoff = @Backoff(delay = 3000))
     public Build getJobBuildByNumber(JobWithDetails job, int number) throws RuntimeException {
-        while (true){
+        while (true) {
             // 判断队列
-            if(!job.isInQueue()) {
-                Build build = job.getLastBuild();
-                if (build.getNumber() == number) return build;
-                try {
-                    List<Build> builds = job.getAllBuilds();
-                    for (Build b : builds)
-                        if (build.getNumber() == number) return b;
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                job = job.details();
+                if (!job.isInQueue()) {
+                    Build build = job.getBuildByNumber(number);
+                    if (build != null)
+                        return build;
+                    throw new RuntimeException();
                 }
+            } catch (IOException e) {
                 throw new RuntimeException();
             }
         }

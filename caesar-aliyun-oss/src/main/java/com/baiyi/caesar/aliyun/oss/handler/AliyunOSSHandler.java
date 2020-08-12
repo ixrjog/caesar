@@ -60,7 +60,7 @@ public class AliyunOSSHandler {
         return null;
     }
 
-    public List<OSSObjectSummary> listObject(String bucket, String prefix) {
+    public List<OSSObjectSummary> listObjects(String bucket, String prefix) {
         ListObjectsRequest request = new ListObjectsRequest();
         request.setPrefix(prefix);
         OSS client = acqOSSClient();

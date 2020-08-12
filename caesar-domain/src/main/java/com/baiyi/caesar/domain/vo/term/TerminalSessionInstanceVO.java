@@ -29,7 +29,7 @@ public class TerminalSessionInstanceVO {
         private String hostIp;
         private Boolean isClosed;
         private Long outputSize;
-        private String outputFileSize; // 输入文件容量
+        private String outputFileSize; // 输出文件容量
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date openTime;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

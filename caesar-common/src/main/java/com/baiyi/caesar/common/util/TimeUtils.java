@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @Author baiyi
@@ -390,5 +391,20 @@ public class TimeUtils {
     public static String dateToStr(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(date);
+    }
+
+    public static Date acqJenkinsDate(String time) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+        try {
+            return format.parse(time);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
+    public static String acqBuildTime(long time) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+        return formatter.format(time);
     }
 }

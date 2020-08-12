@@ -1,6 +1,7 @@
 package com.baiyi.caesar.domain.vo.application;
 
 import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
+import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -41,6 +42,9 @@ public class CiJobVO {
 
         @ApiModelProperty(value = "对象存储")
         private OssBucketVO.Bucket bucket;
+
+        @ApiModelProperty(value = "构建视图")
+        private  List<CiJobBuildVO.JobBuildView> buildViews;
 
         private Integer id;
         private Integer applicationId;
