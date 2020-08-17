@@ -31,6 +31,13 @@ public class CsApplicationServiceImpl implements CsApplicationService {
     }
 
     @Override
+    public DataTable<CsApplication> queryMyCsApplicationByParam(ApplicationParam.MyApplicationPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<CsApplication> list = csApplicationMapper.queryMyCsApplicationByParam(pageQuery);
+        return new DataTable<>(list, page.getTotal());
+    }
+
+    @Override
     public CsApplication queryCsApplicationById(int id) {
         return csApplicationMapper.selectByPrimaryKey(id);
     }

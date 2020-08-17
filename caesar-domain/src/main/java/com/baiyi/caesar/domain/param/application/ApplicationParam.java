@@ -31,6 +31,23 @@ public class ApplicationParam {
     @Data
     @NoArgsConstructor
     @ApiModel
+    public static class MyApplicationPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "用户id")
+        private Integer userId;
+
+        @ApiModelProperty(value = "关键字查询")
+        private String queryName;
+
+        @ApiModelProperty(value = "扩展属性", example = "1")
+        private Integer extend;
+
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
     public static class ScmMemberBranchQuery {
 
         @ApiModelProperty(value = "scm成员id")

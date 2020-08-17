@@ -2,26 +2,38 @@ package com.baiyi.caesar.factory.jenkins.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
+import com.baiyi.caesar.common.base.NoticePhase;
+import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
+import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
+import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
 import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
-import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
 import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
+import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
+import com.baiyi.caesar.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
+import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
+import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
+import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
 import lombok.extern.slf4j.Slf4j;
+import org.gitlab.api.models.GitlabBranch;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.Resource;
@@ -57,6 +69,21 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
     @Resource
     private CsOssBucketService csOssBucketService;
 
+    @Resource
+    private JobBuildDecorator jobBuildDecorator;
+
+    @Resource
+    private CsApplicationScmMemberService csApplicationScmMemberService;
+
+    @Resource
+    private CsGitlabInstanceService csGitlabInstanceService;
+
+    @Resource
+    private CsGitlabProjectService csGitlabProjectService;
+
+    @Resource
+    private GitlabBranchHandler gitlabBranchHandler;
+
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csCiJob.getApplicationId());
@@ -66,7 +93,8 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         CiJobVO.JobEngine jobEngine = wrapper.getBody();
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
         raiseCsCiJobBuildNumber(csCiJob); // buildNumber +1
-        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail);
+        GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
+        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             QueueReference queueReference = build(job, jobParamDetail.getParams());
@@ -78,17 +106,35 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
             JobBuildContext jobBuildContext = JobBuildContext.builder()
+                    .csApplication(csApplicationService.queryCsApplicationById(csCiJob.getApplicationId()))
                     .csCiJob(csCiJob)
-                    .csCiJobBuild(csCiJobBuild)
+                    .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
                     .build();
-
+            doNotifyByBuildStart(jobBuildContext); // 通知
             jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
         return BusinessWrapper.SUCCESS;
     }
+
+    private GitlabBranch acqGitlabBranch(CsCiJob csCiJob, String branch) {
+        try {
+            CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
+            CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
+            CsGitlabInstance csGitlabInstance =  csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
+            return gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private void doNotifyByBuildStart(JobBuildContext jobBuildContext) {
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
+        dingtalkNotify.doNotify(NoticeType.BUILD.getType(), NoticePhase.START.getType(), jobBuildContext);
+    }
+
 
     private void raiseCsCiJobBuildNumber(CsCiJob csCiJob) {
         csCiJob.setJobBuildNumber(csCiJob.getJobBuildNumber() + 1);

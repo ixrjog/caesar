@@ -190,5 +190,16 @@ public class UserController {
         return new HttpResult<>(userSettingFacade.saveUserSettingBySettingGroup(userSetting));
     }
 
+    @ApiOperation(value = "分页查询应用未授权的用户列表")
+    @PostMapping(value = "/application/exclude/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<UserVO.User>> queryApplicationExcludeUserPage(@RequestBody @Valid UserParam.UserExcludeApplicationPageQuery pageQuery) {
+        return new HttpResult<>(userFacade.queryApplicationExcludeUserPage(pageQuery));
+    }
+
+    @ApiOperation(value = "分页查询应用授权的用户列表")
+    @PostMapping(value = "/application/include/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<UserVO.User>> queryApplicationIncludeUserPage(@RequestBody @Valid UserParam.UserIncludeApplicationPageQuery pageQuery) {
+        return new HttpResult<>(userFacade.queryApplicationIncludeUserPage(pageQuery));
+    }
 
 }

@@ -64,6 +64,20 @@ public class OcUserServiceImpl implements OcUserService {
     }
 
     @Override
+    public DataTable<OcUser> queryApplicationExcludeUserParam(UserParam.UserExcludeApplicationPageQuery pageQuery) {
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<OcUser> ocUserList = ocUserMapper.queryApplicationExcludeUserParam(pageQuery);
+        return new DataTable<>(ocUserList, page.getTotal());
+    }
+
+    @Override
+    public DataTable<OcUser> queryApplicationIncludeUserParam(UserParam.UserIncludeApplicationPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<OcUser> ocUserList = ocUserMapper.queryApplicationIncludeUserParam(pageQuery);
+        return new DataTable<>(ocUserList, page.getTotal());
+    }
+
+    @Override
     public DataTable<OcUser> fuzzyQueryUserByParam(UserParam.UserPageQuery pageQuery) {
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
         List<OcUser> ocUserList = ocUserMapper.fuzzyQueryUserByParam(pageQuery);

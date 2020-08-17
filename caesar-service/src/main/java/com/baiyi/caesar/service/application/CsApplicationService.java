@@ -13,6 +13,8 @@ public interface CsApplicationService {
 
     DataTable<CsApplication> queryCsApplicationByParam(ApplicationParam.ApplicationPageQuery pageQuery);
 
+    DataTable<CsApplication> queryMyCsApplicationByParam(ApplicationParam.MyApplicationPageQuery pageQuery);
+
     CsApplication queryCsApplicationById(int id);
 
     void addCsApplication(CsApplication csApplication);

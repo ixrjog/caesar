@@ -37,6 +37,27 @@ public class UserParam {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class UserExcludeApplicationPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "查询名称")
+        private String queryName;
+
+        @ApiModelProperty(value = "应用id")
+        private Integer applicationId;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class UserIncludeApplicationPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "应用id")
+        private Integer applicationId;
+    }
+
 
     @Data
     @NoArgsConstructor

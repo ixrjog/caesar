@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsDingtalkTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsDingtalkTemplate">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="notice_type" jdbcType="INTEGER" property="noticeType" />
+    <result column="notice_phase" jdbcType="INTEGER" property="noticePhase" />
+    <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="notice_template" jdbcType="LONGVARCHAR" property="noticeTemplate" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+</mapper>

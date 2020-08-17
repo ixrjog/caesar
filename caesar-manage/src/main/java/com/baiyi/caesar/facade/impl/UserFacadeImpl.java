@@ -13,6 +13,7 @@ import com.baiyi.caesar.convert.UserApiTokenConvert;
 import com.baiyi.caesar.convert.UserCredentialConvert;
 import com.baiyi.caesar.decorator.user.UserDecorator;
 import com.baiyi.caesar.decorator.user.UserGroupDecorator;
+import com.baiyi.caesar.decorator.user.UserPermissionDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -94,10 +95,30 @@ public class UserFacadeImpl implements UserFacade {
     @Resource
     private ServerGroupFacade serverGroupFacade;
 
+    @Resource
+    private UserPermissionDecorator userPermissionDecorator;
+
     @Override
     public DataTable<UserVO.User> queryUserPage(UserParam.UserPageQuery pageQuery) {
         DataTable<OcUser> table = ocUserService.queryOcUserByParam(pageQuery);
         return toUserPage(table, pageQuery.getExtend());
+    }
+
+    @Override
+    public DataTable<UserVO.User> queryApplicationExcludeUserPage(UserParam.UserExcludeApplicationPageQuery pageQuery) {
+        DataTable<OcUser> table = ocUserService.queryApplicationExcludeUserParam(pageQuery);
+        return toUserPage(table, 0);
+    }
+
+    @Override
+    public DataTable<UserVO.User> queryApplicationIncludeUserPage(UserParam.UserIncludeApplicationPageQuery pageQuery) {
+        DataTable<OcUser> table = ocUserService.queryApplicationIncludeUserParam(pageQuery);
+        return toUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
+    }
+
+    private DataTable<UserVO.User> toUserPermissionPage(DataTable<OcUser> table, int businessType, int businessId) {
+        List<UserVO.User> page = BeanCopierUtils.copyListProperties(table.getData(), UserVO.User.class);
+        return new DataTable<>(page.stream().map(e -> userPermissionDecorator.decorator(e, businessType, businessId)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
@@ -121,20 +142,20 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public BusinessWrapper<UserApiTokenVO.UserApiToken> applyUserApiToken(UserApiTokenVO.UserApiToken userApiToken) {
         if (StringUtils.isEmpty(userApiToken.getComment()))
-            return new BusinessWrapper(ErrorEnum.USER_APPLY_API_TOKEN_COMMENT_IS_NULL);
+            return new BusinessWrapper<>(ErrorEnum.USER_APPLY_API_TOKEN_COMMENT_IS_NULL);
         if (userApiToken.getExpiredTime() == null)
-            return new BusinessWrapper(ErrorEnum.USER_APPLY_API_TOKEN_EXPIRED_TIME_FORMAT_ERROR);
+            return new BusinessWrapper<>(ErrorEnum.USER_APPLY_API_TOKEN_EXPIRED_TIME_FORMAT_ERROR);
         UserApiTokenConvert.convertOcUserApiToken(userApiToken);
         OcUserApiToken ocUserApiToken = UserApiTokenConvert.convertOcUserApiToken(userApiToken);
         ocUserApiTokenService.addOcUserApiToken(ocUserApiToken);
-        return new BusinessWrapper(BeanCopierUtils.copyProperties(ocUserApiToken, UserApiTokenVO.UserApiToken.class));
+        return new BusinessWrapper<>(BeanCopierUtils.copyProperties(ocUserApiToken, UserApiTokenVO.UserApiToken.class));
     }
 
     @Override
     public BusinessWrapper<Boolean> delUserApiToken(int id) {
         OcUserApiToken ocUserApiToken = ocUserApiTokenService.queryOcUserApiTokenById(id);
         if (!SessionUtils.getUsername().equals(ocUserApiToken.getUsername()))
-            return new BusinessWrapper(ErrorEnum.AUTHENTICATION_FAILUER);
+            return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         ocUserApiTokenService.delOcUserApiTokenById(id);
         return BusinessWrapper.SUCCESS;
     }
@@ -165,9 +186,9 @@ public class UserFacadeImpl implements UserFacade {
         if (!wrapper.isSuccess())
             return wrapper;
         if (userCredential.getCredentialType() == null)
-            return new BusinessWrapper(ErrorEnum.USER_CREDENTIAL_TYPE_ERROR);
+            return new BusinessWrapper<>(ErrorEnum.USER_CREDENTIAL_TYPE_ERROR);
         if (StringUtils.isEmpty(userCredential.getCredential()))
-            return new BusinessWrapper(ErrorEnum.USER_CREDENTIAL_ERROR);
+            return new BusinessWrapper<>(ErrorEnum.USER_CREDENTIAL_ERROR);
         OcUser ocUser = ocUserService.queryOcUserById(userCredential.getUserId());
         userCredential.setUsername(ocUser.getUsername());
         OcUserCredential ocUserCredential = UserCredentialConvert.convertOcUserCredential(userCredential);
@@ -182,7 +203,7 @@ public class UserFacadeImpl implements UserFacade {
         // sshkey push
         if (!StringUtils.isEmpty(ocUser.getPassword()) && userCredential.getCredentialType() == CredentialType.SSH_PUB_KEY.getType())
             accountCenter.pushSSHKey(ocUser);
-        return new BusinessWrapper(BeanCopierUtils.copyProperties(ocUserCredential, UserCredentialVO.UserCredential.class));
+        return new BusinessWrapper<>(BeanCopierUtils.copyProperties(ocUserCredential, UserCredentialVO.UserCredential.class));
     }
 
     private DataTable<UserVO.User> toUserPage(DataTable<OcUser> table, Integer extend) {

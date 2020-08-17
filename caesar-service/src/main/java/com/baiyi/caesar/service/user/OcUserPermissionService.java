@@ -13,6 +13,8 @@ public interface OcUserPermissionService {
 
     void addOcUserPermission(OcUserPermission ocUserPermission);
 
+    void updateOcUserPermission(OcUserPermission ocUserPermission);
+
     void delOcUserPermissionById(int id);
 
     OcUserPermission queryOcUserPermissionByUniqueKey(OcUserPermission ocUserPermission);

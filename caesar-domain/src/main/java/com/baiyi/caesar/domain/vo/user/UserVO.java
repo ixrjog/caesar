@@ -34,6 +34,8 @@ public class UserVO {
 
         private Map<String, Object> attributeMap;
 
+        private UserPermissionVO.UserPermission  userPermission;
+
         @ApiModelProperty(value = "主键")
         private Integer id;
 

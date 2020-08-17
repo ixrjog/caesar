@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.jenkins.engine;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobBuildContext;
 
 /**
  * @Author baiyi

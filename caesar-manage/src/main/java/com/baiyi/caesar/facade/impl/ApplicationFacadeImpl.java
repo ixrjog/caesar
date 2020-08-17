@@ -1,6 +1,9 @@
 package com.baiyi.caesar.facade.impl;
 
+import com.baiyi.caesar.bo.UserPermissionBO;
 import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
+import com.baiyi.caesar.common.base.AccessLevel;
+import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
@@ -18,12 +21,15 @@ import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
+import com.baiyi.caesar.facade.UserFacade;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
 import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.user.OcUserPermissionService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -71,9 +77,28 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Resource
     private JenkinsCiJobFacade jenkinsCiJobFacade;
 
+    @Resource
+    private UserPermissionFacade userPermissionFacade;
+
+    @Resource
+    private OcUserPermissionService ocUserPermissionService;
+
+    @Resource
+    private UserFacade userFacade;
+
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         DataTable<CsApplication> table = csApplicationService.queryCsApplicationByParam(pageQuery);
+        List<ApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), ApplicationVO.Application.class);
+        return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+    }
+
+    @Override
+    public DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
+        ApplicationParam.MyApplicationPageQuery myApplicationPageQuery = BeanCopierUtils.copyProperties(pageQuery, ApplicationParam.MyApplicationPageQuery.class);
+        OcUser ocUser = userFacade.getOcUserBySession();
+        myApplicationPageQuery.setUserId(ocUser.getId());
+        DataTable<CsApplication> table = csApplicationService.queryMyCsApplicationByParam(myApplicationPageQuery);
         List<ApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), ApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
@@ -208,7 +233,67 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId) {
         return jenkinsCiJobFacade.queryJobEngine(ciJobId);
+    }
 
+    @Override
+    public BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId) {
+        if (!tryApplicationAdmin(applicationId))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        if (!userPermissionFacade.tryUserBusinessPermission(userId, BusinessType.APPLICATION.getType(), applicationId)) {
+            UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                    .userId(userId)
+                    .businessType(BusinessType.APPLICATION.getType())
+                    .businessId(applicationId)
+                    .roleName("USER")
+                    .build();
+            userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        }
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> revokeUserApplication(int applicationId, int userId) {
+        // 此处需要鉴权
+        if (!tryApplicationAdmin(applicationId))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                .userId(userId)
+                .businessType(BusinessType.APPLICATION.getType())
+                .businessId(applicationId)
+                .build();
+        userPermissionFacade.delOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private boolean tryApplicationAdmin(int applicationId) {
+        OcUser ocUser = userFacade.getOcUserBySession();
+        if (userPermissionFacade.checkAccessLevel(ocUser, AccessLevel.OPS.getLevel()).isSuccess())
+            return true;
+        UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                .userId(ocUser.getId())
+                .businessType(BusinessType.APPLICATION.getType())
+                .businessId(applicationId)
+                .build();
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        if (ocUserPermission == null)
+            return false;
+        return "ADMIN".equals(ocUserPermission.getRoleName());
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> updateUserApplicationPermission(int applicationId, int userId) {
+        if (!tryApplicationAdmin(applicationId))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                .userId(userId)
+                .businessType(BusinessType.APPLICATION.getType())
+                .businessId(applicationId)
+                .build();
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        String roleName = "USER".equals(ocUserPermission.getRoleName()) ? "ADMIN" : "USER";
+        ocUserPermission.setRoleName(roleName);
+        ocUserPermissionService.updateOcUserPermission(ocUserPermission);
+        return BusinessWrapper.SUCCESS;
     }
 
 }

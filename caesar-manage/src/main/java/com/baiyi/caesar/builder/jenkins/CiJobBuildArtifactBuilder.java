@@ -3,7 +3,7 @@ package com.baiyi.caesar.builder.jenkins;
 import com.baiyi.caesar.bo.jenkins.CiJobBuildArtifactBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
-import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobBuildContext;
 import com.offbytwo.jenkins.model.Artifact;
 
 /**
@@ -17,8 +17,8 @@ public class CiJobBuildArtifactBuilder {
 
         CiJobBuildArtifactBO bo = CiJobBuildArtifactBO.builder()
                 .ciJobId(jobBuildContext.getCsCiJob().getId())
-                .buildId(jobBuildContext.getCsCiJobBuild().getId())
-                .jobName(jobBuildContext.getCsCiJobBuild().getJobName())
+                .buildId(jobBuildContext.getJobBuild().getId())
+                .jobName(jobBuildContext.getJobBuild().getJobName())
                 .artifactDisplayPath(artifact.getDisplayPath())
                 .artifactRelativePath(artifact.getRelativePath())
                 .artifactFileName(artifact.getFileName())
@@ -26,7 +26,7 @@ public class CiJobBuildArtifactBuilder {
         return covert(bo);
     }
 
-    private static CsCiJobBuildArtifact  covert(CiJobBuildArtifactBO bo) {
+    private static CsCiJobBuildArtifact covert(CiJobBuildArtifactBO bo) {
         return BeanCopierUtils.copyProperties(bo, CsCiJobBuildArtifact.class);
     }
 }

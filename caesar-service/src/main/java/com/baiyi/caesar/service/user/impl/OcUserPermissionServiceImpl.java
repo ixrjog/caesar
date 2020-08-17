@@ -26,6 +26,11 @@ public class OcUserPermissionServiceImpl implements OcUserPermissionService {
     }
 
     @Override
+    public void updateOcUserPermission(OcUserPermission ocUserPermission) {
+        ocUserPermissionMapper.updateByPrimaryKey(ocUserPermission);
+    }
+
+    @Override
     public void delOcUserPermissionById(int id) {
         ocUserPermissionMapper.deleteByPrimaryKey(id);
     }
@@ -37,8 +42,6 @@ public class OcUserPermissionServiceImpl implements OcUserPermissionService {
         criteria.andEqualTo("userId", ocUserPermission.getUserId());
         criteria.andEqualTo("businessId", ocUserPermission.getBusinessId());
         criteria.andEqualTo("businessType", ocUserPermission.getBusinessType());
-        // criteria.andEqualTo("content",ocUserPermission.getContent());
-        //return ocUserPermissionMapper.queryOcUserPermissionByUniqueKey(ocUserPermission);
         return ocUserPermissionMapper.selectOneByExample(example);
     }
 

@@ -2,9 +2,9 @@ package com.baiyi.caesar.factory.jenkins;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 
 /**
  * @Author baiyi
@@ -17,5 +17,5 @@ public interface IJenkinsJobHandler {
 
     String getKey();
 
-    String acqOssPath(CsCiJobBuild csCiJobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact);
+    String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact);
 }

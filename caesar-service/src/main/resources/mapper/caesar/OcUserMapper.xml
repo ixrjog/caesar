@@ -40,12 +40,35 @@
         </where>
     </select>
 
+    <select id="queryApplicationExcludeUserParam"
+            parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserExcludeApplicationPageQuery"
+            resultMap="BaseResultMap">
+        select * from oc_user
+        <where>
+            is_active = true
+            and id not in ( select user_id from oc_user_permission where business_type = 8 and business_id =
+            #{applicationId})
+            <if test="queryName != null and queryName != ''">
+                and ( username like "%" #{queryName} "%" or display_name like "%" #{queryName} "%" )
+            </if>
+        </where>
+    </select>
+
+    <select id="queryApplicationIncludeUserParam"
+            parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserIncludeApplicationPageQuery"
+            resultMap="BaseResultMap">
+        select * from oc_user
+        where
+            is_active = true
+            and id in ( select user_id from oc_user_permission where business_type = 8 and business_id = #{applicationId})
+    </select>
+
     <select id="fuzzyQueryUserByParam" parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserPageQuery"
             resultMap="BaseResultMap">
         select * from oc_user
         <where>
             <if test="queryName != null and queryName != ''">
-               ( username like "%" #{queryName} "%"
+                ( username like "%" #{queryName} "%"
                 or name like "%" #{queryName} "%"
                 or display_name like "%" #{queryName} "%"
                 or email like "%" #{queryName} "%"

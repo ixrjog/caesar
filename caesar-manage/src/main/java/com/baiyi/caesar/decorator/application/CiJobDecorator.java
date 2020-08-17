@@ -3,6 +3,7 @@ package com.baiyi.caesar.decorator.application;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -54,6 +55,9 @@ public class CiJobDecorator {
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
+
+    @Resource
+    private JobBuildDecorator jobBuildDecorator;
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, Integer extend) {
         if (extend == 0) return ciJob;
@@ -117,6 +121,7 @@ public class CiJobDecorator {
                     jobBuildView.setColor("#DD3E03");
                 }
             }
+            jobBuildView.setExecutors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()));
             return jobBuildView;
         }).collect(Collectors.toList());
     }

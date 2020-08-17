@@ -7,12 +7,11 @@ import com.baiyi.caesar.decorator.application.CiJobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
-import com.baiyi.caesar.service.jenkins.CsCiJobBuildArtifactService;
-import com.baiyi.caesar.service.jenkins.CsCiJobBuildChangeService;
-import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.*;
+import com.baiyi.caesar.service.server.OcServerService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import org.springframework.stereotype.Component;
@@ -52,6 +51,12 @@ public class JobBuildDecorator {
     private CsCiJobBuildChangeService csCiJobBuildChangeService;
 
     @Resource
+    private CsCiJobBuildExecutorService csCiJobBuildExecutorService;
+
+    @Resource
+    private OcServerService ocServerService;
+
+    @Resource
     private OcUserService ocUserService;
 
     public CiJobBuildVO.JobBuild decorator(CiJobBuildVO.JobBuild jobBuild, Integer extend) {
@@ -82,11 +87,12 @@ public class JobBuildDecorator {
         // Ago
         jobBuild.setAgo(TimeAgoUtils.format(jobBuild.getStartTime()));
 
-        if(jobBuild.getStartTime() != null && jobBuild.getEndTime() != null){
-            long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime() ;
+        if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
+            long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
             jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
         }
 
+        jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
         return jobBuild;
     }
 
@@ -94,9 +100,21 @@ public class JobBuildDecorator {
         List<CsCiJobBuildChange> changes = csCiJobBuildChangeService.queryCsCiJobBuildChangeByBuildId(buildId);
         return changes.stream().map(e -> {
             CiJobBuildVO.BuildChange buildChange = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildChange.class);
-            buildChange.setShortCommitId(buildChange.getCommitId().substring(0,7));
+            buildChange.setShortCommitId(buildChange.getCommitId().substring(0, 7));
             return buildChange;
         }).collect(Collectors.toList());
+    }
+
+    public List<CiJobBuildVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
+        List<CsCiJobBuildExecutor> executors = csCiJobBuildExecutorService.queryCsCiJobBuildExecutorByBuildId(buildId);
+        return executors.stream().map(e -> {
+                    CiJobBuildVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildExecutor.class);
+                    OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
+                    if (ocServer != null)
+                        buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                    return buildExecutor;
+                }
+        ).collect(Collectors.toList());
     }
 
 

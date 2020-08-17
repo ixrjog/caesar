@@ -27,12 +27,17 @@ public interface OcUserService {
 
     DataTable<OcUser> queryOcUserByParam(UserParam.UserPageQuery pageQuery);
 
+    DataTable<OcUser> queryApplicationExcludeUserParam(UserParam.UserExcludeApplicationPageQuery pageQuery);
+
+    DataTable<OcUser> queryApplicationIncludeUserParam(UserParam.UserIncludeApplicationPageQuery pageQuery);
+
     DataTable<OcUser> fuzzyQueryUserByParam(UserParam.UserPageQuery pageQuery);
 
     List<OcUser> queryOcUserByUserGroupId(int userGroupId);
 
     /**
      * 查询所有激活的账户
+     *
      * @return
      */
     List<OcUser> queryOcUserActive();

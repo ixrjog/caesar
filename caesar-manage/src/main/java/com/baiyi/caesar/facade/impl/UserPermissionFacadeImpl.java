@@ -67,7 +67,6 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
         return BusinessWrapper.SUCCESS;
     }
 
-
     @Override
     public BusinessWrapper<Boolean> delOcUserPermission(OcUserPermission ocUserPermission) {
         // 删除服务器组授权
@@ -80,6 +79,11 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
         if (permissionAdminAccout != null)
             ocUserPermissionService.delOcUserPermissionById(permissionAdminAccout.getId());
         return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public void delOcUserPermissionById(int id) {
+        ocUserPermissionService.delOcUserPermissionById(id);
     }
 
     @Override

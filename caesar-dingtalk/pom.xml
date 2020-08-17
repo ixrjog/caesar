@@ -12,6 +12,15 @@
     <artifactId>caesar-dingtalk</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.baiyi</groupId>
+            <artifactId>caesar-service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baiyi</groupId>
+            <artifactId>caesar-jenkins</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

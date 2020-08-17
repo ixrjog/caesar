@@ -20,6 +20,8 @@ public interface ApplicationFacade {
 
     DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery);
 
+    DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery);
+
     List<ApplicationVO.ScmMember> queryApplicationScmMemberByApplicationId(int applicationId);
 
     BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application);
@@ -30,7 +32,7 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId);
 
-    CsApplicationScmMember queryScmMemberById(int scmMemberId) ;
+    CsApplicationScmMember queryScmMemberById(int scmMemberId);
 
     BusinessWrapper<Boolean> removeApplicationSCMMember(int id);
 
@@ -59,4 +61,10 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> createCiJobEngine(int ciJobId);
 
     List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId);
+
+    BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId);
+
+    BusinessWrapper<Boolean> revokeUserApplication(int applicationId, int userId);
+
+    BusinessWrapper<Boolean> updateUserApplicationPermission(int applicationId, int userId);
 }

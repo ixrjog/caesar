@@ -16,5 +16,6 @@ public class UserPermissionBO {
     private Integer userId;
     private Integer businessId;
     private Integer businessType;
+    private String roleName;
 
 }

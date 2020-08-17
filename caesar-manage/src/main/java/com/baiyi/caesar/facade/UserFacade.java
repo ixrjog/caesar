@@ -21,6 +21,10 @@ public interface UserFacade {
 
     DataTable<UserVO.User> queryUserPage(UserParam.UserPageQuery pageQuery);
 
+    DataTable<UserVO.User> queryApplicationExcludeUserPage(UserParam.UserExcludeApplicationPageQuery pageQuery);
+
+    DataTable<UserVO.User> queryApplicationIncludeUserPage(UserParam.UserIncludeApplicationPageQuery pageQuery);
+
     UserVO.User queryUserDetail();
 
     UserVO.User queryUserDetailByUsername(String username);
@@ -69,6 +73,7 @@ public interface UserFacade {
 
     /**
      * 用户离职
+     *
      * @param userId
      * @return
      */

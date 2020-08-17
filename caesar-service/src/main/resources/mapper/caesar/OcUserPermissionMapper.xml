@@ -9,6 +9,8 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="business_id" jdbcType="INTEGER" property="businessId" />
     <result column="business_type" jdbcType="INTEGER" property="businessType" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>

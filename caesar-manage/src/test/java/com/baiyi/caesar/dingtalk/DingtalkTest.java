@@ -2,6 +2,7 @@ package com.baiyi.caesar.dingtalk;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
+import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
@@ -38,5 +39,41 @@ public class DingtalkTest extends BaseUnit {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void testNotifyTpl() {
+        System.err.println(acqNotifyCITpl());
+    }
+
+    @Test
+    void testDingtalkNotify() {
+        IDingtalkNotify dingtalkNotify =  DingtalkNotifyFactory.getDingtalkNotifyByKey(JobType.HTML5.getType());
+        dingtalkNotify.doNotify(0,0,null);
+    }
+
+
+    private String acqNotifyCITpl() {
+        return "{ " +
+                "\"msgtype\": \"markdown\", " +
+                "\"markdown\": {" +
+                "\"title\": \"部署消息\"," +
+                "\"text\": \"### ${projectName}\\n" +
+                "${buildFinalized}" +
+                "环境 : ${envName}\\n\\n" +
+                "任务名称 : ${jobName}\\n\\n" +
+                "任务阶段 : ${buildPhase}\\n\\n" +
+                "[控制台日志](${console})\\n\\n" +
+                "${buildStatus}" +
+                "任务编号 : ${buildNumber}\\n\\n" +
+                "分支 : ${branch}\\n\\n" +
+                "COMMIT : ${commit}\\n\\n" +
+                "${commitInfo}\\n\\n" +
+                "操作人 : ${username}\\n\\n" +
+                "${atUser}\\n\\n" +
+                "${indexUrl}" +
+                "${url}" +
+                "\"} ${at}" +
+                "}";
     }
 }

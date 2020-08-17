@@ -1,8 +1,9 @@
-package com.baiyi.caesar.factory.jenkins.context;
+package com.baiyi.caesar.jenkins.context;
 
+import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,11 @@ import lombok.Data;
 @Data
 public class JobBuildContext {
 
+    private CsApplication csApplication;
+
     private CsCiJob csCiJob;
-    private CsCiJobBuild csCiJobBuild;
+    private CiJobBuildVO.JobBuild jobBuild;
     private CiJobVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
+
 }

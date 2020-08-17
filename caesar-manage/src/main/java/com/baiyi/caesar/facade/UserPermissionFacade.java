@@ -22,6 +22,8 @@ public interface UserPermissionFacade {
 
     BusinessWrapper<Boolean> delOcUserPermission(OcUserPermission ocUserPermission);
 
+    void delOcUserPermissionById(int id);
+
     boolean tryUserBusinessPermission(int userId, int businessType, int businessId);
 
     /**

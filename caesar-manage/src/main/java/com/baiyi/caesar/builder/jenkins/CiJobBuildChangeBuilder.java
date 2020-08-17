@@ -4,7 +4,7 @@ import com.baiyi.caesar.bo.jenkins.CiJobBuildChangeBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildChange;
-import com.baiyi.caesar.factory.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobBuildContext;
 import com.offbytwo.jenkins.model.BuildChangeSetItem;
 
 /**
@@ -15,11 +15,10 @@ import com.offbytwo.jenkins.model.BuildChangeSetItem;
 public class CiJobBuildChangeBuilder {
 
     public static CsCiJobBuildChange build(JobBuildContext jobBuildContext, BuildChangeSetItem buildChangeItem) {
-
         CiJobBuildChangeBO bo = CiJobBuildChangeBO.builder()
                 .ciJobId(jobBuildContext.getCsCiJob().getId())
-                .buildId(jobBuildContext.getCsCiJobBuild().getId())
-                .jobName(jobBuildContext.getCsCiJobBuild().getJobName())
+                .buildId(jobBuildContext.getJobBuild().getId())
+                .jobName(jobBuildContext.getJobBuild().getJobName())
                 .commitId(buildChangeItem.getCommitId())
                 .commit(buildChangeItem.getComment())
                 .commitMsg(buildChangeItem.getMsg())

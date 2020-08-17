@@ -36,6 +36,12 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.queryApplicationPage(pageQuery));
     }
 
+    @ApiOperation(value = "分页查询我的应用配置")
+    @PostMapping(value = "/my/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<ApplicationVO.Application>> queryMyApplicationPage(@RequestBody @Valid ApplicationParam.ApplicationPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryMyApplicationPage(pageQuery));
+    }
+
     @ApiOperation(value = "新增应用配置")
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addApplication(@RequestBody @Valid ApplicationVO.Application application) {
@@ -124,6 +130,24 @@ public class ApplicationController {
     @DeleteMapping(value = "/engine/remove", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> removeApplicationEngine(@Valid int id) {
         return new HttpResult<>(applicationFacade.removeApplicationEngine(id));
+    }
+
+    @ApiOperation(value = "授权应用给用户")
+    @PutMapping(value = "/user/grant", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> grantUserApplication(@Valid int applicationId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.grantUserApplication(applicationId, userId));
+    }
+
+    @ApiOperation(value = "撤销用户的应用授权")
+    @DeleteMapping(value = "/user/revoke", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> revokeUserApplication(@Valid int applicationId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.revokeUserApplication(applicationId, userId));
+    }
+
+    @ApiOperation(value = "更新用户权限")
+    @PutMapping(value = "/user/permission/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateUserApplicationPermission(@Valid int applicationId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.updateUserApplicationPermission(applicationId, userId));
     }
 
 }

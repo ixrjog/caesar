@@ -21,19 +21,24 @@ public class OcUserPermission {
     @Column(name = "business_id")
     private Integer businessId;
 
-    @Column(name = "content")
-    private String content;
-
     /**
      * 业务类型
      */
     @Column(name = "business_type")
     private Integer businessType;
 
-    @Column(name = "create_time", insertable = false, updatable = false)
+    /**
+     * 角色
+     */
+    @Column(name = "role_name")
+    private String roleName;
+
+    private String content;
+
+    @Column(name = "create_time")
     private Date createTime;
 
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
@@ -86,14 +91,6 @@ public class OcUserPermission {
         this.businessId = businessId;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     /**
      * 获取业务类型
      *
@@ -110,6 +107,38 @@ public class OcUserPermission {
      */
     public void setBusinessType(Integer businessType) {
         this.businessType = businessType;
+    }
+
+    /**
+     * 获取角色
+     *
+     * @return role_name - 角色
+     */
+    public String getRoleName() {
+        return roleName;
+    }
+
+    /**
+     * 设置角色
+     *
+     * @param roleName 角色
+     */
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    /**
+     * @return content
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * @param content
+     */
+    public void setContent(String content) {
+        this.content = content;
     }
 
     /**

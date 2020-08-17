@@ -9,4 +9,6 @@ import java.util.List;
 public interface CsApplicationMapper extends Mapper<CsApplication> {
 
    List<CsApplication> queryCsApplicationByParam(ApplicationParam.ApplicationPageQuery pageQuery);
+
+   List<CsApplication> queryMyCsApplicationByParam(ApplicationParam.MyApplicationPageQuery pageQuery);
 }
