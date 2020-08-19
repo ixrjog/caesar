@@ -5,7 +5,6 @@ import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
 import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
 import com.baiyi.caesar.decorator.application.ApplicationScmMemberDecorator;
@@ -171,7 +170,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
-        if (IDUtils.isEmpty(csCiJob.getJobTplId()) && ciJob.getJobTpl() != null)
+        if(ciJob.getJobTpl() != null)
             csCiJob.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.updateCsCiJob(csCiJob);
         return BusinessWrapper.SUCCESS;

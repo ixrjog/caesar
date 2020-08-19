@@ -2,11 +2,8 @@ package com.baiyi.caesar.dingtalk.impl;
 
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * @Author baiyi
@@ -21,14 +18,5 @@ public class DingtalkH5Notify extends BaseDingtalkNotify implements IDingtalkNot
     public String getKey() {
         return JobType.HTML5.getType();
     }
-
-    @Override
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, JobBuildContext jobBuildContext) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticeType,noticePhase,jobBuildContext);
-        //contentMap.put("ccc", "ddd");
-        return contentMap;
-    }
-
-
 
 }

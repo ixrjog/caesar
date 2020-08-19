@@ -122,6 +122,18 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     }
 
     @Override
+    public BusinessWrapper<Boolean> writeJobTpl(JobTplVO.JobTpl jobTpl){
+        try {
+            jenkinsTplFacade.updateJobContent(jobTpl.getJenkinsInstanceId(),jobTpl.getTplName(),jobTpl.getTplContent());
+            CsJobTpl csJobTpl = BeanCopierUtils.copyProperties(jobTpl, CsJobTpl.class);
+            csJobTplService.updateCsJobTpl(csJobTpl);
+            return BusinessWrapper.SUCCESS;
+        } catch (IOException e) {
+            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_TPL_WRITE_ERROR);
+        }
+    }
+
+    @Override
     public BusinessWrapper<Boolean> deleteJobTplById(int id) {
         csJobTplService.deleteCsJobTplById(id);
         return BusinessWrapper.SUCCESS;

@@ -32,6 +32,11 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
+    public CsCiJobBuild queryCiJobBuildById(int id) {
+        return csCiJobBuildMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public void addCsCiJobBuild(CsCiJobBuild csCiJobBuild) {
         csCiJobBuildMapper.insert(csCiJobBuild);
     }

@@ -61,6 +61,12 @@ public class JenkinsServerHandler {
         }
     }
 
+    public void updateJob(String serverName, String jobName, String jobXml) throws IOException {
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
+        jenkinsServer.updateJob(jobName, jobXml, CRUMB_FLAG);
+    }
+
 
     public String getJobXml(String serverName, String jobName) throws IOException {
         JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);

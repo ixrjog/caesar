@@ -40,6 +40,8 @@ import java.util.Map;
 @Slf4j
 public abstract class BaseDingtalkNotify implements IDingtalkNotify, InitializingBean {
 
+    protected static final String  VERSION_NAME = "versionName";
+
     @Resource
     protected CsDingtalkTemplateService csDingtalkTemplateService;
 

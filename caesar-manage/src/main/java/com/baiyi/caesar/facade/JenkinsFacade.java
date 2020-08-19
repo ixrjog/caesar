@@ -31,6 +31,8 @@ public interface JenkinsFacade {
 
     BusinessWrapper<Boolean> updateJobTpl(JobTplVO.JobTpl jobTpl);
 
+    BusinessWrapper<Boolean> writeJobTpl(JobTplVO.JobTpl jobTpl);
+
     BusinessWrapper<Boolean> deleteJobTplById(int id);
 
     List<JenkinsJobVO.Job> queryJobTplByInstanceId(int instanceId);

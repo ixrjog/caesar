@@ -84,10 +84,16 @@ public class JenkinsController {
         return new HttpResult<>(jenkinsFacade.deleteJobTplById(id));
     }
 
-    @ApiOperation(value = "读取任务模版配置")
+    @ApiOperation(value = "读取Jenkins任务模版")
     @GetMapping(value = "/tpl/read", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> readJobTplById(@Valid int id) {
         return new HttpResult<>(jenkinsFacade.readJobTplById(id));
+    }
+
+    @ApiOperation(value = "写入Jenkins任务模版")
+    @PutMapping(value = "/tpl/write", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> writeJobTpl(@RequestBody @Valid JobTplVO.JobTpl jobTpl) {
+        return new HttpResult<>(jenkinsFacade.writeJobTpl(jobTpl));
     }
 
 }

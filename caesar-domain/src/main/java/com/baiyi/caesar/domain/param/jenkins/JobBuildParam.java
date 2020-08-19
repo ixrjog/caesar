@@ -33,6 +33,17 @@ public class JobBuildParam {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class JobBuildQuery {
+
+        @ApiModelProperty(value = "任务id")
+        @NotNull
+        private Integer buildId;
+
+    }
+
 
 
     @Data

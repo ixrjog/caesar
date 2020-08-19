@@ -8,10 +8,7 @@ import com.baiyi.caesar.facade.jenkins.JobFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -41,5 +38,10 @@ public class JobController {
         return new HttpResult<>(jobFacade.queryCiJobBuildPage(pageQuery));
     }
 
+    @ApiOperation(value = "查询持续集成构建任务")
+    @GetMapping(value = "/ci/build/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<CiJobBuildVO.JobBuild> queryCiJobBuildByBuildId(@Valid int buildId) {
+        return new HttpResult<>(jobFacade.queryCiJobBuildByBuildId(buildId));
+    }
 
 }

@@ -44,6 +44,11 @@ public class JenkinsTplFacade {
         return jenkinsServerHandler.getJobXml(csJenkinsInstance.getName(), jobName);
     }
 
+    public void updateJobContent(int instanceId, String jobName,String jobXml) throws IOException {
+        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(instanceId);
+        jenkinsServerHandler.updateJob(csJenkinsInstance.getName(),jobName,jobXml);
+    }
+
     public List<JenkinsJobVO.Job> queryJenkinsInstanceTpl(int instanceId) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(instanceId);
         Map<String, Job> jobMap = jenkinsServerHandler.getJobs(csJenkinsInstance.getName());

@@ -2,10 +2,15 @@ package com.baiyi.caesar.jenkins;
 
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
-import com.offbytwo.jenkins.model.*;
+import com.baiyi.caesar.service.jenkins.CsJobTplService;
+import com.offbytwo.jenkins.model.Computer;
+import com.offbytwo.jenkins.model.ComputerWithDetails;
+import com.offbytwo.jenkins.model.Executor;
+import com.offbytwo.jenkins.model.Job;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -23,6 +28,10 @@ public class JobTest extends BaseUnit {
 
     @Resource
     private JobFacade jobFacade;
+
+    @Resource
+    private CsJobTplService csJobTplService;
+
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
@@ -54,6 +63,20 @@ public class JobTest extends BaseUnit {
 
 
     @Test
+    void testTpl() {
+
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(6);
+        try {
+            jenkinsServerHandler.updateJob("master-2", "CAESAR_caesar-server-prod", csJobTpl.getTplContent());
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+
+
+    }
+
+
+    @Test
     void testJenkins() {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap("master-2");
         computerMap.keySet().forEach(k -> {
@@ -67,7 +90,7 @@ public class JobTest extends BaseUnit {
                     for (Executor executor : executors) {
                         if (executor.getCurrentExecutable() != null) {
                             Job job = executor.getCurrentExecutable();
-                            System.err.println(computerWithDetails );
+                            System.err.println(computerWithDetails);
                             System.err.println(job);
                         }
                     }
