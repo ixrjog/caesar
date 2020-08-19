@@ -36,7 +36,6 @@ caesar-manage/src/test/java/com/baiyi/caesar/encryptor/*
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 
 ### VS Code ###
 .vscode/
