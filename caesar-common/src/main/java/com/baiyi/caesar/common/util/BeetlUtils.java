@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class BeetlUtils {
 
+    private BeetlUtils(){}
 
     /**
      * 渲染模版

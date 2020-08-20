@@ -10,16 +10,16 @@ import java.util.Map;
 
 /**
  * @Author baiyi
- * @Date 2020/8/18 5:33 下午
+ * @Date 2020/8/19 4:32 下午
  * @Version 1.0
  */
 @Slf4j
-@Component("DingtalkJavaNotify")
-public class DingtalkJavaNotify extends BaseDingtalkNotify implements IDingtalkNotify {
+@Component("DingtalkIOSNotify")
+public class DingtalkIOSNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override
     public String getKey() {
-        return JobType.JAVA.getType();
+        return JobType.IOS.getType();
     }
 
     @Override

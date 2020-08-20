@@ -12,22 +12,23 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Author baiyi
- * @Date 2020/8/18 3:54 下午
+ * @Date 2020/8/19 4:23 下午
  * @Version 1.0
  */
 @Slf4j
-@Component("JenkinsJavaJobHandler")
-public class JenkinsJavaJobHandler extends BaseJenkinsJobHandler implements IJenkinsJobHandler {
+@Component("JenkinsIOSJobHandler")
+public class JenkinsIOSJobHandler extends BaseJenkinsJobHandler implements IJenkinsJobHandler {
 
     @Override
     public String getKey() {
-        return JobType.JAVA.getType();
+        return JobType.IOS.getType();
     }
 
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
         JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
+        JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
         return jobParamDetail;
     }
 

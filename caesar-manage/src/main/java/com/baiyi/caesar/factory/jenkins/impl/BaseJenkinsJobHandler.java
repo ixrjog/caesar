@@ -30,6 +30,7 @@ import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
 import lombok.extern.slf4j.Slf4j;
@@ -91,8 +92,8 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         CiJobVO.JobEngine jobEngine = wrapper.getBody();
-        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
         raiseCsCiJobBuildNumber(csCiJob); // buildNumber +1
+        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch);
         try {
@@ -135,7 +136,6 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         dingtalkNotify.doNotify(NoticeType.BUILD.getType(), NoticePhase.START.getType(), jobBuildContext);
     }
 
-
     private void raiseCsCiJobBuildNumber(CsCiJob csCiJob) {
         csCiJob.setJobBuildNumber(csCiJob.getJobBuildNumber() + 1);
         csCiJobService.updateCsCiJob(csCiJob);
@@ -155,16 +155,30 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
             params.put("sshUrl", csApplicationScmMember.getScmSshUrl());
         params.put("branch", buildParam.getBranch());
         params.put("applicationName", csApplication.getApplicationKey());
-
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         params.put("bucketName", csOssBucket.getName());
+
+        String jobName = Joiner.on("_").join(csApplication.getApplicationKey(),csCiJob.getJobKey());
 
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
                 .params(params)
+                .csOssBucket(csOssBucket)
+                .jobName(jobName)
                 .versionName(buildParam.getVersionName())
                 .versionDesc(buildParam.getVersionDesc())
                 .build();
+    }
+
+    @Override
+    public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact) {
+        // iOS Java
+        // /应用名/任务名/任务编号/
+        CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
+        String applicationName = csApplication.getApplicationKey();
+        String jobName = jobBuild.getJobName();
+        String jobBuildNumber =String.valueOf(jobBuild.getJobBuildNumber()) ;
+        return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csCiJobBuildArtifact.getArtifactFileName());
     }
 
     private BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
