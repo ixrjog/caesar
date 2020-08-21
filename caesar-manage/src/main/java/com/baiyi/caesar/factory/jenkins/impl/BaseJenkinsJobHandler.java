@@ -5,6 +5,7 @@ import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
+import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
@@ -85,6 +86,9 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
 
+    @Resource
+    private RedisUtil redisUtil;
+
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csCiJob.getApplicationId());
@@ -105,7 +109,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         }
         try {
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
-            csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
+            saveCsCiJobBuild(csCiJobBuild);
             JobBuildContext jobBuildContext = JobBuildContext.builder()
                     .csApplication(csApplicationService.queryCsApplicationById(csCiJob.getApplicationId()))
                     .csCiJob(csCiJob)
@@ -120,11 +124,28 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         return BusinessWrapper.SUCCESS;
     }
 
+    private void saveCsCiJobBuild(CsCiJobBuild csCiJobBuild){
+        csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
+        jenkinsJobEngineHandler.trackJobBuildHeartbeat(csCiJobBuild.getId()); // 心跳
+    }
+
+    @Override
+    public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCiJobBuild.getCiJobId());
+        JobBuildContext jobBuildContext = JobBuildContext.builder()
+                .csApplication(csApplicationService.queryCsApplicationById(csCiJob.getApplicationId()))
+                .csCiJob(csCiJob)
+                .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
+                .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
+                .build();
+        jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务
+    }
+
     private GitlabBranch acqGitlabBranch(CsCiJob csCiJob, String branch) {
         try {
             CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
             CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
-            CsGitlabInstance csGitlabInstance =  csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
+            CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
             return gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
         } catch (IOException e) {
             return null;
@@ -158,7 +179,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         params.put("bucketName", csOssBucket.getName());
 
-        String jobName = Joiner.on("_").join(csApplication.getApplicationKey(),csCiJob.getJobKey());
+        String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
 
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
@@ -177,12 +198,16 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
         CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();
         String jobName = jobBuild.getJobName();
-        String jobBuildNumber =String.valueOf(jobBuild.getJobBuildNumber()) ;
+        String jobBuildNumber = String.valueOf(jobBuild.getJobBuildNumber());
         return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csCiJobBuildArtifact.getArtifactFileName());
     }
 
     private BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
         return jenkinsJobEngineHandler.acqJobEngine(csCiJob);
+    }
+
+    private CiJobVO.JobEngine acqJobEngineById(int jobEngineId) {
+        return jenkinsJobEngineHandler.acqJobEngineByJobEngineId(jobEngineId);
     }
 
     private QueueReference build(JobWithDetails job, Map<String, String> params) throws IOException {

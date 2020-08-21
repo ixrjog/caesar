@@ -1,6 +1,7 @@
 package com.baiyi.caesar.util;
 
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
 import com.google.common.base.Joiner;
 
@@ -23,5 +24,11 @@ public class JobParamUtils {
         String url = Joiner.on("/").join(domain, jobParamDetail.getParamByKey("applicationName"), jobParamDetail.getJobName(), String.valueOf(csCiJob.getJobBuildNumber()));
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
     }
+
+    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.CiBuildParam buildParam) {
+        if (!buildParam.getParamMap().containsKey("podUpdate")) return;
+        jobParamDetail.getParams().put("podUpdate", buildParam.getParamMap().get("podUpdate"));
+    }
+
 
 }

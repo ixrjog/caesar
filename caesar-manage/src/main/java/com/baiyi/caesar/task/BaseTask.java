@@ -1,6 +1,5 @@
 package com.baiyi.caesar.task;
 
-import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.config.OpscloudConfig;
 import com.baiyi.caesar.task.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +18,6 @@ public abstract class BaseTask {
 
     @Resource
     protected TaskUtil taskUtil;
-
-    @Resource
-    protected RedisUtil redisUtil;
 
     @Resource
     private OpscloudConfig opscloudConfig;

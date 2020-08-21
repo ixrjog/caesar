@@ -20,6 +20,10 @@ public interface JenkinsJobEngineHandler {
      */
     BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob);
 
+    CiJobVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
+
     void trackJobBuild(JobBuildContext jobBuildContext);
+
+    void trackJobBuildHeartbeat(int buildId);
 
 }

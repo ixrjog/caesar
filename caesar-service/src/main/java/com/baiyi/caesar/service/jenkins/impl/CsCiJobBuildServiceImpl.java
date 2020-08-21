@@ -68,4 +68,12 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
         return csCiJobBuildMapper.selectByExample(example);
     }
 
+    @Override
+    public List<CsCiJobBuild> queryCsCiJobBuildByFinalized(boolean isFinalized) {
+        Example example = new Example(CsCiJobBuild.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("finalized", isFinalized);
+        return csCiJobBuildMapper.selectByExample(example);
+    }
+
 }

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author baiyi
@@ -44,7 +45,10 @@ public class CiJobVO {
         private OssBucketVO.Bucket bucket;
 
         @ApiModelProperty(value = "构建视图")
-        private  List<CiJobBuildVO.JobBuildView> buildViews;
+        private List<CiJobBuildVO.JobBuildView> buildViews;
+
+        @ApiModelProperty(value = "任务参数Map")
+        private Map<String, String> parameters;
 
         private Integer id;
         private Integer applicationId;

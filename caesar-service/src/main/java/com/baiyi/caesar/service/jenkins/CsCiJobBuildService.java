@@ -26,4 +26,6 @@ public interface CsCiJobBuildService {
     CsCiJobBuild queryCsCiJobBuildByUniqueKey(int ciJobId, int jobBuildNumber);
 
     List<CsCiJobBuild> queryCsCiJobBuildByLastSize(int size);
+
+    List<CsCiJobBuild> queryCsCiJobBuildByFinalized(boolean isFinalized);
 }

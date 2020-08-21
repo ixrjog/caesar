@@ -1,8 +1,10 @@
 package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.common.base.BusinessType;
+import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.DataTable;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -94,6 +97,11 @@ public class CiJobDecorator {
                 ciJob.setBucket(BeanCopierUtils.copyProperties(csOssBucket, OssBucketVO.Bucket.class));
             }
         }
+
+        //
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(ciJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+        ciJob.setParameters(params);
 
         JobBuildParam.JobBuildPageQuery query = new JobBuildParam.JobBuildPageQuery();
         query.setCiJobId(ciJob.getId());

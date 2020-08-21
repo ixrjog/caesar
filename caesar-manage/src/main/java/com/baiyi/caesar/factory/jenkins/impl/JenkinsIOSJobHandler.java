@@ -29,6 +29,7 @@ public class JenkinsIOSJobHandler extends BaseJenkinsJobHandler implements IJenk
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
         JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
         JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
+        JobParamUtils.invokePodUpdate(jobParamDetail, buildParam);
         return jobParamDetail;
     }
 

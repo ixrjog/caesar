@@ -2,6 +2,7 @@ package com.baiyi.caesar.factory.jenkins;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
@@ -13,7 +14,9 @@ import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
  */
 public interface IJenkinsJobHandler {
 
-    BusinessWrapper<Boolean> build(CsCiJob csCiJob ,JobBuildParam.CiBuildParam buildParam);
+    BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam);
+
+    void trackJobBuild(CsCiJobBuild csCiJobBuild);
 
     String getKey();
 

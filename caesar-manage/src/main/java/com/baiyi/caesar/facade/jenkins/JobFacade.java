@@ -1,6 +1,8 @@
 package com.baiyi.caesar.facade.jenkins;
 
+import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -13,6 +15,7 @@ import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -37,6 +40,9 @@ public class JobFacade {
     @Resource
     private JobBuildDecorator jobBuildDecorator;
 
+    @Resource
+    private RedisUtil redisUtil;
+
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.CiBuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
         IJenkinsJobHandler jenkinsJobHandler = JenkinsJobHandlerFactory.getJenkinsJobBuildByKey(csCiJob.getJobType());
@@ -55,6 +61,19 @@ public class JobFacade {
     public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
         return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1);
+    }
+
+    public void trackJobBuildTask() {
+        List<CsCiJobBuild> csCiJobBuilds = csCiJobBuildService.queryCsCiJobBuildByFinalized(false);
+        if (CollectionUtils.isEmpty(csCiJobBuilds)) return;
+        csCiJobBuilds.forEach(e -> {
+            String key = RedisKeyUtils.getJobBuildKey(e.getId());
+            if (!redisUtil.hasKey(key)) {
+                CsCiJob csCiJob = csCiJobService.queryCsCiJobById((e.getCiJobId()));
+                IJenkinsJobHandler jenkinsJobHandler = JenkinsJobHandlerFactory.getJenkinsJobBuildByKey(csCiJob.getJobType());
+                jenkinsJobHandler.trackJobBuild(e);
+            }
+        });
     }
 
 }

@@ -13,4 +13,8 @@ public class RedisKeyUtils {
         return Joiner.on(":").join("serverTree", "userId", userId, "uuid", uuid);
     }
 
+    public static String getJobBuildKey(int buildId){
+        return Joiner.on(":").join("jobBuild", "buildId");
+    }
+
 }

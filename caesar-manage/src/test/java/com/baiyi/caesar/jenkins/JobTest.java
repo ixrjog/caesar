@@ -61,10 +61,8 @@ public class JobTest extends BaseUnit {
         }
     }
 
-
     @Test
     void testTpl() {
-
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(7);
         try {
             jenkinsServerHandler.updateJob("master-1", "ZEBRA-IOS-APP_zebra_ios_track", csJobTpl.getTplContent());
@@ -72,10 +70,12 @@ public class JobTest extends BaseUnit {
         } catch (IOException e) {
            e.printStackTrace();
         }
-
-
     }
 
+    @Test
+    void testTrackJobBuildTask() {
+        jobFacade.trackJobBuildTask();
+    }
 
     @Test
     void testJenkins() {
@@ -98,8 +98,6 @@ public class JobTest extends BaseUnit {
                 } catch (IOException e) {
                 }
             }
-
-
         });
 
         System.err.println(computerMap);
