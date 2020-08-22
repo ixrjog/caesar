@@ -63,10 +63,10 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testTpl() {
-        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(7);
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(9);
         try {
-            jenkinsServerHandler.updateJob("master-1", "ZEBRA-IOS-APP_zebra_ios_track", csJobTpl.getTplContent());
-            jenkinsServerHandler.updateJob("master-2", "ZEBRA-IOS-APP_zebra_ios_track", csJobTpl.getTplContent());
+            jenkinsServerHandler.updateJob("master-1", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
+            jenkinsServerHandler.updateJob("master-2", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
         } catch (IOException e) {
            e.printStackTrace();
         }

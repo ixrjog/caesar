@@ -193,7 +193,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
 
     @Override
     public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact) {
-        // iOS Java
+        // iOS Java Python
         // /应用名/任务名/任务编号/
         CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();

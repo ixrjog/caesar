@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class CiJobVO {
     @NoArgsConstructor
     @ApiModel
     public static class CiJob {
+
         @ApiModelProperty(value = "环境详情")
         private EnvVO.Env env;
 
@@ -52,7 +54,9 @@ public class CiJobVO {
 
         private Integer id;
         private Integer applicationId;
+        @NotBlank(message = "任务名不能为空")
         private String name;
+        @NotBlank(message = "任务key不能为空")
         private String jobKey;
         private String branch;
         private Integer envType;
