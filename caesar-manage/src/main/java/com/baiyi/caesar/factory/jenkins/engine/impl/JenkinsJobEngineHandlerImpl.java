@@ -29,6 +29,7 @@ import com.baiyi.caesar.service.server.OcServerService;
 import com.baiyi.caesar.util.JobBuildUtils;
 import com.offbytwo.jenkins.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.RetryException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -156,9 +157,8 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
                     recordJobBuild(jobBuildContext);
                     break;
                 }
-            } catch (RuntimeException e) {
-                log.error(e.getMessage());
-                e.printStackTrace();
+            } catch (RetryException e) {
+                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", jobBuildContext.getCsCiJob().getName(), jobBuildContext.getJobBuild().getEngineBuildNumber());
                 break;
             } catch (InterruptedException | IOException e) {
                 log.error(e.getMessage());
@@ -270,8 +270,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Override
     public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 120);
-
+        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 30);
     }
 
 
