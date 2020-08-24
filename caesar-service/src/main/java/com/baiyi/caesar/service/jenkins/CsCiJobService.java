@@ -13,6 +13,8 @@ public interface CsCiJobService {
 
     DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobPageQuery pageQuery);
 
+    DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobTplPageQuery pageQuery);
+
     void addCsCiJob(CsCiJob csCiJob);
 
     void updateCsCiJob(CsCiJob csCiJob);

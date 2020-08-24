@@ -9,4 +9,6 @@ import java.util.List;
 public interface CsCiJobMapper extends Mapper<CsCiJob> {
 
     List<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobPageQuery pageQuery);
+
+    List<CsCiJob> queryCsCiJobTplByParam( CiJobParam.CiJobTplPageQuery pageQuery);
 }

@@ -33,5 +33,16 @@ public class CiJobParam {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class CiJobTplPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "模版id",example = "1")
+        @NotNull(message = "必须模版id")
+        private Integer jobTplId;
+
+    }
+
 
 }

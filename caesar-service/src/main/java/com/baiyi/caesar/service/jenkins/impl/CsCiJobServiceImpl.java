@@ -31,6 +31,13 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     }
 
     @Override
+    public   DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobTplPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<CsCiJob> list = csCiJobMapper.queryCsCiJobTplByParam(pageQuery);
+        return new DataTable<>(list, page.getTotal());
+    }
+
+    @Override
     public void addCsCiJob(CsCiJob csCiJob) {
         csCiJobMapper.insert(csCiJob);
     }

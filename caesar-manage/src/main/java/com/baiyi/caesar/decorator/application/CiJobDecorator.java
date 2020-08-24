@@ -22,12 +22,15 @@ import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
+import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +64,31 @@ public class CiJobDecorator {
 
     @Resource
     private JobBuildDecorator jobBuildDecorator;
+
+    @Resource
+    private CsCiJobEngineService csCiJobEngineService;
+
+    @Resource
+    private CiJobEngineDecorator ciJobEngineDecorator;
+
+    public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, CsJobTpl csJobTpl) {
+        List<CsCiJobEngine> csCiJobEngines = csCiJobEngineService.queryCsCiJobEngineByJobId(ciJob.getId());
+        AtomicReference<Boolean> needUpgrade = new AtomicReference<>(false);
+        if (!CollectionUtils.isEmpty(csCiJobEngines)) {
+            ciJob.setJobEngines(
+                    csCiJobEngines.stream().map(e -> {
+                        CiJobVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, CiJobVO.JobEngine.class);
+                        jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
+                        if(jobEngine.getNeedUpgrade())
+                            needUpgrade.set(true);
+                        return ciJobEngineDecorator.decorator(jobEngine);
+                    }).collect(Collectors.toList())
+            );
+        }
+        ciJob.setNeedUpgrade(needUpgrade.get());
+        return ciJob;
+    }
+
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, Integer extend) {
         if (extend == 0) return ciJob;

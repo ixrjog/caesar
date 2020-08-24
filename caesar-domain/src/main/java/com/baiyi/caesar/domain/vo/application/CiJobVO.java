@@ -52,6 +52,12 @@ public class CiJobVO {
         @ApiModelProperty(value = "任务参数Map")
         private Map<String, String> parameters;
 
+        @ApiModelProperty(value = "任务引擎")
+        private List<CiJobVO.JobEngine> jobEngines;
+
+        @ApiModelProperty(value = "需要升级模版")
+        private Boolean needUpgrade;
+
         private Integer id;
         private Integer applicationId;
         @NotBlank(message = "任务名不能为空")
@@ -87,6 +93,9 @@ public class CiJobVO {
 
         @ApiModelProperty(value = "最后构建任务url")
         private String lastBuildUrl;
+
+        @ApiModelProperty(value = "需要升级模版")
+        private Boolean needUpgrade;
 
         private Integer id;
         private Integer ciJobId;

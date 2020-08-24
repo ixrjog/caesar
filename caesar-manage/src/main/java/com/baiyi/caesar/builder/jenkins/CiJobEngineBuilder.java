@@ -29,6 +29,7 @@ public class CiJobEngineBuilder {
         return covert(bo);
     }
 
+
     private static CsCiJobEngine covert(CiJobEngineBO bo) {
         return BeanCopierUtils.copyProperties(bo, CsCiJobEngine.class);
     }
