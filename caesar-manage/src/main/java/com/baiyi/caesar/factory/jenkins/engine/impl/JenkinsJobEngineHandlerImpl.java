@@ -108,7 +108,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         if (CollectionUtils.isEmpty(activeEngines))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_NO_ENGINES_AVAILABLE); // 没有可用的工作引擎
 
-        return new BusinessWrapper<>(buildJobEngine(activeEngines));
+        return new BusinessWrapper<>(buildRandomJobEngine(activeEngines));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, CiJobVO.JobEngine.class));
     }
 
-    private CiJobVO.JobEngine buildJobEngine(List<CsCiJobEngine> activeEngines) {
+    private CiJobVO.JobEngine buildRandomJobEngine(List<CsCiJobEngine> activeEngines) {
         Random random = new Random();
         int n = random.nextInt(activeEngines.size());
         CsCiJobEngine csCiJobEngine = activeEngines.get(n);
@@ -221,18 +221,23 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         jobBuild.setFinalized(true);
         csCiJobBuildService.updateCsCiJobBuild(BeanCopierUtils.copyProperties(jobBuild, CsCiJobBuild.class));
         jobBuildContext.setJobBuild(jobBuild);
-
-        jobBuildContext.getBuildWithDetails().getArtifacts().forEach(e -> {
-            CsCiJobBuildArtifact csCiJobBuildArtifact = buildCiJobBuildArtifact(jobBuildContext, e);
-            csCiJobBuildArtifactService.addCsCiJobBuildArtifact(csCiJobBuildArtifact);
-        });
-
+        jobBuildContext.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact(jobBuildContext, e));
         recordJobBuildChanges(jobBuildContext);
     }
 
+    private void saveJobBuildArtifact(JobBuildContext jobBuildContext, Artifact artifact) {
+        CsCiJobBuildArtifact pre = buildCiJobBuildArtifact(jobBuildContext, artifact);
+        if (csCiJobBuildArtifactService.queryCsCiJobBuildArtifactByUniqueKey(pre.getBuildId(), pre.getArtifactFileName()) == null)
+            csCiJobBuildArtifactService.addCsCiJobBuildArtifact(pre);
+    }
+
+    /**
+     * 变更记录
+     *
+     * @param jobBuildContext
+     */
     private void recordJobBuildChanges(JobBuildContext jobBuildContext) {
         List<BuildChangeSet> buildChanges = jobBuildContext.getBuildWithDetails().getChangeSets();
-        // 变更记录
         buildChanges.forEach(set -> set.getItems().forEach(e -> saveJobBuildChange(jobBuildContext, e)));
     }
 

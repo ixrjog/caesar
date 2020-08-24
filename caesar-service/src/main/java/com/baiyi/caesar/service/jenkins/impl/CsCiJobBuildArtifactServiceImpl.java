@@ -37,4 +37,13 @@ public class CsCiJobBuildArtifactServiceImpl  implements CsCiJobBuildArtifactSer
         criteria.andEqualTo("buildId", buildId);
         return csCiJobBuildArtifactMapper.selectByExample(example);
     }
+
+    @Override
+    public   CsCiJobBuildArtifact queryCsCiJobBuildArtifactByUniqueKey(int buildId,String artifactFileName){
+        Example example = new Example(CsCiJobBuildArtifact.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("buildId", buildId);
+        criteria.andEqualTo("artifactFileName", artifactFileName);
+        return csCiJobBuildArtifactMapper.selectOneByExample(example);
+    }
 }

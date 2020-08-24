@@ -16,4 +16,6 @@ public interface CsCiJobBuildArtifactService {
     void updateCsCiJobBuildArtifact(CsCiJobBuildArtifact csCiJobBuildArtifact);
 
     List<CsCiJobBuildArtifact> queryCsCiJobBuildArtifactByBuildId(int buildId);
+
+    CsCiJobBuildArtifact queryCsCiJobBuildArtifactByUniqueKey(int buildId,String artifactFileName);
 }
