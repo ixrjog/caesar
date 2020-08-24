@@ -5,7 +5,6 @@ import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
@@ -85,9 +84,6 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
 
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
-
-    @Resource
-    private RedisUtil redisUtil;
 
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
