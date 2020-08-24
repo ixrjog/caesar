@@ -233,12 +233,13 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private void recordJobBuildChanges(JobBuildContext jobBuildContext) {
         List<BuildChangeSet> buildChanges = jobBuildContext.getBuildWithDetails().getChangeSets();
         // 变更记录
-        buildChanges.forEach(set ->
-                set.getItems().forEach(e -> {
-                    CsCiJobBuildChange csCiJobBuildChange = CiJobBuildChangeBuilder.build(jobBuildContext, e);
-                    csCiJobBuildChangeService.addCsCiJobBuildChange(csCiJobBuildChange);
-                })
-        );
+        buildChanges.forEach(set -> set.getItems().forEach(e -> saveJobBuildChange(jobBuildContext, e)));
+    }
+
+    private void saveJobBuildChange(JobBuildContext jobBuildContext, BuildChangeSetItem buildChangeSetItem) {
+        CsCiJobBuildChange pre = CiJobBuildChangeBuilder.build(jobBuildContext, buildChangeSetItem);
+        if (csCiJobBuildChangeService.queryCsCiJobBuildChangeByUniqueKey(pre.getCiJobId(), pre.getCommitId()) == null)
+            csCiJobBuildChangeService.addCsCiJobBuildChange(pre);
     }
 
     private CsCiJobBuildArtifact buildCiJobBuildArtifact(JobBuildContext jobBuildContext, Artifact artifact) {

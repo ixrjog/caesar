@@ -16,4 +16,6 @@ public interface CsCiJobBuildChangeService {
     void updateCsCiJobBuildChange(CsCiJobBuildChange csCiJobBuildChange);
 
     List<CsCiJobBuildChange> queryCsCiJobBuildChangeByBuildId(int buildId);
+
+    CsCiJobBuildChange queryCsCiJobBuildChangeByUniqueKey(int ciJobId, String commitId);
 }

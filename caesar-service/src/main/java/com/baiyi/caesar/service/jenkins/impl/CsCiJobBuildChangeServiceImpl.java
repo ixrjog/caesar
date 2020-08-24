@@ -1,6 +1,5 @@
 package com.baiyi.caesar.service.jenkins.impl;
 
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildChange;
 import com.baiyi.caesar.mapper.caesar.CsCiJobBuildChangeMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildChangeService;
@@ -22,15 +21,14 @@ public class CsCiJobBuildChangeServiceImpl implements CsCiJobBuildChangeService 
     private CsCiJobBuildChangeMapper csCiJobBuildChangeMapper;
 
     @Override
-    public void addCsCiJobBuildChange(CsCiJobBuildChange csCiJobBuildChange){
+    public void addCsCiJobBuildChange(CsCiJobBuildChange csCiJobBuildChange) {
         csCiJobBuildChangeMapper.insert(csCiJobBuildChange);
     }
 
     @Override
-    public void updateCsCiJobBuildChange(CsCiJobBuildChange csCiJobBuildChange){
+    public void updateCsCiJobBuildChange(CsCiJobBuildChange csCiJobBuildChange) {
         csCiJobBuildChangeMapper.updateByPrimaryKey(csCiJobBuildChange);
     }
-
 
     @Override
     public List<CsCiJobBuildChange> queryCsCiJobBuildChangeByBuildId(int buildId) {
@@ -38,5 +36,14 @@ public class CsCiJobBuildChangeServiceImpl implements CsCiJobBuildChangeService 
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildId", buildId);
         return csCiJobBuildChangeMapper.selectByExample(example);
+    }
+
+    @Override
+    public CsCiJobBuildChange queryCsCiJobBuildChangeByUniqueKey(int ciJobId, String commitId) {
+        Example example = new Example(CsCiJobBuildChange.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("ciJobId", ciJobId);
+        criteria.andEqualTo("commitId", commitId);
+        return csCiJobBuildChangeMapper.selectOneByExample(example);
     }
 }
