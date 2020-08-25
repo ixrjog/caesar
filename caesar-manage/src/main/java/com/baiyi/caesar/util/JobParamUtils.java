@@ -2,7 +2,7 @@ package com.baiyi.caesar.util;
 
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
-import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.google.common.base.Joiner;
 
 /**

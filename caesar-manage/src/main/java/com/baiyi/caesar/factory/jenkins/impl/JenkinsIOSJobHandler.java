@@ -5,7 +5,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
-import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
