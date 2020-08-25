@@ -1,4 +1,4 @@
-package com.baiyi.caesar.factory.jenkins.model;
+package com.baiyi.caesar.jenkins.context;
 
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;

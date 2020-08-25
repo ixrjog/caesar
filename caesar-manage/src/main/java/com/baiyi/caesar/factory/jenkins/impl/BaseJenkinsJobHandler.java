@@ -19,9 +19,9 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
 import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
-import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
@@ -111,6 +111,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
                     .csCiJob(csCiJob)
                     .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
+                    .jobParamDetail(jobParamDetail)
                     .build();
             doNotifyByBuildStart(jobBuildContext); // 通知
             jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务

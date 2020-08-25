@@ -40,7 +40,7 @@ import java.util.Map;
 @Slf4j
 public abstract class BaseDingtalkNotify implements IDingtalkNotify, InitializingBean {
 
-    protected static final String  VERSION_NAME = "versionName";
+    public static final String VERSION_NAME = "versionName";
 
     @Resource
     protected CsDingtalkTemplateService csDingtalkTemplateService;
@@ -116,6 +116,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
 
     /**
      * 取通知用户
+     *
      * @param ocUser
      * @param jobBuildContext
      * @return

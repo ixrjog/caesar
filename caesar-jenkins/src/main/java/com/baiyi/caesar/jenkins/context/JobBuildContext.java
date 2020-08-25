@@ -23,5 +23,6 @@ public class JobBuildContext {
     private CiJobBuildVO.JobBuild jobBuild;
     private CiJobVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
+    private JobParamDetail jobParamDetail;
 
 }

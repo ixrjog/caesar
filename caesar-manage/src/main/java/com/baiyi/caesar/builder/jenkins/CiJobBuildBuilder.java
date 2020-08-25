@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.google.common.base.Joiner;
 import org.gitlab.api.models.GitlabBranch;
 import org.springframework.util.StringUtils;
