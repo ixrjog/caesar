@@ -17,9 +17,9 @@ import java.util.Map;
 @Component("DingtalkAndroidNotify")
 public class DingtalkAndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
-    public static final String ENVIRONMENT_BUILD = "ENVIRONMENT_BUILD";
+    public static final String ENVIRONMENT_BUILD = "ENVIRONMENT_BUILD"; // 构建环境
 
-    public static final String PRODUCT_FLAVOR_BUILD = "PRODUCT_FLAVOR_BUILD";
+    public static final String PRODUCT_FLAVOR_BUILD = "PRODUCT_FLAVOR_BUILD"; // 构建渠道
 
     @Override
     public String getKey() {
