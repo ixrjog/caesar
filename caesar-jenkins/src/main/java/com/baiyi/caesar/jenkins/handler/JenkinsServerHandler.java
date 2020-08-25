@@ -51,6 +51,16 @@ public class JenkinsServerHandler {
         }
     }
 
+    public boolean tryJob(String serverName, String jobName) {
+        try {
+            return JenkinsServerContainer.getJenkinsServer(serverName).getJob(jobName) != null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     public Map<String, Computer> getComputerMap(String serverName) {
         try {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);

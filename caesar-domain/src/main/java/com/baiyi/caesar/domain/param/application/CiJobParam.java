@@ -42,6 +42,8 @@ public class CiJobParam {
         @NotNull(message = "必须模版id")
         private Integer jobTplId;
 
+        private String queryName;
+
     }
 
 

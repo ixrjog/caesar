@@ -197,7 +197,11 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
                 if (csJobTpl.getTplVersion() > e.getTplVersion()) {
                     try {
                         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(e.getJenkinsInstanceId());
-                        jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
+                        if( jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())){
+                            jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
+                        }else{
+                            jenkinsServerHandler.createJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
+                        }
                         e.setTplVersion(csJobTpl.getTplVersion() );
                         e.setTplHash(csJobTpl.getTplHash());
                         csCiJobEngineService.updateCsCiJobEngine(e);

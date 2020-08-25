@@ -44,6 +44,9 @@
         select * from cs_ci_job
         <where>
             job_tpl_id = #{jobTplId}
+            <if test="queryName != null and queryName != ''">
+                and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
+            </if>
         </where>
     </select>
 </mapper>
