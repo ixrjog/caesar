@@ -9,4 +9,6 @@ import java.util.List;
 public interface CsCiJobBuildMapper extends Mapper<CsCiJobBuild> {
 
     List<CsCiJobBuild> queryCsCiJobByParam(JobBuildParam.JobBuildPageQuery pageQuery);
+
+    List<CsCiJobBuild> queryCsCiJobBuildArtifactParam(JobBuildParam.JobBuildArtifactQuery query);
 }

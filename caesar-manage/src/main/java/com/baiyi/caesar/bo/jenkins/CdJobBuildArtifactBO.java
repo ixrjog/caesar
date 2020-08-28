@@ -7,16 +7,16 @@ import java.util.Date;
 
 /**
  * @Author baiyi
- * @Date 2020/8/8 9:40 上午
+ * @Date 2020/8/28 11:17 上午
  * @Version 1.0
  */
 @Data
 @Builder
-public class CiJobBuildArtifactBO {
+public class CdJobBuildArtifactBO {
 
     private Integer id;
     private Integer buildId;
-    private Integer ciJobId;
+    private Integer cdJobId;
     private String jobName;
     private String artifactDisplayPath;
     private String artifactFileName;
@@ -25,5 +25,4 @@ public class CiJobBuildArtifactBO {
     private String storagePath;
     private Date updateTime;
     private Date createTime;
-
 }

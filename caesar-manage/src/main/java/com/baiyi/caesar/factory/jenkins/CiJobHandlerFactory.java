@@ -8,15 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/8/5 9:40 上午
  * @Version 1.0
  */
-public class JenkinsJobHandlerFactory {
+public class CiJobHandlerFactory {
 
-    static Map<String, IJenkinsJobHandler> context = new ConcurrentHashMap<>();
+    static Map<String, ICiJobHandler> context = new ConcurrentHashMap<>();
 
-    public static IJenkinsJobHandler getJenkinsJobBuildByKey(String key) {
+    public static ICiJobHandler getCiJobByKey(String key) {
         return context.get(key);
     }
 
-    public static void register(IJenkinsJobHandler bean) {
+    public static void register(ICiJobHandler bean) {
         context.put(bean.getKey(), bean);
     }
 }

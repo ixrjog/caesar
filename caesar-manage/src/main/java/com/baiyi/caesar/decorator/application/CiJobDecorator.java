@@ -12,6 +12,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
@@ -21,6 +22,7 @@ import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.env.OcEnvService;
+import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
@@ -51,6 +53,9 @@ public class CiJobDecorator {
     private CsJobTplService csJobTplService;
 
     @Resource
+    private CsCdJobService csCdJobService;
+
+    @Resource
     private CsOssBucketService csOssBucketService;
 
     @Resource
@@ -79,7 +84,7 @@ public class CiJobDecorator {
                     csCiJobEngines.stream().map(e -> {
                         CiJobVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, CiJobVO.JobEngine.class);
                         jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
-                        if(jobEngine.getNeedUpgrade())
+                        if (jobEngine.getNeedUpgrade())
                             needUpgrade.set(true);
                         return ciJobEngineDecorator.decorator(jobEngine);
                     }).collect(Collectors.toList())
@@ -88,7 +93,6 @@ public class CiJobDecorator {
         ciJob.setNeedUpgrade(needUpgrade.get());
         return ciJob;
     }
-
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, Integer extend) {
         if (extend == 0) return ciJob;
@@ -126,7 +130,7 @@ public class CiJobDecorator {
             }
         }
 
-        //
+        // 参数
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(ciJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         ciJob.setParameters(params);
@@ -136,7 +140,30 @@ public class CiJobDecorator {
         query.setExtend(1);
         ciJob.setBuildViews(acqCiJobBuildView(query));
 
+        // cdJob
+        if (!IDUtils.isEmpty(ciJob.getDeploymentJobId())) {
+            CsCdJob csCdJob = csCdJobService.queryCsCdJobById(ciJob.getDeploymentJobId());
+            if (csCdJob != null) {
+                ciJob.setCdJob(decorator(BeanCopierUtils.copyProperties(csCdJob, CdJobVO.CdJob.class)));
+            }
+        }
+
         return ciJob;
+    }
+
+    public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob) {
+        if(!IDUtils.isEmpty(cdJob.getJobTplId())){
+            CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(cdJob.getJobTplId());
+            if (csJobTpl != null)
+                cdJob.setJobTpl(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
+        }
+
+        // 参数
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(cdJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+        cdJob.setParameters(params);
+
+        return cdJob;
     }
 
     private List<CiJobBuildVO.JobBuildView> acqCiJobBuildView(JobBuildParam.JobBuildPageQuery pageQuery) {

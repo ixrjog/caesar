@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsJobBuildArtifactMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="build_id" jdbcType="INTEGER" property="buildId" />
+    <result column="build_type" jdbcType="INTEGER" property="buildType" />
+    <result column="job_id" jdbcType="INTEGER" property="jobId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="artifact_display_path" jdbcType="VARCHAR" property="artifactDisplayPath" />
+    <result column="artifact_file_name" jdbcType="VARCHAR" property="artifactFileName" />
+    <result column="artifact_relative_path" jdbcType="VARCHAR" property="artifactRelativePath" />
+    <result column="artifact_size" jdbcType="BIGINT" property="artifactSize" />
+    <result column="storage_path" jdbcType="VARCHAR" property="storagePath" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+</mapper>

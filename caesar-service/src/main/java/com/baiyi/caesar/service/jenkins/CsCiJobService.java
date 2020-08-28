@@ -22,4 +22,6 @@ public interface CsCiJobService {
     void deleteCsCiJobById(int id);
 
     CsCiJob queryCsCiJobById(int id);
+
+    CsCiJob queryCsCiJobByUniqueKey(int applicationId,String jobKey);
 }

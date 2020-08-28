@@ -1,4 +1,4 @@
-package com.baiyi.caesar.factory.jenkins.impl;
+package com.baiyi.caesar.factory.jenkins.impl.ci;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
@@ -16,8 +16,8 @@ import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
-import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
-import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.ICiJobHandler;
+import com.baiyi.caesar.factory.jenkins.CiJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
@@ -47,7 +47,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, InitializingBean {
+public abstract class BaseCiJobHandler implements ICiJobHandler, InitializingBean {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
@@ -86,7 +86,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
     private GitlabBranchHandler gitlabBranchHandler;
 
     @Override
-    public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
+    public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csCiJob.getApplicationId());
         BusinessWrapper<CiJobVO.JobEngine> wrapper = acqJobEngine(csCiJob);
         if (!wrapper.isSuccess())
@@ -165,7 +165,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
      * @param csCiJob
      * @return
      */
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.CiBuildParam buildParam) {
+    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
@@ -189,14 +189,14 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
     }
 
     @Override
-    public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact) {
+    public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
         // iOS Java Python
         // /应用名/任务名/任务编号/
         CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();
         String jobName = jobBuild.getJobName();
         String jobBuildNumber = String.valueOf(jobBuild.getJobBuildNumber());
-        return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csCiJobBuildArtifact.getArtifactFileName());
+        return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csJobBuildArtifact.getArtifactFileName());
     }
 
     private BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
@@ -216,7 +216,7 @@ public abstract class BaseJenkinsJobHandler implements IJenkinsJobHandler, Initi
      */
     @Override
     public void afterPropertiesSet() {
-        JenkinsJobHandlerFactory.register(this);
+        CiJobHandlerFactory.register(this);
     }
 
 }

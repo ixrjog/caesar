@@ -12,7 +12,8 @@ public enum JobType {
     SPRINGBOOT("SPRINGBOOT"),
     HTML5("HTML5"),
     JAVA("JAVA"),
-    PYTHON("PYTHON")
+    PYTHON("PYTHON"),
+    ANDROID_REINFORCE("ANDROID_REINFORCE")
     ;
 
     private String type;

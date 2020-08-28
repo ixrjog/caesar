@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 
@@ -40,7 +41,11 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob);
 
+    BusinessWrapper<Boolean> addCdJob(CdJobVO.CdJob cdJob);
+
     BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob);
+
+    BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob);
 
     BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
 

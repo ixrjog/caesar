@@ -2,7 +2,7 @@ package com.baiyi.caesar.decorator.jenkins;
 
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.bae64.FileSizeUtils;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
+import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.google.common.base.Joiner;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class JobBuildArtifactDecorator {
 
-    public List<CiJobBuildVO.BuildArtifact> decorator(List<CsCiJobBuildArtifact> artifacts, CsOssBucket csOssBucket) {
+    public List<CiJobBuildVO.BuildArtifact> decorator(List<CsJobBuildArtifact> artifacts, CsOssBucket csOssBucket) {
         if (CollectionUtils.isEmpty(artifacts))
             return Lists.newArrayList();
 

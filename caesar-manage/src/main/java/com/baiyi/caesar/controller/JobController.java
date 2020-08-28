@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -28,7 +29,7 @@ public class JobController {
 
     @ApiOperation(value = "执行持续集成构建任务")
     @PostMapping(value = "/ci/build", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.CiBuildParam buildParam) {
+    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildParam buildParam) {
         return new HttpResult<>(jobFacade.buildCiJob(buildParam));
     }
 
@@ -37,6 +38,13 @@ public class JobController {
     public HttpResult<DataTable<CiJobBuildVO.JobBuild>> queryCiJobBuildPage(@RequestBody @Valid JobBuildParam.JobBuildPageQuery pageQuery) {
         return new HttpResult<>(jobFacade.queryCiJobBuildPage(pageQuery));
     }
+
+    @ApiOperation(value = "查询持续集成构件")
+    @PostMapping(value = "/ci/build/artifact/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<CiJobBuildVO.JobBuild>> queryCiJobBuildArtifact(@RequestBody @Valid JobBuildParam.JobBuildArtifactQuery query) {
+        return new HttpResult<>(jobFacade.queryCiJobBuildArtifact(query));
+    }
+
 
     @ApiOperation(value = "查询持续集成构建任务")
     @GetMapping(value = "/ci/build/query", produces = MediaType.APPLICATION_JSON_VALUE)

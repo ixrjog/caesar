@@ -1,10 +1,10 @@
-package com.baiyi.caesar.factory.jenkins.impl;
+package com.baiyi.caesar.factory.jenkins.impl.ci;
 
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildArtifact;
+import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
-import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
+import com.baiyi.caesar.factory.jenkins.ICiJobHandler;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Slf4j
-@Component("JenkinsH5JobHandler")
-public class JenkinsH5JobHandler extends BaseJenkinsJobHandler implements IJenkinsJobHandler {
+@Component("H5CiJobHandler")
+public class H5CiJobHandler extends BaseCiJobHandler implements ICiJobHandler {
 
     @Override
     public String getKey() {
@@ -24,14 +24,14 @@ public class JenkinsH5JobHandler extends BaseJenkinsJobHandler implements IJenki
     }
 
     @Override
-    public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsCiJobBuildArtifact csCiJobBuildArtifact) {
+    public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
         // HTML5
         // /应用名/任务名/分支/
         CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();
         String jobName = jobBuild.getJobName();
         String branch = jobBuild.getBranch();
-        return Joiner.on("/").join(applicationName, jobName, branch ,csCiJobBuildArtifact.getArtifactFileName());
+        return Joiner.on("/").join(applicationName, jobName, branch ,csJobBuildArtifact.getArtifactFileName());
     }
 
 

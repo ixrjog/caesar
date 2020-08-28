@@ -21,13 +21,13 @@ public class CsCiJobBuildExecutorServiceImpl implements CsCiJobBuildExecutorServ
     private CsCiJobBuildExecutorMapper csCiJobBuildExecutorMapper;
 
     @Override
-    public void addCsCiJobBuildExecutor(CsCiJobBuildExecutor csCiJobBuildChange) {
-        csCiJobBuildExecutorMapper.insert(csCiJobBuildChange);
+    public void addCsCiJobBuildExecutor(CsCiJobBuildExecutor csCiJobBuildExecutor) {
+        csCiJobBuildExecutorMapper.insert(csCiJobBuildExecutor);
     }
 
     @Override
-    public void updateCsCiJobBuildExecutor(CsCiJobBuildExecutor csCiJobBuildChange) {
-        csCiJobBuildExecutorMapper.updateByPrimaryKey(csCiJobBuildChange);
+    public void updateCsCiJobBuildExecutor(CsCiJobBuildExecutor csCiJobBuildExecutor) {
+        csCiJobBuildExecutorMapper.updateByPrimaryKey(csCiJobBuildExecutor);
     }
 
     @Override

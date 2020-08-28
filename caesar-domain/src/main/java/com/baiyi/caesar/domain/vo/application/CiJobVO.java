@@ -58,6 +58,9 @@ public class CiJobVO {
         @ApiModelProperty(value = "需要升级模版")
         private Boolean needUpgrade;
 
+        @ApiModelProperty(value = "部署任务")
+        private CdJobVO.CdJob cdJob;
+
         private Integer id;
         private Integer applicationId;
         @NotBlank(message = "任务名不能为空")

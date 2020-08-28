@@ -32,6 +32,12 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
+    public List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query){
+        PageHelper.startPage(1, query.getSize().intValue());
+        return csCiJobBuildMapper.queryCsCiJobBuildArtifactParam(query);
+    }
+
+    @Override
     public CsCiJobBuild queryCiJobBuildById(int id) {
         return csCiJobBuildMapper.selectByPrimaryKey(id);
     }

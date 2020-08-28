@@ -1,5 +1,6 @@
 package com.baiyi.caesar.decorator.jenkins;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.TimeAgoUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
@@ -36,7 +37,7 @@ public class JobBuildDecorator {
     private CiJobEngineDecorator ciJobEngineDecorator;
 
     @Resource
-    private CsCiJobBuildArtifactService csCiJobBuildArtifactService;
+    private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
     private JobBuildArtifactDecorator jobBuildArtifactDecorator;
@@ -73,7 +74,7 @@ public class JobBuildDecorator {
 
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
         CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-        List<CsCiJobBuildArtifact> artifacts = csCiJobBuildArtifactService.queryCsCiJobBuildArtifactByBuildId(jobBuild.getId());
+        List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), jobBuild.getId());
         jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
         jobBuild.setChanges(getBuildChangeByBuildId(jobBuild.getId()));
 
@@ -116,6 +117,5 @@ public class JobBuildDecorator {
                 }
         ).collect(Collectors.toList());
     }
-
 
 }

@@ -15,6 +15,8 @@ public interface CsCiJobBuildService {
 
     DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery);
 
+    List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
+
     CsCiJobBuild queryCiJobBuildById(int id);
 
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);

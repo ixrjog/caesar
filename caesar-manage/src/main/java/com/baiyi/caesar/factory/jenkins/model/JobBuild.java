@@ -1,6 +1,7 @@
 package com.baiyi.caesar.factory.jenkins.model;
 
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,8 +19,12 @@ public class JobBuild {
     private Integer buildNumber;
 
 
-    public boolean isJobBuild(JobBuildContext jobBuildContext) {
-        return jobBuildContext.getJobBuild().getJobName().equals(this.jobName) && jobBuildContext.getJobBuild().getEngineBuildNumber().equals(buildNumber);
+    public boolean isJobBuild(JobBuildContext context) {
+        return context.getJobBuild().getJobName().equals(this.jobName) && context.getJobBuild().getEngineBuildNumber().equals(buildNumber);
+    }
+
+    public boolean isJobBuild(JobDeploymentContext context) {
+        return context.getJobBuild().getJobName().equals(this.jobName) && context.getJobBuild().getEngineBuildNumber().equals(buildNumber);
     }
 
 }

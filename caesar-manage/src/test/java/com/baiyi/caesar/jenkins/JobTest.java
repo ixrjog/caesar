@@ -38,7 +38,7 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testBuild() {
-        JobBuildParam.CiBuildParam buildParam = new JobBuildParam.CiBuildParam();
+        JobBuildParam.BuildParam buildParam = new JobBuildParam.BuildParam();
         buildParam.setCiJobId(2);
         jobFacade.buildCiJob(buildParam);
     }

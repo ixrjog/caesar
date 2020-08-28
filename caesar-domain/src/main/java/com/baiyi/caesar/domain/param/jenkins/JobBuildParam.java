@@ -36,6 +36,18 @@ public class JobBuildParam {
     @Data
     @NoArgsConstructor
     @ApiModel
+    public static class JobBuildArtifactQuery {
+
+        @ApiModelProperty(value = "任务id")
+        @NotNull
+        private Integer ciJobId;
+
+        private Integer size;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
     public static class JobBuildQuery {
 
         @ApiModelProperty(value = "任务id")
@@ -45,11 +57,10 @@ public class JobBuildParam {
     }
 
 
-
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CiBuildParam {
+    public static class BuildParam {
 
         @ApiModelProperty(value = "任务id")
         @NotNull
@@ -64,7 +75,7 @@ public class JobBuildParam {
         @ApiModelProperty(value = "版本说明")
         private String versionDesc;
 
-        private Map<String,String> paramMap;
+        private Map<String, String> paramMap;
 
     }
 }

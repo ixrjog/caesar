@@ -15,14 +15,18 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class JobBuildContext {
+public class JobBuildContext  {
+
+    @Builder.Default
+    private int buildType = 0;
 
     private CsApplication csApplication;
-
     private CsCiJob csCiJob;
-    private CiJobBuildVO.JobBuild jobBuild;
+
     private CiJobVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
     private JobParamDetail jobParamDetail;
+
+    private CiJobBuildVO.JobBuild jobBuild;
 
 }

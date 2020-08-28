@@ -25,17 +25,17 @@ public class JobParamUtils {
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
     }
 
-    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.CiBuildParam buildParam) {
+    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("podUpdate")) return;
         jobParamDetail.getParams().put("podUpdate", buildParam.getParamMap().get("podUpdate"));
     }
 
-    public static void invokeEnvironmentBuild(JobParamDetail jobParamDetail, JobBuildParam.CiBuildParam buildParam) {
+    public static void invokeEnvironmentBuild(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("ENVIRONMENT_BUILD")) return;
         jobParamDetail.getParams().put("ENVIRONMENT_BUILD", buildParam.getParamMap().get("ENVIRONMENT_BUILD"));
     }
 
-    public static void invokeProductFlavorBuild(JobParamDetail jobParamDetail, JobBuildParam.CiBuildParam buildParam) {
+    public static void invokeProductFlavorBuild(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("PRODUCT_FLAVOR_BUILD")) return;
         jobParamDetail.getParams().put("PRODUCT_FLAVOR_BUILD", buildParam.getParamMap().get("PRODUCT_FLAVOR_BUILD"));
     }

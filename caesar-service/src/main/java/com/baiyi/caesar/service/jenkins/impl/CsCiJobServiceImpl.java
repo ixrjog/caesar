@@ -8,6 +8,7 @@ import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,7 +32,7 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     }
 
     @Override
-    public   DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobTplPageQuery pageQuery){
+    public DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobTplPageQuery pageQuery) {
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
         List<CsCiJob> list = csCiJobMapper.queryCsCiJobTplByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
@@ -55,5 +56,14 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     @Override
     public CsCiJob queryCsCiJobById(int id) {
         return csCiJobMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey) {
+        Example example = new Example(CsCiJob.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("applicationId", applicationId);
+        criteria.andEqualTo("jobKey", jobKey);
+        return csCiJobMapper.selectOneByExample(example);
     }
 }

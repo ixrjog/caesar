@@ -183,6 +183,7 @@ public enum ErrorEnum {
     JENKINS_JOB_TPL_WRITE_ERROR(80001,"写入任务模版错误！"),
     JENKINS_JOB_ENGINE_NOT_CONFIGURED(80001,"任务工作引擎未配置！"),
     JENKINS_JOB_NO_ENGINES_AVAILABLE(80001,"没有可用的工作引擎！"),
+    JENKINS_JOB_EXISTS(80001,"任务已存在！"),
     APPLICATION_SCM_NOT_EXIST(70001, "应用仓库配置不存在！"),
     APPLICATION_NOT_ADMIN(70001, "你不是此应用的管理员！")
     ;

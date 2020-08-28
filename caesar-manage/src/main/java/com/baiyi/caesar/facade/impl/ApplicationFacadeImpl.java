@@ -16,6 +16,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
@@ -27,6 +28,7 @@ import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
+import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private CsCiJobService csCiJobService;
+
+    @Resource
+    private CsCdJobService csCdJobService;
 
     @Resource
     private CiJobDecorator ciJobDecorator;
@@ -161,6 +166,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        if(!checkJob(csCiJob.getApplicationId(),csCiJob.getJobKey()))
+            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
         if (ciJob.getJobTpl() != null)
             csCiJob.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.addCsCiJob(csCiJob);
@@ -168,11 +175,41 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
+    public BusinessWrapper<Boolean> addCdJob(CdJobVO.CdJob cdJob) {
+        CsCdJob csCdJob = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        if(!checkJob(csCdJob.getApplicationId(),csCdJob.getJobKey()))
+            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
+        if (cdJob.getJobTpl() != null)
+            csCdJob.setJobTplId(cdJob.getJobTpl().getId());
+        csCdJobService.addCsCdJob(csCdJob);
+        // 更新部署jobId
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(cdJob.getCiJobId());
+        csCiJob.setDeploymentJobId(csCdJob.getId());
+        csCiJobService.updateCsCiJob(csCiJob);
+
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private boolean checkJob(int applicationId, String jobKey) {
+        return csCiJobService.queryCsCiJobByUniqueKey(applicationId, jobKey) == null
+                && csCdJobService.queryCsCdJobByUniqueKey(applicationId, jobKey) == null;
+    }
+
+    @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
-        if(ciJob.getJobTpl() != null)
+        if (ciJob.getJobTpl() != null)
             csCiJob.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.updateCsCiJob(csCiJob);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob) {
+        CsCdJob csCdJob = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        if (cdJob.getJobTpl() != null)
+            csCdJob.setJobTplId(cdJob.getJobTpl().getId());
+        csCdJobService.updateCsCdJob(csCdJob);
         return BusinessWrapper.SUCCESS;
     }
 

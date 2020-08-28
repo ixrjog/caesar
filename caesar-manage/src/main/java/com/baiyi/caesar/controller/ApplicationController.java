@@ -5,6 +5,7 @@ import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
@@ -101,6 +102,19 @@ public class ApplicationController {
     public HttpResult<Boolean> updateCiJob(@RequestBody @Valid CiJobVO.CiJob ciJob) {
         return new HttpResult<>(applicationFacade.updateCiJob(ciJob));
     }
+
+    @ApiOperation(value = "新增持续集成部署任务配置")
+    @PostMapping(value = "/cd/job/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addCdJob(@RequestBody @Valid CdJobVO.CdJob cdJob) {
+        return new HttpResult<>(applicationFacade.addCdJob(cdJob));
+    }
+
+    @ApiOperation(value = "更新持续集成部署任务配置")
+    @PutMapping(value = "/cd/job/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateCdJob(@RequestBody @Valid CdJobVO.CdJob cdJob) {
+        return new HttpResult<>(applicationFacade.updateCdJob(cdJob));
+    }
+
 
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
