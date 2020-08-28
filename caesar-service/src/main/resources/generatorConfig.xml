@@ -113,7 +113,7 @@ cs_cd_job
 cs_job_build_artifact
        -->
 
-        <table tableName="cs_job_build_artifact">
+        <table tableName="cs_job_engine">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

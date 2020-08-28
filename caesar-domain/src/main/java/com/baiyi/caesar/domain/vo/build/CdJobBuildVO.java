@@ -1,6 +1,6 @@
 package com.baiyi.caesar.domain.vo.build;
 
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
+import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -23,7 +23,7 @@ public class CdJobBuildVO {
     @ApiModel
     public static class JobBuild {
 
-        private CdJobVO.JobEngine jobEngine;
+        private CiJobVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
         private List<CiJobBuildVO.BuildArtifact> artifacts;
 

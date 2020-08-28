@@ -3,8 +3,9 @@ package com.baiyi.caesar.factory.jenkins.engine.impl;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.builder.jenkins.CiJobBuildChangeBuilder;
-import com.baiyi.caesar.builder.jenkins.CiJobBuildExecutorBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
+import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
@@ -15,8 +16,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ServerBaseFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsCdJobFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
+import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.factory.jenkins.CiJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.ICiJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
@@ -56,11 +56,10 @@ import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Resource
-    private CsCiJobEngineService csCiJobEngineService;
-
+    private CsJobEngineService csJobEngineService;
 
     @Resource
-    private JenkinsCiJobFacade jenkinsCiJobFacade;
+    private JenkinsJobFacade jenkinsCiJobFacade;
 
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
@@ -93,10 +92,8 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private CsCiJobBuildChangeService csCiJobBuildChangeService;
 
     @Resource
-    private CsCiJobBuildExecutorService csCiJobBuildExecutorService;
+    private CsJobBuildExecutorService csJobBuildExecutorService;
 
-    @Resource
-    private JenkinsCdJobFacade jenkinsCdJobFacade;
 
     @Resource
     private RedisUtil redisUtil;
@@ -105,10 +102,10 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Override
     public BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
-        List<CsCiJobEngine> csCiJobEngines = queryCiJobEngine(csCiJob.getId());
-        if (CollectionUtils.isEmpty(csCiJobEngines))
+        List<CsJobEngine> csJobEngines = queryJobEngine( BuildType.BUILD.getType(), csCiJob.getId());
+        if (CollectionUtils.isEmpty(csJobEngines))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_ENGINE_NOT_CONFIGURED); // 工作引擎未配置
-        List<CsCiJobEngine> activeEngines = csCiJobEngines.stream().filter(e ->
+        List<CsJobEngine> activeEngines = csJobEngines.stream().filter(e ->
                 tryJenkinsInstanceActive(e.getJenkinsInstanceId())
         ).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(activeEngines))
@@ -119,15 +116,14 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Override
     public CiJobVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId) {
-        CsCiJobEngine csCiJobEngine = csCiJobEngineService.queryCsCiJobEngineById(jobEngineId);
-        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, CiJobVO.JobEngine.class));
+        CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
+        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, CiJobVO.JobEngine.class));
     }
 
-
-    private CiJobVO.JobEngine buildRandomCiJobEngine(List<CsCiJobEngine> activeEngines) {
+    private CiJobVO.JobEngine buildRandomCiJobEngine(List<CsJobEngine> activeEngines) {
         Random random = new Random();
         int n = random.nextInt(activeEngines.size());
-        CsCiJobEngine csCiJobEngine = activeEngines.get(n);
+        CsJobEngine csCiJobEngine = activeEngines.get(n);
         return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, CiJobVO.JobEngine.class));
     }
 
@@ -138,11 +134,11 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         return csJenkinsInstance.getIsActive();
     }
 
-    private List<CsCiJobEngine> queryCiJobEngine(int ciJobId) {
-        List<CsCiJobEngine> csCiJobEngines = csCiJobEngineService.queryCsCiJobEngineByJobId(ciJobId);
-        if (CollectionUtils.isEmpty(csCiJobEngines))
-            jenkinsCiJobFacade.createJobEngine(ciJobId);
-        return csCiJobEngineService.queryCsCiJobEngineByJobId(ciJobId);
+    private List<CsJobEngine> queryJobEngine(int buildType, int ciJobId) {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(buildType,ciJobId);
+        if (CollectionUtils.isEmpty(csJobEngines))
+            jenkinsCiJobFacade.createJobEngine(buildType,ciJobId);
+        return csJobEngineService.queryCsJobEngineByJobId(buildType,ciJobId);
     }
 
     @Override
@@ -198,8 +194,8 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
 
     private void recordJobBuildComputer(JobBuildContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
-        CsCiJobBuildExecutor pre = CiJobBuildExecutorBuilder.build(jobBuildContext, computerWithDetails, jobBuild);
-        if (csCiJobBuildExecutorService.queryCsCiJobBuildExecutorByUniqueKey(pre.getBuildId(), pre.getNodeName()) != null)
+        CsJobBuildExecutor pre = JobBuildExecutorBuilder.build(jobBuildContext, computerWithDetails, jobBuild);
+        if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.BUILD.getType(),pre.getBuildId(), pre.getNodeName()) != null)
             return;
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobBuildContext.getJobEngine().getJenkinsInstanceId());
         List<OcServer> nodeList = ocServerService.queryOcServerByServerGroupId(csJenkinsInstance.getNodeServerGroupId());
@@ -210,14 +206,14 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
                 break;
             }
         }
-        csCiJobBuildExecutorService.addCsCiJobBuildExecutor(pre);
+        csJobBuildExecutorService.addCsJobBuildExecutor(pre);
     }
 
     private void recordJobEngine(JobWithDetails job, CiJobVO.JobEngine jobEngine) {
         if (job.getNextBuildNumber() == jobEngine.getNextBuildNumber()) return;
         jobEngine.setNextBuildNumber(job.getNextBuildNumber());
         jobEngine.setLastBuildNumber(job.getNextBuildNumber() - 1);
-        csCiJobEngineService.updateCsCiJobEngine(BeanCopierUtils.copyProperties(jobEngine, CsCiJobEngine.class));
+        csJobEngineService.updateCsJobEngine(BeanCopierUtils.copyProperties(jobEngine, CsJobEngine.class));
     }
 
 

@@ -2,7 +2,6 @@ package com.baiyi.caesar.domain.vo.application;
 
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
-import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -63,35 +62,4 @@ public class CdJobVO {
 
     }
 
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class JobEngine {
-
-        @ApiModelProperty(value = "jenkins实例详情")
-        private JenkinsInstanceVO.Instance jenkinsInstance;
-
-        @ApiModelProperty(value = "最后构建任务url")
-        private String lastBuildUrl;
-
-        @ApiModelProperty(value = "需要升级模版")
-        private Boolean needUpgrade;
-
-        private Integer id;
-        private Integer cdJobId;
-        private Integer jenkinsInstanceId;
-        private String name;
-        private String jobUrl;
-        private Integer lastBuildNumber;
-        private Integer nextBuildNumber;
-        private Integer lastCompletedBuildNumber;
-        private Integer lastSuccessfulBuildNumber;
-        private Integer lastFailedBuildNumber;
-        private Integer jobStatus;
-        private Integer tplVersion;
-        private String tplHash;
-        private Date createTime;
-        private Date updateTime;
-        private String comment;
-    }
 }

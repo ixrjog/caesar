@@ -63,9 +63,9 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> removeApplicationEngine(int id);
 
-    BusinessWrapper<Boolean> createCiJobEngine(int ciJobId);
+    BusinessWrapper<Boolean> createJobEngine(int buildType,int jobId);
 
-    List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId);
+    List<CiJobVO.JobEngine> queryJobEngine(int buildType,int jobId);
 
     BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId);
 

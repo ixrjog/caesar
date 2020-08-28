@@ -2,7 +2,7 @@ package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
+import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.google.common.base.Joiner;
@@ -21,7 +21,7 @@ public class CdJobEngineDecorator {
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
 
-    public CdJobVO.JobEngine decorator(CdJobVO.JobEngine jobEngine) {
+    public CiJobVO.JobEngine decorator(CiJobVO.JobEngine jobEngine) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobEngine.getJenkinsInstanceId());
         if (csJenkinsInstance != null) {
             jobEngine.setJenkinsInstance(BeanCopierUtils.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));

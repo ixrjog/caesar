@@ -3,17 +3,20 @@ package com.baiyi.caesar.domain.generator.caesar;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "cs_ci_job_engine")
-public class CsCiJobEngine {
+@Table(name = "cs_job_engine")
+public class CsJobEngine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "build_type")
+    private Integer buildType;
+
     /**
      * 任务id
      */
-    @Column(name = "ci_job_id")
-    private Integer ciJobId;
+    @Column(name = "job_id")
+    private Integer jobId;
 
     /**
      * jenkins实例id
@@ -106,21 +109,35 @@ public class CsCiJobEngine {
     }
 
     /**
+     * @return build_type
+     */
+    public Integer getBuildType() {
+        return buildType;
+    }
+
+    /**
+     * @param buildType
+     */
+    public void setBuildType(Integer buildType) {
+        this.buildType = buildType;
+    }
+
+    /**
      * 获取任务id
      *
-     * @return ci_job_id - 任务id
+     * @return job_id - 任务id
      */
-    public Integer getCiJobId() {
-        return ciJobId;
+    public Integer getJobId() {
+        return jobId;
     }
 
     /**
      * 设置任务id
      *
-     * @param ciJobId 任务id
+     * @param jobId 任务id
      */
-    public void setCiJobId(Integer ciJobId) {
-        this.ciJobId = ciJobId;
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
     }
 
     /**

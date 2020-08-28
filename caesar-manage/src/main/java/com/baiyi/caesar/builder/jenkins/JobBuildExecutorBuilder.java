@@ -1,10 +1,11 @@
 package com.baiyi.caesar.builder.jenkins;
 
-import com.baiyi.caesar.bo.jenkins.CiJobBuildExecutorBO;
+import com.baiyi.caesar.bo.jenkins.JobBuildExecutorBO;
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildExecutor;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.domain.generator.caesar.CsJobBuildExecutor;
 import com.baiyi.caesar.factory.jenkins.model.JobBuild;
+import com.baiyi.caesar.jenkins.context.JobBuildContext;
 import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
 
@@ -15,12 +16,12 @@ import java.util.Map;
  * @Date 2020/8/12 4:34 下午
  * @Version 1.0
  */
-public class CiJobBuildExecutorBuilder {
+public class JobBuildExecutorBuilder {
     //  CiJobBuildExecutorBO
 
     private static final String DISK_SPACE_MONITOR_KEY = "hudson.node_monitors.DiskSpaceMonitor";
 
-    public static CsCiJobBuildExecutor build(JobBuildContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+    public static CsJobBuildExecutor build(JobBuildContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         Map<String, Map> monitorData = computerWithDetails.getMonitorData();
         Map<String, Map> diskMonitorMap ;
         String rootDirectory = "";
@@ -30,8 +31,9 @@ public class CiJobBuildExecutorBuilder {
             if (o != null)
                 rootDirectory = String.valueOf(o);
         }
-        CiJobBuildExecutorBO bo = CiJobBuildExecutorBO.builder()
-                .ciJobId(jobBuildContext.getCsCiJob().getId())
+        JobBuildExecutorBO bo = JobBuildExecutorBO.builder()
+                .buildType(BuildType.BUILD.getType())
+                .jobId(jobBuildContext.getCsCiJob().getId())
                 .buildId(jobBuildContext.getJobBuild().getId())
                 .jobName(jobBuildContext.getJobBuild().getJobName())
                 .nodeName(computerWithDetails.getDisplayName())
@@ -43,7 +45,7 @@ public class CiJobBuildExecutorBuilder {
         return covert(bo);
     }
 
-    private static CsCiJobBuildExecutor covert(CiJobBuildExecutorBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsCiJobBuildExecutor.class);
+    private static CsJobBuildExecutor covert(JobBuildExecutorBO bo) {
+        return BeanCopierUtils.copyProperties(bo, CsJobBuildExecutor.class);
     }
 }

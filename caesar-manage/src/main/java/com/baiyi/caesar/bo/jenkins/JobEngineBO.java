@@ -12,10 +12,11 @@ import java.util.Date;
  */
 @Data
 @Builder
-public class CiJobEngineBO {
+public class JobEngineBO {
 
     private Integer id;
-    private Integer ciJobId;
+    private Integer buildType;
+    private Integer jobId;
     private Integer jenkinsInstanceId;
     private String name;
     private String jobUrl;

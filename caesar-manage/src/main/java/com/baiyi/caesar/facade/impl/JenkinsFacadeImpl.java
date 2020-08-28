@@ -1,5 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.HashUtils;
 import com.baiyi.caesar.decorator.application.CiJobDecorator;
@@ -9,8 +10,8 @@ import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobEngine;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
+import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
@@ -23,9 +24,9 @@ import com.baiyi.caesar.facade.JenkinsFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
-import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
@@ -73,7 +74,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     private CiJobDecorator ciJobDecorator;
 
     @Resource
-    private CsCiJobEngineService csCiJobEngineService;
+    private CsJobEngineService csJobEngineService;
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
@@ -191,20 +192,20 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     public BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobId);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-        List<CsCiJobEngine> csCiJobEngines = csCiJobEngineService.queryCsCiJobEngineByJobId(jobId);
-        if (!CollectionUtils.isEmpty(csCiJobEngines))
-            csCiJobEngines.forEach(e -> {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(), jobId);
+        if (!CollectionUtils.isEmpty(csJobEngines))
+            csJobEngines.forEach(e -> {
                 if (csJobTpl.getTplVersion() > e.getTplVersion()) {
                     try {
                         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(e.getJenkinsInstanceId());
-                        if( jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())){
+                        if (jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())) {
                             jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
-                        }else{
+                        } else {
                             jenkinsServerHandler.createJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
                         }
-                        e.setTplVersion(csJobTpl.getTplVersion() );
+                        e.setTplVersion(csJobTpl.getTplVersion());
                         e.setTplHash(csJobTpl.getTplHash());
-                        csCiJobEngineService.updateCsCiJobEngine(e);
+                        csJobEngineService.updateCsJobEngine(e);
                     } catch (IOException ignored) {
                     }
                 }

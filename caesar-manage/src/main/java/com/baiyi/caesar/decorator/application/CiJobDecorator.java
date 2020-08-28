@@ -1,5 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -24,7 +25,7 @@ import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
-import com.baiyi.caesar.service.jenkins.CsCiJobEngineService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -71,13 +72,13 @@ public class CiJobDecorator {
     private JobBuildDecorator jobBuildDecorator;
 
     @Resource
-    private CsCiJobEngineService csCiJobEngineService;
+    private CsJobEngineService csJobEngineService;
 
     @Resource
     private CiJobEngineDecorator ciJobEngineDecorator;
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, CsJobTpl csJobTpl) {
-        List<CsCiJobEngine> csCiJobEngines = csCiJobEngineService.queryCsCiJobEngineByJobId(ciJob.getId());
+        List<CsJobEngine> csCiJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(),ciJob.getId());
         AtomicReference<Boolean> needUpgrade = new AtomicReference<>(false);
         if (!CollectionUtils.isEmpty(csCiJobEngines)) {
             ciJob.setJobEngines(

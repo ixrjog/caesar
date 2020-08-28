@@ -1,18 +1,13 @@
 package com.baiyi.caesar.decorator.jenkins;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuildExecutor;
-import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
-import com.baiyi.caesar.domain.vo.server.ServerVO;
-import com.baiyi.caesar.service.jenkins.CsCiJobBuildExecutorService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildExecutorService;
 import com.baiyi.caesar.service.server.OcServerService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
@@ -23,7 +18,7 @@ import java.util.stream.Collectors;
 public class JobDeploymentDecorator {
 
     @Resource
-    private CsCiJobBuildExecutorService csCiJobBuildExecutorService;
+    private CsJobBuildExecutorService csCiJobBuildExecutorService;
 
     @Resource
     private OcServerService ocServerService;
@@ -43,14 +38,6 @@ public class JobDeploymentDecorator {
     }
 
     public List<CiJobBuildVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
-        List<CsCiJobBuildExecutor> executors = csCiJobBuildExecutorService.queryCsCiJobBuildExecutorByBuildId(buildId);
-        return executors.stream().map(e -> {
-                    CiJobBuildVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildExecutor.class);
-                    OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
-                    if (ocServer != null)
-                        buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
-                    return buildExecutor;
-                }
-        ).collect(Collectors.toList());
+        return null;
     }
 }

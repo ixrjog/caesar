@@ -101,7 +101,8 @@ public class CiJobVO {
         private Boolean needUpgrade;
 
         private Integer id;
-        private Integer ciJobId;
+        private Integer buildType;
+        private Integer jobId;
         private Integer jenkinsInstanceId;
         private String name;
         private String jobUrl;

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class JobBuildDecorator {
 
     @Resource
-    private CsCiJobEngineService csCiJobEngineService;
+    private CsJobEngineService csJobEngineService;
 
     @Resource
     private CiJobEngineDecorator ciJobEngineDecorator;
@@ -52,7 +52,7 @@ public class JobBuildDecorator {
     private CsCiJobBuildChangeService csCiJobBuildChangeService;
 
     @Resource
-    private CsCiJobBuildExecutorService csCiJobBuildExecutorService;
+    private CsJobBuildExecutorService csJobBuildExecutorService;
 
     @Resource
     private OcServerService ocServerService;
@@ -63,7 +63,7 @@ public class JobBuildDecorator {
     public CiJobBuildVO.JobBuild decorator(CiJobBuildVO.JobBuild jobBuild, Integer extend) {
         if (extend == 0) return jobBuild;
         // 装饰工作引擎
-        CsCiJobEngine csCiJobEngine = csCiJobEngineService.queryCsCiJobEngineById(jobBuild.getJobEngineId());
+        CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
         if (csCiJobEngine != null) {
             CiJobVO.JobEngine jobEngine = ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, CiJobVO.JobEngine.class));
             jobBuild.setJobEngine(jobEngine);
@@ -107,7 +107,7 @@ public class JobBuildDecorator {
     }
 
     public List<CiJobBuildVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
-        List<CsCiJobBuildExecutor> executors = csCiJobBuildExecutorService.queryCsCiJobBuildExecutorByBuildId(buildId);
+        List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.BUILD.getType(),buildId);
         return executors.stream().map(e -> {
                     CiJobBuildVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildExecutor.class);
                     OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());

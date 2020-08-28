@@ -23,7 +23,7 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.UserFacade;
 import com.baiyi.caesar.facade.UserPermissionFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
+import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -79,7 +79,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private ApplicationEngineDecorator applicationEngineDecorator;
 
     @Resource
-    private JenkinsCiJobFacade jenkinsCiJobFacade;
+    private JenkinsJobFacade jenkinsCiJobFacade;
 
     @Resource
     private UserPermissionFacade userPermissionFacade;
@@ -261,14 +261,14 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public BusinessWrapper<Boolean> createCiJobEngine(int ciJobId) {
-        jenkinsCiJobFacade.createJobEngine(ciJobId);
+    public BusinessWrapper<Boolean> createJobEngine(int buildType,int jobId) {
+        jenkinsCiJobFacade.createJobEngine(buildType,jobId);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
-    public List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId) {
-        return jenkinsCiJobFacade.queryJobEngine(ciJobId);
+    public List<CiJobVO.JobEngine> queryJobEngine(int buildType,int jobId) {
+        return jenkinsCiJobFacade.queryJobEngine(buildType,jobId);
     }
 
     @Override

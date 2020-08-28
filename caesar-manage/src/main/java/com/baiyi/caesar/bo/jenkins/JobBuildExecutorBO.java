@@ -12,11 +12,12 @@ import java.util.Date;
  */
 @Data
 @Builder
-public class CiJobBuildExecutorBO {
+public class JobBuildExecutorBO {
 
     private Integer id;
+    private Integer buildType;
     private Integer buildId;
-    private Integer ciJobId;
+    private Integer jobId;
     private String jobName;
     private String nodeName;
     private String privateIp;

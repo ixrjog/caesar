@@ -1,5 +1,6 @@
 package com.baiyi.caesar.controller;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
@@ -119,13 +120,19 @@ public class ApplicationController {
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> createCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.createCiJobEngine(ciJobId));
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.BUILD.getType(),ciJobId));
+    }
+
+    @ApiOperation(value = "创建任务工作引擎")
+    @PutMapping(value = "/cd/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> createCdJobEngine(@Valid int cdJobId) {
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.DEPLOYMENT.getType(),cdJobId));
     }
 
     @ApiOperation(value = "查询任务工作引擎")
     @GetMapping(value = "/ci/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<List<CiJobVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.queryCiJobEngine(ciJobId));
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.BUILD.getType(),ciJobId));
     }
 
     @ApiOperation(value = "查询应用工作引擎配置")

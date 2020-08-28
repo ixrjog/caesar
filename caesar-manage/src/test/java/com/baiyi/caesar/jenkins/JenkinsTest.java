@@ -1,7 +1,7 @@
 package com.baiyi.caesar.jenkins;
 
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
+import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
 import com.baiyi.caesar.jenkins.config.JenkinsConfig;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -31,7 +31,7 @@ public class JenkinsTest extends BaseUnit {
     private JenkinsTplFacade jenkinsTplFacade;
 
     @Resource
-    private JenkinsCiJobFacade jenkinsCiJobFacade;
+    private JenkinsJobFacade jenkinsCiJobFacade;
 
     @Test
     void versionTest() {
@@ -94,7 +94,7 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void testCreateJobEngine() {
-        jenkinsCiJobFacade.createJobEngine(2);
+       // jenkinsCiJobFacade.createJobEngine(2);
     }
 
     @Test
