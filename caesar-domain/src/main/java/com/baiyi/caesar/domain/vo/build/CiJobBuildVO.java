@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.vo.build;
 
 
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class CiJobBuildVO {
     @ApiModel
     public static class JobBuild {
 
-        private CiJobVO.JobEngine jobEngine;
+        private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
         private List<BuildArtifact> artifacts;
         @ApiModelProperty(value = "变更记录")
@@ -104,8 +105,9 @@ public class CiJobBuildVO {
         private String shortCommitId;
 
         private Integer id;
+        private Integer buildType;
         private Integer buildId;
-        private Integer ciJobId;
+        private Integer jobId;
         private String jobName;
         private String commitId;
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

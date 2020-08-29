@@ -10,8 +10,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
-import com.baiyi.caesar.factory.jenkins.ICiJobHandler;
-import com.baiyi.caesar.factory.jenkins.CiJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import org.springframework.stereotype.Component;
@@ -45,14 +45,14 @@ public class JobFacade {
 
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
-        ICiJobHandler jenkinsJobHandler = CiJobHandlerFactory.getCiJobByKey(csCiJob.getJobType());
+        IBuildJobHandler jenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
         if (StringUtils.isEmpty(buildParam.getBranch()))
             buildParam.setBranch(csCiJob.getBranch());
         jenkinsJobHandler.build(csCiJob, buildParam);
         return BusinessWrapper.SUCCESS;
     }
 
-    public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery) {
+    public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery) {
         DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);
         List<CiJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobBuildVO.JobBuild.class);
         return new DataTable<>(page.stream().map(e -> jobBuildDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
@@ -77,7 +77,7 @@ public class JobFacade {
             String key = RedisKeyUtils.getJobBuildKey(e.getId());
             if (!redisUtil.hasKey(key)) {
                 CsCiJob csCiJob = csCiJobService.queryCsCiJobById((e.getCiJobId()));
-                ICiJobHandler jenkinsJobHandler = CiJobHandlerFactory.getCiJobByKey(csCiJob.getJobType());
+                IBuildJobHandler jenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
                 jenkinsJobHandler.trackJobBuild(e);
             }
         });

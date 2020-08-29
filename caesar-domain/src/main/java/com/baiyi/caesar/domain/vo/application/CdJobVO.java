@@ -38,7 +38,7 @@ public class CdJobVO {
         private Map<String, String> parameters;
 
         @ApiModelProperty(value = "任务引擎")
-        private List<CiJobVO.JobEngine> jobEngines;
+        private List<JobEngineVO.JobEngine> jobEngines;
 
         @ApiModelProperty(value = "需要升级模版")
         private Boolean needUpgrade;

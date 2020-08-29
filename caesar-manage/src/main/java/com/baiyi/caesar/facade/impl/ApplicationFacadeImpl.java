@@ -18,6 +18,7 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
@@ -267,7 +268,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public List<CiJobVO.JobEngine> queryJobEngine(int buildType,int jobId) {
+    public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
         return jenkinsCiJobFacade.queryJobEngine(buildType,jobId);
     }
 

@@ -8,6 +8,7 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> createJobEngine(int buildType,int jobId);
 
-    List<CiJobVO.JobEngine> queryJobEngine(int buildType,int jobId);
+    List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId);
 
     BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId);
 

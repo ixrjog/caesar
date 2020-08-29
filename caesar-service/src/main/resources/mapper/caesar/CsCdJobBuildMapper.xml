@@ -8,12 +8,14 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cd_job_id" jdbcType="INTEGER" property="cdJobId" />
     <result column="job_engine_id" jdbcType="INTEGER" property="jobEngineId" />
-    <result column="ci_job_build_id" jdbcType="INTEGER" property="ciJobBuildId" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="ci_build_id" jdbcType="INTEGER" property="ciBuildId" />
     <result column="application_id" jdbcType="INTEGER" property="applicationId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
     <result column="engine_build_number" jdbcType="INTEGER" property="engineBuildNumber" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+    <result column="version_desc" jdbcType="VARCHAR" property="versionDesc" />
     <result column="build_phase" jdbcType="VARCHAR" property="buildPhase" />
     <result column="build_status" jdbcType="VARCHAR" property="buildStatus" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -25,4 +27,14 @@
     <result column="dingtalk_msg" jdbcType="LONGVARCHAR" property="dingtalkMsg" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
+
+  <select id="queryCsCdJobByParam"
+          parameterType="com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam$DeploymentPageQuery"
+          resultMap="BaseResultMap">
+    select *
+    from cs_cd_job_build
+    where cd_job_id = #{cdJobId}
+    order by job_build_number desc
+  </select>
+
 </mapper>

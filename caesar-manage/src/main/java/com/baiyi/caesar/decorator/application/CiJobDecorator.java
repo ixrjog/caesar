@@ -15,6 +15,7 @@ import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
@@ -75,7 +76,7 @@ public class CiJobDecorator {
     private CsJobEngineService csJobEngineService;
 
     @Resource
-    private CiJobEngineDecorator ciJobEngineDecorator;
+    private JobEngineDecorator ciJobEngineDecorator;
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, CsJobTpl csJobTpl) {
         List<CsJobEngine> csCiJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(),ciJob.getId());
@@ -83,7 +84,7 @@ public class CiJobDecorator {
         if (!CollectionUtils.isEmpty(csCiJobEngines)) {
             ciJob.setJobEngines(
                     csCiJobEngines.stream().map(e -> {
-                        CiJobVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, CiJobVO.JobEngine.class);
+                        JobEngineVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, JobEngineVO.JobEngine.class);
                         jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
                         if (jobEngine.getNeedUpgrade())
                             needUpgrade.set(true);
@@ -136,7 +137,7 @@ public class CiJobDecorator {
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         ciJob.setParameters(params);
 
-        JobBuildParam.JobBuildPageQuery query = new JobBuildParam.JobBuildPageQuery();
+        JobBuildParam.BuildPageQuery query = new JobBuildParam.BuildPageQuery();
         query.setCiJobId(ciJob.getId());
         query.setExtend(1);
         ciJob.setBuildViews(acqCiJobBuildView(query));
@@ -167,7 +168,7 @@ public class CiJobDecorator {
         return cdJob;
     }
 
-    private List<CiJobBuildVO.JobBuildView> acqCiJobBuildView(JobBuildParam.JobBuildPageQuery pageQuery) {
+    private List<CiJobBuildVO.JobBuildView> acqCiJobBuildView(JobBuildParam.BuildPageQuery pageQuery) {
         pageQuery.setPage(1);
         pageQuery.setLength(3);
         DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);

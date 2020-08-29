@@ -19,7 +19,7 @@ public class JobBuildParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuildPageQuery extends PageParam {
+    public static class BuildPageQuery extends PageParam {
 
         @ApiModelProperty(value = "任务id")
         @NotNull

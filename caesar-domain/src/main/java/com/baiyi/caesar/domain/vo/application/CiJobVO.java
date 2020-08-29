@@ -4,7 +4,6 @@ import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
-import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
@@ -53,7 +52,7 @@ public class CiJobVO {
         private Map<String, String> parameters;
 
         @ApiModelProperty(value = "任务引擎")
-        private List<CiJobVO.JobEngine> jobEngines;
+        private List<JobEngineVO.JobEngine> jobEngines;
 
         @ApiModelProperty(value = "需要升级模版")
         private Boolean needUpgrade;
@@ -86,36 +85,4 @@ public class CiJobVO {
 
     }
 
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class JobEngine {
-
-        @ApiModelProperty(value = "jenkins实例详情")
-        private JenkinsInstanceVO.Instance jenkinsInstance;
-
-        @ApiModelProperty(value = "最后构建任务url")
-        private String lastBuildUrl;
-
-        @ApiModelProperty(value = "需要升级模版")
-        private Boolean needUpgrade;
-
-        private Integer id;
-        private Integer buildType;
-        private Integer jobId;
-        private Integer jenkinsInstanceId;
-        private String name;
-        private String jobUrl;
-        private Integer lastBuildNumber;
-        private Integer nextBuildNumber;
-        private Integer lastCompletedBuildNumber;
-        private Integer lastSuccessfulBuildNumber;
-        private Integer lastFailedBuildNumber;
-        private Integer jobStatus;
-        private Integer tplVersion;
-        private String tplHash;
-        private Date createTime;
-        private Date updateTime;
-        private String comment;
-    }
 }

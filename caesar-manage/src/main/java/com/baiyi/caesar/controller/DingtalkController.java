@@ -26,31 +26,31 @@ public class DingtalkController {
     @Resource
     private DingtalkFacade dingtalkFacade;
 
-    @ApiOperation(value = "分页查询Dingtalk配置")
+    @ApiOperation(value = "分页查询钉钉配置")
     @PostMapping(value = "/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<DingtalkVO.Dingtalk>> queryDingtalkPage(@RequestBody @Valid DingtalkParam.DingtalkPageQuery pageQuery) {
         return new HttpResult<>(dingtalkFacade.queryDingtalkPage(pageQuery));
     }
 
-    @ApiOperation(value = "新增Dingtalk配置")
+    @ApiOperation(value = "新增钉钉配置")
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addDingtalk(@RequestBody @Valid DingtalkVO.Dingtalk dingtalk) {
         return new HttpResult<>(dingtalkFacade.addDingtalk(dingtalk));
     }
 
-    @ApiOperation(value = "更新Dingtalk配置")
+    @ApiOperation(value = "更新钉钉配置")
     @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> updateDingtalk(@RequestBody @Valid DingtalkVO.Dingtalk dingtalk) {
         return new HttpResult<>(dingtalkFacade.updateDingtalk(dingtalk));
     }
 
-    @ApiOperation(value = "测试Dingtalk配置")
+    @ApiOperation(value = "测试钉钉配置")
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> testDingtalkById(@Valid int id) {
         return new HttpResult<>(dingtalkFacade.testDingtalkById(id));
     }
 
-    @ApiOperation(value = "删除Dingtalk配置")
+    @ApiOperation(value = "删除钉钉配置")
     @DeleteMapping(value = "/del", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> deleteDingtalkById(@RequestParam int id) {
         return new HttpResult<>(dingtalkFacade.deleteDingtalkById(id));

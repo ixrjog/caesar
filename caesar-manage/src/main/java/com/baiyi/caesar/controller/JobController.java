@@ -35,7 +35,7 @@ public class JobController {
 
     @ApiOperation(value = "分页查询持续集成构建任务")
     @PostMapping(value = "/ci/build/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<DataTable<CiJobBuildVO.JobBuild>> queryCiJobBuildPage(@RequestBody @Valid JobBuildParam.JobBuildPageQuery pageQuery) {
+    public HttpResult<DataTable<CiJobBuildVO.JobBuild>> queryCiJobBuildPage(@RequestBody @Valid JobBuildParam.BuildPageQuery pageQuery) {
         return new HttpResult<>(jobFacade.queryCiJobBuildPage(pageQuery));
     }
 

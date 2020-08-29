@@ -1,8 +1,9 @@
 package com.baiyi.caesar.jenkins.context;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import lombok.Builder;
@@ -18,12 +19,12 @@ import lombok.Data;
 public class JobBuildContext  {
 
     @Builder.Default
-    private int buildType = 0;
+    private int buildType = BuildType.BUILD.getType();
 
     private CsApplication csApplication;
     private CsCiJob csCiJob;
 
-    private CiJobVO.JobEngine jobEngine;
+    private JobEngineVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
     private JobParamDetail jobParamDetail;
 

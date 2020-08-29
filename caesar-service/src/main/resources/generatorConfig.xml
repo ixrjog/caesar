@@ -108,12 +108,11 @@ cs_ci_job_build_change
 cs_ci_job_build_executor
 cs_dingtalk_template
 cs_cd_job
-
-
 cs_job_build_artifact
+cs_cd_job_build
        -->
 
-        <table tableName="cs_job_engine">
+        <table tableName="cs_job_build_change">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.param.jenkins;
 
+import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,6 +16,25 @@ import java.util.Map;
  */
 public class JobDeploymentParam {
 
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class DeploymentPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "任务id")
+        @NotNull
+        private Integer cdJobId;
+
+        @ApiModelProperty(value = "关键字查询")
+        private String queryName;
+
+        @ApiModelProperty(value = "扩展属性", example = "1")
+        private Integer extend;
+
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel
@@ -22,10 +42,11 @@ public class JobDeploymentParam {
 
         @ApiModelProperty(value = "任务id")
         @NotNull
-        private Integer ciJobId;
+        private Integer cdJobId;
 
-        @ApiModelProperty(value = "分支")
-        private String branch;
+        @ApiModelProperty(value = "构建任务id")
+        @NotNull
+        private Integer ciBuildId;
 
         @ApiModelProperty(value = "版本名称")
         private String versionName;

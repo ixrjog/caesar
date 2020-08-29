@@ -4,10 +4,10 @@ import com.baiyi.caesar.builder.jenkins.JobEngineBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
-import com.baiyi.caesar.decorator.application.CiJobEngineDecorator;
+import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -52,7 +52,7 @@ public class JenkinsJobFacade {
     private JenkinsServerHandler jenkinsServerHandler;
 
     @Resource
-    private CiJobEngineDecorator ciJobEngineDecorator;
+    private JobEngineDecorator ciJobEngineDecorator;
 
     @Resource
     private ApplicationEngineDecorator applicationEngineDecorator;
@@ -140,10 +140,10 @@ public class JenkinsJobFacade {
     }
 
 
-    public List<CiJobVO.JobEngine> queryJobEngine(int buildType, int jobId) {
+    public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
         List<CsJobEngine> list = csJobEngineService.queryCsJobEngineByJobId(buildType, jobId);
         return list.stream().map(e ->
-                ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, CiJobVO.JobEngine.class))
+                ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, JobEngineVO.JobEngine.class))
         ).collect(Collectors.toList());
     }
 }

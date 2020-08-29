@@ -2,26 +2,30 @@ package com.baiyi.caesar.factory.jenkins.engine.impl;
 
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
-import com.baiyi.caesar.builder.jenkins.CiJobBuildChangeBuilder;
+import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
-import com.baiyi.caesar.decorator.application.CiJobEngineDecorator;
+import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ServerBaseFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
-import com.baiyi.caesar.factory.jenkins.CiJobHandlerFactory;
-import com.baiyi.caesar.factory.jenkins.ICiJobHandler;
+import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
 import com.baiyi.caesar.factory.jenkins.model.JobBuild;
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
@@ -65,13 +69,16 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private CsJenkinsInstanceService csJenkinsInstanceService;
 
     @Resource
-    private CiJobEngineDecorator ciJobEngineDecorator;
+    private JobEngineDecorator ciJobEngineDecorator;
 
     @Resource
     private JenkinsJobHandler jenkinsJobHandler;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
+
+    @Resource
+    private CsCdJobBuildService csCdJobBuildService;
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
@@ -89,11 +96,10 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
-    private CsCiJobBuildChangeService csCiJobBuildChangeService;
+    private CsJobBuildChangeService csCiJobBuildChangeService;
 
     @Resource
     private CsJobBuildExecutorService csJobBuildExecutorService;
-
 
     @Resource
     private RedisUtil redisUtil;
@@ -101,8 +107,16 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private static final int TRACK_SLEEP_SECONDS = 5;
 
     @Override
-    public BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
-        List<CsJobEngine> csJobEngines = queryJobEngine( BuildType.BUILD.getType(), csCiJob.getId());
+    public BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCiJob csJob) {
+        return acqJobEngineByJobEngines(queryJobEngine(BuildType.BUILD.getType(), csJob.getId()));
+    }
+
+    @Override
+    public BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCdJob csJob) {
+        return acqJobEngineByJobEngines(queryJobEngine(BuildType.DEPLOYMENT.getType(), csJob.getId()));
+    }
+
+    private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngineByJobEngines(List<CsJobEngine> csJobEngines) {
         if (CollectionUtils.isEmpty(csJobEngines))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_ENGINE_NOT_CONFIGURED); // 工作引擎未配置
         List<CsJobEngine> activeEngines = csJobEngines.stream().filter(e ->
@@ -110,23 +124,21 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         ).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(activeEngines))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_NO_ENGINES_AVAILABLE); // 没有可用的工作引擎
-
         return new BusinessWrapper<>(buildRandomCiJobEngine(activeEngines));
     }
 
     @Override
-    public CiJobVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId) {
+    public JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId) {
         CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
-        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, CiJobVO.JobEngine.class));
+        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
     }
 
-    private CiJobVO.JobEngine buildRandomCiJobEngine(List<CsJobEngine> activeEngines) {
+    private JobEngineVO.JobEngine buildRandomCiJobEngine(List<CsJobEngine> activeEngines) {
         Random random = new Random();
         int n = random.nextInt(activeEngines.size());
         CsJobEngine csCiJobEngine = activeEngines.get(n);
-        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, CiJobVO.JobEngine.class));
+        return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
     }
-
 
     private boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jenkinsInstanceId);
@@ -135,33 +147,33 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     }
 
     private List<CsJobEngine> queryJobEngine(int buildType, int ciJobId) {
-        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(buildType,ciJobId);
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(buildType, ciJobId);
         if (CollectionUtils.isEmpty(csJobEngines))
-            jenkinsCiJobFacade.createJobEngine(buildType,ciJobId);
-        return csJobEngineService.queryCsJobEngineByJobId(buildType,ciJobId);
+            jenkinsCiJobFacade.createJobEngine(buildType, ciJobId);
+        return csJobEngineService.queryCsJobEngineByJobId(buildType, ciJobId);
     }
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void trackJobBuild(JobBuildContext jobBuildContext) {
+    public void trackJobBuild(JobBuildContext context) {
         while (true) {
             try {
-                trackJobBuildHeartbeat(jobBuildContext.getJobBuild().getId()); // 心跳
-                JobWithDetails job = jenkinsServerHandler.getJob(jobBuildContext.getJobEngine().getJenkinsInstance().getName(), jobBuildContext.getJobBuild().getJobName());
-                Build build = jenkinsJobHandler.getJobBuildByNumber(job, jobBuildContext.getJobBuild().getEngineBuildNumber());
+                trackJobBuildHeartbeat(BuildType.BUILD.getType(), context.getJobBuild().getId()); // 心跳
+                JobWithDetails job = jenkinsServerHandler.getJob(context.getJobEngine().getJenkinsInstance().getName(), context.getJobBuild().getJobName());
+                Build build = jenkinsJobHandler.getJobBuildByNumber(job, context.getJobBuild().getEngineBuildNumber());
                 BuildWithDetails buildWithDetails = build.details();
-                recordJobEngine(job, jobBuildContext.getJobEngine());
+                recordJobEngine(job, context.getJobEngine());
                 if (buildWithDetails.isBuilding()) {
-                    trackJobBuildComputer(jobBuildContext);
+                    trackJobBuildComputer(context);
                     TimeUnit.SECONDS.sleep(TRACK_SLEEP_SECONDS); // 执行中
                 } else {
                     // 任务完成
-                    jobBuildContext.setBuildWithDetails(buildWithDetails);
-                    recordJobBuild(jobBuildContext);
+                    context.setBuildWithDetails(buildWithDetails);
+                    recordJobBuild(context);
                     break;
                 }
             } catch (RetryException e) {
-                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", jobBuildContext.getCsCiJob().getName(), jobBuildContext.getJobBuild().getEngineBuildNumber());
+                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
                 break;
             } catch (InterruptedException | IOException e) {
                 log.error(e.getMessage());
@@ -170,6 +182,34 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         }
     }
 
+    @Override
+    @Async(value = ASYNC_POOL_TASK_COMMON)
+    public void trackJobBuild(JobDeploymentContext context) {
+        while (true) {
+            try {
+                trackJobBuildHeartbeat(BuildType.DEPLOYMENT.getType(), context.getJobBuild().getId()); // 心跳
+                JobWithDetails job = jenkinsServerHandler.getJob(context.getJobEngine().getJenkinsInstance().getName(), context.getJobBuild().getJobName());
+                Build build = jenkinsJobHandler.getJobBuildByNumber(job, context.getJobBuild().getEngineBuildNumber());
+                BuildWithDetails buildWithDetails = build.details();
+                recordJobEngine(job, context.getJobEngine());
+                if (buildWithDetails.isBuilding()) {
+                    trackJobBuildComputer(context);
+                    TimeUnit.SECONDS.sleep(TRACK_SLEEP_SECONDS); // 执行中
+                } else {
+                    // 任务完成
+                    context.setBuildWithDetails(buildWithDetails);
+                    recordJobBuild(context);
+                    break;
+                }
+            } catch (RetryException e) {
+                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
+                break;
+            } catch (InterruptedException | IOException e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void trackJobBuildComputer(JobBuildContext context) {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
@@ -192,12 +232,43 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         });
     }
 
+    private void trackJobBuildComputer(JobDeploymentContext context) {
+        Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
+        computerMap.keySet().forEach(k -> {
+            if (!k.equals("master")) {
+                Computer computer = computerMap.get(k);
+                try {
+                    ComputerWithDetails computerWithDetails = computer.details();
+                    computerWithDetails.getExecutors().forEach(executor -> {
+                        if (executor.getCurrentExecutable() != null) {
+                            Job job = executor.getCurrentExecutable();
+                            JobBuild jobBuild = JobBuildUtils.convert(job.getUrl());
+                            if (jobBuild.isJobBuild(context))
+                                recordJobBuildComputer(context, computerWithDetails, jobBuild);
+                        }
+                    });
+                } catch (IOException ignored) {
+                }
+            }
+        });
+    }
 
     private void recordJobBuildComputer(JobBuildContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         CsJobBuildExecutor pre = JobBuildExecutorBuilder.build(jobBuildContext, computerWithDetails, jobBuild);
-        if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.BUILD.getType(),pre.getBuildId(), pre.getNodeName()) != null)
+        if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.BUILD.getType(), pre.getBuildId(), pre.getNodeName()) != null)
             return;
-        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobBuildContext.getJobEngine().getJenkinsInstanceId());
+        recordJobBuildComputer(jobBuildContext.getJobEngine(), pre);
+    }
+
+    private void recordJobBuildComputer(JobDeploymentContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+        CsJobBuildExecutor pre = JobBuildExecutorBuilder.build(context, computerWithDetails, jobBuild);
+        if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.DEPLOYMENT.getType(), pre.getBuildId(), pre.getNodeName()) != null)
+            return;
+        recordJobBuildComputer(context.getJobEngine(), pre);
+    }
+
+    private void recordJobBuildComputer(JobEngineVO.JobEngine jobEngine, CsJobBuildExecutor pre) {
+        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobEngine.getJenkinsInstanceId());
         List<OcServer> nodeList = ocServerService.queryOcServerByServerGroupId(csJenkinsInstance.getNodeServerGroupId());
         for (OcServer ocServer : nodeList) {
             String nodeName = ServerBaseFacade.acqServerName(ocServer);
@@ -209,26 +280,36 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         csJobBuildExecutorService.addCsJobBuildExecutor(pre);
     }
 
-    private void recordJobEngine(JobWithDetails job, CiJobVO.JobEngine jobEngine) {
+    private void recordJobEngine(JobWithDetails job, JobEngineVO.JobEngine jobEngine) {
         if (job.getNextBuildNumber() == jobEngine.getNextBuildNumber()) return;
         jobEngine.setNextBuildNumber(job.getNextBuildNumber());
         jobEngine.setLastBuildNumber(job.getNextBuildNumber() - 1);
         csJobEngineService.updateCsJobEngine(BeanCopierUtils.copyProperties(jobEngine, CsJobEngine.class));
     }
 
-
     /**
      * 记录构建信息
      */
-    private void recordJobBuild(JobBuildContext jobBuildContext) {
-        CiJobBuildVO.JobBuild jobBuild = jobBuildContext.getJobBuild();
-        jobBuild.setBuildStatus(jobBuildContext.getBuildWithDetails().getResult().name());
+    private void recordJobBuild(JobBuildContext context) {
+        CiJobBuildVO.JobBuild jobBuild = context.getJobBuild();
+        jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
         jobBuild.setEndTime(new Date());
         jobBuild.setFinalized(true);
         csCiJobBuildService.updateCsCiJobBuild(BeanCopierUtils.copyProperties(jobBuild, CsCiJobBuild.class));
-        jobBuildContext.setJobBuild(jobBuild);
-        jobBuildContext.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact(jobBuildContext, e));
-        recordJobBuildChanges(jobBuildContext);
+        context.setJobBuild(jobBuild);
+        context.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact(context, e));
+        recordJobBuildChanges(context);
+    }
+
+    private void recordJobBuild(JobDeploymentContext context) {
+        CdJobBuildVO.JobBuild jobBuild = context.getJobBuild();
+        jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
+        jobBuild.setEndTime(new Date());
+        jobBuild.setFinalized(true);
+        csCdJobBuildService.updateCsCdJobBuild(BeanCopierUtils.copyProperties(jobBuild, CsCdJobBuild.class));
+        context.setJobBuild(jobBuild);
+        context.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact(context, e));
+        // recordJobBuildChanges(context);
     }
 
     private void saveJobBuildArtifact(JobBuildContext context, Artifact artifact) {
@@ -237,6 +318,11 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
             csJobBuildArtifactService.addCsJobBuildArtifact(pre);
     }
 
+    private void saveJobBuildArtifact(JobDeploymentContext context, Artifact artifact) {
+        CsJobBuildArtifact pre = buildJobBuildArtifact(context, artifact);
+        if (csJobBuildArtifactService.queryCsJobBuildArtifactByUniqueKey(context.getBuildType(), pre.getBuildId(), pre.getArtifactFileName()) == null)
+            csJobBuildArtifactService.addCsJobBuildArtifact(pre);
+    }
 
     /**
      * 变更记录
@@ -249,17 +335,34 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     }
 
     private void saveJobBuildChange(JobBuildContext jobBuildContext, BuildChangeSetItem buildChangeSetItem) {
-        CsCiJobBuildChange pre = CiJobBuildChangeBuilder.build(jobBuildContext, buildChangeSetItem);
-        if (csCiJobBuildChangeService.queryCsCiJobBuildChangeByUniqueKey(pre.getCiJobId(), pre.getCommitId()) == null)
-            csCiJobBuildChangeService.addCsCiJobBuildChange(pre);
+        CsJobBuildChange pre = JobBuildChangeBuilder.build(jobBuildContext, buildChangeSetItem);
+        if (csCiJobBuildChangeService.queryCsJobBuildChangeByUniqueKey(BuildType.BUILD.getType(), pre.getJobId(), pre.getCommitId()) == null)
+            csCiJobBuildChangeService.addCsJobBuildChange(pre);
     }
 
     private CsJobBuildArtifact buildJobBuildArtifact(JobBuildContext context, Artifact artifact) {
         CsJobBuildArtifact csJobBuildArtifact = JobBuildArtifactBuilder.build(context, artifact);
         CsOssBucket ossBucket = acqOssBucket(context.getCsCiJob());
-        ICiJobHandler iJenkinsJobHandler = CiJobHandlerFactory.getCiJobByKey(context.getCsCiJob().getJobType());
+        IBuildJobHandler iJenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(context.getCsCiJob().getJobType());
 
         String ossPath = iJenkinsJobHandler.acqOssPath(context.getJobBuild(), csJobBuildArtifact);
+        csJobBuildArtifact.setStoragePath(ossPath);
+
+        List<OSSObjectSummary> objects = aliyunOSSHandler.listObjects(ossBucket.getName(), ossPath);
+        if (!CollectionUtils.isEmpty(objects)) {
+            OSSObjectSummary ossObjectSummary = objects.get(0);
+            csJobBuildArtifact.setStoragePath(ossObjectSummary.getKey());
+            csJobBuildArtifact.setArtifactSize(ossObjectSummary.getSize());
+        }
+        return csJobBuildArtifact;
+    }
+
+    private CsJobBuildArtifact buildJobBuildArtifact(JobDeploymentContext context, Artifact artifact) {
+        CsJobBuildArtifact csJobBuildArtifact = JobBuildArtifactBuilder.build(context, artifact);
+        CsOssBucket ossBucket = acqOssBucket(context.getCsCiJob());
+        IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(context.getCsCdJob().getJobType());
+
+        String ossPath = iDeploymentJobHandler.acqOssPath(context.getJobBuild(), csJobBuildArtifact);
         csJobBuildArtifact.setStoragePath(ossPath);
 
         List<OSSObjectSummary> objects = aliyunOSSHandler.listObjects(ossBucket.getName(), ossPath);
@@ -275,10 +378,12 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         return csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
     }
 
-
     @Override
-    public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 30);
+    public void trackJobBuildHeartbeat(int buildType, int buildId) {
+        if (buildType == BuildType.BUILD.getType())
+            redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 30);
+        if (buildType == BuildType.DEPLOYMENT.getType())
+            redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, 30);
     }
 
 

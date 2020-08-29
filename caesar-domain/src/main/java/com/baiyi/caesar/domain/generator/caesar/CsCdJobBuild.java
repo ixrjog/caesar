@@ -15,14 +15,17 @@ public class CsCdJobBuild {
     @Column(name = "job_engine_id")
     private Integer jobEngineId;
 
-    @Column(name = "ci_job_build_id")
-    private Integer ciJobBuildId;
-
     /**
      * 任务名称
      */
     @Column(name = "job_name")
     private String jobName;
+
+    /**
+     * 构建任务id(获取制品)
+     */
+    @Column(name = "ci_build_id")
+    private Integer ciBuildId;
 
     @Column(name = "application_id")
     private Integer applicationId;
@@ -43,6 +46,12 @@ public class CsCdJobBuild {
      */
     @Column(name = "engine_build_number")
     private Integer engineBuildNumber;
+
+    @Column(name = "version_name")
+    private String versionName;
+
+    @Column(name = "version_desc")
+    private String versionDesc;
 
     @Column(name = "build_phase")
     private String buildPhase;
@@ -138,20 +147,6 @@ public class CsCdJobBuild {
     }
 
     /**
-     * @return ci_job_build_id
-     */
-    public Integer getCiJobBuildId() {
-        return ciJobBuildId;
-    }
-
-    /**
-     * @param ciJobBuildId
-     */
-    public void setCiJobBuildId(Integer ciJobBuildId) {
-        this.ciJobBuildId = ciJobBuildId;
-    }
-
-    /**
      * 获取任务名称
      *
      * @return job_name - 任务名称
@@ -167,6 +162,24 @@ public class CsCdJobBuild {
      */
     public void setJobName(String jobName) {
         this.jobName = jobName;
+    }
+
+    /**
+     * 获取构建任务id(获取制品)
+     *
+     * @return ci_build_id - 构建任务id(获取制品)
+     */
+    public Integer getCiBuildId() {
+        return ciBuildId;
+    }
+
+    /**
+     * 设置构建任务id(获取制品)
+     *
+     * @param ciBuildId 构建任务id(获取制品)
+     */
+    public void setCiBuildId(Integer ciBuildId) {
+        this.ciBuildId = ciBuildId;
     }
 
     /**
@@ -235,6 +248,34 @@ public class CsCdJobBuild {
      */
     public void setEngineBuildNumber(Integer engineBuildNumber) {
         this.engineBuildNumber = engineBuildNumber;
+    }
+
+    /**
+     * @return version_name
+     */
+    public String getVersionName() {
+        return versionName;
+    }
+
+    /**
+     * @param versionName
+     */
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
+    /**
+     * @return version_desc
+     */
+    public String getVersionDesc() {
+        return versionDesc;
+    }
+
+    /**
+     * @param versionDesc
+     */
+    public void setVersionDesc(String versionDesc) {
+        this.versionDesc = versionDesc;
     }
 
     /**

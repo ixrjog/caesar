@@ -1,9 +1,11 @@
 package com.baiyi.caesar.factory.jenkins.engine;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
 
 /**
  * @Author baiyi
@@ -15,16 +17,20 @@ public interface JenkinsJobEngineHandler {
 
     /**
      * 随机取一个可用的任务工作引擎
-     * @param csCiJob
+     * @param csJob
      * @return
      */
-    BusinessWrapper<CiJobVO.JobEngine> acqJobEngine(CsCiJob csCiJob);
+    BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCiJob csJob);
 
-    CiJobVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
+    BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCdJob csJob);
 
-    void trackJobBuild(JobBuildContext jobBuildContext);
+    JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
 
-    void trackJobBuildHeartbeat(int buildId);
+    void trackJobBuild(JobBuildContext context);
+
+    void trackJobBuild(JobDeploymentContext context);
+
+    void trackJobBuildHeartbeat(int buildType,int buildId);
 
 
 }

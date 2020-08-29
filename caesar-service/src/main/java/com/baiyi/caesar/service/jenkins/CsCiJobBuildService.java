@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface CsCiJobBuildService {
 
-    DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery);
+    DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
 
     List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
 

@@ -49,7 +49,7 @@ public class DingtalkTest extends BaseUnit {
     @Test
     void testDingtalkNotify() {
         IDingtalkNotify dingtalkNotify =  DingtalkNotifyFactory.getDingtalkNotifyByKey(JobType.HTML5.getType());
-        dingtalkNotify.doNotify(0,0,null);
+       // dingtalkNotify.doNotify(0,0,null);
     }
 
 

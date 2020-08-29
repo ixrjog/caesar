@@ -16,8 +16,9 @@ public class CdJobBuildBO {
 
     private Integer id;
     private Integer cdJobId;
-    private Integer ciJobBuildId;
+    private Integer ciBuildId;
     private Integer jobEngineId;
+    private Integer ciJobBuildId;
     private String jobName;
     private Integer applicationId;
     private String username;
@@ -26,13 +27,16 @@ public class CdJobBuildBO {
     private String buildPhase;
     private String buildStatus;
     @Builder.Default
-    private Date startTime = new Date();
+    private Date startTime;
     private Date endTime;
     @Builder.Default
-    private Boolean finalized = false;
+    private Boolean finalized;
+    private String versionName;
+    private String versionDesc;
     private Date createTime;
     private Date updateTime;
     private String parameters;
     private String dingtalkMsg;
     private String comment;
+
 }

@@ -8,6 +8,7 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import io.swagger.annotations.Api;
@@ -116,7 +117,6 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.updateCdJob(cdJob));
     }
 
-
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> createCiJobEngine(@Valid int ciJobId) {
@@ -129,10 +129,16 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.createJobEngine(BuildType.DEPLOYMENT.getType(),cdJobId));
     }
 
-    @ApiOperation(value = "查询任务工作引擎")
+    @ApiOperation(value = "查询构建任务工作引擎")
     @GetMapping(value = "/ci/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<List<CiJobVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
+    public HttpResult<List<JobEngineVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
         return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.BUILD.getType(),ciJobId));
+    }
+
+    @ApiOperation(value = "查询部署任务工作引擎")
+    @GetMapping(value = "/cd/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<JobEngineVO.JobEngine>> queryCdJobEngine(@Valid int cdJobId) {
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.DEPLOYMENT.getType(),cdJobId));
     }
 
     @ApiOperation(value = "查询应用工作引擎配置")

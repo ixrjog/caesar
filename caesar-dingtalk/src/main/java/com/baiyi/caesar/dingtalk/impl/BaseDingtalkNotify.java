@@ -16,6 +16,7 @@ import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.param.user.UserParam;
 import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.env.OcEnvService;
@@ -64,7 +65,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     private StringEncryptor stringEncryptor;
 
     @Override
-    public void doNotify(int noticeType, int noticePhase, JobBuildContext jobBuildContext) {
+    public void doNotify(int noticePhase, JobBuildContext context) {
+        int noticeType = NoticeType.BUILD.getType();
+
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
 
         if (csDingtalkTemplate == null) {
@@ -72,9 +75,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent(noticeType, noticePhase, jobBuildContext);
+        Map<String, Object> contentMap = acqTemplateContent(noticeType, noticePhase, context);
         try {
-            CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(jobBuildContext.getCsCiJob().getDingtalkId());
+            CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
                     .msg(renderTemplate(csDingtalkTemplate, contentMap))
                     .webHook(dingtalkConfig.getWebHook(stringEncryptor.decrypt(csDingtalk.getDingtalkToken())))
@@ -82,6 +85,11 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             dingtalkHandler.doNotify(dingtalkContent);
         } catch (IOException e) {
         }
+    }
+
+    @Override
+    public void doNotify(int noticePhase, JobDeploymentContext context) {
+        int noticeType = NoticeType.DEPLOYMENT.getType();
     }
 
     /**

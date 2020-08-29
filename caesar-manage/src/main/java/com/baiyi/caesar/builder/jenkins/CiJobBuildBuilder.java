@@ -6,7 +6,7 @@ import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.google.common.base.Joiner;
 import org.gitlab.api.models.GitlabBranch;
@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  */
 public class CiJobBuildBuilder {
 
-    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, CiJobVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch) {
+    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, JobEngineVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch) {
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
         Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
         String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", engineBuildNumber) : jobParamDetail.getVersionName();
