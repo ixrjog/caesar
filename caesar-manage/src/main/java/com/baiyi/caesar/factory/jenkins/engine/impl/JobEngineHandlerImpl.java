@@ -22,10 +22,10 @@ import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
+import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.factory.jenkins.model.JobBuild;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
-import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
@@ -57,7 +57,7 @@ import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
  */
 @Slf4j
 @Component
-public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
+public class JobEngineHandlerImpl implements JobEngineHandler {
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -155,7 +155,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void trackJobBuild(JobBuildContext context) {
+    public void trackJobBuild(BuildJobContext context) {
         while (true) {
             try {
                 trackJobBuildHeartbeat(BuildType.BUILD.getType(), context.getJobBuild().getId()); // 心跳
@@ -184,7 +184,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void trackJobBuild(JobDeploymentContext context) {
+    public void trackJobBuild(DeploymentJobContext context) {
         while (true) {
             try {
                 trackJobBuildHeartbeat(BuildType.DEPLOYMENT.getType(), context.getJobBuild().getId()); // 心跳
@@ -202,7 +202,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
                     break;
                 }
             } catch (RetryException e) {
-                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
+                log.error("重试获取JobDeployment失败，jobName = {}, buildNumber ={}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
                 break;
             } catch (InterruptedException | IOException e) {
                 log.error(e.getMessage());
@@ -211,7 +211,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         }
     }
 
-    private void trackJobBuildComputer(JobBuildContext context) {
+    private void trackJobBuildComputer(BuildJobContext context) {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
         computerMap.keySet().forEach(k -> {
             if (!k.equals("master")) {
@@ -232,7 +232,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         });
     }
 
-    private void trackJobBuildComputer(JobDeploymentContext context) {
+    private void trackJobBuildComputer(DeploymentJobContext context) {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
         computerMap.keySet().forEach(k -> {
             if (!k.equals("master")) {
@@ -253,14 +253,14 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         });
     }
 
-    private void recordJobBuildComputer(JobBuildContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+    private void recordJobBuildComputer(BuildJobContext jobBuildContext, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         CsJobBuildExecutor pre = JobBuildExecutorBuilder.build(jobBuildContext, computerWithDetails, jobBuild);
         if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.BUILD.getType(), pre.getBuildId(), pre.getNodeName()) != null)
             return;
         recordJobBuildComputer(jobBuildContext.getJobEngine(), pre);
     }
 
-    private void recordJobBuildComputer(JobDeploymentContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+    private void recordJobBuildComputer(DeploymentJobContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         CsJobBuildExecutor pre = JobBuildExecutorBuilder.build(context, computerWithDetails, jobBuild);
         if (csJobBuildExecutorService.queryCsJobBuildExecutorByUniqueKey(BuildType.DEPLOYMENT.getType(), pre.getBuildId(), pre.getNodeName()) != null)
             return;
@@ -290,7 +290,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     /**
      * 记录构建信息
      */
-    private void recordJobBuild(JobBuildContext context) {
+    private void recordJobBuild(BuildJobContext context) {
         CiJobBuildVO.JobBuild jobBuild = context.getJobBuild();
         jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
         jobBuild.setEndTime(new Date());
@@ -301,7 +301,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         recordJobBuildChanges(context);
     }
 
-    private void recordJobBuild(JobDeploymentContext context) {
+    private void recordJobBuild(DeploymentJobContext context) {
         CdJobBuildVO.JobBuild jobBuild = context.getJobBuild();
         jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
         jobBuild.setEndTime(new Date());
@@ -312,13 +312,13 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         // recordJobBuildChanges(context);
     }
 
-    private void saveJobBuildArtifact(JobBuildContext context, Artifact artifact) {
+    private void saveJobBuildArtifact(BuildJobContext context, Artifact artifact) {
         CsJobBuildArtifact pre = buildJobBuildArtifact(context, artifact);
         if (csJobBuildArtifactService.queryCsJobBuildArtifactByUniqueKey(context.getBuildType(), pre.getBuildId(), pre.getArtifactFileName()) == null)
             csJobBuildArtifactService.addCsJobBuildArtifact(pre);
     }
 
-    private void saveJobBuildArtifact(JobDeploymentContext context, Artifact artifact) {
+    private void saveJobBuildArtifact(DeploymentJobContext context, Artifact artifact) {
         CsJobBuildArtifact pre = buildJobBuildArtifact(context, artifact);
         if (csJobBuildArtifactService.queryCsJobBuildArtifactByUniqueKey(context.getBuildType(), pre.getBuildId(), pre.getArtifactFileName()) == null)
             csJobBuildArtifactService.addCsJobBuildArtifact(pre);
@@ -329,23 +329,22 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
      *
      * @param jobBuildContext
      */
-    private void recordJobBuildChanges(JobBuildContext jobBuildContext) {
+    private void recordJobBuildChanges(BuildJobContext jobBuildContext) {
         List<BuildChangeSet> buildChanges = jobBuildContext.getBuildWithDetails().getChangeSets();
         buildChanges.forEach(set -> set.getItems().forEach(e -> saveJobBuildChange(jobBuildContext, e)));
     }
 
-    private void saveJobBuildChange(JobBuildContext jobBuildContext, BuildChangeSetItem buildChangeSetItem) {
+    private void saveJobBuildChange(BuildJobContext jobBuildContext, BuildChangeSetItem buildChangeSetItem) {
         CsJobBuildChange pre = JobBuildChangeBuilder.build(jobBuildContext, buildChangeSetItem);
         if (csJobBuildChangeService.queryCsJobBuildChangeByUniqueKey(BuildType.BUILD.getType(), pre.getJobId(), pre.getCommitId()) == null)
             csJobBuildChangeService.addCsJobBuildChange(pre);
     }
 
-    private CsJobBuildArtifact buildJobBuildArtifact(JobBuildContext context, Artifact artifact) {
+    private CsJobBuildArtifact buildJobBuildArtifact(BuildJobContext context, Artifact artifact) {
         CsJobBuildArtifact csJobBuildArtifact = JobBuildArtifactBuilder.build(context, artifact);
         CsOssBucket ossBucket = acqOssBucket(context.getCsCiJob());
-        IBuildJobHandler iJenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(context.getCsCiJob().getJobType());
-
-        String ossPath = iJenkinsJobHandler.acqOssPath(context.getJobBuild(), csJobBuildArtifact);
+        IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(context.getCsCiJob().getJobType());
+        String ossPath = iBuildJobHandler.acqOssPath(context.getJobBuild(), csJobBuildArtifact);
         csJobBuildArtifact.setStoragePath(ossPath);
 
         List<OSSObjectSummary> objects = aliyunOSSHandler.listObjects(ossBucket.getName(), ossPath);
@@ -357,11 +356,10 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
         return csJobBuildArtifact;
     }
 
-    private CsJobBuildArtifact buildJobBuildArtifact(JobDeploymentContext context, Artifact artifact) {
+    private CsJobBuildArtifact buildJobBuildArtifact(DeploymentJobContext context, Artifact artifact) {
         CsJobBuildArtifact csJobBuildArtifact = JobBuildArtifactBuilder.build(context, artifact);
         CsOssBucket ossBucket = acqOssBucket(context.getCsCiJob());
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(context.getCsCdJob().getJobType());
-
         String ossPath = iDeploymentJobHandler.acqOssPath(context.getJobBuild(), csJobBuildArtifact);
         csJobBuildArtifact.setStoragePath(ossPath);
 

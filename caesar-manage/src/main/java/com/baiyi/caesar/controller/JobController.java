@@ -3,6 +3,7 @@ package com.baiyi.caesar.controller;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import io.swagger.annotations.Api;
@@ -32,6 +33,14 @@ public class JobController {
     public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildParam buildParam) {
         return new HttpResult<>(jobFacade.buildCiJob(buildParam));
     }
+
+    @ApiOperation(value = "执行持续集成部署任务")
+    @PostMapping(value = "/cd/build", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> buildCdJob(@RequestBody @Valid JobDeploymentParam.DeploymentParam deploymentParam) {
+        return new HttpResult<>(jobFacade.buildCdJob(deploymentParam));
+    }
+
+
 
     @ApiOperation(value = "分页查询持续集成构建任务")
     @PostMapping(value = "/ci/build/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

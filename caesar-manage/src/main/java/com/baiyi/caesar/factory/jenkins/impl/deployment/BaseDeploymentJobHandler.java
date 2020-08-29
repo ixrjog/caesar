@@ -15,11 +15,10 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
-import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
-import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
+import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
@@ -52,10 +51,10 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     private CsCdJobService csCdJobService;
 
     @Resource
-    private JenkinsJobEngineHandler jenkinsJobEngineHandler;
+    private JobEngineHandler jenkinsJobEngineHandler;
 
     @Resource
-    protected CsApplicationService csApplicationService;
+    private CsApplicationService csApplicationService;
 
     @Resource
     protected JenkinsServerHandler jenkinsServerHandler;
@@ -64,24 +63,25 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     protected CsCdJobBuildService csCdJobBuildService;
 
     @Resource
-    protected ApplicationFacade applicationFacade;
-
-    @Resource
     protected JobDeploymentDecorator jobDeploymentDecorator;
 
     @Resource
     private CsOssBucketService csOssBucketService;
 
+    protected CsApplication queryApplicationById(int applicationId){
+       return csApplicationService.queryCsApplicationById(applicationId);
+    }
+
     @Override
     public BusinessWrapper<Boolean> deployment(CsCdJob csJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        CsApplication csApplication = csApplicationService.queryCsApplicationById(csJob.getApplicationId());
+        CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
         BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = wrapper.getBody();
         raiseJobBuildNumber(csJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
-        // GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
+
         CsCdJobBuild csCdJobBuild = CdJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, deploymentParam.getCiBuildId());
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCdJobBuild.getJobName()).details();
@@ -93,8 +93,10 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         try {
             csCdJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             saveCsCdJobBuild(csCdJobBuild);
-            JobDeploymentContext context = JobDeploymentContext.builder()
-                    .csApplication(csApplicationService.queryCsApplicationById(csJob.getApplicationId()))
+
+            DeploymentJobContext context = DeploymentJobContext.builder()
+                    .csApplication(queryApplicationById(csJob.getApplicationId()))
+                    .csCiJob(csCiJobService.queryCsCiJobById(csJob.getCiJobId()))
                     .csCdJob(csJob)
                     .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
@@ -108,7 +110,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         return BusinessWrapper.SUCCESS;
     }
 
-    private void deploymentStartNotify(JobDeploymentContext context) {
+    private void deploymentStartNotify(DeploymentJobContext context) {
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
         dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
     }
@@ -149,7 +151,6 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                 .build();
     }
 
-
     private void raiseJobBuildNumber(CsCdJob csJob) {
         csJob.setJobBuildNumber(csJob.getJobBuildNumber() + 1);
         csCdJobService.updateCsCdJob(csJob);
@@ -159,11 +160,22 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         return jenkinsJobEngineHandler.acqJobEngine(csJob);
     }
 
-
     @Override
     public void trackJobDeployment(CsCdJobBuild csCdJobBuild) {
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById(csCdJobBuild.getCdJobId());
+        DeploymentJobContext context = DeploymentJobContext.builder()
+                .csApplication(queryApplicationById(csCdJob.getApplicationId()))
+                .csCiJob(csCiJobService.queryCsCiJobById(csCdJob.getCiJobId()))
+                .csCdJob(csCdJob)
+                .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
+                .jobEngine(acqJobEngineById(csCdJobBuild.getJobEngineId()))
+                .build();
+        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
     }
 
+    private JobEngineVO.JobEngine acqJobEngineById(int jobEngineId) {
+        return jenkinsJobEngineHandler.acqJobEngineByJobEngineId(jobEngineId);
+    }
 
     /**
      * 注册

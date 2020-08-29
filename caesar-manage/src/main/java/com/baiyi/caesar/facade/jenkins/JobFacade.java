@@ -6,12 +6,17 @@ import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
-import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import org.springframework.stereotype.Component;
@@ -35,6 +40,9 @@ public class JobFacade {
     private CsCiJobService csCiJobService;
 
     @Resource
+    private CsCdJobService csCdJobService;
+
+    @Resource
     private CsCiJobBuildService csCiJobBuildService;
 
     @Resource
@@ -45,10 +53,17 @@ public class JobFacade {
 
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
-        IBuildJobHandler jenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
+        IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
         if (StringUtils.isEmpty(buildParam.getBranch()))
             buildParam.setBranch(csCiJob.getBranch());
-        jenkinsJobHandler.build(csCiJob, buildParam);
+        iBuildJobHandler.build(csCiJob, buildParam);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    public BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam) {
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById((deploymentParam.getCdJobId()));
+        IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(csCdJob.getJobType());
+        iDeploymentJobHandler.deployment(csCdJob,deploymentParam);
         return BusinessWrapper.SUCCESS;
     }
 

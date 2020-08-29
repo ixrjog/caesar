@@ -2,7 +2,7 @@ package com.baiyi.caesar.dingtalk.impl;
 
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class PythonNotify extends BaseDingtalkNotify implements IDingtalkNotify 
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, JobBuildContext jobBuildContext) {
+    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext jobBuildContext) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticeType, noticePhase, jobBuildContext);
         contentMap.put(VERSION_NAME, jobBuildContext.getJobBuild().getVersionName());
         return contentMap;

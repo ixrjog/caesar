@@ -4,8 +4,8 @@ import com.baiyi.caesar.bo.jenkins.JobBuildExecutorBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildExecutor;
 import com.baiyi.caesar.factory.jenkins.model.JobBuild;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
-import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
 
@@ -22,7 +22,7 @@ public class JobBuildExecutorBuilder {
     private static final String DISK_SPACE_MONITOR_KEY = "hudson.node_monitors.DiskSpaceMonitor";
 
 
-    public static CsJobBuildExecutor build(JobDeploymentContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+    public static CsJobBuildExecutor build(DeploymentJobContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         Map<String, Map> monitorData = computerWithDetails.getMonitorData();
         Map<String, Map> diskMonitorMap ;
         String rootDirectory = "";
@@ -47,7 +47,7 @@ public class JobBuildExecutorBuilder {
     }
 
 
-    public static CsJobBuildExecutor build(JobBuildContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
+    public static CsJobBuildExecutor build(BuildJobContext context, ComputerWithDetails computerWithDetails, JobBuild jobBuild) {
         Map<String, Map> monitorData = computerWithDetails.getMonitorData();
         Map<String, Map> diskMonitorMap ;
         String rootDirectory = "";

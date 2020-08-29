@@ -3,8 +3,8 @@ package com.baiyi.caesar.builder.jenkins;
 import com.baiyi.caesar.bo.jenkins.JobBuildArtifactBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
-import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.offbytwo.jenkins.model.Artifact;
 
 /**
@@ -14,7 +14,7 @@ import com.offbytwo.jenkins.model.Artifact;
  */
 public class JobBuildArtifactBuilder {
 
-    public static CsJobBuildArtifact build(JobDeploymentContext context, Artifact artifact) {
+    public static CsJobBuildArtifact build(DeploymentJobContext context, Artifact artifact) {
         JobBuildArtifactBO bo = JobBuildArtifactBO.builder()
                 .buildType(context.getBuildType())
                 .jobId(context.getCsCdJob().getId())
@@ -28,7 +28,7 @@ public class JobBuildArtifactBuilder {
     }
 
 
-    public static CsJobBuildArtifact build(JobBuildContext context, Artifact artifact) {
+    public static CsJobBuildArtifact build(BuildJobContext context, Artifact artifact) {
         JobBuildArtifactBO bo = JobBuildArtifactBO.builder()
                 .buildType(context.getBuildType())
                 .jobId(context.getCsCiJob().getId())

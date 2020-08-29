@@ -39,4 +39,6 @@ public class JobParamUtils {
         if (!buildParam.getParamMap().containsKey("PRODUCT_FLAVOR_BUILD")) return;
         jobParamDetail.getParams().put("PRODUCT_FLAVOR_BUILD", buildParam.getParamMap().get("PRODUCT_FLAVOR_BUILD"));
     }
+
+
 }

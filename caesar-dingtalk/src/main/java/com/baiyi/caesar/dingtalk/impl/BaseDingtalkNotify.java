@@ -15,8 +15,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsDingtalkTemplate;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.param.user.UserParam;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
-import com.baiyi.caesar.jenkins.context.JobDeploymentContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.env.OcEnvService;
@@ -65,7 +65,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     private StringEncryptor stringEncryptor;
 
     @Override
-    public void doNotify(int noticePhase, JobBuildContext context) {
+    public void doNotify(int noticePhase, BuildJobContext context) {
         int noticeType = NoticeType.BUILD.getType();
 
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
@@ -88,7 +88,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     }
 
     @Override
-    public void doNotify(int noticePhase, JobDeploymentContext context) {
+    public void doNotify(int noticePhase, DeploymentJobContext context) {
         int noticeType = NoticeType.DEPLOYMENT.getType();
     }
 
@@ -99,7 +99,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param jobBuildContext
      * @return
      */
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, JobBuildContext jobBuildContext) {
+    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext jobBuildContext) {
         Map<String, Object> contentMap = Maps.newHashMap();
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(jobBuildContext.getCsCiJob().getEnvType());
@@ -129,7 +129,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param jobBuildContext
      * @return
      */
-    private List<OcUser> acqAtUsers(OcUser ocUser, JobBuildContext jobBuildContext) {
+    private List<OcUser> acqAtUsers(OcUser ocUser, BuildJobContext jobBuildContext) {
         List<OcUser> users = Lists.newArrayList();
         if (jobBuildContext.getCsCiJob().getAtAll()) {
             UserParam.UserIncludeApplicationPageQuery pageQuery = new UserParam.UserIncludeApplicationPageQuery();

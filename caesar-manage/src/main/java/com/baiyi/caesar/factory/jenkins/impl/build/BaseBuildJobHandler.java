@@ -18,9 +18,9 @@ import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JenkinsJobEngineHandler;
+import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
@@ -59,13 +59,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private ApplicationFacade applicationFacade;
 
     @Resource
-    private JenkinsJobEngineHandler jenkinsJobEngineHandler;
+    private JobEngineHandler jenkinsJobEngineHandler;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
 
     @Resource
-    protected CsApplicationService csApplicationService;
+    private CsApplicationService csApplicationService;
 
     @Resource
     private CsOssBucketService csOssBucketService;
@@ -85,9 +85,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
 
+    protected CsApplication queryApplicationById(int applicationId){
+        return csApplicationService.queryCsApplicationById(applicationId);
+    }
+
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csJob, JobBuildParam.BuildParam buildParam) {
-        CsApplication csApplication = csApplicationService.queryCsApplicationById(csJob.getApplicationId());
+        CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
         BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
@@ -106,8 +110,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         try {
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             saveCsCiJobBuild(csCiJobBuild);
-            JobBuildContext jobBuildContext = JobBuildContext.builder()
-                    .csApplication(csApplicationService.queryCsApplicationById(csJob.getApplicationId()))
+            BuildJobContext jobBuildContext = BuildJobContext.builder()
+                    .csApplication(queryApplicationById(csJob.getApplicationId()))
                     .csCiJob(csJob)
                     .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
@@ -129,13 +133,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Override
     public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCiJobBuild.getCiJobId());
-        JobBuildContext jobBuildContext = JobBuildContext.builder()
-                .csApplication(csApplicationService.queryCsApplicationById(csCiJob.getApplicationId()))
+        BuildJobContext context = BuildJobContext.builder()
+                .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                 .csCiJob(csCiJob)
                 .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                 .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
                 .build();
-        jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务
+        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
     }
 
     private GitlabBranch acqGitlabBranch(CsCiJob csCiJob, String branch) {
@@ -149,7 +153,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         }
     }
 
-    private void buildStartNotify(JobBuildContext jobBuildContext) {
+    private void buildStartNotify(BuildJobContext jobBuildContext) {
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
         dingtalkNotify.doNotify(NoticePhase.START.getType(), jobBuildContext);
     }
@@ -192,7 +196,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
         // iOS Java Python
         // /应用名/任务名/任务编号/
-        CsApplication csApplication = csApplicationService.queryCsApplicationById(jobBuild.getApplicationId());
+        CsApplication csApplication = queryApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();
         String jobName = jobBuild.getJobName();
         String jobBuildNumber = String.valueOf(jobBuild.getJobBuildNumber());
