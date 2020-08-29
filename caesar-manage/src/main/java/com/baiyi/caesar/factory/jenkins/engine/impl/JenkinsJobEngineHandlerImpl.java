@@ -96,7 +96,7 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
     private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
-    private CsJobBuildChangeService csCiJobBuildChangeService;
+    private CsJobBuildChangeService csJobBuildChangeService;
 
     @Resource
     private CsJobBuildExecutorService csJobBuildExecutorService;
@@ -336,8 +336,8 @@ public class JenkinsJobEngineHandlerImpl implements JenkinsJobEngineHandler {
 
     private void saveJobBuildChange(JobBuildContext jobBuildContext, BuildChangeSetItem buildChangeSetItem) {
         CsJobBuildChange pre = JobBuildChangeBuilder.build(jobBuildContext, buildChangeSetItem);
-        if (csCiJobBuildChangeService.queryCsJobBuildChangeByUniqueKey(BuildType.BUILD.getType(), pre.getJobId(), pre.getCommitId()) == null)
-            csCiJobBuildChangeService.addCsJobBuildChange(pre);
+        if (csJobBuildChangeService.queryCsJobBuildChangeByUniqueKey(BuildType.BUILD.getType(), pre.getJobId(), pre.getCommitId()) == null)
+            csJobBuildChangeService.addCsJobBuildChange(pre);
     }
 
     private CsJobBuildArtifact buildJobBuildArtifact(JobBuildContext context, Artifact artifact) {
