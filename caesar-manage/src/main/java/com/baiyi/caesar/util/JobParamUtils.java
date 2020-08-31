@@ -1,5 +1,6 @@
 package com.baiyi.caesar.util;
 
+import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
@@ -12,6 +13,10 @@ import com.google.common.base.Joiner;
  */
 public class JobParamUtils {
 
+    public static void invokeJobBuildNumberParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
+        jobParamDetail.getParams().put("jobBuildNumber", String.valueOf(csCdJob.getJobBuildNumber()));
+    }
+
     public static void invokeJobBuildNumberParam(CsCiJob csCiJob, JobParamDetail jobParamDetail) {
         jobParamDetail.getParams().put("jobBuildNumber", String.valueOf(csCiJob.getJobBuildNumber()));
     }
@@ -22,6 +27,15 @@ public class JobParamUtils {
         // https://caesar-store.oss-cn-hangzhou.aliyuncs.com/ZEBRA-IOS-APP/ZEBRA-IOS-APP_zebra_ios_track/1/GlobalScanner.ipa
         String domain = Joiner.on(".").join(jobParamDetail.getCsOssBucket().getName(), jobParamDetail.getCsOssBucket().getExtranetEndpoint());
         String url = Joiner.on("/").join(domain, jobParamDetail.getParamByKey("applicationName"), jobParamDetail.getJobName(), String.valueOf(csCiJob.getJobBuildNumber()));
+        jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
+    }
+
+    public static void invokeOssJobUrlParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
+        if (jobParamDetail.getCsOssBucket() == null)
+            return;
+        // https://caesar-store.oss-cn-hangzhou.aliyuncs.com/ZEBRA-IOS-APP/ZEBRA-IOS-APP_zebra_ios_track/1/GlobalScanner.ipa
+        String domain = Joiner.on(".").join(jobParamDetail.getCsOssBucket().getName(), jobParamDetail.getCsOssBucket().getExtranetEndpoint());
+        String url = Joiner.on("/").join(domain, jobParamDetail.getParamByKey("applicationName"), jobParamDetail.getJobName(), String.valueOf(csCdJob.getJobBuildNumber()));
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
     }
 

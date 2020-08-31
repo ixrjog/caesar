@@ -25,8 +25,7 @@ public class H5BuildJobHandler extends BaseBuildJobHandler implements IBuildJobH
 
     @Override
     public String acqOssPath(CiJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
-        // HTML5
-        // /应用名/任务名/分支/
+        // HTML5 /应用名/任务名/分支/
         CsApplication csApplication = queryApplicationById(jobBuild.getApplicationId());
         String applicationName = csApplication.getApplicationKey();
         String jobName = jobBuild.getJobName();

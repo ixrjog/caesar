@@ -11,8 +11,10 @@ import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
-import com.baiyi.caesar.service.jenkins.*;
-import com.baiyi.caesar.service.server.OcServerService;
+import com.baiyi.caesar.service.jenkins.CsCdJobService;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildArtifactService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import org.springframework.stereotype.Component;
@@ -51,13 +53,11 @@ public class JobDeploymentDecorator {
     private CsOssBucketService ossBucketService;
 
     @Resource
-    private CsJobBuildExecutorService csJobBuildExecutorService;
-
-    @Resource
-    private OcServerService ocServerService;
-
-    @Resource
     private OcUserService ocUserService;
+
+    public CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild , Integer extend) {
+       return decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), extend);
+    }
 
     public CdJobBuildVO.JobBuild decorator(CdJobBuildVO.JobBuild jobBuild, Integer extend) {
         if (extend == 0) return jobBuild;

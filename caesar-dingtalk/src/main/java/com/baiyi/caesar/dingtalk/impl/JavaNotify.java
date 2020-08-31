@@ -14,7 +14,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-@Component("DingtalkJavaNotify")
+@Component("JavaNotify")
 public class JavaNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override

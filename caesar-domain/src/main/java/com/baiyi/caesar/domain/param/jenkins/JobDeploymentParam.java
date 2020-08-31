@@ -41,11 +41,11 @@ public class JobDeploymentParam {
     public static class DeploymentParam {
 
         @ApiModelProperty(value = "任务id")
-        @NotNull
+        @NotNull(message = "任务id不能为空")
         private Integer cdJobId;
 
         @ApiModelProperty(value = "构建任务id")
-        @NotNull
+        @NotNull(message = "必须指定构件")
         private Integer ciBuildId;
 
         @ApiModelProperty(value = "版本名称")

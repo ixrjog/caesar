@@ -1,6 +1,7 @@
 package com.baiyi.caesar.jenkins;
 
 import com.baiyi.caesar.BaseUnit;
+import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
@@ -101,6 +102,12 @@ public class JobTest extends BaseUnit {
         });
 
         System.err.println(computerMap);
+    }
+
+    @Test
+    void testApk() {
+        String fileName ="bm_debug_[ceshi].apk";
+        System.err.println(RegexUtils.checkApk(fileName));
     }
 
 }

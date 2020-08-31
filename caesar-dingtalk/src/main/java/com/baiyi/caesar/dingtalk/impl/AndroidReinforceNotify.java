@@ -10,28 +10,22 @@ import java.util.Map;
 
 /**
  * @Author baiyi
- * @Date 2020/8/25 3:00 下午
+ * @Date 2020/8/31 11:09 上午
  * @Version 1.0
  */
 @Slf4j
-@Component("AndroidNotify")
-public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify {
-
-    public static final String ENVIRONMENT_BUILD = "ENVIRONMENT_BUILD"; // 构建环境
-
-    public static final String PRODUCT_FLAVOR_BUILD = "PRODUCT_FLAVOR_BUILD"; // 构建渠道
+@Component("AndroidReinforceNotify")
+public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override
     public String getKey() {
-        return JobType.ANDROID.getType();
+        return JobType.ANDROID_REINFORCE.getType();
     }
 
     @Override
     protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext jobBuildContext) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticeType, noticePhase, jobBuildContext);
         contentMap.put(VERSION_NAME, jobBuildContext.getJobBuild().getVersionName());
-        contentMap.put(ENVIRONMENT_BUILD, jobBuildContext.getJobParamDetail().getParamByKey(ENVIRONMENT_BUILD));
-        contentMap.put(PRODUCT_FLAVOR_BUILD, jobBuildContext.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR_BUILD));
         return contentMap;
     }
 

@@ -27,10 +27,10 @@ public class CdJobBuildBO {
     private String buildPhase;
     private String buildStatus;
     @Builder.Default
-    private Date startTime;
+    private Date startTime = new Date();
     private Date endTime;
     @Builder.Default
-    private Boolean finalized;
+    private Boolean finalized = false;
     private String versionName;
     private String versionDesc;
     private Date createTime;

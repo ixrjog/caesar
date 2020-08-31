@@ -26,6 +26,7 @@ import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildArtifactService;
 import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,10 +68,13 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     protected JobDeploymentDecorator jobDeploymentDecorator;
 
     @Resource
+    private CsJobBuildArtifactService csJobBuildArtifactService;
+
+    @Resource
     private CsOssBucketService csOssBucketService;
 
-    protected CsApplication queryApplicationById(int applicationId){
-       return csApplicationService.queryCsApplicationById(applicationId);
+    protected CsApplication queryApplicationById(int applicationId) {
+        return csApplicationService.queryCsApplicationById(applicationId);
     }
 
     @Override
@@ -98,7 +103,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                     .csApplication(queryApplicationById(csJob.getApplicationId()))
                     .csCiJob(csCiJobService.queryCsCiJobById(csJob.getCiJobId()))
                     .csCdJob(csJob)
-                    .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
+                    .jobBuild(jobDeploymentDecorator.decorator(csCdJobBuild, 1))
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
                     .build();
@@ -151,6 +156,14 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                 .build();
     }
 
+    protected List<CsJobBuildArtifact> acqBuildArtifacts(int ciBuildId) {
+        return filterBuildArtifacts(csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), ciBuildId));
+    }
+
+    protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
+        return artifacts;
+    }
+
     private void raiseJobBuildNumber(CsCdJob csJob) {
         csJob.setJobBuildNumber(csJob.getJobBuildNumber() + 1);
         csCdJobService.updateCsCdJob(csJob);
@@ -171,6 +184,17 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                 .jobEngine(acqJobEngineById(csCdJobBuild.getJobEngineId()))
                 .build();
         jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+    }
+
+    @Override
+    public String acqOssPath(CdJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
+        // Android
+        // /应用名/任务名/任务编号/
+        CsApplication csApplication = queryApplicationById(jobBuild.getApplicationId());
+        String applicationName = csApplication.getApplicationKey();
+        String jobName = jobBuild.getJobName();
+        String jobBuildNumber = String.valueOf(jobBuild.getJobBuildNumber());
+        return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csJobBuildArtifact.getArtifactFileName());
     }
 
     private JobEngineVO.JobEngine acqJobEngineById(int jobEngineId) {

@@ -14,7 +14,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
-@Component("DingtalkPythonNotify")
+@Component("PythonNotify")
 public class PythonNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override

@@ -2,20 +2,23 @@ package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.baiyi.caesar.common.base.AndroidReinforceChannelType;
 import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
-import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.util.JobParamUtils;
 import com.google.common.base.Joiner;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,34 +36,45 @@ public class AndroidReinforceDeploymentJobHandler extends BaseDeploymentJobHandl
         return JobType.ANDROID_REINFORCE.getType();
     }
 
+    private static final String CHANNEL_TYPE = "channelType";
+
+    private static final String CHANNEL_GROUP = "channelGroup";
+
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
+        JobParamUtils.invokeJobBuildNumberParam(csCdJob, jobParamDetail);
+        JobParamUtils.invokeOssJobUrlParam(csCdJob, jobParamDetail);
 
-        if (deploymentParam.getParamMap().get("channelType").equals("0")) return jobParamDetail;
-        if (!deploymentParam.getParamMap().containsKey("channelGroup")) return jobParamDetail;
-        Type type = new TypeToken<Set<String>>() {}.getType();
-        Set<String> channelGroupSet =  new GsonBuilder().create().fromJson(deploymentParam.getParamMap().get("channelGroup"),type);
-
-        String channelGroup = Joiner.on(" ").join(channelGroupSet.stream().map(e->
-                Joiner.on("_").join("./sign/*"  , AndroidReinforceChannelType.getName(e) , "sign.apk"
-               )
-        ).collect(Collectors.toList()));
-        jobParamDetail.getParams().put("channelGroup", channelGroup);
-
+        invokeChannelGroup(jobParamDetail, deploymentParam);
+        invokeOssPath(jobParamDetail, deploymentParam);
         return jobParamDetail;
     }
 
-
     @Override
-    public String acqOssPath(CdJobBuildVO.JobBuild jobBuild, CsJobBuildArtifact csJobBuildArtifact) {
-        // iOS Java Python
-        // /应用名/任务名/任务编号/
-        CsApplication csApplication = queryApplicationById(jobBuild.getApplicationId());
-        String applicationName = csApplication.getApplicationKey();
-        String jobName = jobBuild.getJobName();
-        String jobBuildNumber = String.valueOf(jobBuild.getJobBuildNumber());
-        return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csJobBuildArtifact.getArtifactFileName());
+    protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
+        return artifacts.stream().filter(e -> RegexUtils.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
+    }
+
+    private void invokeOssPath(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
+        List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
+        if(!CollectionUtils.isEmpty(artifacts))
+            jobParamDetail.getParams().put("ossPath", artifacts.get(0).getStoragePath());
+    }
+
+    private void invokeChannelGroup(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
+        if (deploymentParam.getParamMap().get(CHANNEL_TYPE).equals("0")) return;
+        if (!deploymentParam.getParamMap().containsKey(CHANNEL_GROUP)) return;
+        Type type = new TypeToken<Set<String>>() {
+        }.getType();
+        Set<String> channelGroupSet = new GsonBuilder().create().fromJson(deploymentParam.getParamMap().get(CHANNEL_GROUP), type);
+
+        String channelGroup = Joiner.on(" ").join(channelGroupSet.stream().map(this::buildApkName).collect(Collectors.toList()));
+        jobParamDetail.getParams().put(CHANNEL_GROUP, channelGroup);
+    }
+
+    private String buildApkName(String channelType) {
+        return Joiner.on("_").join("./sign/*", AndroidReinforceChannelType.getName(channelType), "sign.apk");
     }
 
 }

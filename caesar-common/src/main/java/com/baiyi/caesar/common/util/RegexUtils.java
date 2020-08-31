@@ -129,4 +129,8 @@ public class RegexUtils {
     }
 
 
+    public static boolean checkApk(String fileName) {
+        return fileName.endsWith(".apk");
+    }
+
 }

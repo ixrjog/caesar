@@ -67,9 +67,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     @Override
     public void doNotify(int noticePhase, BuildJobContext context) {
         int noticeType = NoticeType.BUILD.getType();
-
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
-
         if (csDingtalkTemplate == null) {
             log.error("钉钉通知模版未配置, buildId");
             return;
@@ -96,29 +94,25 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * 取模版内容
      *
      * @param noticeType
-     * @param jobBuildContext
+     * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext jobBuildContext) {
+    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext context) {
         Map<String, Object> contentMap = Maps.newHashMap();
 
-        OcEnv ocEnv = ocEnvService.queryOcEnvByType(jobBuildContext.getCsCiJob().getEnvType());
-        OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuildContext.getJobBuild().getUsername());
-        contentMap.put("applicationName", jobBuildContext.getCsApplication().getApplicationKey()); // 应用名称只显示key
-        contentMap.put("jobName", jobBuildContext.getCsCiJob().getJobKey()); // 任务名称只显示key
+        OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
+        OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
+        contentMap.put("applicationName", context.getCsApplication().getApplicationKey()); // 应用名称只显示key
+        contentMap.put("jobName", context.getCsCiJob().getJobKey()); // 任务名称只显示key
         contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束");
         contentMap.put("envName", ocEnv != null ? ocEnv.getEnvName() : "default");
-        contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : jobBuildContext.getJobBuild().getUsername());
-        String consolerUrl = Joiner.on("/").join(jobBuildContext.getJobBuild().getJobBuildUrl(), "console");
+        contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : context.getJobBuild().getUsername());
+        String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
         contentMap.put("consoleUrl", consolerUrl); // console日志url
-        if (noticeType == NoticeType.BUILD.getType()) {
-            contentMap.put("branch", jobBuildContext.getJobBuild().getBranch()); // 构建分支
-            contentMap.put("buildNumber", jobBuildContext.getJobBuild().getJobBuildNumber()); // 构建编号
-            contentMap.put("commit", jobBuildContext.getJobBuild().getCommit().substring(0, 7));
-        } else {
-
-        }
-        contentMap.put("users", acqAtUsers(ocUser, jobBuildContext));
+        contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
+        contentMap.put("branch", context.getJobBuild().getBranch()); // 构建分支
+        contentMap.put("commit", context.getJobBuild().getCommit().substring(0, 7)); // 取7位commit
+        contentMap.put("users", acqAtUsers(ocUser, context));
         return contentMap;
     }
 

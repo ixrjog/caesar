@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Slf4j
-@Component("DingtalkH5Notify")
+@Component("H5Notify")
 public class H5Notify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override
