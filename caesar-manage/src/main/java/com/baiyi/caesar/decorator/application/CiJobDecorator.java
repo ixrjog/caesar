@@ -13,7 +13,6 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
@@ -77,6 +76,9 @@ public class CiJobDecorator {
 
     @Resource
     private JobEngineDecorator ciJobEngineDecorator;
+
+    @Resource
+    private  CdJobDecorator cdJobDecorator;
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, CsJobTpl csJobTpl) {
         List<CsJobEngine> csCiJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(),ciJob.getId());
@@ -146,26 +148,10 @@ public class CiJobDecorator {
         if (!IDUtils.isEmpty(ciJob.getDeploymentJobId())) {
             CsCdJob csCdJob = csCdJobService.queryCsCdJobById(ciJob.getDeploymentJobId());
             if (csCdJob != null) {
-                ciJob.setCdJob(decorator(BeanCopierUtils.copyProperties(csCdJob, CdJobVO.CdJob.class)));
+                ciJob.setCdJob(cdJobDecorator.decorator(csCdJob));
             }
         }
-
         return ciJob;
-    }
-
-    public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob) {
-        if(!IDUtils.isEmpty(cdJob.getJobTplId())){
-            CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(cdJob.getJobTplId());
-            if (csJobTpl != null)
-                cdJob.setJobTpl(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
-        }
-
-        // 参数
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(cdJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
-        cdJob.setParameters(params);
-
-        return cdJob;
     }
 
     private List<CiJobBuildVO.JobBuildView> acqCiJobBuildView(JobBuildParam.BuildPageQuery pageQuery) {

@@ -5,15 +5,13 @@ import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.decorator.application.ApplicationDecorator;
-import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
-import com.baiyi.caesar.decorator.application.ApplicationScmMemberDecorator;
-import com.baiyi.caesar.decorator.application.CiJobDecorator;
+import com.baiyi.caesar.decorator.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
@@ -72,6 +70,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private CiJobDecorator ciJobDecorator;
+
+    @Resource
+    private CdJobDecorator cdJobDecorator;
 
     @Resource
     private GitlabFacade gitlabFacade;
@@ -162,6 +163,13 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
         List<CiJobVO.CiJob> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobVO.CiJob.class);
         return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+    }
+
+    @Override
+    public DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery){
+        DataTable<CsCdJob> table = csCdJobService.queryCsCdJobByParam(pageQuery);
+        List<CdJobVO.CdJob> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobVO.CdJob.class);
+        return new DataTable<>(page.stream().map(e -> cdJobDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

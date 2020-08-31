@@ -25,10 +25,10 @@ public class CdJobBuildVO {
 
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
-        private List<CiJobBuildVO.BuildArtifact> artifacts;
+        private List<BuildArtifactVO.BuildArtifact> artifacts;
 
         @ApiModelProperty(value = "执行节点")
-        private List<CiJobBuildVO.BuildExecutor> executors;
+        private List<BuildExecutorVO.BuildExecutor> executors;
 
         private String jobBuildUrl;
         @ApiModelProperty(value = "构建用户")
@@ -68,25 +68,11 @@ public class CdJobBuildVO {
 
     }
 
+
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildArtifact {
-
-        private String artifactFileSize; // 产出物文件容量
-        private String ossUrl;
-
-        private Integer id;
-        private Integer buildId;
-        private Integer ciJobId;
-        private String jobName;
-        private String artifactDisplayPath;
-        private String artifactFileName;
-        private String artifactRelativePath;
-        private Long artifactSize;
-        private String storagePath;
-        private Date updateTime;
-        private Date createTime;
+    public static class JobBuildView extends CiJobBuildVO.JobBuildView{
     }
 
 }

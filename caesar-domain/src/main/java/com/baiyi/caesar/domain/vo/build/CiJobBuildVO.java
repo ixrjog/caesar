@@ -2,7 +2,6 @@ package com.baiyi.caesar.domain.vo.build;
 
 
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -27,11 +26,11 @@ public class CiJobBuildVO {
 
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
-        private List<BuildArtifact> artifacts;
+        private List<BuildArtifactVO.BuildArtifact> artifacts;
         @ApiModelProperty(value = "变更记录")
         private List<BuildChange> changes;
         @ApiModelProperty(value = "执行节点")
-        private List<CiJobBuildVO.BuildExecutor> executors;
+        private List<BuildExecutorVO.BuildExecutor> executors;
 
         private String jobBuildUrl;
         @ApiModelProperty(value = "构建用户")
@@ -76,26 +75,6 @@ public class CiJobBuildVO {
 
     }
 
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class BuildArtifact {
-
-        private String artifactFileSize; // 产出物文件容量
-        private String ossUrl;
-
-        private Integer id;
-        private Integer buildId;
-        private Integer ciJobId;
-        private String jobName;
-        private String artifactDisplayPath;
-        private String artifactFileName;
-        private String artifactRelativePath;
-        private Long artifactSize;
-        private String storagePath;
-        private Date updateTime;
-        private Date createTime;
-    }
 
     @Data
     @NoArgsConstructor
@@ -120,34 +99,12 @@ public class CiJobBuildVO {
         private String commitMsg;
     }
 
-
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class BuildExecutor {
-        private ServerVO.Server server;
-
-        private Integer id;
-        private Integer buildId;
-        private Integer ciJobId;
-        private String jobName;
-        private String nodeName;
-        private String privateIp;
-        private String rootDirectory;
-        private String workspace;
-        private String jobUrl;
-        private Integer buildNumber;
-        private Date createTime;
-        private Date updateTime;
-    }
-
-
     @Data
     @NoArgsConstructor
     @ApiModel
     public static class JobBuildView {
 
-        private List<CiJobBuildVO.BuildExecutor> executors;
+        private List<BuildExecutorVO.BuildExecutor> executors;
 
         private String color;
         private Integer buildNumber;

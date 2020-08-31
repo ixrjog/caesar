@@ -1,6 +1,6 @@
 package com.baiyi.caesar.domain.vo.application;
 
-import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import io.swagger.annotations.ApiModel;
@@ -32,7 +32,7 @@ public class CdJobVO {
         private JobTplVO.JobTpl jobTpl;
 
         @ApiModelProperty(value = "构建视图")
-        private List<CiJobBuildVO.JobBuildView> buildViews;
+        private List<CdJobBuildVO.JobBuildView> buildViews;
 
         @ApiModelProperty(value = "任务参数Map")
         private Map<String, String> parameters;

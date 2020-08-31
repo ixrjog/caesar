@@ -4,18 +4,22 @@ import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
+import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
+import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
@@ -46,7 +50,13 @@ public class JobFacade {
     private CsCiJobBuildService csCiJobBuildService;
 
     @Resource
+    private CsCdJobBuildService csCdJobBuildService;
+
+    @Resource
     private JobBuildDecorator jobBuildDecorator;
+
+    @Resource
+    private JobDeploymentDecorator jobDeploymentDecorator;
 
     @Resource
     private RedisUtil redisUtil;
@@ -73,6 +83,13 @@ public class JobFacade {
         return new DataTable<>(page.stream().map(e -> jobBuildDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
+
+    public DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery) {
+        DataTable<CsCdJobBuild> table = csCdJobBuildService.queryCdJobBuildPage(pageQuery);
+        List<CdJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobBuildVO.JobBuild.class);
+        return new DataTable<>(page.stream().map(e -> jobDeploymentDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+    }
+
     public List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query){
         if(query.getSize() == null)
             query.setSize(10);
@@ -83,6 +100,11 @@ public class JobFacade {
     public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
         return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1);
+    }
+
+    public CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(@Valid int buildId) {
+        CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(buildId);
+        return jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild , CdJobBuildVO.JobBuild.class), 1);
     }
 
     public void trackJobBuildTask() {

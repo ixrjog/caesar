@@ -1,12 +1,18 @@
 package com.baiyi.caesar.service.jenkins.impl;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.mapper.caesar.CsCdJobMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -18,6 +24,13 @@ public class CsCdJobServiceImpl implements CsCdJobService {
 
     @Resource
     private CsCdJobMapper csCdJobMapper;
+
+    @Override
+    public  DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        List<CsCdJob> list = csCdJobMapper.queryCsCdJobByParam(pageQuery);
+        return new DataTable<>(list, page.getTotal());
+    }
 
     @Override
     public void addCsCdJob(CsCdJob csCdJob) {

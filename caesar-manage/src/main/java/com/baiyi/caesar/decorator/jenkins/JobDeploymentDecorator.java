@@ -7,14 +7,13 @@ import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
-import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
-import com.baiyi.caesar.service.jenkins.CsCdJobService;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
-import com.baiyi.caesar.service.jenkins.CsJobBuildArtifactService;
-import com.baiyi.caesar.service.jenkins.CsJobEngineService;
+import com.baiyi.caesar.service.jenkins.*;
+import com.baiyi.caesar.service.server.OcServerService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
@@ -54,6 +54,12 @@ public class JobDeploymentDecorator {
 
     @Resource
     private OcUserService ocUserService;
+
+    @Resource
+    private CsJobBuildExecutorService csJobBuildExecutorService;
+
+    @Resource
+    private OcServerService ocServerService;
 
     public CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild , Integer extend) {
        return decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), extend);
@@ -101,7 +107,15 @@ public class JobDeploymentDecorator {
         return csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
     }
 
-    public List<CiJobBuildVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
-        return null;
+    public List<BuildExecutorVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
+        List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.DEPLOYMENT.getType(), buildId);
+        return executors.stream().map(e -> {
+                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
+                    OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
+                    if (ocServer != null)
+                        buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                    return buildExecutor;
+                }
+        ).collect(Collectors.toList());
     }
 }

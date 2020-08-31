@@ -4,6 +4,7 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
@@ -92,6 +93,13 @@ public class ApplicationController {
     public HttpResult<DataTable<CiJobVO.CiJob>> queryCiJobPage(@RequestBody @Valid CiJobParam.CiJobPageQuery pageQuery) {
         return new HttpResult<>(applicationFacade.queryCiJobPage(pageQuery));
     }
+
+    @ApiOperation(value = "分页查询持续集成任务配置")
+    @PostMapping(value = "/cd/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<CdJobVO.CdJob>> queryCdJobPage(@RequestBody @Valid CdJobParam.CdJobPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryCdJobPage(pageQuery));
+    }
+
 
     @ApiOperation(value = "新增持续集成任务配置")
     @PostMapping(value = "/ci/job/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
@@ -39,6 +40,8 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> removeApplicationSCMMember(int id);
 
     DataTable<CiJobVO.CiJob> queryCiJobPage(CiJobParam.CiJobPageQuery pageQuery);
+
+    DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery);
 
     BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob);
 

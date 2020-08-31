@@ -1,6 +1,8 @@
 package com.baiyi.caesar.service.jenkins;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 
 /**
  * @Author baiyi
@@ -8,6 +10,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
  * @Version 1.0
  */
 public interface CsCdJobService {
+
+    DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobPageQuery pageQuery);
 
     void addCsCdJob(CsCdJob csCdJob);
 

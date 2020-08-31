@@ -19,4 +19,15 @@
     <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml" />
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
+
+  <select id="queryCsCdJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CdJobParam$CdJobPageQuery"
+          resultMap="BaseResultMap">
+    select * from cs_cd_job
+    <where>
+      application_id = #{applicationId}
+      <if test="queryName != null and queryName != ''">
+        and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
+      </if>
+    </where>
+  </select>
 </mapper>

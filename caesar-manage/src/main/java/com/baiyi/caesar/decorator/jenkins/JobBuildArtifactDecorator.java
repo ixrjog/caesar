@@ -4,7 +4,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.bae64.FileSizeUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
-import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,15 @@ import java.util.stream.Collectors;
 @Component
 public class JobBuildArtifactDecorator {
 
-    public List<CiJobBuildVO.BuildArtifact> decorator(List<CsJobBuildArtifact> artifacts, CsOssBucket csOssBucket) {
+    public List<BuildArtifactVO.BuildArtifact> decorator(List<CsJobBuildArtifact> artifacts, CsOssBucket csOssBucket) {
         if (CollectionUtils.isEmpty(artifacts))
             return Lists.newArrayList();
 
         return artifacts.stream().map(e -> {
-            CiJobBuildVO.BuildArtifact buildArtifact = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildArtifact.class);
+            BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtils.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
+
+
+
             if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
                 buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));
             if (csOssBucket != null) {

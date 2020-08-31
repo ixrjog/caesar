@@ -7,6 +7,7 @@ import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
@@ -106,10 +107,10 @@ public class JobBuildDecorator {
         }).collect(Collectors.toList());
     }
 
-    public List<CiJobBuildVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
+    public List<BuildExecutorVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
         List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.BUILD.getType(), buildId);
         return executors.stream().map(e -> {
-                    CiJobBuildVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildExecutor.class);
+            BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
                     OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
                     if (ocServer != null)
                         buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
