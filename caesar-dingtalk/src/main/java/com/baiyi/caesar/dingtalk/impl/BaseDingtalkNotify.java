@@ -1,5 +1,6 @@
 package com.baiyi.caesar.dingtalk.impl;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.util.BeetlUtils;
@@ -10,16 +11,14 @@ import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.util.AtUserUtils;
 import com.baiyi.caesar.domain.DataTable;
-import com.baiyi.caesar.domain.generator.caesar.CsDingtalk;
-import com.baiyi.caesar.domain.generator.caesar.CsDingtalkTemplate;
-import com.baiyi.caesar.domain.generator.caesar.OcEnv;
-import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.user.UserParam;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.env.OcEnvService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -47,6 +46,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     protected CsDingtalkTemplateService csDingtalkTemplateService;
 
     @Resource
+    private CsJobBuildChangeService csJobBuildChangeService;
+
+    @Resource
     private OcEnvService ocEnvService;
 
     @Resource
@@ -69,7 +71,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         int noticeType = NoticeType.BUILD.getType();
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
         if (csDingtalkTemplate == null) {
-            log.error("钉钉通知模版未配置, buildId");
+            log.error("钉钉通知模版未配置, buildId = {}",context.getJobBuild().getId());
             return;
         }
         // 模版变量
@@ -113,7 +115,15 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         contentMap.put("branch", context.getJobBuild().getBranch()); // 构建分支
         contentMap.put("commit", context.getJobBuild().getCommit().substring(0, 7)); // 取7位commit
         contentMap.put("users", acqAtUsers(ocUser, context));
+        if (noticePhase == NoticePhase.END.getType()) {
+            contentMap.put("changes", acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()));
+            contentMap.put("buildStatus",  context.getJobBuild().getBuildStatus());
+        }
         return contentMap;
+    }
+
+    private List<CsJobBuildChange> acqChanges(int buildType, int buildId) {
+        return csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId);
     }
 
     /**
