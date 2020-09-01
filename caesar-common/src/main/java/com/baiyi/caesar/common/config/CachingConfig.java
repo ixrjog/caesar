@@ -71,7 +71,7 @@ public class CachingConfig extends CachingConfigurerSupport {
         configMap.put(CACHE_NAME_ANSIBLE_CACHE_REPO, config.entryTtl(Duration.ofDays(7)));
         configMap.put(CACHE_NAME_ATTRIBUTE_CACHE_REPO, config.entryTtl(Duration.ofDays(7)));
         configMap.put(CACHE_NAME_SETTING_CACHE_REPO, config.entryTtl(Duration.ofMinutes(10)));
-        configMap.put(CACHE_NAME_ENGINE_CHART_CACHE_REPO, config.entryTtl(Duration.ofMinutes(1)));
+        configMap.put(CACHE_NAME_ENGINE_CHART_CACHE_REPO, config.entryTtl(Duration.ofSeconds(5)));
         return configMap;
     }
 
