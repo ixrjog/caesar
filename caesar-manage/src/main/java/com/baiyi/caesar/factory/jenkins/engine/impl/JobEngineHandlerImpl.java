@@ -6,10 +6,13 @@ import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
+import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -170,6 +173,7 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
                     // 任务完成
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
+                    buildEndNotify(context);
                     break;
                 }
             } catch (RetryException e) {
@@ -180,6 +184,11 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void buildEndNotify(BuildJobContext context) {
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 
     @Override
