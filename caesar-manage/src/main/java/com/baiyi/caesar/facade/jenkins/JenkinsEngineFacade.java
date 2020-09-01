@@ -50,6 +50,7 @@ public class JenkinsEngineFacade {
             }
             root.addChildren(instance);
         });
+        root.setValue(root.getChildren().size());
         return root;
     }
 
@@ -71,14 +72,17 @@ public class JenkinsEngineFacade {
                                 JobBuild jobBuild = JobBuildUtils.convert(job.getUrl());
                                 executor = EngineVO.Children.builder()
                                         .name(jobBuild.getJobName())
+                                        .value(1)
                                         .build();
                             }else{
                                 executor = EngineVO.Children.builder()
                                         .name("idle")
+                                        .value(1)
                                         .build();
                             }
                             node.addChildren(executor);
                         });
+                        node.setValue(node.getChildren().size());
                         instance.addChildren(node);
                     } catch (IOException ignored) {
                     }
