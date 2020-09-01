@@ -3,13 +3,15 @@ package com.baiyi.caesar.controller;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
+import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
+import com.baiyi.caesar.domain.vo.tree.EngineVO;
 import com.baiyi.caesar.facade.JenkinsFacade;
+import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -31,6 +33,9 @@ public class JenkinsController {
 
     @Resource
     private JenkinsFacade jenkinsFacade;
+
+    @Resource
+    private JenkinsEngineFacade jenkinsEngineFacade;
 
     @ApiOperation(value = "分页查Jenkins实例配置")
     @PostMapping(value = "/instance/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,9 +110,14 @@ public class JenkinsController {
     }
 
     @ApiOperation(value = "更新任务模版")
-    @GetMapping(value = "/tpl/job/upgrade",  produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> upgradeCiJobTplByJobId( @Valid int jobId) {
+    @GetMapping(value = "/tpl/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> upgradeCiJobTplByJobId(@Valid int jobId) {
         return new HttpResult<>(jenkinsFacade.upgradeCiJobTplByJobId(jobId));
     }
 
+    @ApiOperation(value = "查询引擎工作状态")
+    @GetMapping(value = "/engine/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<EngineVO.Children> queryEngineStatus() {
+        return new HttpResult<>(jenkinsEngineFacade.buildEngineChart());
+    }
 }

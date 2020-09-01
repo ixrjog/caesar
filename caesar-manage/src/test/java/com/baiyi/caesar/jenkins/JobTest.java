@@ -1,10 +1,13 @@
 package com.baiyi.caesar.jenkins;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.vo.tree.EngineVO;
+import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
@@ -33,9 +36,11 @@ public class JobTest extends BaseUnit {
     @Resource
     private CsJobTplService csJobTplService;
 
-
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
+
+    @Resource
+    private JenkinsEngineFacade jenkinsEngineFacade;
 
     @Test
     void testBuild() {
@@ -69,7 +74,7 @@ public class JobTest extends BaseUnit {
             jenkinsServerHandler.updateJob("master-1", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
             jenkinsServerHandler.updateJob("master-2", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
         } catch (IOException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -106,8 +111,14 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testApk() {
-        String fileName ="bm_debug_[ceshi].apk";
+        String fileName = "bm_debug_[ceshi].apk";
         System.err.println(RegexUtils.checkApk(fileName));
+    }
+
+    @Test
+    void testBuildEngineChart() {
+        EngineVO.Children chart = jenkinsEngineFacade.buildEngineChart();
+        System.err.println(JSON.toJSONString(chart));
     }
 
 }
