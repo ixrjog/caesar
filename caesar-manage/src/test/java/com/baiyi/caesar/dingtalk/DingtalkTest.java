@@ -3,11 +3,17 @@ package com.baiyi.caesar.dingtalk;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.model.TestMessage;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.facade.DingtalkFacade;
+import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -27,6 +33,9 @@ public class DingtalkTest extends BaseUnit {
 
     @Resource
     private DingtalkFacade dingtalkFacade;
+
+    @Resource
+    private CsCiJobBuildService csCiJobBuildService;
 
     @Test
     void doNotifyTest() {
@@ -48,10 +57,13 @@ public class DingtalkTest extends BaseUnit {
 
     @Test
     void testDingtalkNotify() {
-        IDingtalkNotify dingtalkNotify =  DingtalkNotifyFactory.getDingtalkNotifyByKey(JobType.HTML5.getType());
-       // dingtalkNotify.doNotify(0,0,null);
+        String jobKey = JobType.IOS.getType();
+        IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(205);
+        BuildJobContext context = iBuildJobHandler.acqBuildJobContext(csCiJobBuild);
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
-
 
     private String acqNotifyCITpl() {
         return "{ " +

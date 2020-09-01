@@ -85,7 +85,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
 
-    protected CsApplication queryApplicationById(int applicationId){
+    protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
 
@@ -132,6 +132,12 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     @Override
     public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
+        BuildJobContext context = acqBuildJobContext(csCiJobBuild);
+        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+    }
+
+    @Override
+    public BuildJobContext acqBuildJobContext(CsCiJobBuild csCiJobBuild) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCiJobBuild.getCiJobId());
         BuildJobContext context = BuildJobContext.builder()
                 .csApplication(queryApplicationById(csCiJob.getApplicationId()))
@@ -139,7 +145,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                 .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                 .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
                 .build();
-        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+        return context;
     }
 
     private GitlabBranch acqGitlabBranch(CsCiJob csCiJob, String branch) {

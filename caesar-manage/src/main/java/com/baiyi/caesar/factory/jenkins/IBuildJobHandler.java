@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
 
 /**
  * @Author baiyi
@@ -17,6 +18,8 @@ public interface IBuildJobHandler {
     BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam);
 
     void trackJobBuild(CsCiJobBuild csCiJobBuild);
+
+    BuildJobContext acqBuildJobContext(CsCiJobBuild csCiJobBuild);
 
     String getKey();
 
