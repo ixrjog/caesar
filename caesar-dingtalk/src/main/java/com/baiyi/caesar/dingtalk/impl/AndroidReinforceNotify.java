@@ -1,8 +1,10 @@
 package com.baiyi.caesar.dingtalk.impl;
 
 import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
-import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,10 +26,14 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(VERSION_NAME, context.getJobBuild().getVersionName());
-        contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
+        if (noticePhase == NoticePhase.START.getType()) {
+            CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
+            contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
+        } else {
+            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
+        }
         return contentMap;
     }
 

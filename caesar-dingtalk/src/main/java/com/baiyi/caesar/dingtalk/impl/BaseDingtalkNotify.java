@@ -19,6 +19,7 @@ import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.env.OcEnvService;
+import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
@@ -55,6 +56,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     private CsJobBuildChangeService csJobBuildChangeService;
 
     @Resource
+    private CsCiJobBuildService csCiJobBuildService;
+
+    @Resource
     private OcEnvService ocEnvService;
 
     @Resource
@@ -77,11 +81,11 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         int noticeType = NoticeType.BUILD.getType();
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
         if (csDingtalkTemplate == null) {
-            log.error("钉钉通知模版未配置, buildId = {}",context.getJobBuild().getId());
+            log.error("钉钉通知模版未配置, buildId = {}", context.getJobBuild().getId());
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent( noticePhase, context);
+        Map<String, Object> contentMap = acqTemplateContent(noticePhase, context);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -98,11 +102,11 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         int noticeType = NoticeType.DEPLOYMENT.getType();
         CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
         if (csDingtalkTemplate == null) {
-            log.error("钉钉通知模版未配置, buildId = {}",context.getJobBuild().getId());
+            log.error("钉钉通知模版未配置, buildId = {}", context.getJobBuild().getId());
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent( noticePhase, context);
+        Map<String, Object> contentMap = acqTemplateContent(noticePhase, context);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -121,7 +125,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent( int noticePhase, DeploymentJobContext context) {
+    protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
         Map<String, Object> contentMap = Maps.newHashMap();
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
@@ -134,9 +138,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
         contentMap.put("consoleUrl", consolerUrl); // console日志url
         contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
-        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(),context.getCsCiJob()));
+        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()));
         if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put("buildStatus",  context.getJobBuild().getBuildStatus());
+            contentMap.put("buildStatus", context.getJobBuild().getBuildStatus());
         }
         return contentMap;
     }
@@ -148,7 +152,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
         Map<String, Object> contentMap = Maps.newHashMap();
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
@@ -163,10 +167,10 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
         contentMap.put("branch", context.getJobBuild().getBranch()); // 构建分支
         contentMap.put("commit", context.getJobBuild().getCommit().substring(0, 7)); // 取7位commit
-        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(),context.getCsCiJob()));
+        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()));
         if (noticePhase == NoticePhase.END.getType()) {
             contentMap.put("changes", acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()));
-            contentMap.put("buildStatus",  context.getJobBuild().getBuildStatus());
+            contentMap.put("buildStatus", context.getJobBuild().getBuildStatus());
         }
         return contentMap;
     }
@@ -176,13 +180,14 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     }
 
     /**
-     *  取通知用户
+     * 取通知用户
+     *
      * @param ocUser
      * @param applicationId
      * @param csCiJob
      * @return
      */
-    private List<OcUser> acqAtUsers(OcUser ocUser,int applicationId, CsCiJob csCiJob) {
+    private List<OcUser> acqAtUsers(OcUser ocUser, int applicationId, CsCiJob csCiJob) {
         List<OcUser> users = Lists.newArrayList();
         if (csCiJob.getAtAll()) {
             UserParam.UserIncludeApplicationPageQuery pageQuery = new UserParam.UserIncludeApplicationPageQuery();
@@ -211,6 +216,10 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
 
     private CsDingtalkTemplate acqDingtalkTemplateByNoticeType(int noticeType, int noticePhase) {
         return csDingtalkTemplateService.queryCsDingtalkTemplateByUniqueKey(getKey(), noticeType, noticePhase);
+    }
+
+    protected CsCiJobBuild acqCiJobBuild(int ciBuildId) {
+        return csCiJobBuildService.queryCiJobBuildById(ciBuildId);
     }
 
     /**

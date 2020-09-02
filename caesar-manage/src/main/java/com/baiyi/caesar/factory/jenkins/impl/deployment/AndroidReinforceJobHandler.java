@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Slf4j
-@Component("AndroidReinforceCdJobHandler")
-public class AndroidReinforceDeploymentJobHandler extends BaseDeploymentJobHandler implements IDeploymentJobHandler {
+@Component("AndroidReinforceJobHandler")
+public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler implements IDeploymentJobHandler {
 
     @Override
     public String getKey() {
