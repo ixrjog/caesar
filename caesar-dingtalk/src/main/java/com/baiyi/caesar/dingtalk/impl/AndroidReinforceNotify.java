@@ -28,6 +28,7 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
     @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
+        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束");
         if (noticePhase == NoticePhase.START.getType()) {
             CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
             contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());

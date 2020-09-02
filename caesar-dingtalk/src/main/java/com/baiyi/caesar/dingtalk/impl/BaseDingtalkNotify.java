@@ -131,8 +131,8 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
         contentMap.put("applicationName", context.getCsApplication().getApplicationKey()); // 应用名称只显示key
-        contentMap.put("jobName", context.getCsCiJob().getJobKey()); // 任务名称只显示key
-        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束");
+        contentMap.put("jobName", context.getCsCdJob().getJobKey()); // 任务名称只显示key
+        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "部署开始" : "部署结束");
         contentMap.put("envName", ocEnv != null ? ocEnv.getEnvName() : "default");
         contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : context.getJobBuild().getUsername());
         String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
