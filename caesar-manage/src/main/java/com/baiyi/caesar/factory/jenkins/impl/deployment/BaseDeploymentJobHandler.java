@@ -175,15 +175,20 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
     @Override
     public void trackJobDeployment(CsCdJobBuild csCdJobBuild) {
+        DeploymentJobContext context = acqDeploymentJobContext(csCdJobBuild);
+        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+    }
+
+    @Override
+    public DeploymentJobContext acqDeploymentJobContext(CsCdJobBuild csCdJobBuild) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(csCdJobBuild.getCdJobId());
-        DeploymentJobContext context = DeploymentJobContext.builder()
+        return DeploymentJobContext.builder()
                 .csApplication(queryApplicationById(csCdJob.getApplicationId()))
                 .csCiJob(csCiJobService.queryCsCiJobById(csCdJob.getCiJobId()))
                 .csCdJob(csCdJob)
                 .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
                 .jobEngine(acqJobEngineById(csCdJobBuild.getJobEngineId()))
                 .build();
-        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
     }
 
     @Override

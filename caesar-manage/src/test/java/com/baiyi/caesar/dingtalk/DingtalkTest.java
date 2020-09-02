@@ -8,11 +8,16 @@ import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.model.TestMessage;
+import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.facade.DingtalkFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
+import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +42,9 @@ public class DingtalkTest extends BaseUnit {
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
 
+    @Resource
+    private CsCdJobBuildService csCdJobBuildService;
+
     @Test
     void doNotifyTest() {
         DingtalkContent content = DingtalkContent.builder()
@@ -56,11 +64,21 @@ public class DingtalkTest extends BaseUnit {
     }
 
     @Test
-    void testDingtalkNotify() {
+    void testBuildNotify() {
         String jobKey = JobType.IOS.getType();
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(205);
         BuildJobContext context = iBuildJobHandler.acqBuildJobContext(csCiJobBuild);
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
+    }
+
+    @Test
+    void testDeploymentNotify() {
+        String jobKey = JobType.ANDROID_REINFORCE.getType();
+        IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
+        CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(172);
+        DeploymentJobContext  context = iDeploymentJobHandler.acqDeploymentJobContext(csCdJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }

@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 
 /**
  * @Author baiyi
@@ -17,6 +18,8 @@ public interface IDeploymentJobHandler {
     BusinessWrapper<Boolean> deployment(CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam);
 
     void trackJobDeployment(CsCdJobBuild csCdJobBuild);
+
+    DeploymentJobContext acqDeploymentJobContext(CsCdJobBuild csCdJobBuild);
 
     String getKey();
 
