@@ -52,18 +52,17 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void jobTest() {
-        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "opscloud3-web-prod");
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "CAESAR_caesar-server-prod");
         System.err.println(job);
+        job.getBuildByNumber(9);
+
         Build build = job.getLastBuild();
         try {
             BuildWithDetails buildWithDetails = build.details();
-
-
             String consoleOutputHtml = buildWithDetails.getConsoleOutputHtml();
 
-
-            System.err.println(consoleOutputHtml);
-
+            //  System.err.println(consoleOutputHtml);
+            System.err.println(buildWithDetails.getConsoleOutputText());
             List<BuildCause> list = buildWithDetails.getCauses();
             String builtOn = buildWithDetails.getBuiltOn();
             System.err.println(builtOn);
@@ -94,7 +93,7 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void testCreateJobEngine() {
-       // jenkinsCiJobFacade.createJobEngine(2);
+        // jenkinsCiJobFacade.createJobEngine(2);
     }
 
     @Test

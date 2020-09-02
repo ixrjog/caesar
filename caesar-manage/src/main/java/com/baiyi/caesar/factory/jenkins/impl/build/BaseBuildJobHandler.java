@@ -90,7 +90,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     @Override
-    public BusinessWrapper<Boolean> build(CsCiJob csJob, JobBuildParam.BuildParam buildParam) {
+    public BusinessWrapper<Boolean> build(CsCiJob csJob, JobBuildParam.BuildQuery buildParam) {
         CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
         BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
         if (!wrapper.isSuccess())
@@ -175,7 +175,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
      * @param csCiJob
      * @return
      */
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildQuery buildParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());

@@ -60,7 +60,7 @@ public class JobBuildParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildParam {
+    public static class BuildQuery {
 
         @ApiModelProperty(value = "任务id")
         @NotNull
@@ -76,6 +76,26 @@ public class JobBuildParam {
         private String versionDesc;
 
         private Map<String, String> paramMap;
+
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class ViewJobBuildOutputQuery {
+
+        @ApiModelProperty(value = "构建类型")
+        @NotNull(message = "构建类型不能为空")
+        private Integer buildType;
+
+        @ApiModelProperty(value = "构建id")
+        @NotNull(message = "构建id不能为空")
+        private Integer buildId;
+
+//        @ApiModelProperty(value = "构建编号")
+//        @NotNull(message = "构建编号不能为空")
+//        private Integer buildNumber;
 
     }
 }

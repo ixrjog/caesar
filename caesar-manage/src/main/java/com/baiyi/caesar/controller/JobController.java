@@ -31,7 +31,7 @@ public class JobController {
 
     @ApiOperation(value = "执行持续集成构建任务")
     @PostMapping(value = "/ci/build", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildParam buildParam) {
+    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildQuery buildParam) {
         return new HttpResult<>(jobFacade.buildCiJob(buildParam));
     }
 
@@ -69,5 +69,11 @@ public class JobController {
     @GetMapping(value = "/cd/build/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<CdJobBuildVO.JobBuild> queryCdJobBuildByBuildId(@Valid int buildId) {
         return new HttpResult<>(jobFacade.queryCdJobBuildByBuildId(buildId));
+    }
+
+    @ApiOperation(value = "查询持续集成构建任务日志")
+    @PostMapping(value = "/build/output/view", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<String> viewJobBuildOutput(@RequestBody @Valid JobBuildParam.ViewJobBuildOutputQuery query) {
+        return new HttpResult<>(jobFacade.viewJobBuildOutput(query));
     }
 }

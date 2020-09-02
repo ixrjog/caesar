@@ -1,17 +1,17 @@
 package com.baiyi.caesar.jenkins.handler;
 
+import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
-import com.offbytwo.jenkins.model.Computer;
-import com.offbytwo.jenkins.model.Job;
-import com.offbytwo.jenkins.model.JobWithDetails;
+import com.offbytwo.jenkins.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author baiyi
@@ -51,9 +51,19 @@ public class JenkinsServerHandler {
         }
     }
 
+    public String getBuildOutputByType(JobWithDetails job, int buildNumber, int outputType) throws IOException {
+        Build build = job.getBuildByNumber(buildNumber);
+        BuildWithDetails buildWithDetails = build.details();
+        if (outputType == BuildOutputType.HTML.getType()) {
+            return buildWithDetails.getConsoleOutputHtml();
+        } else {
+            return buildWithDetails.getConsoleOutputText();
+        }
+    }
+
     public boolean tryJob(String serverName, String jobName) {
         try {
-            return JenkinsServerContainer.getJenkinsServer(serverName).getJob(jobName) != null;
+            return Objects.requireNonNull(JenkinsServerContainer.getJenkinsServer(serverName)).getJob(jobName) != null;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -64,6 +74,7 @@ public class JenkinsServerHandler {
     public Map<String, Computer> getComputerMap(String serverName) {
         try {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            assert jenkinsServer != null;
             return jenkinsServer.getComputers();
         } catch (IOException e) {
             e.printStackTrace();
