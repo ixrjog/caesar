@@ -1,6 +1,6 @@
 package com.baiyi.caesar.task;
 
-import com.baiyi.caesar.config.OpscloudConfig;
+import com.baiyi.caesar.config.CaesarConfig;
 import com.baiyi.caesar.task.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public abstract class BaseTask {
     protected TaskUtil taskUtil;
 
     @Resource
-    private OpscloudConfig opscloudConfig;
+    private CaesarConfig opscloudConfig;
 
     private static final int LOCK_MINUTE = 5;
 

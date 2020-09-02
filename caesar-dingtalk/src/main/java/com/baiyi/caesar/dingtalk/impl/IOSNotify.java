@@ -23,8 +23,8 @@ public class IOSNotify extends BaseDingtalkNotify implements IDingtalkNotify {
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext jobBuildContext) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticeType, noticePhase, jobBuildContext);
+    protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext jobBuildContext) {
+        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, jobBuildContext);
         contentMap.put(VERSION_NAME, jobBuildContext.getJobBuild().getVersionName());
         return contentMap;
     }

@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "opscloud", ignoreInvalidFields = true)
-public class OpscloudConfig {
+@ConfigurationProperties(prefix = "caesar", ignoreInvalidFields = true)
+public class CaesarConfig {
 
     private String version;
     private Boolean openTask; // 启用任务
+    private String url;
 
 }

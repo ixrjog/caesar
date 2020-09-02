@@ -191,6 +191,11 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 
+    private void buildEndNotify(DeploymentJobContext context) {
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
+    }
+
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
     public void trackJobBuild(DeploymentJobContext context) {
@@ -208,6 +213,7 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
                     // 任务完成
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
+                    buildEndNotify(context); // 任务结束通知
                     break;
                 }
             } catch (RetryException e) {

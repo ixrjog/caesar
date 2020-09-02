@@ -9,9 +9,10 @@ logging:
 white:
   urls: /*.js;/*.css;/*.jpg;/swagger-resources/*;/error;/webjars/*;/swagger-ui/*;v2/*;
 
-opscloud:
-  version: 3.0
+caesar:
+  version: 0.0.1
   openTask: true
+  url: https://caesar.ops.yangege.cn
 
 spring:
   profiles:

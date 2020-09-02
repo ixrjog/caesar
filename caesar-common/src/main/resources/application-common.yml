@@ -1,3 +1,6 @@
+host:
+  url: https://caesar.ops.yangege.cn
+
 oc-server-attributes:
   groups:
     -

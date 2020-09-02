@@ -3,6 +3,7 @@ package com.baiyi.caesar.dingtalk.impl;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
+import com.baiyi.caesar.common.config.HostConfig;
 import com.baiyi.caesar.common.util.BeetlUtils;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
@@ -42,6 +43,11 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
 
     public static final String VERSION_NAME = "versionName";
 
+    public static final String BUILD_DETAILS_URL = "buildDetailsUrl";
+
+    @Resource
+    protected HostConfig hostConfig;
+
     @Resource
     protected CsDingtalkTemplateService csDingtalkTemplateService;
 
@@ -75,7 +81,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent(noticeType, noticePhase, context);
+        Map<String, Object> contentMap = acqTemplateContent( noticePhase, context);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -90,16 +96,59 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     @Override
     public void doNotify(int noticePhase, DeploymentJobContext context) {
         int noticeType = NoticeType.DEPLOYMENT.getType();
+        CsDingtalkTemplate csDingtalkTemplate = acqDingtalkTemplateByNoticeType(noticeType, noticePhase);
+        if (csDingtalkTemplate == null) {
+            log.error("钉钉通知模版未配置, buildId = {}",context.getJobBuild().getId());
+            return;
+        }
+        // 模版变量
+        Map<String, Object> contentMap = acqTemplateContent( noticePhase, context);
+        try {
+            CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
+            DingtalkContent dingtalkContent = DingtalkContent.builder()
+                    .msg(renderTemplate(csDingtalkTemplate, contentMap))
+                    .webHook(dingtalkConfig.getWebHook(stringEncryptor.decrypt(csDingtalk.getDingtalkToken())))
+                    .build();
+            dingtalkHandler.doNotify(dingtalkContent);
+        } catch (IOException e) {
+        }
     }
 
     /**
+     * 部署任务
      * 取模版内容
      *
-     * @param noticeType
      * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent(int noticeType, int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> acqTemplateContent( int noticePhase, DeploymentJobContext context) {
+        Map<String, Object> contentMap = Maps.newHashMap();
+
+        OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
+        OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
+        contentMap.put("applicationName", context.getCsApplication().getApplicationKey()); // 应用名称只显示key
+        contentMap.put("jobName", context.getCsCiJob().getJobKey()); // 任务名称只显示key
+        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束");
+        contentMap.put("envName", ocEnv != null ? ocEnv.getEnvName() : "default");
+        contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : context.getJobBuild().getUsername());
+        String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
+        contentMap.put("consoleUrl", consolerUrl); // console日志url
+        contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
+        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(),context.getCsCiJob()));
+        if (noticePhase == NoticePhase.END.getType()) {
+            contentMap.put("buildStatus",  context.getJobBuild().getBuildStatus());
+        }
+        return contentMap;
+    }
+
+    /**
+     * 构建任务
+     * 取模版内容
+     *
+     * @param context
+     * @return
+     */
+    protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext context) {
         Map<String, Object> contentMap = Maps.newHashMap();
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
@@ -114,7 +163,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
         contentMap.put("branch", context.getJobBuild().getBranch()); // 构建分支
         contentMap.put("commit", context.getJobBuild().getCommit().substring(0, 7)); // 取7位commit
-        contentMap.put("users", acqAtUsers(ocUser, context));
+        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(),context.getCsCiJob()));
         if (noticePhase == NoticePhase.END.getType()) {
             contentMap.put("changes", acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()));
             contentMap.put("buildStatus",  context.getJobBuild().getBuildStatus());
@@ -127,17 +176,17 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     }
 
     /**
-     * 取通知用户
-     *
+     *  取通知用户
      * @param ocUser
-     * @param jobBuildContext
+     * @param applicationId
+     * @param csCiJob
      * @return
      */
-    private List<OcUser> acqAtUsers(OcUser ocUser, BuildJobContext jobBuildContext) {
+    private List<OcUser> acqAtUsers(OcUser ocUser,int applicationId, CsCiJob csCiJob) {
         List<OcUser> users = Lists.newArrayList();
-        if (jobBuildContext.getCsCiJob().getAtAll()) {
+        if (csCiJob.getAtAll()) {
             UserParam.UserIncludeApplicationPageQuery pageQuery = new UserParam.UserIncludeApplicationPageQuery();
-            pageQuery.setApplicationId(jobBuildContext.getCsApplication().getId());
+            pageQuery.setApplicationId(applicationId);
             pageQuery.setPage(1);
             pageQuery.setLength(20);
             DataTable<OcUser> dataTable = ocUserService.queryApplicationIncludeUserParam(pageQuery);
