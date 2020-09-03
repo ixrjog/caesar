@@ -1,8 +1,10 @@
 package com.baiyi.caesar.dingtalk.impl;
 
 import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +29,20 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext jobBuildContext) {
-        Map<String, Object> contentMap = super.acqTemplateContent( noticePhase, jobBuildContext);
-        contentMap.put(VERSION_NAME, jobBuildContext.getJobBuild().getVersionName());
-        contentMap.put(ENVIRONMENT_BUILD, jobBuildContext.getJobParamDetail().getParamByKey(ENVIRONMENT_BUILD));
-        contentMap.put(PRODUCT_FLAVOR_BUILD, jobBuildContext.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR_BUILD));
+    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
+        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
+        contentMap.put(VERSION_NAME, context.getJobBuild().getVersionName());
+        contentMap.put(ENVIRONMENT_BUILD, context.getJobParamDetail().getParamByKey(ENVIRONMENT_BUILD));
+        contentMap.put(PRODUCT_FLAVOR_BUILD, context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR_BUILD));
+        if (noticePhase == NoticePhase.END.getType()) {
+            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
+        }
         return contentMap;
+    }
+
+    // https://caesar.ops.yangege.cn/index.html#/job/build/android?buildId=168
+    private String acqBuildDetailsUrl(int buildId) {
+        return Joiner.on("/").join(hostConfig.getUrl(), "index.html#/job/build/android?buildId=") + buildId;
     }
 
 }
