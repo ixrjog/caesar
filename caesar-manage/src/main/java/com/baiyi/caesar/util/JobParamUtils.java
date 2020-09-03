@@ -44,6 +44,11 @@ public class JobParamUtils {
         jobParamDetail.getParams().put("podUpdate", buildParam.getParamMap().get("podUpdate"));
     }
 
+    public static void invokePubGet(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
+        if (!buildParam.getParamMap().containsKey("pubGet")) return;
+        jobParamDetail.getParams().put("pubGet", buildParam.getParamMap().get("pubGet"));
+    }
+
     public static void invokeEnvironmentBuild(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
         if (!buildParam.getParamMap().containsKey("ENVIRONMENT_BUILD")) return;
         jobParamDetail.getParams().put("ENVIRONMENT_BUILD", buildParam.getParamMap().get("ENVIRONMENT_BUILD"));

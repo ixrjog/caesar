@@ -30,6 +30,7 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
         JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
         JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
         JobParamUtils.invokePodUpdate(jobParamDetail, buildParam);
+        JobParamUtils.invokePubGet(jobParamDetail, buildParam);
         return jobParamDetail;
     }
 
