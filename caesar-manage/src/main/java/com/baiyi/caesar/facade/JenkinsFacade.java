@@ -21,6 +21,8 @@ public interface JenkinsFacade {
 
     DataTable<JenkinsInstanceVO.Instance> queryJenkinsInstancePage(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery);
 
+    BusinessWrapper<Boolean>  setJenkinsInstanceActive(int id);
+
     BusinessWrapper<Boolean> addJenkinsInstance(JenkinsInstanceVO.Instance instance);
 
     BusinessWrapper<Boolean> updateJenkinsInstance(JenkinsInstanceVO.Instance instance);

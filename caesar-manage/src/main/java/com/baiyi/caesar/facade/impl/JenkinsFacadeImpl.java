@@ -86,6 +86,14 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     }
 
     @Override
+    public BusinessWrapper<Boolean> setJenkinsInstanceActive(int id) {
+        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(id);
+        csJenkinsInstance.setIsActive(!csJenkinsInstance.getIsActive());
+        csJenkinsInstanceService.updateCsJenkinsInstance(csJenkinsInstance);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
     public BusinessWrapper<Boolean> addJenkinsInstance(JenkinsInstanceVO.Instance instance) {
         CsJenkinsInstance csJenkinsInstance = BeanCopierUtils.copyProperties(instance, CsJenkinsInstance.class);
         csJenkinsInstance.setToken(stringEncryptor.encrypt(instance.getToken()));

@@ -31,6 +31,7 @@ public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuil
         JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
         JobParamUtils.invokeEnvironmentBuild(jobParamDetail, buildParam);
         JobParamUtils.invokeProductFlavorBuild(jobParamDetail, buildParam);
+        JobParamUtils.invokePubGet(jobParamDetail, buildParam);
         return jobParamDetail;
     }
 

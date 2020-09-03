@@ -37,6 +37,12 @@ public class JenkinsController {
     @Resource
     private JenkinsEngineFacade jenkinsEngineFacade;
 
+    @ApiOperation(value = "设置Jenkins实例是否有效")
+    @GetMapping(value = "/instance/active/set", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> setJenkinsInstanceActive(@RequestParam int id) {
+        return new HttpResult<>(jenkinsFacade.setJenkinsInstanceActive(id));
+    }
+
     @ApiOperation(value = "分页查Jenkins实例配置")
     @PostMapping(value = "/instance/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<JenkinsInstanceVO.Instance>> queryJenkinsInstancePage(@RequestBody @Valid JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery) {
