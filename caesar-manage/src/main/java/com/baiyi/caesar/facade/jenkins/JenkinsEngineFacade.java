@@ -34,7 +34,7 @@ public class JenkinsEngineFacade {
     @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ENGINE_CHART_CACHE_REPO)
     public EngineVO.Children buildEngineChart() {
         EngineVO.Children root = EngineVO.Children.builder()
-                .name("Jenkins")
+                .name("Engines")
                 .build();
         csJenkinsInstanceService.queryAll().forEach(e -> {
             EngineVO.Children instance;
@@ -43,6 +43,7 @@ public class JenkinsEngineFacade {
                         .name(e.getName())
                         .build();
                 invokeComputer(e, instance);
+                instance.setValue(instance.getChildren().size());
             } else {
                 instance = EngineVO.Children.builder()
                         .name(e.getName() + "(inactive)")
