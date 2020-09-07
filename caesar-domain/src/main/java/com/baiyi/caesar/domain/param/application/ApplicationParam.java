@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,7 +42,6 @@ public class ApplicationParam {
 
         @ApiModelProperty(value = "扩展属性", example = "1")
         private Integer extend;
-
     }
 
 
@@ -57,6 +57,20 @@ public class ApplicationParam {
         @ApiModelProperty(value = "启用tag")
         @NotNull
         private Boolean enableTag;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class ScmMemberBranchCommitQuery {
+
+        @ApiModelProperty(value = "scm成员id")
+        @NotNull(message = "必须指定scm成员id")
+        private Integer scmMemberId;
+
+        @ApiModelProperty(value = "分支名称")
+        @NotBlank(message = "必须指定分支名称")
+        private String branch;
 
     }
 }

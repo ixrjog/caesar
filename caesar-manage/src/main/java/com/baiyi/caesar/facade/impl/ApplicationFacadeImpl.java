@@ -31,6 +31,7 @@ import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
+import org.gitlab.api.models.GitlabBranchCommit;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -241,6 +242,14 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (csApplicationScmMember == null)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
         return gitlabFacade.queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag());
+    }
+
+    @Override
+    public BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(query.getScmMemberId());
+        if (csApplicationScmMember == null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
+        return gitlabFacade.queryGitlabProjectBranchCommit(csApplicationScmMember.getScmId(), query.getBranch());
     }
 
     @Override

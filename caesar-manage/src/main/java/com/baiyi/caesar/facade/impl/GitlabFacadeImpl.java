@@ -8,6 +8,7 @@ import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabProjectDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
@@ -25,6 +26,8 @@ import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.gitlab.api.models.GitlabBranch;
+import org.gitlab.api.models.GitlabBranchCommit;
 import org.gitlab.api.models.GitlabProject;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,6 +76,19 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private TagFacade tagFacade;
+
+    @Override
+    public BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
+        CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
+        try {
+            GitlabBranch gitlabBranch = gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
+            return new BusinessWrapper<>(gitlabBranch.getCommit());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new BusinessWrapper<>(ErrorEnum. GITLAB_BRANCH_COMMIT_ERROR);
+    }
 
     @Override
     public DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery) {
@@ -162,12 +179,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
         List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
         GitlabBranchVO.Repository repository = new GitlabBranchVO.Repository();
         List<GitlabBranchVO.Option> options = Lists.newArrayList();
-        options.add(GitlabBranchConvert.build("Branches",branches));
+        options.add(GitlabBranchConvert.build("Branches", branches));
         if (enableTag) {
             List<GitlabBranchVO.BaseBranch> tags = GitlabBranchConvert.convertTags(gitlabBranchHandler.getTags(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
-            options.add(GitlabBranchConvert.build("Tags",tags));
+            options.add(GitlabBranchConvert.build("Tags", tags));
         }
-        repository.setOptions( options);
+        repository.setOptions(options);
         return new BusinessWrapper<>(repository);
 
     }

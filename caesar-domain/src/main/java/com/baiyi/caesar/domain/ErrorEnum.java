@@ -179,6 +179,8 @@ public enum ErrorEnum {
     KUBERNETES_DELETE_SERVICE_ERROR(70001, "Kubernetes删除Service错误！"),
 
 
+    GITLAB_BRANCH_COMMIT_ERROR(80001,"查询代码仓库commit错误！"),
+
     JENKINS_JOB_TPL_READ_ERROR(80001,"读取任务模版错误！"),
     JENKINS_JOB_TPL_WRITE_ERROR(80001,"写入任务模版错误！"),
     JENKINS_JOB_ENGINE_NOT_CONFIGURED(80001,"任务工作引擎未配置！"),

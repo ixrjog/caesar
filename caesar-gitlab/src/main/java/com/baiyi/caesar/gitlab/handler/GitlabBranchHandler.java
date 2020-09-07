@@ -27,4 +27,5 @@ public class GitlabBranchHandler {
     public List<GitlabTag> getTags(String gitlabName, Integer projectId) {
         return GitlabServerContainer.getGitlabAPI(gitlabName).getTags(projectId);
     }
+
 }
