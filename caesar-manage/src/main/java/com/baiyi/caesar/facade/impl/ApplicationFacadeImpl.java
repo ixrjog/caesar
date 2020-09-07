@@ -5,6 +5,7 @@ import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.decorator.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -117,6 +118,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application) {
+        if (!RegexUtils.isApplicationKeyRule(application.getApplicationKey()))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_KEY_NON_COMPLIANCE_WITH_RULES);
         CsApplication csApplication = BeanCopierUtils.copyProperties(application, CsApplication.class);
         csApplicationService.addCsApplication(csApplication);
         return BusinessWrapper.SUCCESS;
@@ -124,8 +127,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateApplication(ApplicationVO.Application application) {
-        CsApplication csApplication = BeanCopierUtils.copyProperties(application, CsApplication.class);
-        csApplicationService.updateCsApplication(csApplication);
+        CsApplication pre = BeanCopierUtils.copyProperties(application, CsApplication.class);
+        CsApplication csApplication = csApplicationService.queryCsApplicationById(pre.getId());
+        pre.setApplicationKey(csApplication.getApplicationKey());
+        csApplicationService.updateCsApplication(pre);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -166,7 +171,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery){
+    public DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery) {
         DataTable<CsCdJob> table = csCdJobService.queryCsCdJobByParam(pageQuery);
         List<CdJobVO.CdJob> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobVO.CdJob.class);
         return new DataTable<>(page.stream().map(e -> cdJobDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
@@ -174,8 +179,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob) {
+        if (!RegexUtils.isJobKeyRule(ciJob.getJobKey()))
+            return new BusinessWrapper<>(ErrorEnum.JOB_KEY_NON_COMPLIANCE_WITH_RULES);
         CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
-        if(!checkJob(csCiJob.getApplicationId(),csCiJob.getJobKey()))
+        if (!checkJob(csCiJob.getApplicationId(), csCiJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
         if (ciJob.getJobTpl() != null)
             csCiJob.setJobTplId(ciJob.getJobTpl().getId());
@@ -185,8 +192,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addCdJob(CdJobVO.CdJob cdJob) {
+        if (!RegexUtils.isJobKeyRule(cdJob.getJobKey()))
+            return new BusinessWrapper<>(ErrorEnum.JOB_KEY_NON_COMPLIANCE_WITH_RULES);
         CsCdJob csCdJob = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
-        if(!checkJob(csCdJob.getApplicationId(),csCdJob.getJobKey()))
+        if (!checkJob(csCdJob.getApplicationId(), csCdJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
         if (cdJob.getJobTpl() != null)
             csCdJob.setJobTplId(cdJob.getJobTpl().getId());
@@ -206,19 +215,23 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
-        CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJob.getId());
+        CsCiJob pre = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        pre.setJobKey(csCiJob.getJobKey());
         if (ciJob.getJobTpl() != null)
-            csCiJob.setJobTplId(ciJob.getJobTpl().getId());
-        csCiJobService.updateCsCiJob(csCiJob);
+            pre.setJobTplId(ciJob.getJobTpl().getId());
+        csCiJobService.updateCsCiJob(pre);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob) {
-        CsCdJob csCdJob = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJob.getId());
+        CsCdJob pre = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        pre.setJobKey(csCdJob.getJobKey());
         if (cdJob.getJobTpl() != null)
-            csCdJob.setJobTplId(cdJob.getJobTpl().getId());
-        csCdJobService.updateCsCdJob(csCdJob);
+            pre.setJobTplId(cdJob.getJobTpl().getId());
+        csCdJobService.updateCsCdJob(pre);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -270,14 +283,14 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public BusinessWrapper<Boolean> createJobEngine(int buildType,int jobId) {
-        jenkinsCiJobFacade.createJobEngine(buildType,jobId);
+    public BusinessWrapper<Boolean> createJobEngine(int buildType, int jobId) {
+        jenkinsCiJobFacade.createJobEngine(buildType, jobId);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
-        return jenkinsCiJobFacade.queryJobEngine(buildType,jobId);
+        return jenkinsCiJobFacade.queryJobEngine(buildType, jobId);
     }
 
     @Override

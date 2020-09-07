@@ -37,6 +37,26 @@ public class OcUserTokenServiceImpl implements OcUserTokenService {
     }
 
     @Override
+    public int countValidOcUserTokenByUsername(String username) {
+        Example example = new Example(OcUserToken.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("valid", true);
+        criteria.andEqualTo("username", username);
+        return ocUserTokenMapper.selectCountByExample(example);
+    }
+
+    @Override
+    public List<OcUserToken> queryValidOcUserTokenByUsername(String username,int size) {
+        Example example = new Example(OcUserToken.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("valid", true);
+        criteria.andEqualTo("username", username);
+        example.setOrderByClause("create_time");
+        PageHelper.startPage(1, size);
+        return ocUserTokenMapper.selectByExample(example);
+    }
+
+    @Override
     public List<OcUserToken> queryOcUserTokenByUsername(String username) {
         Example example = new Example(OcUserToken.class);
         Example.Criteria criteria = example.createCriteria();

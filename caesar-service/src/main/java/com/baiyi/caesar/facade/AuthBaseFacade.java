@@ -27,6 +27,7 @@ public interface AuthBaseFacade {
      */
     void revokeUserToken(String username);
 
+
     void setUserToken(String username, String token);
 
     /**

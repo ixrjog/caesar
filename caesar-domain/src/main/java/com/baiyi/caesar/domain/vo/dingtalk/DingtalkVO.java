@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class DingtalkVO {
 
-
     @Data
     @NoArgsConstructor
     @ApiModel
@@ -34,6 +33,5 @@ public class DingtalkVO {
         private Date updateTime;
 
         private String comment;
-
     }
 }

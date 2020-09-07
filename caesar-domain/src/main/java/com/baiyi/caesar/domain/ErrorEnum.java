@@ -186,7 +186,9 @@ public enum ErrorEnum {
     JENKINS_JOB_EXISTS(80001,"任务已存在！"),
     JENKINS_JOB_BUILD_OUTPUT_NOT_EXIST(80001,"任务构建日志不存在！"),
     APPLICATION_SCM_NOT_EXIST(70001, "应用仓库配置不存在！"),
-    APPLICATION_NOT_ADMIN(70001, "你不是此应用的管理员！")
+    APPLICATION_NOT_ADMIN(70001, "你不是此应用的管理员！"),
+    JOB_KEY_NON_COMPLIANCE_WITH_RULES(13002, "任务名不合规！"),
+    APPLICATION_KEY_NON_COMPLIANCE_WITH_RULES(13002, "应用名不合规！"),
     ;
 
     private int code;

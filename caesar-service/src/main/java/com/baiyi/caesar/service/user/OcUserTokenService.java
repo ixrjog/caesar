@@ -21,8 +21,13 @@ public interface OcUserTokenService {
      */
     OcUserToken queryOcUserTokenByTokenAndValid(String token);
 
+    int countValidOcUserTokenByUsername(String username);
+
+    List<OcUserToken> queryValidOcUserTokenByUsername(String username,int size);
+
     /**
      * 查询用户有效的Token
+     *
      * @param username
      * @return
      */
@@ -30,6 +35,7 @@ public interface OcUserTokenService {
 
     /**
      * 吊销Token
+     *
      * @param ocUserToken
      */
     void updateOcUserTokenInvalid(OcUserToken ocUserToken);
@@ -45,6 +51,7 @@ public interface OcUserTokenService {
 
     /**
      * 判断用户是否为 角色
+     *
      * @param token
      * @param roleName
      * @return

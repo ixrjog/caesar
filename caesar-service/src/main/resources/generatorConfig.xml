@@ -110,9 +110,11 @@ cs_dingtalk_template
 cs_cd_job
 cs_job_build_artifact
 cs_cd_job_build
+cs_job_build_change
+cs_instance
        -->
 
-        <table tableName="cs_job_build_change">
+        <table tableName="cs_instance">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

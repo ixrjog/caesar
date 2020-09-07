@@ -75,6 +75,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
 
     @Resource
     private CsJobEngineService csJobEngineService;
+
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
