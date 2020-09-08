@@ -1,5 +1,9 @@
 package com.baiyi.caesar.facade;
 
+import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.param.caesar.CaesarInstanceParam;
+import com.baiyi.caesar.domain.vo.caesar.CaesarVO;
 import com.baiyi.caesar.domain.vo.caesar.HealthVO;
 
 /**
@@ -11,5 +15,9 @@ public interface CaesarInstanceFacade {
 
    HealthVO.Health checkHealth();
 
+   DataTable<CaesarVO.Instance> queryCaesarInstancePage(CaesarInstanceParam.CaesarInstancePageQuery pageQuery);
+
    boolean isHealth();
+
+   BusinessWrapper<Boolean> setCaesarInstanceActive(int id);
 }

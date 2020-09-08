@@ -1,8 +1,13 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.CaesarInstanceBuilder;
+import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.HostUtils;
+import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsInstance;
+import com.baiyi.caesar.domain.param.caesar.CaesarInstanceParam;
+import com.baiyi.caesar.domain.vo.caesar.CaesarVO;
 import com.baiyi.caesar.domain.vo.caesar.HealthVO;
 import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import com.baiyi.caesar.service.instance.CsInstanceService;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -27,6 +33,14 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
     private CsInstanceService csInstanceService;
 
     private static final String HEALTH_OK = "OK";
+
+    @Override
+    public BusinessWrapper<Boolean> setCaesarInstanceActive(int id) {
+        CsInstance csInstance = csInstanceService.queryCsInstanceById(id);
+        csInstance.setIsActive(!csInstance.getIsActive());
+        csInstanceService.updateCsInstance(csInstance);
+        return BusinessWrapper.SUCCESS;
+    }
 
     @Override
     public boolean isHealth() {
@@ -49,6 +63,13 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
         } catch (UnknownHostException ignored) {
         }
         return getHealth("ERROR");
+    }
+
+    @Override
+    public DataTable<CaesarVO.Instance> queryCaesarInstancePage(CaesarInstanceParam.CaesarInstancePageQuery pageQuery) {
+        DataTable<CsInstance> table = csInstanceService.queryCsInstanceByParam(pageQuery);
+        List<CaesarVO.Instance> page = BeanCopierUtils.copyListProperties(table.getData(), CaesarVO.Instance.class);
+        return new DataTable<>(page, table.getTotalNum());
     }
 
     private HealthVO.Health getHealth(String status) {

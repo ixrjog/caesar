@@ -1,6 +1,8 @@
 package com.baiyi.caesar.service.instance;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsInstance;
+import com.baiyi.caesar.domain.param.caesar.CaesarInstanceParam;
 
 /**
  * @Author baiyi
@@ -9,9 +11,13 @@ import com.baiyi.caesar.domain.generator.caesar.CsInstance;
  */
 public interface CsInstanceService {
 
+    DataTable<CsInstance> queryCsInstanceByParam(CaesarInstanceParam.CaesarInstancePageQuery pageQuery);
+
     void addCsInstance(CsInstance csInstance);
 
     void updateCsInstance(CsInstance csInstance);
 
     CsInstance queryCsInstanceByHostIp(String hostIp);
+
+    CsInstance queryCsInstanceById(int id);
 }

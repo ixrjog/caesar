@@ -1,16 +1,18 @@
 package com.baiyi.caesar.controller;
 
+import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.param.caesar.CaesarInstanceParam;
+import com.baiyi.caesar.domain.vo.caesar.CaesarVO;
 import com.baiyi.caesar.domain.vo.caesar.HealthVO;
 import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @Author baiyi
@@ -18,16 +20,29 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/health")
-@Api(tags = "权限配置")
+@RequestMapping("/caesar")
+@Api(tags = "凯撒管理")
 public class CaesarController {
 
     @Resource
     private CaesarInstanceFacade caesarInstanceFacade;
 
     @ApiOperation(value = "负载均衡健康检查接口")
-    @GetMapping(value = "/slb-health-check", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/health/slb-health-check", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<HealthVO.Health> checkHealth() {
         return new HttpResult<>(caesarInstanceFacade.checkHealth());
     }
+
+    @ApiOperation(value = "分页查询凯撒实例配置")
+    @PostMapping(value = "/instance/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<CaesarVO.Instance>> queryCaesarInstancePage(@RequestBody @Valid CaesarInstanceParam.CaesarInstancePageQuery pageQuery) {
+        return new HttpResult<>(caesarInstanceFacade.queryCaesarInstancePage(pageQuery));
+    }
+
+    @ApiOperation(value = "设置凯撒实例是否有效")
+    @GetMapping(value = "/instance/active/set", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> setCaesarInstanceActive(@RequestParam int id) {
+        return new HttpResult<>(caesarInstanceFacade.setCaesarInstanceActive(id));
+    }
+
 }
