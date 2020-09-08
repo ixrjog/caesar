@@ -1,9 +1,10 @@
-package com.baiyi.caesar.facade;
+package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.CaesarInstanceBuilder;
 import com.baiyi.caesar.common.util.HostUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsInstance;
 import com.baiyi.caesar.domain.vo.caesar.HealthVO;
+import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import com.baiyi.caesar.service.instance.CsInstanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,11 +21,20 @@ import java.net.UnknownHostException;
  */
 @Slf4j
 @Service
-public class CaesarInstanceFacade implements InitializingBean {
+public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, InitializingBean {
 
     @Resource
     private CsInstanceService csInstanceService;
 
+    private static final String HEALTH_OK = "OK";
+
+    @Override
+    public boolean isHealth() {
+        HealthVO.Health health = checkHealth();
+        return HEALTH_OK.equals(health.getStatus());
+    }
+
+    @Override
     public HealthVO.Health checkHealth() {
         try {
             InetAddress inetAddress = HostUtils.getInetAddress();
@@ -32,7 +42,7 @@ public class CaesarInstanceFacade implements InitializingBean {
             if (csInstance == null)
                 return getHealth("ERROR");
             if (csInstance.getIsActive()) {
-                return getHealth("OK");
+                return getHealth(HEALTH_OK);
             } else {
                 return getHealth("INACTIVE");
             }
