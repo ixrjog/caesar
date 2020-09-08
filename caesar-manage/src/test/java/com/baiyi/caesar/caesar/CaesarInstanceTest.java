@@ -3,7 +3,7 @@ package com.baiyi.caesar.caesar;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.domain.vo.caesar.HealthVO;
-import com.baiyi.caesar.facade.CaesarInstanceFacade;
+import com.baiyi.caesar.facade.impl.CaesarInstanceFacadeImpl;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 public class CaesarInstanceTest extends BaseUnit {
 
     @Resource
-    private CaesarInstanceFacade caesarInstanceFacade;
+    private CaesarInstanceFacadeImpl caesarInstanceFacade;
 
     @Test
     void testSsJobKeyRule() {

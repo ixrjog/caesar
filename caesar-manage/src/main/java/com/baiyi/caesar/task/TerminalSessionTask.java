@@ -22,13 +22,14 @@ public class TerminalSessionTask extends BaseTask {
     // Terminal
     public static final String TASK_TERMINAL_SESSION_KEY = "TASK_TERMINAL_SESSION_KEY";
 
-    private static final int  LOCK_MINUTE = 2;
+    private static final int LOCK_MINUTE = 2;
 
     /**
      * 关闭无效会话
      */
     @Scheduled(initialDelay = 5000, fixedRate = 60 * 1000)
     public void closeInvalidSessionTask() {
+        if (!isHealth()) return;
         if (tryLock()) return;
         terminalFacade.closeInvalidSessionTask();
         unlock();

@@ -1,6 +1,7 @@
 package com.baiyi.caesar.task;
 
 import com.baiyi.caesar.config.CaesarConfig;
+import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import com.baiyi.caesar.task.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,14 @@ public abstract class BaseTask {
     @Resource
     private CaesarConfig opscloudConfig;
 
+    @Resource
+    private CaesarInstanceFacade caesarInstanceFacade;
+
     private static final int LOCK_MINUTE = 5;
+
+    protected boolean isHealth() {
+        return caesarInstanceFacade.isHealth();
+    }
 
     /**
      * 尝试加锁
