@@ -8,6 +8,7 @@ target/
 *.db
 .mvn
 *.gz
+.DS_Store
 
 ### 含隐私
 application-dev.yml
