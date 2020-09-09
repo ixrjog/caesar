@@ -14,6 +14,11 @@ caesar:
   openTask: true
   url: https://caesar.ops.yangege.cn
 
+opscloud:
+  url: https://oc3.ops.yangege.cn
+  tokenId: qI0Xhur3xsuDsqQUljjW
+  apiToken: ENC(79mu3imykqW4oLAVNlQc2+abbX1/z2Axvj1OBHX0AzI=)
+
 spring:
   profiles:
     include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core

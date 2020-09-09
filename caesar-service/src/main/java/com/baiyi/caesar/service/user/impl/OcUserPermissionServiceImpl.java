@@ -36,6 +36,11 @@ public class OcUserPermissionServiceImpl implements OcUserPermissionService {
     }
 
     @Override
+    public OcUserPermission queryOcUserPermissionById(int id) {
+        return ocUserPermissionMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public OcUserPermission queryOcUserPermissionByUniqueKey(OcUserPermission ocUserPermission) {
         Example example = new Example(OcUserPermission.class);
         Example.Criteria criteria = example.createCriteria();

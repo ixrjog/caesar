@@ -47,6 +47,12 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.queryMyApplicationPage(pageQuery));
     }
 
+    @ApiOperation(value = "更新我的应用评分")
+    @PutMapping(value = "/my/rate/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateMyApplicationRate(@RequestBody @Valid ApplicationVO.MyApplicationRate applicationRate) {
+        return new HttpResult<>(applicationFacade.updateMyApplicationRate(applicationRate));
+    }
+
     @ApiOperation(value = "新增应用配置")
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addApplication(@RequestBody @Valid ApplicationVO.Application application) {

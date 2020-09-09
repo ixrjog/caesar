@@ -104,11 +104,17 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
 
     @Override
     public boolean tryUserBusinessPermission(int userId, int businessType, int businessId) {
+        return queryUserPermissionByUniqueKey(userId,  businessType,  businessId) != null;
+    }
+
+
+    @Override
+    public OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId) {
         OcUserPermission ocUserPermission = new OcUserPermission();
         ocUserPermission.setBusinessType(businessType);
         ocUserPermission.setBusinessId(businessId);
         ocUserPermission.setUserId(userId);
-        return ocUserPermissionService.queryOcUserPermissionByUniqueKey(ocUserPermission) != null;
+        return ocUserPermissionService.queryOcUserPermissionByUniqueKey(ocUserPermission);
     }
 
 }

@@ -29,15 +29,14 @@
     <select id="queryMyCsApplicationByParam"
             parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$MyApplicationPageQuery"
             resultMap="BaseResultMap">
-        select * from cs_application
+        select a0.* from oc_user_permission as a1 inner join cs_application as a0 on
+        a0.id = a1.business_id and a1.business_type = 8 and a1.user_id = #{userId}
         <where>
-            <if test="userId != null and userId > 0">
-                id in ( select business_id from oc_user_permission where business_type = 8 and user_id = #{userId})
-            </if>
             <if test="queryName != null and queryName != ''">
-                and ( name like "%" #{queryName} "%" or application_key like "%" #{queryName} "%" )
+                a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%"
             </if>
         </where>
+        order by a1.rate desc
     </select>
 
 </mapper>

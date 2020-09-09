@@ -108,7 +108,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         myApplicationPageQuery.setUserId(ocUser.getId());
         DataTable<CsApplication> table = csApplicationService.queryMyCsApplicationByParam(myApplicationPageQuery);
         List<ApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), ApplicationVO.Application.class);
-        return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
@@ -133,6 +133,19 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         pre.setApplicationKey(csApplication.getApplicationKey());
         csApplicationService.updateCsApplication(pre);
         return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> updateMyApplicationRate(ApplicationVO.MyApplicationRate applicationRate) {
+        OcUser ocUser = userFacade.getOcUserBySession();
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionById(applicationRate.getUserPermissionId());
+        if(ocUserPermission.getUserId().equals(ocUser.getId()) && ocUserPermission.getBusinessType() == BusinessType.APPLICATION.getType()){
+            ocUserPermission.setRate(applicationRate.getRate());
+            ocUserPermissionService.updateOcUserPermission(ocUserPermission);
+            return BusinessWrapper.SUCCESS;
+        }else{
+          return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        }
     }
 
     @Override

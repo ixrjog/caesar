@@ -61,4 +61,6 @@ public interface ServerGroupFacade {
 
     BusinessWrapper<Map<String, String>> getServerTreeHostPatternMap(String uuid, OcUser ocUser);
 
+    BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName);
+
 }

@@ -32,6 +32,13 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> updateApplication(ApplicationVO.Application application);
 
+    /**
+     * 修改我的评分
+     * @param applicationRate
+     * @return
+     */
+    BusinessWrapper<Boolean> updateMyApplicationRate(ApplicationVO.MyApplicationRate applicationRate);
+
     BusinessWrapper<Boolean> deleteApplicationById(int id);
 
     BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId);
@@ -70,7 +77,7 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> removeApplicationEngine(int id);
 
-    BusinessWrapper<Boolean> createJobEngine(int buildType,int jobId);
+    BusinessWrapper<Boolean> createJobEngine(int buildType, int jobId);
 
     List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId);
 

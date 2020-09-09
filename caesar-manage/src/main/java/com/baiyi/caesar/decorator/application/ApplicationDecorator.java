@@ -4,8 +4,12 @@ import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
+import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
+import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,11 +35,21 @@ public class ApplicationDecorator {
     @Resource
     private TagDecorator tagDecorator;
 
+    @Resource
+    private UserPermissionFacade userPermissionFacade;
+
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
         if (extend == 0) return application;
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
         application.setTags(acqTagsByMembers(members));
-        application.setScmMembers(BeanCopierUtils.copyListProperties(members,ApplicationVO.ScmMember.class));
+        application.setScmMembers(BeanCopierUtils.copyListProperties(members, ApplicationVO.ScmMember.class));
+        return application;
+    }
+
+    public ApplicationVO.Application decorator(ApplicationVO.Application application, OcUser ocUser, Integer extend) {
+        application = decorator(application, extend);
+        OcUserPermission ocUserPermission = userPermissionFacade.queryUserPermissionByUniqueKey(ocUser.getId(), BusinessType.APPLICATION.getType(), application.getId());
+        application.setUserPermission(BeanCopierUtils.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
         return application;
     }
 

@@ -21,7 +21,7 @@ public abstract class BaseTask {
     protected TaskUtil taskUtil;
 
     @Resource
-    private CaesarConfig opscloudConfig;
+    private CaesarConfig caesarConfig;
 
     @Resource
     private CaesarInstanceFacade caesarInstanceFacade;
@@ -38,7 +38,7 @@ public abstract class BaseTask {
      * @return
      */
     protected boolean tryLock() {
-        if (!opscloudConfig.getOpenTask()) return true;
+        if (!caesarConfig.getOpenTask()) return true;
         if (taskUtil.tryLock(getLock())) return true;
         taskUtil.lock(getLock(), getLockMinute());
         log.info("{} : 开始执行!", getTaskName());

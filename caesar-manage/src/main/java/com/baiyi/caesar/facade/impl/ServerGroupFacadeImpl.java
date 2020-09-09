@@ -368,4 +368,13 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
         return new BusinessWrapper(redisUtil.get(key));
     }
 
+    @Override
+    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName) {
+
+
+        return null;
+    }
+
+
+
 }

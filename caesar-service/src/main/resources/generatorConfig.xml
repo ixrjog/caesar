@@ -114,7 +114,7 @@ cs_job_build_change
 cs_instance
        -->
 
-        <table tableName="cs_instance">
+        <table tableName="oc_user_permission">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
