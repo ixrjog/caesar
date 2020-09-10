@@ -17,5 +17,7 @@ public class UserPermissionBO {
     private Integer businessId;
     private Integer businessType;
     private String roleName;
+    @Builder.Default
+    private Integer rate = 0;
 
 }
