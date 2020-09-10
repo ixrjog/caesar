@@ -6,11 +6,9 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import org.gitlab.api.models.GitlabBranchCommit;
 
 import java.util.List;
@@ -34,6 +32,7 @@ public interface ApplicationFacade {
 
     /**
      * 修改我的评分
+     *
      * @param applicationRate
      * @return
      */
@@ -86,4 +85,12 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> revokeUserApplication(int applicationId, int userId);
 
     BusinessWrapper<Boolean> updateUserApplicationPermission(int applicationId, int userId);
+
+    DataTable<ServerGroupVO.ServerGroup> queryServerGroupPage(ApplicationParam.ServerGroupPageQuery pageQuery);
+
+    List<ApplicationServerGroupVO.ApplicationServerGroup> queryApplicationServerGroupByApplicationId(int applicationId);
+
+    BusinessWrapper<Boolean> addApplicationServerGroup(ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup);
+
+    BusinessWrapper<Boolean> removeApplicationServerGroup(int id);
 }

@@ -14,18 +14,15 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.facade.ApplicationFacade;
-import com.baiyi.caesar.facade.GitlabFacade;
-import com.baiyi.caesar.facade.UserFacade;
-import com.baiyi.caesar.facade.UserPermissionFacade;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
+import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.opscloud.OpscloudServer;
 import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
+import com.baiyi.caesar.service.application.CsApplicationServerGroupService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
@@ -35,6 +32,7 @@ import org.gitlab.api.models.GitlabBranchCommit;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,6 +92,15 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Resource
     private UserFacade userFacade;
 
+    @Resource
+    private ServerGroupFacade serverGroupFacade;
+
+    @Resource
+    private OpscloudServer opscloudServer;
+
+    @Resource
+    private CsApplicationServerGroupService csApplicationServerGroupService;
+
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         DataTable<CsApplication> table = csApplicationService.queryCsApplicationByParam(pageQuery);
@@ -139,12 +146,12 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public BusinessWrapper<Boolean> updateMyApplicationRate(ApplicationVO.MyApplicationRate applicationRate) {
         OcUser ocUser = userFacade.getOcUserBySession();
         OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionById(applicationRate.getUserPermissionId());
-        if(ocUserPermission.getUserId().equals(ocUser.getId()) && ocUserPermission.getBusinessType() == BusinessType.APPLICATION.getType()){
+        if (ocUserPermission.getUserId().equals(ocUser.getId()) && ocUserPermission.getBusinessType() == BusinessType.APPLICATION.getType()) {
             ocUserPermission.setRate(applicationRate.getRate());
             ocUserPermissionService.updateOcUserPermission(ocUserPermission);
             return BusinessWrapper.SUCCESS;
-        }else{
-          return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        } else {
+            return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         }
     }
 
@@ -376,4 +383,37 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         return BusinessWrapper.SUCCESS;
     }
 
+    @Override
+    public DataTable<ServerGroupVO.ServerGroup> queryServerGroupPage(ApplicationParam.ServerGroupPageQuery pageQuery) {
+        if ("LOCAL".equals(pageQuery.getSource())) {
+            return serverGroupFacade.queryServerGroupPage(pageQuery);
+        } else {
+            try {
+                return opscloudServer.queryServerGroupPage(pageQuery);
+            } catch (IOException e) {
+                return DataTable.EMPTY;
+            }
+        }
+    }
+
+    @Override
+    public List<ApplicationServerGroupVO.ApplicationServerGroup> queryApplicationServerGroupByApplicationId(int applicationId) {
+        List<CsApplicationServerGroup> serverGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(applicationId);
+        return BeanCopierUtils.copyListProperties(serverGroups, ApplicationServerGroupVO.ApplicationServerGroup.class);
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> addApplicationServerGroup(ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup) {
+        CsApplicationServerGroup pre = BeanCopierUtils.copyProperties(applicationServerGroup, CsApplicationServerGroup.class);
+        if (csApplicationServerGroupService.queryCsApplicationServerGroupByUniqueKey(pre) != null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_ALREADY_EXIST);
+        csApplicationServerGroupService.addCsApplicationServerGroup(pre);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> removeApplicationServerGroup(int id) {
+        csApplicationServerGroupService.deleteCsApplicationServerGroupById(id);
+        return BusinessWrapper.SUCCESS;
+    }
 }

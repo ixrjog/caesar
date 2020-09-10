@@ -65,6 +65,7 @@ public enum ErrorEnum {
     // server
     SERVER_NAME_NON_COMPLIANCE_WITH_RULES(12002, "服务器名称不合规！"),
     SERVER_GROUP_NOT_SELECTED(12003, "服务器组未选择！"),
+    SERVER_GROUP_QUERY_FAILED(12003, "服务器组查询失败！"),
     SERVER_PRIVATE_IP_IS_NAME(12002, "服务器私有Ip不能为空！"),
     SERVER_PRIVATE_IP_CONFLICT(12002, "服务器私有Ip冲突！"),
     SERVER_NOT_EXIST(12002, "服务器不存在"),
@@ -180,8 +181,8 @@ public enum ErrorEnum {
 
 
     GITLAB_BRANCH_COMMIT_ERROR(80001,"查询代码仓库commit错误！"),
-
     JENKINS_JOB_TPL_READ_ERROR(80001,"读取任务模版错误！"),
+    JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED(80001,"任务模版参数hostPattern未配置！"),
     JENKINS_JOB_TPL_WRITE_ERROR(80001,"写入任务模版错误！"),
     JENKINS_JOB_ENGINE_NOT_CONFIGURED(80001,"任务工作引擎未配置！"),
     JENKINS_JOB_NO_ENGINES_AVAILABLE(80001,"没有可用的工作引擎！"),
@@ -191,6 +192,8 @@ public enum ErrorEnum {
     APPLICATION_NOT_ADMIN(70001, "你不是此应用的管理员！"),
     JOB_KEY_NON_COMPLIANCE_WITH_RULES(13002, "任务名不合规！"),
     APPLICATION_KEY_NON_COMPLIANCE_WITH_RULES(13002, "应用名不合规！"),
+    APPLICATION_SERVERGROUP_ALREADY_EXIST(12001, "应用服务器组配置已存在！"),
+    APPLICATION_SERVERGROUP_NON_COMPLIANCE(12001, "应用中未指定此服务器组配置！"),
     ;
 
     private int code;

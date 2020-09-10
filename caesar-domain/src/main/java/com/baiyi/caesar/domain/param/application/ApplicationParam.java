@@ -1,6 +1,7 @@
 package com.baiyi.caesar.domain.param.application;
 
 import com.baiyi.caesar.domain.param.PageParam;
+import com.baiyi.caesar.domain.param.server.ServerGroupParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -72,5 +73,16 @@ public class ApplicationParam {
         @NotBlank(message = "必须指定分支名称")
         private String branch;
 
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class ServerGroupPageQuery extends ServerGroupParam.PageQuery {
+
+        @ApiModelProperty(value = "数据源")
+        @NotBlank(message = "数据源不能为空")
+        private String source;
     }
 }

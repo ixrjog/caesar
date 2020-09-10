@@ -1,8 +1,11 @@
 package com.baiyi.caesar.domain.vo.server;
 
+import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import io.swagger.annotations.ApiModel;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -11,10 +14,11 @@ import lombok.NoArgsConstructor;
  */
 public class ServerGroupHostPatternVO {
 
+    @Builder
     @Data
-    @NoArgsConstructor
     @ApiModel
     public static class HostPattern {
         private String hostPattern;
+        private List<OcServer> servers;
     }
 }

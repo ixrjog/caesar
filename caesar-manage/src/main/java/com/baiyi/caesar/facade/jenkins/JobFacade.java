@@ -2,8 +2,10 @@ package com.baiyi.caesar.facade.jenkins;
 
 import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
@@ -13,8 +15,12 @@ import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
+import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
+import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.ServerGroupFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -30,6 +36,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -66,6 +73,12 @@ public class JobFacade {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
+
+    @Resource
+    private ServerGroupFacade serverGroupFacade;
+
+    @Resource
+    private ApplicationFacade applicationFacade;
 
     @Resource
     private RedisUtil redisUtil;
@@ -136,6 +149,21 @@ public class JobFacade {
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(buildId);
         return jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1);
     }
+
+    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId) {
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJobId);
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
+        Map<String, String> paramMap = JenkinsUtils.convert(jenkinsJobParameters);
+        if (!paramMap.containsKey("serverGroup"))
+            return new BusinessWrapper(ErrorEnum.JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED);
+        String serverGroupName = paramMap.get("serverGroup");
+        List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups = applicationFacade.queryApplicationServerGroupByApplicationId(csCdJob.getApplicationId());
+        // 鉴权（必须在应用中指定服务器组配置）
+        if (!serverGroups.stream().anyMatch(e -> e.getServerGroupName().equals(serverGroupName)))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
+        return serverGroupFacade.queryServerGroupHostPattern(serverGroupName);
+    }
+
 
     public void trackJobBuildTask() {
         List<CsCiJobBuild> csCiJobBuilds = csCiJobBuildService.queryCsCiJobBuildByFinalized(false);

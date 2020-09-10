@@ -6,11 +6,9 @@ import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CdJobVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -141,25 +139,25 @@ public class ApplicationController {
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> createCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.BUILD.getType(),ciJobId));
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.BUILD.getType(), ciJobId));
     }
 
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/cd/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> createCdJobEngine(@Valid int cdJobId) {
-        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.DEPLOYMENT.getType(),cdJobId));
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.DEPLOYMENT.getType(), cdJobId));
     }
 
     @ApiOperation(value = "查询构建任务工作引擎")
     @GetMapping(value = "/ci/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<List<JobEngineVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.BUILD.getType(),ciJobId));
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.BUILD.getType(), ciJobId));
     }
 
     @ApiOperation(value = "查询部署任务工作引擎")
     @GetMapping(value = "/cd/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<List<JobEngineVO.JobEngine>> queryCdJobEngine(@Valid int cdJobId) {
-        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.DEPLOYMENT.getType(),cdJobId));
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.DEPLOYMENT.getType(), cdJobId));
     }
 
     @ApiOperation(value = "查询应用工作引擎配置")
@@ -196,6 +194,30 @@ public class ApplicationController {
     @PutMapping(value = "/user/permission/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> updateUserApplicationPermission(@Valid int applicationId, @Valid int userId) {
         return new HttpResult<>(applicationFacade.updateUserApplicationPermission(applicationId, userId));
+    }
+
+    @ApiOperation(value = "指定数据源分页查询serverGroup列表")
+    @PostMapping(value = "/server/group/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<ServerGroupVO.ServerGroup>> queryServerGroupPage(@RequestBody @Valid ApplicationParam.ServerGroupPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryServerGroupPage(pageQuery));
+    }
+
+    @ApiOperation(value = "查询应用服务器组配置")
+    @GetMapping(value = "/server/group/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<ApplicationServerGroupVO.ApplicationServerGroup>> queryApplicationServerGroup(@Valid int applicationId) {
+        return new HttpResult<>(applicationFacade.queryApplicationServerGroupByApplicationId(applicationId));
+    }
+
+    @ApiOperation(value = "新增应用服务器组配置")
+    @PutMapping(value = "/server/group/add", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addApplicationServerGroup(@RequestBody @Valid ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup) {
+        return new HttpResult<>(applicationFacade.addApplicationServerGroup(applicationServerGroup));
+    }
+
+    @ApiOperation(value = "移除应用服务器组配置")
+    @DeleteMapping(value = "/server/group/remove", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> removeApplicationServerGroup(@Valid int id) {
+        return new HttpResult<>(applicationFacade.removeApplicationServerGroup(id));
     }
 
 }

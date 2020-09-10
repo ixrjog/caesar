@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,6 +70,12 @@ public class JobController {
     @GetMapping(value = "/cd/build/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<CdJobBuildVO.JobBuild> queryCdJobBuildByBuildId(@Valid int buildId) {
         return new HttpResult<>(jobFacade.queryCdJobBuildByBuildId(buildId));
+    }
+
+    @ApiOperation(value = "查询主机分组模式")
+    @GetMapping(value = "/cd/host/pattern/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(@Valid int cdJobId) {
+        return new HttpResult<>(jobFacade.queryCdJobHostPatternByJobId(cdJobId));
     }
 
     @ApiOperation(value = "查询持续集成构建任务日志")

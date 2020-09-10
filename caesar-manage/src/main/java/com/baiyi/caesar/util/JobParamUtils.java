@@ -3,6 +3,7 @@ package com.baiyi.caesar.util;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.google.common.base.Joiner;
 
@@ -37,6 +38,11 @@ public class JobParamUtils {
         String domain = Joiner.on(".").join(jobParamDetail.getCsOssBucket().getName(), jobParamDetail.getCsOssBucket().getExtranetEndpoint());
         String url = Joiner.on("/").join(domain, jobParamDetail.getParamByKey("applicationName"), jobParamDetail.getJobName(), String.valueOf(csCdJob.getJobBuildNumber()));
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
+    }
+
+    public static void invokeHostPatternParam(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
+        if (deploymentParam.getParamMap().containsKey("hostPattern"))
+            jobParamDetail.getParams().put("hostPattern", deploymentParam.getParamMap().get("hostPattern"));
     }
 
     public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {

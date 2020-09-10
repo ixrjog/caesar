@@ -13,6 +13,7 @@ public enum JobType {
     HTML5("HTML5"),
     JAVA("JAVA"),
     PYTHON("PYTHON"),
+    JAVA_DEPLOYMENT("JAVA_DEPLOYMENT"),
     ANDROID_REINFORCE("ANDROID_REINFORCE")
     ;
 

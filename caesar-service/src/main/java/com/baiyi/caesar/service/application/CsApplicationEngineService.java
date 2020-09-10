@@ -11,7 +11,6 @@ import java.util.List;
  */
 public interface CsApplicationEngineService {
 
-    // applicationId, jenkinsInstanceId
     CsApplicationEngine queryCsApplicationEngineByUniqueKey(int applicationId, int jenkinsInstanceId);
 
     List<CsApplicationEngine> queryCsApplicationEngineByApplicationId(int applicationId);

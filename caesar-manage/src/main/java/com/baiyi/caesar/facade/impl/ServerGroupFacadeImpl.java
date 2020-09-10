@@ -22,6 +22,7 @@ import com.baiyi.caesar.facade.ServerCacheFacade;
 import com.baiyi.caesar.facade.ServerGroupFacade;
 import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.factory.attribute.impl.AttributeAnsible;
+import com.baiyi.caesar.opscloud.OpscloudServer;
 import com.baiyi.caesar.server.facade.ServerAttributeFacade;
 import com.baiyi.caesar.service.server.OcServerGroupPropertyService;
 import com.baiyi.caesar.service.server.OcServerGroupService;
@@ -35,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -86,6 +88,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Resource
     private ServerCacheFacade serverCacheFacade;
+
+    @Resource
+    private OpscloudServer opscloudServer;
 
     public static final boolean ACTION_ADD = true;
     public static final boolean ACTION_UPDATE = false;
@@ -261,7 +266,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     @Override
     public BusinessWrapper<Map<Integer, Map<String, String>>> queryServerGroupPropertyMap(SeverGroupPropertyParam.PropertyParam propertyParam) {
         Map<Integer, Map<String, String>> propertyEnvMap = Maps.newHashMap();
-        if (propertyParam.getPropertyNameSet() == null ) return new BusinessWrapper(propertyEnvMap);
+        if (propertyParam.getPropertyNameSet() == null) return new BusinessWrapper(propertyEnvMap);
         propertyParam.getPropertyNameSet().forEach(k -> {
             List<OcServerGroupProperty> properties = ocServerGroupPropertyService.queryOcServerGroupPropertyByServerGroupIdAndEnvTypeAnd(propertyParam.getServerGroupId(), propertyParam.getEnvType(), k);
             if (!CollectionUtils.isEmpty(properties))
@@ -370,11 +375,21 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Override
     public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName) {
-
-
-        return null;
+        try {
+            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName);
+            List<ServerGroupHostPatternVO.HostPattern> hostPatterns = Lists.newArrayList();
+            hostPatternMap.forEach((k, v) -> {
+                ServerGroupHostPatternVO.HostPattern hostPattern = ServerGroupHostPatternVO.HostPattern.builder()
+                        .hostPattern(k)
+                        .servers(v)
+                        .build();
+                hostPatterns.add(hostPattern);
+            });
+            return new BusinessWrapper(hostPatterns);
+        } catch (IOException ignored) {
+            return new BusinessWrapper<>(ErrorEnum.SERVER_GROUP_QUERY_FAILED);
+        }
     }
-
 
 
 }
