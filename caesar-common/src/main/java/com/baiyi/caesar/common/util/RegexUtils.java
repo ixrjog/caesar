@@ -133,6 +133,10 @@ public class RegexUtils {
         return fileName.endsWith(".apk");
     }
 
+    public static boolean checkJar(String fileName) {
+        return fileName.endsWith(".jar");
+    }
+
     /**
      * 验证jobKey，3-64位,不能包含中文 a-z -
      *

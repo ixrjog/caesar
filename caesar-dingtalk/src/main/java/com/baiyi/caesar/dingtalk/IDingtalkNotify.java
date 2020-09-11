@@ -14,7 +14,6 @@ public interface IDingtalkNotify {
 
     void doNotify(int noticePhase, BuildJobContext context);
 
-
     void doNotify(int noticePhase, DeploymentJobContext context);
 
 }

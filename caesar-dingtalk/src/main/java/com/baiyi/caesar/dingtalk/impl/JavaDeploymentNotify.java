@@ -6,6 +6,7 @@ import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +14,29 @@ import java.util.Map;
 
 /**
  * @Author baiyi
- * @Date 2020/8/31 11:09 上午
+ * @Date 2020/9/11 2:38 下午
  * @Version 1.0
  */
 @Slf4j
-@Component("AndroidReinforceNotify")
-public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingtalkNotify {
+@Component("JavaDeploymentNotify")
+public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtalkNotify {
+
+    public static final String SERVER_GROUP = "serverGroup"; // 服务器组
+    public static final String HOST_PATTERN = "hostPattern"; // 主机分组
+    public static final String SERVERS = "servers"; // 主机分组
 
     @Override
     public String getKey() {
-        return JobType.ANDROID_REINFORCE.getType();
+        return JobType.JAVA_DEPLOYMENT.getType();
     }
 
     @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(BUILD_PHASE, noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束");
+        contentMap.put(BUILD_PHASE, noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束");
+        contentMap.put(SERVER_GROUP, context.getJobParamDetail().getParamByKey(SERVER_GROUP));
+        contentMap.put(HOST_PATTERN, context.getJobParamDetail().getParamByKey(HOST_PATTERN));
+        contentMap.put(SERVERS, Lists.newArrayList());
         if (noticePhase == NoticePhase.START.getType()) {
             CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
             contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());

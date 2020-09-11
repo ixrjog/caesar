@@ -14,6 +14,9 @@ import com.google.common.base.Joiner;
  */
 public class JobParamUtils {
 
+
+    private static final String HOST_PATTERN = "hostPattern";
+
     public static void invokeJobBuildNumberParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
         jobParamDetail.getParams().put("jobBuildNumber", String.valueOf(csCdJob.getJobBuildNumber()));
     }
@@ -41,8 +44,8 @@ public class JobParamUtils {
     }
 
     public static void invokeHostPatternParam(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
-        if (deploymentParam.getParamMap().containsKey("hostPattern"))
-            jobParamDetail.getParams().put("hostPattern", deploymentParam.getParamMap().get("hostPattern"));
+        if (deploymentParam.getParamMap().containsKey(HOST_PATTERN))
+            jobParamDetail.getParams().put(HOST_PATTERN, deploymentParam.getParamMap().get(HOST_PATTERN));
     }
 
     public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {

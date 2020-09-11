@@ -116,8 +116,12 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     }
 
     private void deploymentStartNotify(DeploymentJobContext context) {
-        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
-        dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
+        try{
+            IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
+            dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
+        }catch (Exception e){
+            log.error("部署消息发送失败(配置不存在)!, cdJobId = {}, buildId = {}",context.getCsCdJob().getId(),context.getJobBuild().getId());
+        }
     }
 
     private void saveCsCdJobBuild(CsCdJobBuild csCdJobBuild) {

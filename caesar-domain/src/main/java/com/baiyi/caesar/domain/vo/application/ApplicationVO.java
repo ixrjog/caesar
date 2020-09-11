@@ -25,6 +25,7 @@ public class ApplicationVO {
 
         private List<TagVO.Tag> tags;
         private List<ScmMember> scmMembers;
+        private List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups;
         private UserPermissionVO.UserPermission userPermission;
         private Integer id;
         private String name;

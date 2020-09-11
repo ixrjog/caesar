@@ -30,8 +30,6 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
         return JobType.JAVA_DEPLOYMENT.getType();
     }
 
-    private static final String HOST_PATTERN = "hostPattern";
-
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
@@ -44,7 +42,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
 
     @Override
     protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
-        return artifacts.stream().filter(e -> RegexUtils.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
+        return artifacts.stream().filter(e -> RegexUtils.checkJar(e.getArtifactFileName())).collect(Collectors.toList());
     }
 
     private void invokeOssPath(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {

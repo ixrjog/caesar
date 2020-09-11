@@ -46,6 +46,8 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
 
     public static final String BUILD_DETAILS_URL = "buildDetailsUrl";
 
+    public static final String BUILD_PHASE = "buildPhase";
+
     @Resource
     protected HostConfig hostConfig;
 

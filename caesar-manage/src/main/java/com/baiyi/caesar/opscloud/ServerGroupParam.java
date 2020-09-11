@@ -1,4 +1,4 @@
-package com.baiyi.caesar.opscloud.param;
+package com.baiyi.caesar.opscloud;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

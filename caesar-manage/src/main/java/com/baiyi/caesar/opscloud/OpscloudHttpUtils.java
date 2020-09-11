@@ -2,7 +2,7 @@ package com.baiyi.caesar.opscloud;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.common.util.JSONMapper;
-import com.baiyi.caesar.config.OpscloudConfig;
+import com.baiyi.caesar.common.config.OpscloudConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
