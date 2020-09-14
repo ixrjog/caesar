@@ -1,12 +1,12 @@
 package com.baiyi.caesar.dingtalk.impl;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +31,17 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
     }
 
     @Override
+    protected int getBuildType(){
+        return BuildType.DEPLOYMENT.getType();
+    }
+
+    @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
         contentMap.put(BUILD_PHASE, noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束");
         contentMap.put(SERVER_GROUP, context.getJobParamDetail().getParamByKey(SERVER_GROUP));
         contentMap.put(HOST_PATTERN, context.getJobParamDetail().getParamByKey(HOST_PATTERN));
-        contentMap.put(SERVERS, Lists.newArrayList());
+        contentMap.put(SERVERS,  acqBuildServers(context.getJobBuild().getId()));
         if (noticePhase == NoticePhase.START.getType()) {
             CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
             contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
@@ -45,6 +50,7 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
         }
         return contentMap;
     }
+
 
     // https://caesar.ops.yangege.cn/index.html#/job/build/android/reinforce?buildId=168
     private String acqBuildDetailsUrl(int buildId) {

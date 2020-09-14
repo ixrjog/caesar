@@ -1,5 +1,6 @@
 package com.baiyi.caesar.dingtalk.impl;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
@@ -20,6 +21,11 @@ public class JavaNotify extends BaseDingtalkNotify implements IDingtalkNotify {
     @Override
     public String getKey() {
         return JobType.JAVA.getType();
+    }
+
+    @Override
+    protected int getBuildType(){
+        return BuildType.BUILD.getType();
     }
 
     @Override

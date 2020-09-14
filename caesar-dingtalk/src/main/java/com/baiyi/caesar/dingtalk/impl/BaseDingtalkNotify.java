@@ -21,6 +21,7 @@ import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -77,6 +78,11 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
 
     @Resource
     private StringEncryptor stringEncryptor;
+
+    @Resource
+    private CsJobBuildServerService csJobBuildServerService;
+
+    abstract protected int getBuildType();
 
     @Override
     public void doNotify(int noticePhase, BuildJobContext context) {
@@ -202,6 +208,10 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             users.add(ocUser);
         }
         return users;
+    }
+
+    protected List<CsJobBuildServer> acqBuildServers(int buildId){
+       return csJobBuildServerService.queryCsJobBuildServerByBuildId(getBuildType(),buildId);
     }
 
     /**

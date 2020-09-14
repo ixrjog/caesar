@@ -9,6 +9,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
+import com.baiyi.caesar.domain.vo.build.DeploymentServerVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
@@ -61,8 +62,11 @@ public class JobDeploymentDecorator {
     @Resource
     private OcServerService ocServerService;
 
-    public CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild , Integer extend) {
-       return decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), extend);
+    @Resource
+    private CsJobBuildServerService csJobBuildServerService;
+
+    public CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild, Integer extend) {
+        return decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), extend);
     }
 
     public CdJobBuildVO.JobBuild decorator(CdJobBuildVO.JobBuild jobBuild, Integer extend) {
@@ -99,6 +103,9 @@ public class JobDeploymentDecorator {
         }
 
         jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
+
+        List<CsJobBuildServer> csJobBuildServers = csJobBuildServerService.queryCsJobBuildServerByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
+        jobBuild.setServers( BeanCopierUtils.copyListProperties(csJobBuildServers, DeploymentServerVO.BuildServer.class));
         return jobBuild;
     }
 

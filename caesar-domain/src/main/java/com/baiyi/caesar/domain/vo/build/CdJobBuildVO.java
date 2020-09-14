@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,17 @@ public class CdJobBuildVO {
 
         @ApiModelProperty(value = "执行节点")
         private List<BuildExecutorVO.BuildExecutor> executors;
+
+        @ApiModelProperty(value = "部署服务器")
+        private List<DeploymentServerVO.BuildServer> servers;
+
+        private String hostPattern;
+
+        public void setServers(List<DeploymentServerVO.BuildServer> servers) {
+            this.servers = servers;
+            if (!CollectionUtils.isEmpty(servers))
+                this.hostPattern = servers.get(0).getHostPattern();
+        }
 
         private String jobBuildUrl;
         @ApiModelProperty(value = "构建用户")
@@ -72,7 +84,7 @@ public class CdJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuildView extends CiJobBuildVO.JobBuildView{
+    public static class JobBuildView extends CiJobBuildVO.JobBuildView {
     }
 
 }

@@ -1,5 +1,6 @@
 package com.baiyi.caesar.dingtalk.impl;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
@@ -26,6 +27,11 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
     @Override
     public String getKey() {
         return JobType.ANDROID.getType();
+    }
+
+    @Override
+    protected int getBuildType(){
+        return BuildType.BUILD.getType();
     }
 
     @Override
