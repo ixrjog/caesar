@@ -91,7 +91,7 @@ public class CdJobDecorator {
             if (!e.getFinalized()) {
                 jobBuildView.setColor("#E07D06");
             } else {
-                if (e.getBuildStatus().equals("SUCCESS")) {
+                if ("SUCCESS".equals(e.getBuildStatus())) {
                     jobBuildView.setColor("#17BA14");
                 } else {
                     jobBuildView.setColor("#DD3E03");

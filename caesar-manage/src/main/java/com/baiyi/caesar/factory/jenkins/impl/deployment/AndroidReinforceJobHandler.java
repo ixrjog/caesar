@@ -15,7 +15,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -45,21 +44,13 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
         JobParamUtils.invokeJobBuildNumberParam(csCdJob, jobParamDetail);
         JobParamUtils.invokeOssJobUrlParam(csCdJob, jobParamDetail);
-
         invokeChannelGroup(jobParamDetail, deploymentParam);
-        invokeOssPath(jobParamDetail, deploymentParam);
         return jobParamDetail;
     }
 
     @Override
     protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
         return artifacts.stream().filter(e -> RegexUtils.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
-    }
-
-    private void invokeOssPath(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
-        List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
-        if(!CollectionUtils.isEmpty(artifacts))
-            jobParamDetail.getParams().put("ossPath", artifacts.get(0).getStoragePath());
     }
 
     private void invokeChannelGroup(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {

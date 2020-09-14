@@ -23,15 +23,14 @@ import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationService;
-import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
-import com.baiyi.caesar.service.jenkins.CsCdJobService;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
-import com.baiyi.caesar.service.jenkins.CsJobBuildArtifactService;
+import com.baiyi.caesar.service.jenkins.*;
 import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -71,7 +70,13 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
+    private CsCiJobBuildService csCiJobBuildService;
+
+    @Resource
     private CsOssBucketService csOssBucketService;
+
+    @Resource
+    public CsJobBuildServerService csJobBuildServerService;
 
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
@@ -107,6 +112,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
                     .build();
+            saveDetails(context);
             deploymentStartNotify(context); // 通知
             jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
         } catch (Exception e) {
@@ -115,12 +121,15 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         return BusinessWrapper.SUCCESS;
     }
 
+    protected void saveDetails(DeploymentJobContext context) {
+    }
+
     private void deploymentStartNotify(DeploymentJobContext context) {
-        try{
+        try {
             IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
             dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
-        }catch (Exception e){
-            log.error("部署消息发送失败(配置不存在)!, cdJobId = {}, buildId = {}",context.getCsCdJob().getId(),context.getJobBuild().getId());
+        } catch (Exception e) {
+            log.error("部署消息发送失败(配置不存在)!, cdJobId = {}, buildId = {}", context.getCsCdJob().getId(), context.getJobBuild().getId());
         }
     }
 
@@ -147,6 +156,12 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         params.put("applicationName", csApplication.getApplicationKey());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         params.put("bucketName", csOssBucket.getName());
+        // 插入ossPath
+        List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
+        if (!CollectionUtils.isEmpty(artifacts))
+            params.put("ossPath", artifacts.get(0).getStoragePath());
+
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(deploymentParam.getCiBuildId());
 
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
 
@@ -155,8 +170,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                 .params(params)
                 .csOssBucket(csOssBucket)
                 .jobName(jobName)
-                .versionName(deploymentParam.getVersionName())
-                .versionDesc(deploymentParam.getVersionDesc())
+                .versionName(StringUtils.isEmpty(deploymentParam.getVersionName()) ? csCiJobBuild.getVersionName() : deploymentParam.getVersionName())
+                .versionDesc(StringUtils.isEmpty(deploymentParam.getVersionDesc()) ? csCiJobBuild.getVersionDesc() : deploymentParam.getVersionDesc())
                 .build();
     }
 
