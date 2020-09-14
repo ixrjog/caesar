@@ -60,7 +60,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
         JobParamDetail jobParamDetail = context.getJobParamDetail();
         String hostPattern = jobParamDetail.getParams().get(HOST_PATTERN);
         wrapper.getBody().forEach(e -> {
-            if (e.equals(hostPattern)) {
+            if (e.getHostPattern().equals(hostPattern)) {
                 List<OcServer> servers = e.getServers();
                 servers.forEach(s ->
                         csJobBuildServerService.addCsJobBuildServer(JobBuildServerBuilder.build(context, hostPattern, s))

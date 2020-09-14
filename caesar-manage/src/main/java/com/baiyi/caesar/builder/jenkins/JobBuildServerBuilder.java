@@ -23,6 +23,7 @@ public class JobBuildServerBuilder {
                 .versionName(context.getJobParamDetail().getVersionName())
                 .serverName(server.getName())
                 .serialNumber(server.getSerialNumber())
+                .envType(server.getEnvType())
                 .privateIp(server.getPrivateIp())
                 .serverId(server.getId())
                 .build();
