@@ -177,7 +177,7 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
                     break;
                 }
             } catch (RetryException e) {
-                log.error("重试获取JobBuild失败，jobName = {}, buildNumber ={}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
+                log.error("重试获取JobBuild失败，jobName = {}, buildNumber = {}", context.getCsCiJob().getName(), context.getJobBuild().getEngineBuildNumber());
                 break;
             } catch (InterruptedException | IOException e) {
                 log.error(e.getMessage());
@@ -394,9 +394,9 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
     @Override
     public void trackJobBuildHeartbeat(int buildType, int buildId) {
         if (buildType == BuildType.BUILD.getType())
-            redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 30);
+            redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 10);
         if (buildType == BuildType.DEPLOYMENT.getType())
-            redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, 30);
+            redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, 10);
     }
 
 

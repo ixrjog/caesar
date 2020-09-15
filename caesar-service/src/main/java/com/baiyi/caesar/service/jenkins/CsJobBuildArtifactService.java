@@ -18,4 +18,6 @@ public interface CsJobBuildArtifactService {
     List<CsJobBuildArtifact> queryCsJobBuildArtifactByBuildId(int buildType, int buildId);
 
     CsJobBuildArtifact queryCsJobBuildArtifactByUniqueKey(int buildId, int buildType, String artifactFileName);
+
+    int countCsJobBuildArtifactByBuildId(int buildType, int buildId);
 }

@@ -20,6 +20,7 @@
     <result column="build_status" jdbcType="VARCHAR" property="buildStatus" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="operation_username" jdbcType="VARCHAR" property="operationUsername" />
     <result column="finalized" jdbcType="BIT" property="finalized" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -28,13 +29,11 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-  <select id="queryCsCdJobByParam"
-          parameterType="com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam$DeploymentPageQuery"
-          resultMap="BaseResultMap">
-    select *
-    from cs_cd_job_build
-    where cd_job_id = #{cdJobId}
-    order by job_build_number desc
-  </select>
+<!--  &lt;select id="queryCsCdJobByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam$DeploymentPageQuery" resultMap="BaseResultMap"&gt;-->
+<!--    select *-->
+<!--    from cs_cd_job_build-->
+<!--    where cd_job_id = #{cdJobId}-->
+<!--    order by job_build_number desc-->
+<!--  &lt;/select&gt;-->
 
 </mapper>

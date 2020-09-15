@@ -17,6 +17,7 @@ import com.baiyi.caesar.service.server.OcServerService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -75,8 +76,15 @@ public class JobBuildDecorator {
 
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
         CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
+
         List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), jobBuild.getId());
-        jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
+        if (CollectionUtils.isEmpty(artifacts)) {
+            jobBuild.setNoArtifact(true);
+        } else {
+            jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
+            jobBuild.setNoArtifact(false);
+        }
+
         jobBuild.setChanges(getBuildChangeByBuildId(jobBuild.getId()));
 
         if (!StringUtils.isEmpty(jobBuild.getUsername())) {
@@ -110,7 +118,7 @@ public class JobBuildDecorator {
     public List<BuildExecutorVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
         List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.BUILD.getType(), buildId);
         return executors.stream().map(e -> {
-            BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
+                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
                     OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
                     if (ocServer != null)
                         buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));

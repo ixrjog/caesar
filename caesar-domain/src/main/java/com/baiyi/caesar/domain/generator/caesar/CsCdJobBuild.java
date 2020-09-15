@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_cd_job_build")
 public class CsCdJobBuild {
@@ -72,6 +72,12 @@ public class CsCdJobBuild {
     private Date endTime;
 
     /**
+     * 操作用户
+     */
+    @Column(name = "operation_username")
+    private String operationUsername;
+
+    /**
      * 是否结束
      */
     private Boolean finalized;
@@ -79,13 +85,13 @@ public class CsCdJobBuild {
     /**
      * 创建时间
      */
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
@@ -340,6 +346,24 @@ public class CsCdJobBuild {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * 获取操作用户
+     *
+     * @return operation_username - 操作用户
+     */
+    public String getOperationUsername() {
+        return operationUsername;
+    }
+
+    /**
+     * 设置操作用户
+     *
+     * @param operationUsername 操作用户
+     */
+    public void setOperationUsername(String operationUsername) {
+        this.operationUsername = operationUsername;
     }
 
     /**

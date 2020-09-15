@@ -27,6 +27,9 @@ public class CiJobBuildVO {
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
         private List<BuildArtifactVO.BuildArtifact> artifacts;
+
+        private Boolean noArtifact;
+
         @ApiModelProperty(value = "变更记录")
         private List<BuildChange> changes;
         @ApiModelProperty(value = "执行节点")

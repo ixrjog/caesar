@@ -49,4 +49,13 @@ public class CsJobBuildArtifactServiceImpl implements CsJobBuildArtifactService 
         return csJobBuildArtifactMapper.selectOneByExample(example);
     }
 
+    @Override
+    public int countCsJobBuildArtifactByBuildId(int buildType, int buildId) {
+        Example example = new Example(CsJobBuildArtifact.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("buildType", buildType);
+        criteria.andEqualTo("buildId", buildId);
+        return csJobBuildArtifactMapper.selectCountByExample(example);
+    }
+
 }
