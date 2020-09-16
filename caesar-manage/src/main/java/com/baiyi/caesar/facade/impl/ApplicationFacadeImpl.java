@@ -30,6 +30,7 @@ import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
 import org.gitlab.api.models.GitlabBranchCommit;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -140,6 +141,14 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         pre.setApplicationKey(csApplication.getApplicationKey());
         csApplicationService.updateCsApplication(pre);
         return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public boolean isApplicationAdmin(int applicationId, int userId) {
+        List<OcUserPermission> userPermissions = userPermissionFacade.queryUserBusinessPermissionByUserId(userId, BusinessType.APPLICATION.getType());
+        if (CollectionUtils.isEmpty(userPermissions))
+            return false;
+        return userPermissions.stream().anyMatch(e -> "ADMIN".equals(e.getRoleName()));
     }
 
     @Override

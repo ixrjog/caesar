@@ -36,6 +36,12 @@ public class JobController {
         return new HttpResult<>(jobFacade.buildCiJob(buildParam));
     }
 
+    @ApiOperation(value = "中止持续集成构建任务")
+    @PutMapping(value = "/ci/build/abort",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> abortBuildCiJob(@Valid int ciBuildId) {
+        return new HttpResult<>(jobFacade.abortCiJobBuild(ciBuildId));
+    }
+
     @ApiOperation(value = "执行持续集成部署任务")
     @PostMapping(value = "/cd/build", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> buildCdJob(@RequestBody @Valid JobDeploymentParam.DeploymentParam deploymentParam) {

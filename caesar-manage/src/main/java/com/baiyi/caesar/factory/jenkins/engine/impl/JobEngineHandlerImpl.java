@@ -2,8 +2,8 @@ package com.baiyi.caesar.factory.jenkins.engine.impl;
 
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
-import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
+import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
@@ -41,6 +41,7 @@ import org.springframework.retry.RetryException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -168,6 +169,9 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
                 recordJobEngine(job, context.getJobEngine());
                 if (buildWithDetails.isBuilding()) {
                     trackJobBuildComputer(context);
+                    // 判断任务是否需要中止
+                    if (isAbortJobBuild(context))
+                        buildWithDetails.Stop(JenkinsServerHandler.CRUMB_FLAG);
                     TimeUnit.SECONDS.sleep(TRACK_SLEEP_SECONDS); // 执行中
                 } else {
                     // 任务完成
@@ -185,6 +189,18 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
             }
         }
     }
+
+    private boolean isAbortJobBuild(BuildJobContext context) {
+        String username = (String) redisUtil.get(RedisKeyUtils.getJobBuildAbortKey(context.getJobBuild().getId()));
+        if (StringUtils.isEmpty(username)) return false;
+
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(context.getJobBuild().getId());
+        csCiJobBuild.setOperationUsername(username);
+        csCiJobBuildService.updateCsCiJobBuild(csCiJobBuild);
+        context.getJobBuild().setOperationUsername(username);
+        return true;
+    }
+
 
     private void buildEndNotify(BuildJobContext context) {
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());

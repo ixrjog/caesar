@@ -21,6 +21,7 @@ import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.ServerGroupFacade;
+import com.baiyi.caesar.facade.UserFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -81,6 +82,9 @@ public class JobFacade {
     private ApplicationFacade applicationFacade;
 
     @Resource
+    private UserFacade userFacade;
+
+    @Resource
     private RedisUtil redisUtil;
 
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildQuery buildParam) {
@@ -89,6 +93,17 @@ public class JobFacade {
         if (StringUtils.isEmpty(buildParam.getBranch()))
             buildParam.setBranch(csCiJob.getBranch());
         iBuildJobHandler.build(csCiJob, buildParam);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    public BusinessWrapper<Boolean> abortCiJobBuild(int ciBuildId) {
+        OcUser operationUser = userFacade.getOcUserBySession();
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(ciBuildId);
+        if (!csCiJobBuild.getUsername().equals(operationUser.getUsername())) {
+            if (!applicationFacade.isApplicationAdmin(csCiJobBuild.getApplicationId(), operationUser.getId()))
+                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        }
+        redisUtil.set(RedisKeyUtils.getJobBuildAbortKey(ciBuildId),operationUser.getUsername(),600);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -104,7 +119,6 @@ public class JobFacade {
         List<CiJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobBuildVO.JobBuild.class);
         return new DataTable<>(page.stream().map(e -> jobBuildDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
-
 
     public DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery) {
         DataTable<CsCdJobBuild> table = csCdJobBuildService.queryCdJobBuildPage(pageQuery);

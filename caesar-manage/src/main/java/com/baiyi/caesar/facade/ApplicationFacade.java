@@ -28,6 +28,14 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application);
 
+    /**
+     * 是否为此应用管理员
+     * @param applicationId
+     * @param userId
+     * @return
+     */
+    boolean isApplicationAdmin(int applicationId, int userId);
+
     BusinessWrapper<Boolean> updateApplication(ApplicationVO.Application application);
 
     /**

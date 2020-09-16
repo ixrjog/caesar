@@ -37,4 +37,6 @@ public interface UserPermissionFacade {
     int getUserAccessLevel(OcUser ocUser);
 
     BusinessWrapper<Boolean> checkAccessLevel(OcUser ocUser, int accessLevel);
+
+    List<OcUserPermission> queryUserBusinessPermissionByUserId(int userId, int businessType);
 }

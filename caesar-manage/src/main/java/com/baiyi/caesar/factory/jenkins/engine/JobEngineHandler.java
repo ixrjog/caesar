@@ -17,6 +17,7 @@ public interface JobEngineHandler {
 
     /**
      * 随机取一个可用的任务工作引擎
+     *
      * @param csJob
      * @return
      */
@@ -30,6 +31,7 @@ public interface JobEngineHandler {
 
     void trackJobBuild(DeploymentJobContext context);
 
-    void trackJobBuildHeartbeat(int buildType,int buildId);
+    void trackJobBuildHeartbeat(int buildType, int buildId);
+
 
 }

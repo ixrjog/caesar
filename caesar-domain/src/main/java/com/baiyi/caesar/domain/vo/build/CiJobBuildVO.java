@@ -28,7 +28,7 @@ public class CiJobBuildVO {
         @ApiModelProperty(value = "产出物")
         private List<BuildArtifactVO.BuildArtifact> artifacts;
 
-        private Boolean noArtifact;
+        private Boolean noArtifact; // 没有构件（前端下拉列表禁止选中）
 
         @ApiModelProperty(value = "变更记录")
         private List<BuildChange> changes;
@@ -59,6 +59,7 @@ public class CiJobBuildVO {
         private String commit;
         private String buildPhase;
         private String buildStatus;
+        private String operationUsername;
         @ApiModelProperty(value = "开始时间")
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
         private Date startTime;
