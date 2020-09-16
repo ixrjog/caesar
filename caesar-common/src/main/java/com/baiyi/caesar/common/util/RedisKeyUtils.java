@@ -13,16 +13,16 @@ public class RedisKeyUtils {
         return Joiner.on(":").join("serverTree", "userId", userId, "uuid", uuid);
     }
 
-    public static String getJobBuildKey( int buildId) {
-        return Joiner.on(":").join("jobBuild", "buildId");
+    public static String getJobBuildKey(int buildId) {
+        return Joiner.on(":").join("jobBuild", "buildId", buildId);
     }
 
-    public static String getJobBuildAbortKey( int buildId) {
-        return Joiner.on(":").join("abort","jobBuild", "buildId");
+    public static String getJobBuildAbortKey(int buildId) {
+        return Joiner.on(":").join("abort", "jobBuild", "buildId", buildId);
     }
 
     public static String getJobDeploymentKey(int buildId) {
-        return Joiner.on(":").join("jobDeployment", "buildId");
+        return Joiner.on(":").join("jobDeployment", "buildId", buildId);
     }
 
 }
