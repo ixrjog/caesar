@@ -63,8 +63,6 @@ public class OpscloudServer {
             Type type = new TypeToken<DataTable<ServerGroupVO.ServerGroup>>() {
             }.getType();
             String data = jsonNode.get("body").toString();
-            System.err.println("DEBUG: ==============================");
-            System.err.println(data);
             return new GsonBuilder().create().fromJson(data, type);
         } else {
             return DataTable.EMPTY;
