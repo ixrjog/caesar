@@ -4,7 +4,10 @@ import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.account.factory.AccountFactory;
 import com.baiyi.caesar.common.util.PasswordUtils;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.service.user.OcUserService;
 import org.junit.jupiter.api.Test;
+
+import javax.annotation.Resource;
 
 /**
  * @Author baiyi
@@ -12,6 +15,9 @@ import org.junit.jupiter.api.Test;
  * @Version 1.0
  */
 public class LdapAccountTest extends BaseUnit {
+
+    @Resource
+    private OcUserService ocUserService;
 
     private static final String key = "LdapAccount";
 
@@ -26,13 +32,15 @@ public class LdapAccountTest extends BaseUnit {
 
     @Test
     void testCreateUser() {
-        getAccount().create(getOcUser());
+        OcUser ocUser = ocUserService.queryOcUserByUsername("tutu");
+        getAccount().create(ocUser);
     }
 
     @Test
     void testDeleteUser() {
         getAccount().delete(getOcUser());
     }
+
 
     /**
      * 更新用户属性
@@ -43,6 +51,8 @@ public class LdapAccountTest extends BaseUnit {
         String password = PasswordUtils.getPW(16);
         ocUser.setPassword(password);
         System.err.println(password);
+
+
         getAccount().update(ocUser);
     }
 

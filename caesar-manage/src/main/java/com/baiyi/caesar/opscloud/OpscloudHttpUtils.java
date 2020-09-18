@@ -40,13 +40,15 @@ public class OpscloudHttpUtils {
 
     private static final String X_TOKEN = "X-Token";
 
+    private static final String API_PATH = "/oc3";
+
     @Autowired
     private void setOpscloudConfig(OpscloudConfig opscloudConfig) {
         OpscloudHttpUtils.opscloudConfig = opscloudConfig;
     }
 
     private static String buildUrl(String url) {
-        return Joiner.on("").join(opscloudConfig.getUrl(), "/oc3", url);
+        return Joiner.on("").join(opscloudConfig.getUrl(), API_PATH, url);
     }
 
     private static RequestConfig buildRequestConfig() {

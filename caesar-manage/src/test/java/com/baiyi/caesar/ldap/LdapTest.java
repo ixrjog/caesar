@@ -19,7 +19,6 @@ public class LdapTest extends BaseUnit {
 
     @Test
     void testLoginCheck() {
-
         for(int i=1;i<= 20;i++ ){
             com.baiyi.caesar.ldap.credential.PersonCredential credential = PersonCredential.builder()
                     .username("zzz-test2")
