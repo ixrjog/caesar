@@ -208,7 +208,7 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
     }
 
     private void buildEndNotify(DeploymentJobContext context) {
-        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCdJob().getJobType());
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 

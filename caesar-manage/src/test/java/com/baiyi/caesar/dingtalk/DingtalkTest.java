@@ -77,7 +77,7 @@ public class DingtalkTest extends BaseUnit {
     void testDeploymentNotify() {
         String jobKey = JobType.ANDROID_REINFORCE.getType();
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
-        CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(172);
+        CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(184);
         DeploymentJobContext  context = iDeploymentJobHandler.acqDeploymentJobContext(csCdJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
