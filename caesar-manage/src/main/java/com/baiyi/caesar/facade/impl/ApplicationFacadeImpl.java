@@ -246,6 +246,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJob.getId());
+        OcUser ocUser = userFacade.getOcUserBySession();
+        if (!isApplicationAdmin(csCiJob.getApplicationId(), ocUser.getId())) {
+            return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        }
         CsCiJob pre = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
         pre.setJobKey(csCiJob.getJobKey());
         if (ciJob.getJobTpl() != null)
@@ -257,6 +261,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJob.getId());
+        OcUser ocUser = userFacade.getOcUserBySession();
+        if (!isApplicationAdmin(csCdJob.getApplicationId(), ocUser.getId())) {
+            return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        }
         CsCdJob pre = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
         pre.setJobKey(csCdJob.getJobKey());
         if (cdJob.getJobTpl() != null)
