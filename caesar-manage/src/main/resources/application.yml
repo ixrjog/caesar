@@ -6,6 +6,8 @@ spring:
   profiles:
     active: @env@
     include: common
+  application:
+    name: caesar
   http:
     encoding:
       force: true
