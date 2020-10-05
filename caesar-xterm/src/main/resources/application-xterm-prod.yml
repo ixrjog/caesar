@@ -2,5 +2,5 @@
 # openAudit false|true 开启审计日志
 
 xterm:
-  auditPath: /data/opscloud-data/xterm/audit
+  auditPath: /data/caesar-data/xterm/audit
   openAudit: true

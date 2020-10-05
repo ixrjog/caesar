@@ -9,7 +9,7 @@
 
 kubernetes:
   version: 0.0.0
-  dataPath: /data/opscloud-data/kubernetes
+  dataPath: /data/caesar-data/kubernetes
   namespace:
     filter:
       - default
