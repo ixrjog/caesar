@@ -10,8 +10,8 @@ spring:
     urls: ldap://ldap.xinc818.com:389
     base: dc=xincheng,dc=org
     username: 'cn=openldap,dc=xincheng,dc=org'
-    password: ldap4XC@2019
-# ENC(XbGRmIhRT0a6kzQVd7u5ngokqDYxcV4k)
+    password: ENC(qq58+/rxv7G6AVgzQsbDOvJ4ZurhVOv4)
+
 
 ldap:
   custom:  {userId: cn,

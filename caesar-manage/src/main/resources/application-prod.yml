@@ -33,10 +33,10 @@ spring:
 app:
   datasource:
     caesar:
-      url: jdbc:mysql://rm-bp1x04709pb2t44p4125010.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=UTC&allowMultiQueries=true
+      url: jdbc:mysql://rm-bp14453fwr49f19cu90130.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
       username: caesar
-      password: ENC(Kenwbg5VvsTsD98jFyldY/2YbtqqWcqvqdWRnVrNREg=)
-      driver-class-name: com.mysql.jdbc.Driver
+      password: ENC(YSUGOIVnK0sShxj8Lux/D6W6nX75uXGvdDxD/KbJb4o=)
+      driver-class-name: com.mysql.cj.jdbc.Driver
       minimum-idle: 3
       maximum-pool-size: 15
       max-lifetime: 30000
