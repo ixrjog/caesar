@@ -20,9 +20,9 @@ import java.util.Map;
 @Component("AndroidNotify")
 public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
-    public static final String ENVIRONMENT_BUILD = "ENVIRONMENT_BUILD"; // 构建环境
+    public static final String BUILD_TYPE = "BUILD_TYPE"; // 构建环境
 
-    public static final String PRODUCT_FLAVOR_BUILD = "PRODUCT_FLAVOR_BUILD"; // 构建渠道
+    public static final String PRODUCT_FLAVOR = "PRODUCT_FLAVOR"; // 构建渠道
 
     @Override
     public String getKey() {
@@ -38,8 +38,8 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
     protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
         Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
         contentMap.put(VERSION_NAME, context.getJobBuild().getVersionName());
-        contentMap.put(ENVIRONMENT_BUILD, context.getJobParamDetail().getParamByKey(ENVIRONMENT_BUILD));
-        contentMap.put(PRODUCT_FLAVOR_BUILD, context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR_BUILD));
+        contentMap.put(BUILD_TYPE, context.getJobParamDetail().getParamByKey(BUILD_TYPE));
+        contentMap.put(PRODUCT_FLAVOR, context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR));
         if (noticePhase == NoticePhase.END.getType()) {
             contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
         }
