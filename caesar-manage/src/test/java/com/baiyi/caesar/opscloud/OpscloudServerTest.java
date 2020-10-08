@@ -4,6 +4,7 @@ import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.param.server.ServerGroupParam;
+import com.baiyi.caesar.domain.vo.auth.UserRoleVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,9 @@ public class OpscloudServerTest extends BaseUnit {
 
     @Resource
     private OpscloudServer opscloudServer;
+
+    @Resource
+    private  OpscloudUserRole opscloudUserRole;
 
     @Test
     void testQueryServer() {
@@ -40,6 +44,16 @@ public class OpscloudServerTest extends BaseUnit {
             pageQuery.setLength(10);
             DataTable<ServerGroupVO.ServerGroup> dataTable = opscloudServer.queryServerGroupPage(pageQuery);
             System.err.println(dataTable);
+        } catch (IOException e) {
+
+        }
+    }
+
+    @Test
+    void testUserRole() {
+        try {
+            List<UserRoleVO.UserRole> roles =  opscloudUserRole.queryUserRoles("baiyi");
+            System.err.println(roles);
         } catch (IOException e) {
 
         }

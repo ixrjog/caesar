@@ -17,14 +17,21 @@ import com.baiyi.caesar.domain.param.auth.UserRoleParam;
 import com.baiyi.caesar.domain.vo.auth.*;
 import com.baiyi.caesar.domain.vo.auth.menu.MenuVO;
 import com.baiyi.caesar.facade.AuthFacade;
+import com.baiyi.caesar.opscloud.OpscloudUserRole;
 import com.baiyi.caesar.service.auth.*;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 /**
  * @Author baiyi
@@ -57,6 +64,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
     @Resource
     private OcAuthMenuService ocAuthMenuService;
+
+    @Resource
+    private OpscloudUserRole opscloudUserRole;
 
     @Override
     public DataTable<RoleVO.Role> queryRolePage(RoleParam.PageQuery pageQuery) {
@@ -195,6 +205,25 @@ public class AuthFacadeImpl implements AuthFacade {
     }
 
     @Override
+    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    public void syncUserRole() {
+        List<OcUser> users = ocUserService.queryOcUserActive();
+        users.forEach(u -> {
+            try {
+                List<UserRoleVO.UserRole> userRoles = opscloudUserRole.queryUserRoles(u.getUsername());
+                if (!CollectionUtils.isEmpty(userRoles))
+                    userRoles.forEach(r -> {
+                        UserRoleVO.UserRole userRole = new UserRoleVO.UserRole();
+                        userRole.setUsername(u.getUsername());
+                        userRole.setRoleName(r.getRoleName());
+                        addUserRole(userRole);
+                    });
+            } catch (IOException e) {
+            }
+        });
+    }
+
+    @Override
     public DataTable<UserRoleVO.UserRole> queryUserRolePage(UserRoleParam.PageQuery pageQuery) {
         DataTable<OcAuthUserRole> table = ocAuthUserRoleService.queryOcAuthUserRoleByParam(pageQuery);
         List<UserRoleVO.UserRole> page = BeanCopierUtils.copyListProperties(table.getData(), UserRoleVO.UserRole.class);
@@ -220,8 +249,15 @@ public class AuthFacadeImpl implements AuthFacade {
     public void addUserRole(UserRoleVO.UserRole userRole) {
         try {
             OcAuthUserRole ocAuthUserRole = BeanCopierUtils.copyProperties(userRole, OcAuthUserRole.class);
-            ocAuthUserRoleService.addOcAuthUserRole(ocAuthUserRole);
-        } catch (Exception e) {
+            // 按角色名插入id
+            if (ocAuthUserRole.getRoleId() == null && !StringUtils.isEmpty(userRole.getRoleName())) {
+                OcAuthRole ocAuthRole = ocAuthRoleService.queryOcAuthRoleByName(userRole.getRoleName());
+                if (ocAuthRole == null) return;
+                ocAuthUserRole.setRoleId(ocAuthRole.getId());
+            }
+            if (ocAuthUserRoleService.queryOcAuthUserRoleByUniqueKey(ocAuthUserRole) == null)
+                ocAuthUserRoleService.addOcAuthUserRole(ocAuthUserRole);
+        } catch (Exception ignored) {
         }
     }
 

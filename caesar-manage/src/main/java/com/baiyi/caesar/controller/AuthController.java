@@ -144,21 +144,27 @@ public class AuthController {
         return new HttpResult<>(authFacade.deleteGroupById(id));
     }
 
-    // user-role
-    @ApiOperation(value = "分页查询user role列表")
+    @ApiOperation(value = "分页查询用户角色列表")
     @GetMapping(value = "/user/role/page/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<UserRoleVO.UserRole>> queryUserRolePage(@Valid UserRoleParam.PageQuery pageQuery) {
         return new HttpResult<>(authFacade.queryUserRolePage(pageQuery));
     }
 
-    @ApiOperation(value = "新增user role")
+    @ApiOperation(value = "同步用户角色列(from opscloud)")
+    @GetMapping(value = "/user/role/sync", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> syncUserRole() {
+        authFacade.syncUserRole();
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "新增用户角色")
     @PostMapping(value = "/user/role/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addUserRole(@RequestBody @Valid UserRoleVO.UserRole userRole) {
         authFacade.addUserRole(userRole);
         return HttpResult.SUCCESS;
     }
 
-    @ApiOperation(value = "删除指定的user role")
+    @ApiOperation(value = "删除指定的用户角色")
     @DeleteMapping(value = "/user/role/del", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> deleteUserRoleById(@RequestParam int id) {
         return new HttpResult<>(authFacade.deleteUserRoleById(id));

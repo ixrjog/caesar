@@ -26,4 +26,14 @@ public class UserRoleParam {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class UserRolesQuery {
+
+        @ApiModelProperty(value = "用户名")
+        private String username;
+
+    }
+
 }

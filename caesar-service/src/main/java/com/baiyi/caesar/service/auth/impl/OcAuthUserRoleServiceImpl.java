@@ -55,6 +55,15 @@ public class OcAuthUserRoleServiceImpl implements OcAuthUserRoleService {
     }
 
     @Override
+    public OcAuthUserRole queryOcAuthUserRoleByUniqueKey(OcAuthUserRole ocAuthUserRole) {
+        Example example = new Example(OcAuthUserRole.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("roleId", ocAuthUserRole.getRoleId());
+        criteria.andEqualTo("username", ocAuthUserRole.getUsername());
+        return ocAuthUserRoleMapper.selectOneByExample(example);
+    }
+
+    @Override
     public boolean authenticationByUsernameAndResourceName(String username, String resourceName) {
         return ocAuthUserRoleMapper.authenticationByUsernameAndResourceName(username, resourceName) >= 1;
     }

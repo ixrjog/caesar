@@ -21,6 +21,8 @@ public interface OcAuthUserRoleService {
 
     OcAuthUserRole queryOcAuthUserRoleById(int id);
 
+    OcAuthUserRole queryOcAuthUserRoleByUniqueKey(OcAuthUserRole ocAuthUserRole);
+
     boolean authenticationByUsernameAndResourceName(String username, String resourceName);
 
 }

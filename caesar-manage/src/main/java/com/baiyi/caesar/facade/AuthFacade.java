@@ -60,6 +60,8 @@ public interface AuthFacade {
 
     BusinessWrapper<Boolean> deleteGroupById(int id);
 
+    void syncUserRole();
+
     DataTable<UserRoleVO.UserRole> queryUserRolePage(UserRoleParam.PageQuery pageQuery);
 
     void addUserRole(UserRoleVO.UserRole userRole);
