@@ -33,7 +33,10 @@
                 instance_id = #{instanceId}
             </if>
             <if test="queryName != null and queryName != ''">
-                and ( name like "%" #{queryName} "%" or namespace_full_path like "%" #{queryName} "%" )
+                and ( name like "%" #{queryName} "%"
+                or namespace_full_path like "%" #{queryName} "%"
+                or ssh_url  like "%" #{queryName} "%"
+                or web_url  like "%" #{queryName} "%" )
             </if>
         </where>
     </select>
