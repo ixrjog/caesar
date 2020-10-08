@@ -6,6 +6,7 @@ import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.common.util.MenuUtils;
 import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.decorator.auth.ResourceDecorator;
+import com.baiyi.caesar.decorator.auth.UserRoleDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -67,6 +68,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
     @Resource
     private OpscloudUserRole opscloudUserRole;
+
+    @Resource
+    private UserRoleDecorator userRoleDecorator;
 
     @Override
     public DataTable<RoleVO.Role> queryRolePage(RoleParam.PageQuery pageQuery) {
@@ -227,23 +231,10 @@ public class AuthFacadeImpl implements AuthFacade {
     public DataTable<UserRoleVO.UserRole> queryUserRolePage(UserRoleParam.PageQuery pageQuery) {
         DataTable<OcAuthUserRole> table = ocAuthUserRoleService.queryOcAuthUserRoleByParam(pageQuery);
         List<UserRoleVO.UserRole> page = BeanCopierUtils.copyListProperties(table.getData(), UserRoleVO.UserRole.class);
-        return new DataTable<>(page.stream().map(e -> invokeOcUser(e)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e-> userRoleDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
-    /**
-     * 插入用户信息
-     *
-     * @param userRole
-     * @return
-     */
-    private UserRoleVO.UserRole invokeOcUser(UserRoleVO.UserRole userRole) {
-        OcUser ocUser = ocUserService.queryOcUserByUsername(userRole.getUsername());
-        userRole.setDisplayName(ocUser.getDisplayName());
-        OcAuthRole ocAuthRole = ocAuthRoleService.queryOcAuthRoleById(userRole.getRoleId());
-        userRole.setRoleName(ocAuthRole.getRoleName());
-        userRole.setRoleComment(ocAuthRole.getComment());
-        return userRole;
-    }
+
 
     @Override
     public void addUserRole(UserRoleVO.UserRole userRole) {
