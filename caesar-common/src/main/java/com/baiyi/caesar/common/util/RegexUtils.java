@@ -146,13 +146,13 @@ public class RegexUtils {
     public static boolean isJobKeyRule(String key) {
         if (key.endsWith("-") || key.startsWith("-"))
             return false;
-        return key.matches("[a-z-]{3,64}");
+        return key.matches("[a-z0-9-]{3,64}");
     }
 
     public static boolean isApplicationKeyRule(String key) {
         if (key.endsWith("-") || key.startsWith("-"))
             return false;
-        return key.matches("[A-Z-]{3,32}");
+        return key.matches("[A-Z0-9-]{3,32}");
     }
 
 }
