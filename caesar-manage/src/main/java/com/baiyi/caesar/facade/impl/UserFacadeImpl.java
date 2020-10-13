@@ -245,7 +245,7 @@ public class UserFacadeImpl implements UserFacade {
                 return new BusinessWrapper<>(ErrorEnum.USER_EMAIL_NON_COMPLIANCE_WITH_RULES);
         }
         ocUserService.updateBaseOcUser(preUser); // 更新数据库
-        preUser = ocUserService.queryOcUserByUsername(preUser.getUsername());
+        preUser = ocUserService.queryOcUserByUsername(preUser.getUsername());   
         preUser.setPassword(password);
         accountCenter.update(preUser); // 更新账户中心所有实例
         return BusinessWrapper.SUCCESS;

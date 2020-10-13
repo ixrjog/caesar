@@ -60,7 +60,7 @@ public class RegexUtils {
     }
 
     public static boolean isEmail(String email) {
-        String repx = "\\w+@([\\w]+[\\w-]*)(\\.[\\w]+[-\\w]*)+";
+        String repx = "[A-z0-9-_\\.]+@([\\w]+[\\w-]*)(\\.[\\w]+[-\\w]*)+";
         return email.matches(repx);
     }
 
