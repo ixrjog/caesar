@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Map;
@@ -31,10 +32,11 @@ public class JenkinsUtils {
             return jobParameterMap;
 //        return jenkinsJobParameters.getParameters()
 //                .stream().collect(Collectors.toMap(JenkinsJobParameters.Parameter::getName, JenkinsJobParameters.Parameter::getValue, (k1, k2) -> k1));
-        jenkinsJobParameters.getParameters().forEach(e->
-            jobParameterMap.put(e.getName(),e.getValue())
-
-        );
+        jenkinsJobParameters.getParameters().forEach(e -> {
+            if (!StringUtils.isEmpty(e.getValue())) {
+                jobParameterMap.put(e.getName(), e.getValue());
+            }
+        });
         return jobParameterMap;
     }
 
