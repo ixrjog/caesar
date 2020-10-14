@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
@@ -30,9 +29,13 @@ public class JenkinsUtils {
         Map<String, String> jobParameterMap = Maps.newHashMap();
         if (jenkinsJobParameters == null || CollectionUtils.isEmpty(jenkinsJobParameters.getParameters()))
             return jobParameterMap;
-        return jenkinsJobParameters.getParameters()
-                .stream().collect(Collectors.toMap(JenkinsJobParameters.Parameter::getName, JenkinsJobParameters.Parameter::getValue, (k1, k2) -> k1));
+//        return jenkinsJobParameters.getParameters()
+//                .stream().collect(Collectors.toMap(JenkinsJobParameters.Parameter::getName, JenkinsJobParameters.Parameter::getValue, (k1, k2) -> k1));
+        jenkinsJobParameters.getParameters().forEach(e->
+            jobParameterMap.put(e.getName(),e.getValue())
 
+        );
+        return jobParameterMap;
     }
 
 }
