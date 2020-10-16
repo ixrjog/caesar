@@ -27,6 +27,8 @@ public interface JobEngineHandler {
 
     JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
 
+    boolean tryJenkinsInstanceActive(int jenkinsInstanceId);
+
     void trackJobBuild(BuildJobContext context);
 
     void trackJobBuild(DeploymentJobContext context);

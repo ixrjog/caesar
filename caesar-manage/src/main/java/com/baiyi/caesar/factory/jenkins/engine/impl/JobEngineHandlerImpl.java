@@ -144,7 +144,8 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
         return ciJobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
     }
 
-    private boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
+    @Override
+    public boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jenkinsInstanceId);
         if (csJenkinsInstance == null) return false;
         if (!csJenkinsInstance.getIsActive())

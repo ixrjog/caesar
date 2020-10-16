@@ -9,9 +9,11 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  * @Date 2020/8/3 4:33 下午
  * @Version 1.0
  */
+@Slf4j
 @Component
 public class JenkinsJobFacade {
 
@@ -56,6 +59,9 @@ public class JenkinsJobFacade {
 
     @Resource
     private ApplicationEngineDecorator applicationEngineDecorator;
+
+    @Resource
+    private JobEngineHandler jobEngineHandler;
 
     /**
      * 创建Job引擎配置
@@ -106,39 +112,46 @@ public class JenkinsJobFacade {
     }
 
     private void createJobEngine(CsApplication csApplication, CsCiJob csCiJob, ApplicationVO.Engine engine) {
-        CsJobEngine pre = csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.BUILD.getType(), csCiJob.getId(), engine.getJenkinsInstanceId());
-        if (pre != null) return;
-        CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCiJob, engine);
-        csJobEngineService.addCsJobEngine(csJobEngine);
-        // 创建JenkinsJob
-        createJobEngine(csJobEngine, csCiJob.getJobTplId(), engine);
-    }
-
-    private void createJobEngine(CsApplication csApplication, CsCdJob csCdJob, ApplicationVO.Engine engine) {
-        CsJobEngine pre = csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.DEPLOYMENT.getType(), csCdJob.getId(), engine.getJenkinsInstanceId());
-        if (pre != null) return;
-        CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCdJob, engine);
-        csJobEngineService.addCsJobEngine(csJobEngine);
-        // 创建JenkinsJob
-        createJobEngine(csJobEngine, csCdJob.getJobTplId(), engine);
-    }
-
-    private void createJobEngine(CsJobEngine csJobEngine, int jobTplId, ApplicationVO.Engine engine) {
-        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(jobTplId);
-        if (csJobTpl != null) {
+        if (csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.BUILD.getType(), csCiJob.getId(), engine.getJenkinsInstanceId()) != null)
+            return;
+        if (jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId())) {
+            // 创建JenkinsJob
             try {
-                jenkinsServerHandler.createJob(engine.getInstance().getName(), csJobEngine.getName(), csJobTpl.getTplContent());
-                if (jenkinsServerHandler.getJob(engine.getInstance().getName(), csJobEngine.getName()) != null) {
-                    csJobEngine.setTplVersion(csJobTpl.getTplVersion());
-                    csJobEngine.setTplHash(csJobTpl.getTplHash());
-                    csJobEngineService.updateCsJobEngine(csJobEngine);
-                }
+                CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCiJob, engine);
+                createJobEngine(csJobEngine, csCiJob.getJobTplId(), engine);
+                csJobEngineService.addCsJobEngine(csJobEngine);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("创建任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};", engine.getJenkinsInstanceId(), csCiJob.getName());
             }
         }
     }
 
+    private void createJobEngine(CsApplication csApplication, CsCdJob csCdJob, ApplicationVO.Engine engine) {
+        if (csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.DEPLOYMENT.getType(), csCdJob.getId(), engine.getJenkinsInstanceId()) != null)
+            return;
+        if (jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId())) {
+            // 创建JenkinsJob
+            try {
+                CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCdJob, engine);
+                createJobEngine(csJobEngine, csCdJob.getJobTplId(), engine);
+                csJobEngineService.addCsJobEngine(csJobEngine);
+            } catch (IOException e) {
+                log.error("创建任务引擎错误，jenkinsInstanceId = {}, csCdJobName = {};", engine.getJenkinsInstanceId(), csCdJob.getName());
+            }
+        }
+    }
+
+    private void createJobEngine(CsJobEngine csJobEngine, int jobTplId, ApplicationVO.Engine engine) throws IOException {
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(jobTplId);
+        if (csJobTpl != null) {
+            jenkinsServerHandler.createJob(engine.getInstance().getName(), csJobEngine.getName(), csJobTpl.getTplContent());
+            if (jenkinsServerHandler.getJob(engine.getInstance().getName(), csJobEngine.getName()) != null) {
+                csJobEngine.setTplVersion(csJobTpl.getTplVersion());
+                csJobEngine.setTplHash(csJobTpl.getTplHash());
+                // csJobEngineService.updateCsJobEngine(csJobEngine);
+            }
+        }
+    }
 
     public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
         List<CsJobEngine> list = csJobEngineService.queryCsJobEngineByJobId(buildType, jobId);
