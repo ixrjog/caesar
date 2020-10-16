@@ -147,7 +147,10 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
     private boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jenkinsInstanceId);
         if (csJenkinsInstance == null) return false;
-        return csJenkinsInstance.getIsActive();
+        if (!csJenkinsInstance.getIsActive())
+            return false;
+        // 校验实例是否正常
+        return jenkinsServerHandler.getVersion(csJenkinsInstance.getName()) != null;
     }
 
     private List<CsJobEngine> queryJobEngine(int buildType, int ciJobId) {
