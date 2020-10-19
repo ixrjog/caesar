@@ -31,6 +31,10 @@ public interface OcUserService {
 
     DataTable<OcUser> queryApplicationIncludeUserParam(UserParam.UserIncludeApplicationPageQuery pageQuery);
 
+    DataTable<OcUser> queryApplicationBuildJobExcludeUserParam(UserParam.UserExcludeApplicationBuildJobPageQuery pageQuery);
+
+    DataTable<OcUser> queryApplicationBuildJobIncludeUserParam(UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery);
+
     DataTable<OcUser> fuzzyQueryUserByParam(UserParam.UserPageQuery pageQuery);
 
     List<OcUser> queryOcUserByUserGroupId(int userGroupId);

@@ -369,6 +369,39 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         return BusinessWrapper.SUCCESS;
     }
 
+    @Override
+    public BusinessWrapper<Boolean> grantUserApplicationBuildJob(int ciJobId, int userId) {
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJobId);
+
+        if (!tryApplicationAdmin(csCiJob.getApplicationId()))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        if (!userPermissionFacade.tryUserBusinessPermission(userId, BusinessType.APPLICATION_BUILD_JOB.getType(), ciJobId)) {
+            UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                    .userId(userId)
+                    .businessType(BusinessType.APPLICATION_BUILD_JOB.getType())
+                    .businessId(ciJobId)
+                    .roleName("USER")
+                    .build();
+            userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        }
+        return BusinessWrapper.SUCCESS;
+
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> revokeUserApplicationBuildJob(int ciJobId, int userId) {
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJobId);
+        if (!tryApplicationAdmin(csCiJob.getApplicationId()))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        UserPermissionBO userPermissionBO = UserPermissionBO.builder()
+                .userId(userId)
+                .businessType(BusinessType.APPLICATION_BUILD_JOB.getType())
+                .businessId(ciJobId)
+                .build();
+        userPermissionFacade.delOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        return BusinessWrapper.SUCCESS;
+    }
+
     private boolean tryApplicationAdmin(int applicationId) {
         OcUser ocUser = userFacade.getOcUserBySession();
         if (userPermissionFacade.checkAccessLevel(ocUser, AccessLevel.OPS.getLevel()).isSuccess())

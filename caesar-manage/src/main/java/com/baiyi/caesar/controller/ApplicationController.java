@@ -190,6 +190,18 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.revokeUserApplication(applicationId, userId));
     }
 
+    @ApiOperation(value = "授权构建任务给用户")
+    @PutMapping(value = "/build/job/user/grant", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> grantUserApplicationBuildJob(@Valid int ciJobId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.grantUserApplicationBuildJob(ciJobId, userId));
+    }
+
+    @ApiOperation(value = "撤销用户的构建任务授权")
+    @DeleteMapping(value = "/build/job/user/revoke", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> revokeUserApplicationBuildJob(@Valid int ciJobId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.revokeUserApplicationBuildJob(ciJobId, userId));
+    }
+
     @ApiOperation(value = "更新用户权限")
     @PutMapping(value = "/user/permission/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> updateUserApplicationPermission(@Valid int applicationId, @Valid int userId) {

@@ -30,6 +30,7 @@ public interface ApplicationFacade {
 
     /**
      * 是否为此应用管理员
+     *
      * @param applicationId
      * @param userId
      * @return
@@ -91,6 +92,10 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId);
 
     BusinessWrapper<Boolean> revokeUserApplication(int applicationId, int userId);
+
+    BusinessWrapper<Boolean> grantUserApplicationBuildJob(int ciJobId, int userId);
+
+    BusinessWrapper<Boolean> revokeUserApplicationBuildJob(int ciJobId, int userId);
 
     BusinessWrapper<Boolean> updateUserApplicationPermission(int applicationId, int userId);
 

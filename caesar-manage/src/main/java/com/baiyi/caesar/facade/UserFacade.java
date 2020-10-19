@@ -25,6 +25,10 @@ public interface UserFacade {
 
     DataTable<UserVO.User> queryApplicationIncludeUserPage(UserParam.UserIncludeApplicationPageQuery pageQuery);
 
+    DataTable<UserVO.User> queryApplicationBuildJobExcludeUserPage(UserParam.UserExcludeApplicationBuildJobPageQuery pageQuery);
+
+    DataTable<UserVO.User> queryApplicationBuildJobIncludeUserPage(UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery);
+
     UserVO.User queryUserDetail();
 
     UserVO.User queryUserDetailByUsername(String username);
