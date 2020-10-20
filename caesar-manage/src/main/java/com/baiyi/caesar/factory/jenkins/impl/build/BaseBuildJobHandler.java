@@ -102,6 +102,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, gitlabBranch);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
+            if (job == null)
+                return new BusinessWrapper<>(100001, "Jenkins引擎故障，无法获取任务详情");
             QueueReference queueReference = build(job, jobParamDetail.getParams());
         } catch (IOException e) {
             e.printStackTrace();

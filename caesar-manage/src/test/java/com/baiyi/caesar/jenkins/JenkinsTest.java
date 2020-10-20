@@ -1,5 +1,6 @@
 package com.baiyi.caesar.jenkins;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
@@ -8,6 +9,7 @@ import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.*;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -35,8 +37,11 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void versionTest() {
-        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion("master-1");
-        System.err.println(jenkinsVersion);
+        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion("master-2");
+
+        System.err.println( StringUtils.isBlank(jenkinsVersion.getLiteralVersion()));
+
+        System.err.println(JSON.toJSON(jenkinsVersion));
     }
 
     @Test

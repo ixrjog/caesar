@@ -8,8 +8,10 @@ import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.HttpRetryException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,9 +24,6 @@ import java.util.Objects;
 @Component
 public class JenkinsServerHandler {
 
-//    @Resource
-//    private JenkinsServerContainer jenkinsServerContainer;
-
     public static final boolean CRUMB_FLAG = true;
 
     public JenkinsVersion getVersion(String serverName) {
@@ -34,6 +33,12 @@ public class JenkinsServerHandler {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public boolean isActive(String serverName) {
+        JenkinsVersion jenkinsVersion = getVersion(serverName);
+        if (jenkinsVersion == null) return false;
+        return !StringUtils.isEmpty(jenkinsVersion.getLiteralVersion());
     }
 
     /**
@@ -76,6 +81,9 @@ public class JenkinsServerHandler {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
             assert jenkinsServer != null;
             return jenkinsServer.getComputers();
+        } catch (HttpRetryException hre) {
+            log.error("Jenkins服务器API接口错误：" + hre.getMessage());
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
