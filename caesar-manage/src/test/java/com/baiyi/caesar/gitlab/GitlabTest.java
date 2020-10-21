@@ -26,7 +26,6 @@ public class GitlabTest extends BaseUnit {
     @Resource
     private GitlabProjectHandler gitlabProjectHandler;
 
-
     @Resource
     private GitlabGroupHandler gitlabGroupHandler;
 
@@ -37,7 +36,7 @@ public class GitlabTest extends BaseUnit {
     private GitlabBranchHandler gitlabBranchHandler;
 
     @Test
-    void versionTest() {
+    void testVersion() {
         try {
             GitlabVersion gitlabVersion = gitlabHandler.getVersion("gitlab-1");
             System.err.println(gitlabVersion);
@@ -52,7 +51,17 @@ public class GitlabTest extends BaseUnit {
     }
 
     @Test
-    void groupTest() {
+    void testGetProject() {
+        try {
+            GitlabProject  p= gitlabProjectHandler.getProject("gitlab-1",88);
+            System.err.println(p);
+        } catch (IOException e) {
+        }
+
+    }
+
+    @Test
+    void testGroup() {
         try {
             List<GitlabGroup> list = gitlabGroupHandler.getGroups("gitlab-1");
             System.err.println(list);
@@ -61,28 +70,32 @@ public class GitlabTest extends BaseUnit {
     }
 
     @Test
-    void namespaceTest() {
+    void testNamespace() {
         List<GitlabNamespace> list = gitlabGroupHandler.getNamespace("gitlab-1");
         System.err.println(list);
     }
 
     @Test
-    void syncProjectTest() {
+    void testSyncProject() {
         gitlabFacade.syncGitlabInstanceProject(1);
     }
 
     @Test
-    void getBranchesTest() {
+    void testGetBranches() {
         // name  commit.id/commit.message
-
         List<GitlabBranch> list = gitlabBranchHandler.getBranches("gitlab-1", 1661);
         System.err.println(list);
     }
 
     @Test
-    void getTagsTest() {
+    void testGetTags() {
         List<GitlabTag> list = gitlabBranchHandler.getTags("gitlab-1", 1661);
         System.err.println(list);
+    }
+
+    @Test
+    void testSyncGroup() {
+       gitlabFacade.syncGitlabInstanceGroup(1);
     }
 
 }

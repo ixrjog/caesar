@@ -26,7 +26,7 @@
     </resultMap>
 
     <select id="queryCsGitlabProjectByParam"
-            parameterType="com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam$PageQuery" resultMap="BaseResultMap">
+            parameterType="com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam$GitlabProjectPageQuery" resultMap="BaseResultMap">
         select * from cs_gitlab_project
         <where>
             <if test="instanceId != null">

@@ -112,9 +112,11 @@ cs_job_build_artifact
 cs_cd_job_build
 cs_job_build_change
 cs_instance
+cs_gitlab_webhook
+cs_gitlab_group
        -->
 
-        <table tableName="cs_cd_job_build">
+        <table tableName="cs_gitlab_group">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

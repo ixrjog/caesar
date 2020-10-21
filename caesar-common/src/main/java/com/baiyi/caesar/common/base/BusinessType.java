@@ -25,6 +25,7 @@ public enum BusinessType {
     APPLICATION_BUILD_JOB(13),
     /** 部署任务 **/
     APPLICATION_DEPLOYMENT_JOB(14),
+    GITLAB_GROUP(15)
     ;
 
     private int type;

@@ -25,8 +25,8 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     private CsGitlabProjectMapper csGitlabProjectMapper;
 
     @Override
-    public  DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.PageQuery pageQuery){
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+    public  DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.GitlabProjectPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsGitlabProject> list = csGitlabProjectMapper.queryCsGitlabProjectByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
     }

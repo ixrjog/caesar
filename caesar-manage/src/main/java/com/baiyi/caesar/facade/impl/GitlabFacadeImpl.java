@@ -1,7 +1,10 @@
 package com.baiyi.caesar.facade.impl;
 
+import com.baiyi.caesar.builder.GitlabGroupBuilder;
 import com.baiyi.caesar.builder.GitlabProjectBuilder;
+import com.baiyi.caesar.builder.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
+import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
@@ -9,25 +12,30 @@ import com.baiyi.caesar.decorator.gitlab.GitlabProjectDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
-import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
-import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
+import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
+import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
+import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
+import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.models.GitlabBranch;
 import org.gitlab.api.models.GitlabBranchCommit;
+import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.scheduling.annotation.Async;
@@ -57,6 +65,10 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private CsGitlabProjectService csGitlabProjectService;
 
     @Resource
+    private CsGitlabGroupService csGitlabGroupService;
+
+
+    @Resource
     private GitlabInstanceDecorator gitlabInstanceDecorator;
 
     @Resource
@@ -69,10 +81,19 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private GitlabProjectHandler gitlabProjectHandler;
 
     @Resource
+    private GitlabGroupHandler gitlabGroupHandler;
+
+    @Resource
     private GitlabBranchHandler gitlabBranchHandler;
 
     @Resource
     private GitlabServerContainer gitlabServerContainer;
+
+    @Resource
+    private CsGitlabWebhookService csGitlabWebhookService;
+
+    @Resource
+    private OcUserService ocUserService;
 
     @Resource
     private TagFacade tagFacade;
@@ -87,7 +108,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new BusinessWrapper<>(ErrorEnum. GITLAB_BRANCH_COMMIT_ERROR);
+        return new BusinessWrapper<>(ErrorEnum.GITLAB_BRANCH_COMMIT_ERROR);
     }
 
     @Override
@@ -95,6 +116,28 @@ public class GitlabFacadeImpl implements GitlabFacade {
         DataTable<CsGitlabInstance> table = csGitlabInstanceService.queryCsGitlabInstanceByParam(pageQuery);
         List<GitlabInstanceVO.Instance> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabInstanceVO.Instance.class);
         return new DataTable<>(page.stream().map(e -> gitlabInstanceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+    }
+
+    @Override
+    @Async(value = ASYNC_POOL_TASK_COMMON)
+    public void webhooksV1(GitlabHooks.Webhooks webhooks) {
+        try {
+            // 处理push事件
+            if (webhooks.getEvent_name().equals(GitlabEventType.PUSH.getDesc())) {
+                saveWebhooks(webhooks);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveWebhooks(GitlabHooks.Webhooks webhooks) {
+        List<CsGitlabInstance> instances = csGitlabInstanceService.queryAll().stream().filter(e -> webhooks.getProject().getWeb_url().startsWith(e.getUrl())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(instances))
+            return;
+        OcUser ocUser = ocUserService.queryOcUserByUsername(webhooks.getUser_username());
+        CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhooks, instances.get(0), ocUser);
+        csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
     }
 
     @Override
@@ -127,7 +170,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    public DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.PageQuery pageQuery) {
+    public DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.GitlabProjectPageQuery pageQuery) {
         DataTable<CsGitlabProject> table = csGitlabProjectService.queryCsGitlabProjectByParam(pageQuery);
         List<GitlabProjectVO.Project> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabProjectVO.Project.class);
         return new DataTable<>(page.stream().map(e -> gitlabProjectDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
@@ -144,7 +187,22 @@ public class GitlabFacadeImpl implements GitlabFacade {
         deleteGitlabProjectByMap(projectMap); // 删除不存在的项目
     }
 
-    private void saveGitlabProject(Integer instanceId, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
+    @Override
+    @Async(value = ASYNC_POOL_TASK_COMMON)
+    public void syncGitlabInstanceGroup(int instanceId) {
+        Map<Integer, CsGitlabGroup> groupMap = getGitlabGroupMap(instanceId);
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
+        try {
+            List<GitlabGroup> gitlabGroups = gitlabGroupHandler.getGroups(csGitlabInstance.getName());
+            if (CollectionUtils.isEmpty(gitlabGroups)) return;
+            gitlabGroups.forEach(e -> saveGitlabGroup(instanceId, e, groupMap));
+            deleteGitlabGroupByMap(groupMap); // 删除不存在的项目
+        }catch (IOException e){
+        }
+
+    }
+
+    private void saveGitlabProject(int instanceId, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
         CsGitlabProject pre = GitlabProjectBuilder.build(instanceId, gitlabProject);
         if (projectMap.containsKey(pre.getProjectId())) {
             CsGitlabProject csGitlabProject = projectMap.get(pre.getProjectId());
@@ -156,6 +214,20 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
     }
 
+    private void saveGitlabGroup(int instanceId, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
+        CsGitlabGroup pre = GitlabGroupBuilder.build(instanceId, gitlabGroup);
+        if (groupMap.containsKey(pre.getGroupId())) {
+            CsGitlabGroup csGitlabGroup = groupMap.get(pre.getGroupId());
+            pre.setId(csGitlabGroup.getId());
+            pre.setApplicationKey(csGitlabGroup.getApplicationKey());
+            csGitlabGroupService.updateCsGitlabGroup(pre);
+            groupMap.remove(pre.getGroupId());
+        } else {
+            csGitlabGroupService.addCsGitlabGroup(pre);
+        }
+    }
+
+
     private void deleteGitlabProjectByMap(Map<Integer, CsGitlabProject> projectMap) {
         if (projectMap.isEmpty()) return;
         projectMap.keySet().forEach(k -> {
@@ -166,10 +238,27 @@ public class GitlabFacadeImpl implements GitlabFacade {
         });
     }
 
+    private void deleteGitlabGroupByMap(Map<Integer, CsGitlabGroup> groupMap) {
+        if (groupMap.isEmpty()) return;
+        groupMap.keySet().forEach(k -> {
+            CsGitlabGroup csGitlabGroup = groupMap.get(k);
+            // 清除业务标签
+            tagFacade.clearBusinessTags(BusinessType.GITLAB_GROUP.getType(), csGitlabGroup.getId());
+            csGitlabGroupService.deleteCsGitlabGroupById(csGitlabGroup.getId());
+        });
+    }
+
+
     private Map<Integer, CsGitlabProject> getGitlabProjectMap(int instanceId) {
         List<CsGitlabProject> projects = csGitlabProjectService.queryCsGitlabProjectByInstanceId(instanceId);
         if (CollectionUtils.isEmpty(projects)) return Maps.newHashMap();
         return projects.stream().collect(Collectors.toMap(CsGitlabProject::getProjectId, a -> a, (k1, k2) -> k1));
+    }
+
+    private Map<Integer, CsGitlabGroup> getGitlabGroupMap(int instanceId) {
+        List<CsGitlabGroup> groups = csGitlabGroupService.queryCsGitlabGroupByInstanceId(instanceId);
+        if (CollectionUtils.isEmpty(groups)) return Maps.newHashMap();
+        return groups.stream().collect(Collectors.toMap(CsGitlabGroup::getGroupId, a -> a, (k1, k2) -> k1));
     }
 
     @Override

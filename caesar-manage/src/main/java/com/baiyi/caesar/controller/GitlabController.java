@@ -7,6 +7,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
 import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,20 @@ public class GitlabController {
 
     @Resource
     private GitlabFacade gitlabFacade;
+
+
+    /**
+     * https://oc.xinc818.com/gitlab/v1/webhooks
+     *
+     * @param webhooks
+     * @return
+     */
+    @ApiOperation(value = "Gitlab webhook")
+    @PostMapping(value =  "/v1/webhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooks.Webhooks webhooks) {
+        gitlabFacade.webhooksV1(webhooks);
+        return HttpResult.SUCCESS;
+    }
 
     @ApiOperation(value = "分页查Gitlab实例配置")
     @PostMapping(value = "/instance/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +70,7 @@ public class GitlabController {
 
     @ApiOperation(value = "分页查Gitlab项目")
     @PostMapping(value = "/project/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<DataTable<GitlabProjectVO.Project>> queryGitlabProjectPage(@RequestBody @Valid GitlabProjectParam.PageQuery pageQuery) {
+    public HttpResult<DataTable<GitlabProjectVO.Project>> queryGitlabProjectPage(@RequestBody @Valid GitlabProjectParam.GitlabProjectPageQuery pageQuery) {
         return new HttpResult<>(gitlabFacade.queryGitlabProjectPage(pageQuery));
     }
 
