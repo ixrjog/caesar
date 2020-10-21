@@ -2,12 +2,10 @@ package com.baiyi.caesar.facade;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.*;
 import org.gitlab.api.models.GitlabBranchCommit;
 
 /**
@@ -34,6 +32,8 @@ public interface GitlabFacade {
     void syncGitlabInstanceGroup(int instanceId);
 
     DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.GitlabProjectPageQuery pageQuery);
+
+    DataTable<GitlabGroupVO.Group> queryGitlabGroupPage(GitlabGroupParam.GitlabGroupPageQuery pageQuery);
 
     BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag);
 }

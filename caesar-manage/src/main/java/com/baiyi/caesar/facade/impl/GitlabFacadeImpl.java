@@ -7,18 +7,17 @@ import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
+import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabProjectDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
+import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
+import com.baiyi.caesar.domain.vo.gitlab.*;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
@@ -73,6 +72,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private GitlabProjectDecorator gitlabProjectDecorator;
+
+    @Resource
+    private GitlabGroupDecorator gitlabGroupDecorator;
 
     @Resource
     private StringEncryptor stringEncryptor;
@@ -177,6 +179,13 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
+    public DataTable<GitlabGroupVO.Group> queryGitlabGroupPage(GitlabGroupParam.GitlabGroupPageQuery pageQuery) {
+        DataTable<CsGitlabGroup> table = csGitlabGroupService.queryCsGitlabGroupByParam(pageQuery);
+        List<GitlabGroupVO.Group> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabGroupVO.Group.class);
+        return new DataTable<>(page.stream().map(e -> gitlabGroupDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+    }
+
+    @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
     public void syncGitlabInstanceProject(int instanceId) {
         Map<Integer, CsGitlabProject> projectMap = getGitlabProjectMap(instanceId);
@@ -197,7 +206,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
             if (CollectionUtils.isEmpty(gitlabGroups)) return;
             gitlabGroups.forEach(e -> saveGitlabGroup(instanceId, e, groupMap));
             deleteGitlabGroupByMap(groupMap); // 删除不存在的项目
-        }catch (IOException e){
+        } catch (IOException e) {
         }
 
     }

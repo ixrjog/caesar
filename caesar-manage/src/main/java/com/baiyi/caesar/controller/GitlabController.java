@@ -1,13 +1,14 @@
 package com.baiyi.caesar.controller;
 
-import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabGroupVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +32,7 @@ public class GitlabController {
     private GitlabFacade gitlabFacade;
 
     /**
-     * https://oc.xinc818.com/gitlab/v1/webhooks
+     * https://caesar域名/cs/gitlab/v1/webhooks
      *
      * @param webhooks
      * @return
@@ -77,6 +78,19 @@ public class GitlabController {
     @GetMapping(value = "/project/sync",  produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> syncGitlabInstanceProject(@Valid int instanceId) {
         gitlabFacade.syncGitlabInstanceProject(instanceId);
-        return new HttpResult<>(BusinessWrapper.SUCCESS);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "分页查Gitlab群组")
+    @PostMapping(value = "/group/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<GitlabGroupVO.Group>> queryGitlabGroupPage(@RequestBody @Valid GitlabGroupParam.GitlabGroupPageQuery pageQuery) {
+        return new HttpResult<>(gitlabFacade.queryGitlabGroupPage(pageQuery));
+    }
+
+    @ApiOperation(value = "同步Gitlab群组")
+    @GetMapping(value = "/group/sync",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> syncGitlabInstanceGroup(@Valid int instanceId) {
+        gitlabFacade.syncGitlabInstanceGroup(instanceId);
+        return HttpResult.SUCCESS;
     }
 }
