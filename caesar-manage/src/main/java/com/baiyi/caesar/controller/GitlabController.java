@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +30,6 @@ public class GitlabController {
     @Resource
     private GitlabFacade gitlabFacade;
 
-
     /**
      * https://oc.xinc818.com/gitlab/v1/webhooks
      *
@@ -39,7 +38,7 @@ public class GitlabController {
      */
     @ApiOperation(value = "Gitlab webhook")
     @PostMapping(value =  "/v1/webhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooks.Webhooks webhooks) {
+    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooksVO.Webhooks webhooks) {
         gitlabFacade.webhooksV1(webhooks);
         return HttpResult.SUCCESS;
     }

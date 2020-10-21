@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import org.gitlab.api.models.GitlabBranchCommit;
 
 /**
@@ -21,7 +21,7 @@ public interface GitlabFacade {
 
     DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery);
 
-    void webhooksV1(GitlabHooks.Webhooks webhooks);
+    void webhooksV1(GitlabHooksVO.Webhooks webhooks);
 
     BusinessWrapper<Boolean> addGitlabInstance(GitlabInstanceVO.Instance instance);
 

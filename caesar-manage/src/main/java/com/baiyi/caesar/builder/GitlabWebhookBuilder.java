@@ -6,7 +6,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 
 /**
  * @Author baiyi
@@ -15,7 +15,7 @@ import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
  */
 public class GitlabWebhookBuilder {
 
-    public static CsGitlabWebhook build(GitlabHooks.Webhooks webhooks, CsGitlabInstance csGitlabInstance, OcUser ocUser) {
+    public static CsGitlabWebhook build(GitlabHooksVO.Webhooks webhooks, CsGitlabInstance csGitlabInstance, OcUser ocUser) {
         GitlabWebhookBO bo = GitlabWebhookBO.builder()
                 .instanceId(csGitlabInstance.getId())
                 .name(webhooks.getProject().getName())

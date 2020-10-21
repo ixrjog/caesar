@@ -1,8 +1,9 @@
 package com.baiyi.caesar.domain.vo.gitlab;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,11 +11,12 @@ import java.util.List;
  * @Date 2020/10/20 11:39 上午
  * @Version 1.0
  */
-public class GitlabHooks {
+public class GitlabHooksVO {
 
     @Data
-    public class Webhooks implements Serializable {
-        private static final long serialVersionUID = 4741073533046011211L;
+    @NoArgsConstructor
+    @ApiModel
+    public static class Webhooks {
         public String ver = "1.0.0";
         private String object_kind;
         private String event_name;
@@ -35,9 +37,9 @@ public class GitlabHooks {
     }
 
     @Data
-    public class Project implements Serializable {
-
-        private static final long serialVersionUID = 2945379181756764187L;
+    @NoArgsConstructor
+    @ApiModel
+    public static class Project {
         private long id;
         private String name;
         private String description;
@@ -53,14 +55,12 @@ public class GitlabHooks {
         private String url;
         private String ssh_url;
         private String http_url;
-
-
     }
 
-
     @Data
-    public class Commits implements Serializable {
-        private static final long serialVersionUID = 2900513819533302172L;
+    @NoArgsConstructor
+    @ApiModel
+    public static class Commits {
         private String id;
         private String message;
         private String timestamp;
@@ -72,8 +72,9 @@ public class GitlabHooks {
     }
 
     @Data
-    public class Repository implements Serializable {
-        private static final long serialVersionUID = 4838379662766650465L;
+    @NoArgsConstructor
+    @ApiModel
+    public static class Repository  {
         private String name;
         private String url;
         private String description;
@@ -84,8 +85,9 @@ public class GitlabHooks {
     }
 
     @Data
-    public class Author implements Serializable {
-        private static final long serialVersionUID = 1855011763946038348L;
+    @NoArgsConstructor
+    @ApiModel
+    public static class Author {
         private String name;
         private String email;
     }

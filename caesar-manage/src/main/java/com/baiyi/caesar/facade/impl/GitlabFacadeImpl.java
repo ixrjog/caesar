@@ -16,7 +16,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooks;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import com.baiyi.caesar.facade.GitlabFacade;
@@ -120,7 +120,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void webhooksV1(GitlabHooks.Webhooks webhooks) {
+    public void webhooksV1(GitlabHooksVO.Webhooks webhooks) {
         try {
             // 处理push事件
             if (webhooks.getEvent_name().equals(GitlabEventType.PUSH.getDesc())) {
@@ -131,7 +131,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
     }
 
-    private void saveWebhooks(GitlabHooks.Webhooks webhooks) {
+    private void saveWebhooks(GitlabHooksVO.Webhooks webhooks) {
         List<CsGitlabInstance> instances = csGitlabInstanceService.queryAll().stream().filter(e -> webhooks.getProject().getWeb_url().startsWith(e.getUrl())).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(instances))
             return;
