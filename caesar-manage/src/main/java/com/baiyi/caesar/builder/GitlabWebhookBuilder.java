@@ -20,6 +20,7 @@ public class GitlabWebhookBuilder {
                 .instanceId(csGitlabInstance.getId())
                 .name(webhooks.getProject().getName())
                 .projectId(webhooks.getProject_id())
+                .objectKind(webhooks.getObject_kind())
                 .afterCommit(webhooks.getAfter())
                 .beforeCommit(webhooks.getBefore())
                 .ref(webhooks.getRef())

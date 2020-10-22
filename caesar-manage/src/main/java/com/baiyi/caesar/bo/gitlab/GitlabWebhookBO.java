@@ -15,6 +15,7 @@ public class GitlabWebhookBO {
     private Integer id;
     private Integer instanceId;
     private Integer projectId;
+    private String objectKind;
     private String name;
     private String beforeCommit;
     private String afterCommit;

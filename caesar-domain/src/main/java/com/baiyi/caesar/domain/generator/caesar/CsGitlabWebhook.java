@@ -22,6 +22,12 @@ public class CsGitlabWebhook {
     private Integer projectId;
 
     /**
+     * 分类
+     */
+    @Column(name = "object_kind")
+    private String objectKind;
+
+    /**
      * 项目名称
      */
     private String name;
@@ -137,6 +143,24 @@ public class CsGitlabWebhook {
      */
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
+    }
+
+    /**
+     * 获取分类
+     *
+     * @return object_kind - 分类
+     */
+    public String getObjectKind() {
+        return objectKind;
+    }
+
+    /**
+     * 设置分类
+     *
+     * @param objectKind 分类
+     */
+    public void setObjectKind(String objectKind) {
+        this.objectKind = objectKind;
     }
 
     /**

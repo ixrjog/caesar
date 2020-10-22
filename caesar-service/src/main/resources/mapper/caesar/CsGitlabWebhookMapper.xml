@@ -8,6 +8,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="object_kind" jdbcType="VARCHAR" property="objectKind" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="before_commit" jdbcType="VARCHAR" property="beforeCommit" />
     <result column="after_commit" jdbcType="VARCHAR" property="afterCommit" />

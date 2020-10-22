@@ -116,7 +116,7 @@ cs_gitlab_webhook
 cs_gitlab_group
        -->
 
-        <table tableName="cs_gitlab_group">
+        <table tableName="cs_gitlab_webhook">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
