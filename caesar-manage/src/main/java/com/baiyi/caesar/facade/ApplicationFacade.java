@@ -3,6 +3,7 @@ package com.baiyi.caesar.facade;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
@@ -106,4 +107,6 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> addApplicationServerGroup(ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup);
 
     BusinessWrapper<Boolean> removeApplicationServerGroup(int id);
+
+    void updateApplicationScmMember(CsGitlabProject csGitlabProject);
 }

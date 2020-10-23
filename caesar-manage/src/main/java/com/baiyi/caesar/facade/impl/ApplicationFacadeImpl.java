@@ -466,4 +466,17 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         csApplicationServerGroupService.deleteCsApplicationServerGroupById(id);
         return BusinessWrapper.SUCCESS;
     }
+
+    @Override
+    public void updateApplicationScmMember(CsGitlabProject csGitlabProject) {
+        List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
+        if (CollectionUtils.isEmpty(members)) return;
+        members.forEach(m -> {
+            if (!m.getScmSshUrl().equals(csGitlabProject.getSshUrl())) {
+                m.setScmSshUrl(csGitlabProject.getSshUrl());
+                csApplicationScmMemberService.updateCsApplicationScmMember(m);
+            }
+        });
+
+    }
 }

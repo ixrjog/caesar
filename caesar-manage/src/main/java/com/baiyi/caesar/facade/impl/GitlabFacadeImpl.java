@@ -19,6 +19,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.*;
+import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
@@ -102,7 +103,10 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private TagFacade tagFacade;
 
     @Resource
-    private  GitlabWebhooksConsumer gitlabWebhooksConsumer;
+    private GitlabWebhooksConsumer gitlabWebhooksConsumer;
+
+    @Resource
+    private ApplicationFacade applicationFacade;
 
     @Override
     public BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
@@ -226,6 +230,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         } else {
             csGitlabProjectService.addCsGitlabProject(pre);
         }
+        applicationFacade.updateApplicationScmMember(pre);
     }
 
     private void saveGitlabGroup(int instanceId, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
