@@ -32,8 +32,6 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("cdJobId", pageQuery.getCdJobId());
         example.setOrderByClause("job_build_number desc");
-
-
       //  List<CsCdJobBuild> list = csCdJobBuildMapper.queryCsCdJobByParam(pageQuery);
         return new DataTable<>(csCdJobBuildMapper.selectByExample(example), page.getTotal());
     }

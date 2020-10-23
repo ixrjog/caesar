@@ -59,6 +59,15 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     }
 
     @Override
+    public  List<CsCiJob> queryCsCiJobByScmMemberIdAndBranch(int scmMemberId,String branch) {
+        Example example = new Example(CsCiJob.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("scmMemberId", scmMemberId);
+        criteria.andEqualTo("branch", branch);
+        return csCiJobMapper.selectByExample(example);
+    }
+
+    @Override
     public CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey) {
         Example example = new Example(CsCiJob.class);
         Example.Criteria criteria = example.createCriteria();

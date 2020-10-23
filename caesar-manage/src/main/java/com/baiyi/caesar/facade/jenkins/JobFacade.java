@@ -87,7 +87,7 @@ public class JobFacade {
     @Resource
     private RedisUtil redisUtil;
 
-    public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildQuery buildParam) {
+    public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
         if (StringUtils.isEmpty(buildParam.getBranch()))

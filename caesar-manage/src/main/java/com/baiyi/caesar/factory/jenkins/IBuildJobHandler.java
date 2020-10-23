@@ -15,7 +15,9 @@ import com.baiyi.caesar.jenkins.context.BuildJobContext;
  */
 public interface IBuildJobHandler {
 
-    BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildQuery buildParam);
+    BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam);
+
+    void build(CsCiJob csCiJob, String username);
 
     void trackJobBuild(CsCiJobBuild csCiJobBuild);
 

@@ -32,7 +32,7 @@ public class JobController {
 
     @ApiOperation(value = "执行持续集成构建任务")
     @PostMapping(value = "/ci/build", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildQuery buildParam) {
+    public HttpResult<Boolean> buildCiJob(@RequestBody @Valid JobBuildParam.BuildParam buildParam) {
         return new HttpResult<>(jobFacade.buildCiJob(buildParam));
     }
 

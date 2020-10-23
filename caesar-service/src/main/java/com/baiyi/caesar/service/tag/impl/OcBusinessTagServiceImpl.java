@@ -23,7 +23,12 @@ public class OcBusinessTagServiceImpl implements OcBusinessTagService {
 
     @Override
     public OcBusinessTag queryOcBusinessTagByUniqueKey(BusinessTagVO.BusinessTag businessTag) {
-        return ocBusinessTagMapper.queryOcBusinessTagByUniqueKey(businessTag);
+        Example example = new Example(OcBusinessTag.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("businessId", businessTag.getBusinessId());
+        criteria.andEqualTo("businessType",businessTag.getBusinessType());
+        criteria.andEqualTo("tagId",businessTag.getTagId());
+        return ocBusinessTagMapper.selectOneByExample(example);
     }
 
     @Override

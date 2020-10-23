@@ -53,6 +53,15 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     }
 
     @Override
+    public CsGitlabProject queryCsGitlabProjectByUniqueKey(int instanceId, int projectId){
+        Example example = new Example(CsGitlabProject.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("instanceId", instanceId);
+        criteria.andEqualTo("projectId", projectId);
+        return csGitlabProjectMapper.selectOneByExample(example);
+    }
+
+    @Override
     public void addCsGitlabProject(CsGitlabProject csGitlabProject) {
         csGitlabProjectMapper.insert(csGitlabProject);
     }

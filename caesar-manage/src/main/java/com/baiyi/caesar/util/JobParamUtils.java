@@ -48,22 +48,22 @@ public class JobParamUtils {
             jobParamDetail.getParams().put(HOST_PATTERN, deploymentParam.getParamMap().get(HOST_PATTERN));
     }
 
-    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
+    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("podUpdate")) return;
         jobParamDetail.getParams().put("podUpdate", buildParam.getParamMap().get("podUpdate"));
     }
 
-    public static void invokePubGet(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
+    public static void invokePubGet(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("pubGet")) return;
         jobParamDetail.getParams().put("pubGet", buildParam.getParamMap().get("pubGet"));
     }
 
-    public static void invokeBuildType(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
+    public static void invokeBuildType(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("BUILD_TYPE")) return;
         jobParamDetail.getParams().put("BUILD_TYPE", buildParam.getParamMap().get("BUILD_TYPE"));
     }
 
-    public static void invokeProductFlavor(JobParamDetail jobParamDetail, JobBuildParam.BuildQuery buildParam) {
+    public static void invokeProductFlavor(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("PRODUCT_FLAVOR")) return;
         jobParamDetail.getParams().put("PRODUCT_FLAVOR", buildParam.getParamMap().get("PRODUCT_FLAVOR"));
     }

@@ -6,6 +6,7 @@ import com.baiyi.caesar.builder.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
@@ -100,6 +101,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private TagFacade tagFacade;
 
+    @Resource
+    private  GitlabWebhooksConsumer gitlabWebhooksConsumer;
+
     @Override
     public BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
@@ -140,6 +144,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         OcUser ocUser = ocUserService.queryOcUserByUsername(webhooks.getUser_username());
         CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhooks, instances.get(0), ocUser);
         csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
+        gitlabWebhooksConsumer.consumerWebhooks(csGitlabWebhook);
     }
 
     @Override

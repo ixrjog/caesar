@@ -60,7 +60,7 @@ public class JobBuildParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildQuery {
+    public static class BuildParam {
 
         @ApiModelProperty(value = "任务id")
         @NotNull

@@ -9,6 +9,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
  */
 public interface CsGitlabWebhookService {
 
+    CsGitlabWebhook queryOneCsGitlabWebhookByObjectKind(String objectKind);
+
     void addCsGitlabWebhook(CsGitlabWebhook csGitlabWebhook);
 
     void updateCsGitlabWebhook(CsGitlabWebhook csGitlabWebhook);

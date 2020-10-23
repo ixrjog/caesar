@@ -21,6 +21,8 @@ public interface CsGitlabProjectService {
 
     CsGitlabProject queryCsGitlabProjectById(int id);
 
+    CsGitlabProject queryCsGitlabProjectByUniqueKey(int instanceId, int projectId);
+
     void addCsGitlabProject(CsGitlabProject csGitlabProject);
 
     void updateCsGitlabProject(CsGitlabProject csGitlabProject);

@@ -7,6 +7,7 @@ import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
@@ -90,16 +91,29 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     @Override
-    public BusinessWrapper<Boolean> build(CsCiJob csJob, JobBuildParam.BuildQuery buildParam) {
-        CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
-        BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
+    public void build(CsCiJob csCiJob, String username) {
+        CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
+        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
+        build(csCiJob, csApplication, jobParamDetail,username);
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
+        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
+        return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername());
+    }
+
+    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail,String username) {
+
+        BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csCiJob);
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = wrapper.getBody();
-        raiseJobBuildNumber(csJob); // buildNumber +1
-        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csJob, buildParam);
-        GitlabBranch gitlabBranch = acqGitlabBranch(csJob, jobParamDetail.getParams().getOrDefault("branch", ""));
-        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, gitlabBranch);
+        raiseJobBuildNumber(csCiJob); // buildNumber +1
+
+        GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
+        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch,username);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             if (job == null)
@@ -113,8 +127,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             saveCsCiJobBuild(csCiJobBuild);
             BuildJobContext jobBuildContext = BuildJobContext.builder()
-                    .csApplication(queryApplicationById(csJob.getApplicationId()))
-                    .csCiJob(csJob)
+                    .csApplication(queryApplicationById(csCiJob.getApplicationId()))
+                    .csCiJob(csCiJob)
                     .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
@@ -181,13 +195,21 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
      * @param csCiJob
      * @return
      */
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildQuery buildParam) {
+    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
+        jobParamDetail.getParams().put("branch", buildParam.getBranch());
+        jobParamDetail.setVersionName(buildParam.getVersionName());
+        jobParamDetail.setVersionDesc(buildParam.getVersionDesc());
+        return jobParamDetail;
+    }
+
+    private JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
         if (csApplicationScmMember != null)
             params.put("sshUrl", csApplicationScmMember.getScmSshUrl());
-        params.put("branch", buildParam.getBranch());
+        params.put("branch", csCiJob.getBranch());
         params.put("applicationName", csApplication.getApplicationKey());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         params.put("bucketName", csOssBucket.getName());
@@ -199,8 +221,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                 .params(params)
                 .csOssBucket(csOssBucket)
                 .jobName(jobName)
-                .versionName(buildParam.getVersionName())
-                .versionDesc(buildParam.getVersionDesc())
+                .versionName("")
+                .versionDesc("")
                 .build();
     }
 
