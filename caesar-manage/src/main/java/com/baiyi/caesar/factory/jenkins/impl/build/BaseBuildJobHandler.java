@@ -93,6 +93,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Override
     public void build(CsCiJob csCiJob, String username) {
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
+        raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
         build(csCiJob, csApplication, jobParamDetail,username);
     }
@@ -100,6 +101,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
+        raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
         return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername());
     }
@@ -110,7 +112,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = wrapper.getBody();
-        raiseJobBuildNumber(csCiJob); // buildNumber +1
+
 
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch,username);
