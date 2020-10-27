@@ -301,6 +301,7 @@ public class UserFacadeImpl implements UserFacade {
         return new DataTable<>(page.stream().map(e -> userGroupDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
+
     @Override
     public BusinessWrapper<Boolean> grantUserUserGroup(UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission) {
         OcUserPermission ocUserPermission = UserPermissionBuilder.build(userUserGroupPermission);

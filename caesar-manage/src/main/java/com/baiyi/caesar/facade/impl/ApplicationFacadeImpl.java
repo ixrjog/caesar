@@ -14,6 +14,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
+import com.baiyi.caesar.domain.param.user.UserBusinessGroupParam;
 import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
@@ -27,6 +28,7 @@ import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.user.OcUserGroupService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
 import org.gitlab.api.models.GitlabBranchCommit;
 import org.springframework.stereotype.Service;
@@ -89,6 +91,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private OcUserPermissionService ocUserPermissionService;
+
+    @Resource
+    private OcUserGroupService ocUserGroupService;
 
     @Resource
     private UserFacade userFacade;
@@ -351,8 +356,19 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     .roleName("USER")
                     .build();
             userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+            grantUserJenkinsUser(userId);
         }
         return BusinessWrapper.SUCCESS;
+    }
+
+    // UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission
+    private void grantUserJenkinsUser(int userId) {
+        UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission = new UserBusinessGroupParam.UserUserGroupPermission();
+        OcUserGroup ocUserGroup = ocUserGroupService.queryOcUserGroupByName("jenkins-users");
+        if (ocUserGroup == null) return;
+        userUserGroupPermission.setUserId(userId);
+        userUserGroupPermission.setUserGroupId(ocUserGroup.getId());
+        userFacade.grantUserUserGroup(userUserGroupPermission);
     }
 
     @Override
