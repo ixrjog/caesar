@@ -201,12 +201,21 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     @Override
     public DeploymentJobContext acqDeploymentJobContext(CsCdJobBuild csCdJobBuild) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(csCdJobBuild.getCdJobId());
+
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+
+        JobParamDetail jobParamDetail = JobParamDetail.builder()
+                .params(params)
+                .build();
+
         return DeploymentJobContext.builder()
                 .csApplication(queryApplicationById(csCdJob.getApplicationId()))
                 .csCiJob(csCiJobService.queryCsCiJobById(csCdJob.getCiJobId()))
                 .csCdJob(csCdJob)
                 .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
                 .jobEngine(acqJobEngineById(csCdJobBuild.getJobEngineId()))
+                .jobParamDetail(jobParamDetail)
                 .build();
     }
 

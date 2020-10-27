@@ -83,6 +83,16 @@ public class DingtalkTest extends BaseUnit {
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 
+    @Test
+    void testJavaDeploymentNotify() {
+        String jobKey = JobType.JAVA_DEPLOYMENT.getType();
+        IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
+        CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(5);
+        DeploymentJobContext  context = iDeploymentJobHandler.acqDeploymentJobContext(csCdJobBuild);
+        IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
+    }
+
     private String acqNotifyCITpl() {
         return "{ " +
                 "\"msgtype\": \"markdown\", " +

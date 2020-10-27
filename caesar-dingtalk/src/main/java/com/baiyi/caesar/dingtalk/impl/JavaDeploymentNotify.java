@@ -42,10 +42,10 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
         contentMap.put(SERVER_GROUP, context.getJobParamDetail().getParamByKey(SERVER_GROUP));
         contentMap.put(HOST_PATTERN, context.getJobParamDetail().getParamByKey(HOST_PATTERN));
         contentMap.put(SERVERS,  acqBuildServers(context.getJobBuild().getId()));
-        if (noticePhase == NoticePhase.START.getType()) {
-            CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
-            contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
-        } else {
+
+        CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
+        contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
+        if (noticePhase == NoticePhase.END.getType()) {
             contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
         }
         return contentMap;
