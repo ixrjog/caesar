@@ -58,7 +58,8 @@ public class GitlabWebhooksConsumerImpl implements GitlabWebhooksConsumer {
             return;
         }
         String branch = GitlabUtils.getBranch(csGitlabWebhook.getRef());
-        if (StringUtils.isEmpty(branch)) {
+        // master不触发任务
+        if (StringUtils.isEmpty(branch) || branch.equals("master")) {
             consumedWebhooks(csGitlabWebhook);
             return;
         }
