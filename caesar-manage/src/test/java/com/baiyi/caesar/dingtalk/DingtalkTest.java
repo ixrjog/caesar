@@ -93,6 +93,13 @@ public class DingtalkTest extends BaseUnit {
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 
+    @Test
+    void test(){
+        String s = "${condition='通过'} \" \" ' ' + - ";
+        String msg = s.replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
+        System.err.println(msg);
+    }
+
     private String acqNotifyCITpl() {
         return "{ " +
                 "\"msgtype\": \"markdown\", " +

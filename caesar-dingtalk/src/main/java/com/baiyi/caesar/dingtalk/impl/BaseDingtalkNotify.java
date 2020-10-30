@@ -29,11 +29,13 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
@@ -184,7 +186,13 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     }
 
     private List<CsJobBuildChange> acqChanges(int buildType, int buildId) {
-        return csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId);
+        //     log.replaceAll("(\n|\r\n)\\s+", "");
+        List<CsJobBuildChange> changes = csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId);
+        if (CollectionUtils.isEmpty(changes)) return changes;
+        return changes.stream().peek(e -> {
+          String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
+          e.setCommitMsg(msg);
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -210,8 +218,8 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         return users;
     }
 
-    protected List<CsJobBuildServer> acqBuildServers(int buildId){
-       return csJobBuildServerService.queryCsJobBuildServerByBuildId(getBuildType(),buildId);
+    protected List<CsJobBuildServer> acqBuildServers(int buildId) {
+        return csJobBuildServerService.queryCsJobBuildServerByBuildId(getBuildType(), buildId);
     }
 
     /**
