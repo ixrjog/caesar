@@ -15,6 +15,8 @@ public interface CsCdJobBuildService {
 
     DataTable<CsCdJobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
 
+    List<CsCdJobBuild> queryLastCdJobBuild(int cdJobId);
+
     CsCdJobBuild queryCdJobBuildById(int id);
 
     void addCsCdJobBuild(CsCdJobBuild csCdJobBuild);
@@ -23,7 +25,6 @@ public interface CsCdJobBuildService {
 
     void deleteCsCdJobBuildById(int id);
 
-    List<CsCdJobBuild> queryLastCdJobBuild(int cdJobId);
 
     CsCdJobBuild queryCsCdJobBuildByUniqueKey(int cdJobId, int jobBuildNumber);
 

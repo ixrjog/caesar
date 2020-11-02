@@ -29,7 +29,7 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("cdJobId", pageQuery.getCdJobId());
-        example.setOrderByClause("job_build_number desc");
+        example.setOrderByClause(" job_build_number desc");
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         return new DataTable<>(csCdJobBuildMapper.selectByExample(example), page.getTotal());
     }
@@ -38,7 +38,7 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     public List<CsCdJobBuild> queryLastCdJobBuild(int cdJobId) {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("cdJobId)", cdJobId);
+        criteria.andEqualTo("cdJobId", cdJobId);
         example.setOrderByClause(" job_build_number desc");
         PageHelper.startPage(1, 3);
         return csCdJobBuildMapper.selectByExample(example);
