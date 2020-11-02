@@ -34,10 +34,14 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     public String getKey() {
         return JobType.JAVA_DEPLOYMENT.getType();
     }
-
-
+    
     @Resource
     private JobFacade jobFacade;
+
+    @Override
+    protected boolean isLimitConcurrentJob() {
+        return true;
+    }
 
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {

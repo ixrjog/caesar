@@ -11,6 +11,7 @@ import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
@@ -82,8 +83,34 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         return csApplicationService.queryCsApplicationById(applicationId);
     }
 
+    /**
+     * 限制任务并发
+     *
+     * @param csCdJob
+     * @return
+     */
+    protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCdJob csCdJob) {
+        if (isLimitConcurrentJob()) {
+            if( csCdJobBuildService.countCdJobBuildRunning(csCdJob.getId()) == 0){
+                return BusinessWrapper.SUCCESS;
+            }else {
+                return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
+            }
+        } else {
+            return BusinessWrapper.SUCCESS;
+        }
+    }
+
+    protected boolean isLimitConcurrentJob() {
+        return false;
+    }
+
+
     @Override
     public BusinessWrapper<Boolean> deployment(CsCdJob csJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+        BusinessWrapper<Boolean> limitWrapper = tryLimitConcurrentJob(csJob);
+        if (!limitWrapper.isSuccess()) return limitWrapper;
+
         CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
         BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
         if (!wrapper.isSuccess())

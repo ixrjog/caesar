@@ -31,4 +31,10 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
         return jobParamDetail;
     }
 
+    @Override
+    protected boolean isLimitConcurrentJob() {
+        return true;
+    }
+
+
 }

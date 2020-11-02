@@ -23,6 +23,8 @@ public interface CsCdJobBuildService {
 
     void deleteCsCdJobBuildById(int id);
 
+    int countCdJobBuildRunning(int cdJobId);
+
     CsCdJobBuild queryCsCdJobBuildByUniqueKey(int cdJobId, int jobBuildNumber);
 
     List<CsCdJobBuild> queryCsCdJobBuildByLastSize(int size);

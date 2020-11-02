@@ -19,6 +19,8 @@ public interface CsCiJobBuildService {
 
     CsCiJobBuild queryCiJobBuildById(int id);
 
+    int countCiJobBuildRunning(int ciJobId);
+
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);
 
     void updateCsCiJobBuild(CsCiJobBuild csCiJobBuild);

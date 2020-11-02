@@ -12,6 +12,7 @@ import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
@@ -90,24 +91,49 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         return csApplicationService.queryCsApplicationById(applicationId);
     }
 
+    /**
+     * 限制任务并发
+     *
+     * @param csCiJob
+     * @return
+     */
+    protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCiJob csCiJob) {
+        if (isLimitConcurrentJob()) {
+            if (csCiJobBuildService.countCiJobBuildRunning(csCiJob.getId()) == 0) {
+                return BusinessWrapper.SUCCESS;
+            } else {
+                return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
+            }
+        } else {
+            return BusinessWrapper.SUCCESS;
+        }
+    }
+
+    protected boolean isLimitConcurrentJob() {
+        return false;
+    }
+
     @Override
     public void build(CsCiJob csCiJob, String username) {
+        if (!tryLimitConcurrentJob(csCiJob).isSuccess()) return;
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
-        build(csCiJob, csApplication, jobParamDetail,username);
+        build(csCiJob, csApplication, jobParamDetail, username);
     }
 
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        BusinessWrapper<Boolean> wrapper = tryLimitConcurrentJob(csCiJob);
+        if (!wrapper.isSuccess()) return wrapper;
+
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
         return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername());
     }
 
-    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail,String username) {
-
+    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail, String username) {
         BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csCiJob);
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
@@ -115,7 +141,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
 
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
-        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch,username);
+        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             if (job == null)
