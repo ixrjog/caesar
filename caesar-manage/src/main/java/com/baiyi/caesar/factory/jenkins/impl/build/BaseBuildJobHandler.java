@@ -99,7 +99,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
      */
     protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCiJob csCiJob) {
         if (isLimitConcurrentJob()) {
-            if (csCiJobBuildService.countCiJobBuildRunning(csCiJob.getId()) == 0) {
+            if (csCiJobBuildService.queryLastCiJobBuild(csCiJob.getId()).stream().allMatch(CsCiJobBuild::getFinalized)) {
                 return BusinessWrapper.SUCCESS;
             } else {
                 return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);

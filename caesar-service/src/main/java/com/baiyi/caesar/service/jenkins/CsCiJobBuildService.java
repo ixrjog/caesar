@@ -19,7 +19,7 @@ public interface CsCiJobBuildService {
 
     CsCiJobBuild queryCiJobBuildById(int id);
 
-    int countCiJobBuildRunning(int ciJobId);
+    List<CsCiJobBuild> queryLastCiJobBuild(int ciJobId);
 
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);
 

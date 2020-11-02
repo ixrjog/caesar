@@ -34,7 +34,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     public String getKey() {
         return JobType.JAVA_DEPLOYMENT.getType();
     }
-    
+
     @Resource
     private JobFacade jobFacade;
 

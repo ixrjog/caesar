@@ -41,14 +41,13 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
-    public int countCiJobBuildRunning(int ciJobId) {
+    public List<CsCiJobBuild> queryLastCiJobBuild(int ciJobId) {
         Example example = new Example(CsCiJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("ciJobId", ciJobId);
-        criteria.andNotEqualTo("finalized",false);
         example.setOrderByClause(" job_build_number desc");
         PageHelper.startPage(1, 3);
-        return csCiJobBuildMapper.selectCountByExample(example);
+        return csCiJobBuildMapper.selectByExample(example);
     }
 
     @Override

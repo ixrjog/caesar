@@ -91,7 +91,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
      */
     protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCdJob csCdJob) {
         if (isLimitConcurrentJob()) {
-            if( csCdJobBuildService.countCdJobBuildRunning(csCdJob.getId()) == 0){
+            if (csCdJobBuildService.queryLastCdJobBuild(csCdJob.getId()).stream().allMatch(CsCdJobBuild::getFinalized)) {
                 return BusinessWrapper.SUCCESS;
             }else {
                 return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);

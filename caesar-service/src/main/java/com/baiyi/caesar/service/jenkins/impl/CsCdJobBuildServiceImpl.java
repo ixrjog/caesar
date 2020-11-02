@@ -2,7 +2,6 @@ package com.baiyi.caesar.service.jenkins.impl;
 
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.mapper.caesar.CsCdJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
@@ -36,14 +35,13 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     }
 
     @Override
-    public int countCdJobBuildRunning(int cdJobId) {
+    public List<CsCdJobBuild> queryLastCdJobBuild(int cdJobId) {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("cdJobId)", cdJobId);
-        criteria.andNotEqualTo("finalized", false);
         example.setOrderByClause(" job_build_number desc");
         PageHelper.startPage(1, 3);
-        return csCdJobBuildMapper.selectCountByExample(example);
+        return csCdJobBuildMapper.selectByExample(example);
     }
 
     @Override
