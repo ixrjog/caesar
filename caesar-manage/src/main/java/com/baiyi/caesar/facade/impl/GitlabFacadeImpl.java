@@ -15,6 +15,7 @@ import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
+import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
@@ -26,6 +27,7 @@ import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
+import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
@@ -106,10 +108,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private GitlabWebhooksConsumer gitlabWebhooksConsumer;
 
     @Resource
-    private ApplicationFacade applicationFacade;
+    private CsApplicationScmMemberService csApplicationScmMemberService;
 
-    @Override
-    public BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
+    @Resource
+    private  ApplicationFacade  applicationFacade;
+
+    private BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
         try {
@@ -281,7 +285,22 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    public BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag) {
+    public BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery) {
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberBranchQuery.getScmMemberId());
+        if (csApplicationScmMember == null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
+        return queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag());
+    }
+
+    @Override
+    public BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(query.getScmMemberId());
+        if (csApplicationScmMember == null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
+        return queryGitlabProjectBranchCommit(csApplicationScmMember.getScmId(), query.getBranch());
+    }
+
+    private BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
         List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
@@ -294,7 +313,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
         repository.setOptions(options);
         return new BusinessWrapper<>(repository);
-
     }
 
 }

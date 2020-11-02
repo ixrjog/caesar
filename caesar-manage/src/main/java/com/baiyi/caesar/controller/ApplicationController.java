@@ -10,6 +10,7 @@ import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.gitlab.api.models.GitlabBranchCommit;
@@ -32,6 +33,9 @@ public class ApplicationController {
 
     @Resource
     private ApplicationFacade applicationFacade;
+
+    @Resource
+    private GitlabFacade gitlabFacade;
 
     @ApiOperation(value = "分页查询应用配置")
     @PostMapping(value = "/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,13 +82,13 @@ public class ApplicationController {
     @ApiOperation(value = "查询应用SCM分支详情")
     @PostMapping(value = "/scm/member/branch/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.ScmMemberBranchQuery query) {
-        return new HttpResult<>(applicationFacade.queryApplicationSCMMemberBranch(query));
+        return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranch(query));
     }
 
     @ApiOperation(value = "查询应用SCM分支commit详情")
     @PostMapping(value = "/scm/member/branch/commit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(@RequestBody @Valid ApplicationParam.ScmMemberBranchCommitQuery query) {
-        return new HttpResult<>(applicationFacade.queryApplicationSCMMemberBranchCommit(query));
+        return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranchCommit(query));
     }
 
     @ApiOperation(value = "新增应用SCM配置")

@@ -8,9 +8,7 @@ import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.vo.application.*;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
-import org.gitlab.api.models.GitlabBranchCommit;
 
 import java.util.List;
 
@@ -67,10 +65,6 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob);
 
     BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob);
-
-    BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery query);
-
-    BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
 
     List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId);
 
