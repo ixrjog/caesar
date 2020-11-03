@@ -76,9 +76,6 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private CdJobDecorator cdJobDecorator;
 
     @Resource
-    private GitlabFacade gitlabFacade2;
-
-    @Resource
     private ApplicationEngineDecorator applicationEngineDecorator;
 
     @Resource
