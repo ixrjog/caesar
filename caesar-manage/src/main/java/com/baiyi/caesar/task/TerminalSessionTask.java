@@ -29,6 +29,7 @@ public class TerminalSessionTask extends BaseTask {
      */
     @Scheduled(initialDelay = 5000, fixedRate = 60 * 1000)
     public void closeInvalidSessionTask() {
+        sleep(10);
         if (!isHealth()) return;
         if (tryLock()) return;
         terminalFacade.closeInvalidSessionTask();

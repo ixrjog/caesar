@@ -29,6 +29,7 @@ public class JobBuildTask extends BaseTask {
      */
     @Scheduled(initialDelay = 5000, fixedRate = 60 * 1000)
     public void trackJobBuildTask() {
+        sleep(10);
         if(!isHealth()) return;
         if (tryLock()) return;
         jobFacade.trackJobBuildTask();
