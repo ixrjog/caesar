@@ -24,6 +24,7 @@ import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.factory.attribute.impl.AttributeAnsible;
 import com.baiyi.caesar.opscloud.OpscloudServer;
 import com.baiyi.caesar.server.facade.ServerAttributeFacade;
+import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
 import com.baiyi.caesar.service.server.OcServerGroupPropertyService;
 import com.baiyi.caesar.service.server.OcServerGroupService;
 import com.baiyi.caesar.service.server.OcServerGroupTypeService;
@@ -91,6 +92,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Resource
     private OpscloudServer opscloudServer;
+
+    @Resource
+    private CsJobBuildServerService csJobBuildServerService;
 
     public static final boolean ACTION_ADD = true;
     public static final boolean ACTION_UPDATE = false;
@@ -381,7 +385,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
             hostPatternMap.forEach((k, v) -> {
                 ServerGroupHostPatternVO.HostPattern hostPattern = ServerGroupHostPatternVO.HostPattern.builder()
                         .hostPattern(k)
-                        .servers(v)
+                        .servers(convert(v))
                         .build();
                 hostPatterns.add(hostPattern);
             });
@@ -391,5 +395,17 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
         }
     }
 
+    private List<ServerVO.Server> convert(List<OcServer> ocServers) {
+        List<ServerVO.Server> servers = BeanCopierUtils.copyListProperties(ocServers, ServerVO.Server.class);
+        return servers.stream().map(s -> {
+            CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
+            if(csJobBuildServer != null){
+
+                ServerVO.DeployVersion deployVersion = BeanCopierUtils.copyProperties(csJobBuildServer,ServerVO.DeployVersion.class);
+                s.setDeployVersion(deployVersion);
+            }
+            return s;
+        }).collect(Collectors.toList());
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.baiyi.caesar.domain.vo.server;
 
-import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +18,6 @@ public class ServerGroupHostPatternVO {
     @ApiModel
     public static class HostPattern {
         private String hostPattern;
-        private List<OcServer> servers;
+        private List<ServerVO.Server> servers;
     }
 }

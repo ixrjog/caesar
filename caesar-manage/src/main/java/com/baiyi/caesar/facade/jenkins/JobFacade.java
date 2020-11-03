@@ -173,7 +173,7 @@ public class JobFacade {
         String serverGroupName = paramMap.get("serverGroup");
         List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups = applicationFacade.queryApplicationServerGroupByApplicationId(csCdJob.getApplicationId());
         // 鉴权（必须在应用中指定服务器组配置）
-        if (!serverGroups.stream().anyMatch(e -> e.getServerGroupName().equals(serverGroupName)))
+        if (serverGroups.stream().noneMatch(e -> e.getServerGroupName().equals(serverGroupName)))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
         return serverGroupFacade.queryServerGroupHostPattern(serverGroupName);
     }

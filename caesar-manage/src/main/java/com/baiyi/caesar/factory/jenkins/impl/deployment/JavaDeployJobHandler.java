@@ -4,9 +4,12 @@ import com.baiyi.caesar.builder.jenkins.JobBuildServerBuilder;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.domain.BusinessWrapper;
-import com.baiyi.caesar.domain.generator.caesar.*;
+import com.baiyi.caesar.domain.generator.caesar.CsApplication;
+import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
+import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
+import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
@@ -65,7 +68,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
         String hostPattern = jobParamDetail.getParams().get(HOST_PATTERN);
         wrapper.getBody().forEach(e -> {
             if (e.getHostPattern().equals(hostPattern)) {
-                List<OcServer> servers = e.getServers();
+                List<ServerVO.Server> servers = e.getServers();
                 servers.forEach(s ->
                         csJobBuildServerService.addCsJobBuildServer(JobBuildServerBuilder.build(context, hostPattern, s))
                 );

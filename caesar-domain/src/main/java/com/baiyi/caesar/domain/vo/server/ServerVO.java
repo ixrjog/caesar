@@ -77,6 +77,8 @@ public class ServerVO {
         @ApiModelProperty(value = "云主机id,云主机录入专用")
         private Integer cloudServerId;
 
+        private DeployVersion deployVersion;
+
         @ApiModelProperty(value = "创建时间")
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
         private Date createTime;
@@ -86,4 +88,25 @@ public class ServerVO {
         private Date updateTime;
 
     }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class DeployVersion {
+
+        @ApiModelProperty(value = "版本名称")
+        private String versionName;
+
+        private Integer buildId;
+
+        private Integer jobId;
+
+        private String privateIp;
+
+        @ApiModelProperty(value = "创建时间")
+        @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+        private Date createTime;
+
+    }
+
 }

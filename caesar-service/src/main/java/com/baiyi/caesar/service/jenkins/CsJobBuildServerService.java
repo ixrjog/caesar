@@ -13,6 +13,8 @@ public interface CsJobBuildServerService {
 
     List<CsJobBuildServer> queryCsJobBuildServerByBuildId(int buildType, int buildId);
 
+    CsJobBuildServer queryCsJobBuildServerByServerId(int serverId);
+
     void addCsJobBuildServer(CsJobBuildServer csJobBuildServer);
 
     void deleteCsJobBuildServerById(int id);

@@ -1,9 +1,9 @@
 package com.baiyi.caesar.service.jenkins.impl;
 
-import com.baiyi.caesar.domain.generator.caesar.CsJobBuildExecutor;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
 import com.baiyi.caesar.mapper.caesar.CsJobBuildServerMapper;
 import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -22,7 +22,7 @@ public class CsJobBuildServerServiceImpl implements CsJobBuildServerService {
     private CsJobBuildServerMapper csJobBuildServerMapper;
 
     @Override
-    public List<CsJobBuildServer> queryCsJobBuildServerByBuildId(int buildType,int buildId) {
+    public List<CsJobBuildServer> queryCsJobBuildServerByBuildId(int buildType, int buildId) {
         Example example = new Example(CsJobBuildServer.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildType", buildType);
@@ -30,14 +30,23 @@ public class CsJobBuildServerServiceImpl implements CsJobBuildServerService {
         return csJobBuildServerMapper.selectByExample(example);
     }
 
+    @Override
+    public CsJobBuildServer queryCsJobBuildServerByServerId(int serverId) {
+        Example example = new Example(CsJobBuildServer.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("serverId", serverId);
+        example.setOrderByClause(" id desc");
+        PageHelper.startPage(1, 1);
+        return csJobBuildServerMapper.selectOneByExample(example);
+    }
 
     @Override
-    public void addCsJobBuildServer(CsJobBuildServer csJobBuildServer){
+    public void addCsJobBuildServer(CsJobBuildServer csJobBuildServer) {
         csJobBuildServerMapper.insert(csJobBuildServer);
     }
 
     @Override
-    public void deleteCsJobBuildServerById(int id){
+    public void deleteCsJobBuildServerById(int id) {
         csJobBuildServerMapper.deleteByPrimaryKey(id);
     }
 

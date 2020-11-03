@@ -4,7 +4,7 @@ import com.baiyi.caesar.bo.jenkins.JobBuildServerBO;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
-import com.baiyi.caesar.domain.generator.caesar.OcServer;
+import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 
 /**
@@ -14,7 +14,7 @@ import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
  */
 public class JobBuildServerBuilder {
 
-    public static CsJobBuildServer build(DeploymentJobContext context, String hostPattern, OcServer server) {
+    public static CsJobBuildServer build(DeploymentJobContext context, String hostPattern, ServerVO.Server server) {
         JobBuildServerBO bo = JobBuildServerBO.builder()
                 .buildType(BuildType.DEPLOYMENT.getType())
                 .buildId(context.getJobBuild().getId())
