@@ -75,7 +75,7 @@ public class CiJobDecorator {
     private CsJobEngineService csJobEngineService;
 
     @Resource
-    private JobEngineDecorator ciJobEngineDecorator;
+    private JobEngineDecorator jobEngineDecorator;
 
     @Resource
     private  CdJobDecorator cdJobDecorator;
@@ -90,7 +90,7 @@ public class CiJobDecorator {
                         jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
                         if (jobEngine.getNeedUpgrade())
                             needUpgrade.set(true);
-                        return ciJobEngineDecorator.decorator(jobEngine);
+                        return jobEngineDecorator.decorator(jobEngine);
                     }).collect(Collectors.toList())
             );
         }

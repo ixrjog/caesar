@@ -1,5 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
@@ -9,18 +10,22 @@ import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +50,31 @@ public class CdJobDecorator {
 
     @Resource
     private JobDeploymentDecorator jobDeploymentDecorator;
+
+    @Resource
+    private CsJobEngineService csJobEngineService;
+
+    @Resource
+    private JobEngineDecorator jobEngineDecorator;
+
+    public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob, CsJobTpl csJobTpl) {
+        List<CsJobEngine> csCdJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), cdJob.getId());
+        AtomicReference<Boolean> needUpgrade = new AtomicReference<>(false);
+        if (!CollectionUtils.isEmpty(csCdJobEngines)) {
+            cdJob.setJobEngines(
+                    csCdJobEngines.stream().map(e -> {
+                        JobEngineVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, JobEngineVO.JobEngine.class);
+                        jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
+                        if (jobEngine.getNeedUpgrade())
+                            needUpgrade.set(true);
+                        return jobEngineDecorator.decorator(jobEngine);
+                    }).collect(Collectors.toList())
+            );
+        }
+        cdJob.setNeedUpgrade(needUpgrade.get());
+        return cdJob;
+    }
+
 
     public CdJobVO.CdJob decorator(CsCdJob csCdJob) {
         return decorator(BeanCopierUtils.copyProperties(csCdJob, CdJobVO.CdJob.class));

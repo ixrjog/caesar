@@ -2,9 +2,11 @@ package com.baiyi.caesar.controller;
 
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
 import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
@@ -110,15 +112,27 @@ public class JenkinsController {
     }
 
     @ApiOperation(value = "分页查询持续集成任务模版配置")
-    @PostMapping(value = "/tpl/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/tpl/ci/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<CiJobVO.CiJob>> queryCiJobTplPage(@RequestBody @Valid CiJobParam.CiJobTplPageQuery pageQuery) {
         return new HttpResult<>(jenkinsFacade.queryCiJobTplPage(pageQuery));
     }
 
+    @ApiOperation(value = "分页查询持续集成任务模版配置")
+    @PostMapping(value = "/tpl/cd/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<CdJobVO.CdJob>> queryCdJobTplPage(@RequestBody @Valid CdJobParam.CdJobTplPageQuery pageQuery) {
+        return new HttpResult<>(jenkinsFacade.queryCdJobTplPage(pageQuery));
+    }
+
     @ApiOperation(value = "更新任务模版")
-    @GetMapping(value = "/tpl/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/tpl/ci/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> upgradeCiJobTplByJobId(@Valid int jobId) {
         return new HttpResult<>(jenkinsFacade.upgradeCiJobTplByJobId(jobId));
+    }
+
+    @ApiOperation(value = "更新任务模版")
+    @GetMapping(value = "/tpl/cd/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> upgradeCdJobTplByJobId(@Valid int jobId) {
+        return new HttpResult<>(jenkinsFacade.upgradeCdJobTplByJobId(jobId));
     }
 
     @ApiOperation(value = "查询引擎工作状态")

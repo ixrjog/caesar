@@ -33,4 +33,11 @@ public class CdJobParam {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class CdJobTplPageQuery extends CiJobParam.CiJobTplPageQuery {
+
+    }
+
 }

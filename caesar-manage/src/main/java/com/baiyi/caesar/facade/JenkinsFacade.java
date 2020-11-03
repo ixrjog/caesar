@@ -2,9 +2,11 @@ package com.baiyi.caesar.facade;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
 import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
@@ -45,5 +47,8 @@ public interface JenkinsFacade {
 
     DataTable<CiJobVO.CiJob> queryCiJobTplPage(CiJobParam.CiJobTplPageQuery pageQuery);
 
+    DataTable<CdJobVO.CdJob> queryCdJobTplPage(CdJobParam.CdJobTplPageQuery pageQuery);
+
     BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId);
+    BusinessWrapper<Boolean> upgradeCdJobTplByJobId(int jobId);
 }

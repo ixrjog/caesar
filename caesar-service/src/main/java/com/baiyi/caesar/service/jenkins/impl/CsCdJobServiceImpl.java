@@ -2,7 +2,6 @@ package com.baiyi.caesar.service.jenkins.impl;
 
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.mapper.caesar.CsCdJobMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
@@ -26,9 +25,20 @@ public class CsCdJobServiceImpl implements CsCdJobService {
     private CsCdJobMapper csCdJobMapper;
 
     @Override
-    public  DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobPageQuery pageQuery){
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+    public DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobPageQuery pageQuery) {
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsCdJob> list = csCdJobMapper.queryCsCdJobByParam(pageQuery);
+        return new DataTable<>(list, page.getTotal());
+    }
+
+    @Override
+    public DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobTplPageQuery pageQuery) {
+        Example example = new Example(CsCdJob.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("jobTplId", pageQuery.getJobTplId());
+        criteria.andLike("name", "%" + pageQuery.getQueryName() + "%").orLike("comment", "%" + pageQuery.getQueryName() + "%");
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
+        List<CsCdJob> list = csCdJobMapper.selectByExample(example);
         return new DataTable<>(list, page.getTotal());
     }
 

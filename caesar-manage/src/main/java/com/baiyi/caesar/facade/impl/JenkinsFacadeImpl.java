@@ -3,19 +3,19 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.HashUtils;
+import com.baiyi.caesar.decorator.application.CdJobDecorator;
 import com.baiyi.caesar.decorator.application.CiJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JenkinsInstanceDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
-import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
-import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
+import com.baiyi.caesar.domain.generator.caesar.*;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
 import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
+import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
@@ -24,10 +24,7 @@ import com.baiyi.caesar.facade.JenkinsFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
-import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
-import com.baiyi.caesar.service.jenkins.CsJobEngineService;
-import com.baiyi.caesar.service.jenkins.CsJobTplService;
+import com.baiyi.caesar.service.jenkins.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Service;
@@ -78,6 +75,12 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
+
+    @Resource
+    private CsCdJobService csCdJobService;
+
+    @Resource
+    private CdJobDecorator cdJobDecorator;
 
     @Override
     public DataTable<JenkinsInstanceVO.Instance> queryJenkinsInstancePage(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery) {
@@ -198,29 +201,49 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     }
 
     @Override
+    public DataTable<CdJobVO.CdJob> queryCdJobTplPage(CdJobParam.CdJobTplPageQuery pageQuery) {
+        DataTable<CsCdJob> table = csCdJobService.queryCsCdJobByParam(pageQuery);
+        List<CdJobVO.CdJob> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobVO.CdJob.class);
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(pageQuery.getJobTplId());
+        return new DataTable<>(page.stream().map(e -> cdJobDecorator.decorator(e, csJobTpl)).collect(Collectors.toList()), table.getTotalNum());
+    }
+
+    @Override
     public BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobId);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
         List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(), jobId);
-        if (!CollectionUtils.isEmpty(csJobEngines))
-            csJobEngines.forEach(e -> {
-                if (csJobTpl.getTplVersion() > e.getTplVersion()) {
-                    try {
-                        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(e.getJenkinsInstanceId());
-                        if (jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())) {
-                            jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
-                        } else {
-                            jenkinsServerHandler.createJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
-                        }
-                        e.setTplVersion(csJobTpl.getTplVersion());
-                        e.setTplHash(csJobTpl.getTplHash());
-                        csJobEngineService.updateCsJobEngine(e);
-                    } catch (IOException ignored) {
-                    }
-                }
-            });
+        upgradeJobTpl(csJobTpl, csJobEngines);
         return BusinessWrapper.SUCCESS;
     }
 
+    @Override
+    public BusinessWrapper<Boolean> upgradeCdJobTplByJobId(int jobId) {
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById(jobId);
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCdJob.getJobTplId());
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), jobId);
+        upgradeJobTpl(csJobTpl, csJobEngines);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private void upgradeJobTpl(CsJobTpl csJobTpl, List<CsJobEngine> csJobEngines) {
+        if (CollectionUtils.isEmpty(csJobEngines)) return;
+        csJobEngines.forEach(e -> {
+            if (csJobTpl.getTplVersion() > e.getTplVersion()) {
+                try {
+                    CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(e.getJenkinsInstanceId());
+                    if (jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())) {
+                        jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
+                    } else {
+                        jenkinsServerHandler.createJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
+                    }
+                    e.setTplVersion(csJobTpl.getTplVersion());
+                    e.setTplHash(csJobTpl.getTplHash());
+                    csJobEngineService.updateCsJobEngine(e);
+                } catch (IOException ignored) {
+                }
+            }
+        });
+    }
 
 }
