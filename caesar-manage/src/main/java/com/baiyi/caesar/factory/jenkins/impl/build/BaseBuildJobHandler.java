@@ -18,6 +18,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
@@ -87,6 +88,9 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
 
+    @Resource
+    private EnvFacade envFacade;
+
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
@@ -138,8 +142,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         if (!wrapper.isSuccess())
             return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = wrapper.getBody();
-
-
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username);
         try {
@@ -241,7 +243,11 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         params.put("applicationName", csApplication.getApplicationKey());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         params.put("bucketName", csOssBucket.getName());
-
+        try {
+            params.put("env", envFacade.queryEnvNameByType(csCiJob.getEnvType()));
+        }catch (Exception e){
+            log.error("任务环境未配置！jobName={}",csCiJob.getName());
+        }
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
 
         return JobParamDetail.builder()

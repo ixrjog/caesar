@@ -80,4 +80,13 @@ public class EnvFacadeImpl implements EnvFacade {
             return new BusinessWrapper<>(ErrorEnum.ENV_HAS_USED);
         }
     }
+
+    @Override
+    public String queryEnvNameByType(Integer envType) {
+        if (envType == null)
+            envType = 0;
+        OcEnv ocEnv = ocEnvService.queryOcEnvByType(envType);
+        if (ocEnv != null) return ocEnv.getEnvName();
+        return ocEnvService.queryOcEnvByType(0).getEnvName();
+    }
 }

@@ -16,6 +16,7 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
+import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
@@ -79,6 +80,9 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     @Resource
     public CsJobBuildServerService csJobBuildServerService;
 
+    @Resource
+    public EnvFacade envFacade;
+
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
@@ -93,7 +97,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         if (isLimitConcurrentJob()) {
             if (csCdJobBuildService.queryLastCdJobBuild(csCdJob.getId()).stream().allMatch(CsCdJobBuild::getFinalized)) {
                 return BusinessWrapper.SUCCESS;
-            }else {
+            } else {
                 return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
             }
         } else {
@@ -187,6 +191,11 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
         if (!CollectionUtils.isEmpty(artifacts))
             params.put("ossPath", artifacts.get(0).getStoragePath());
+        try {
+            params.put("env", envFacade.queryEnvNameByType(csCdJob.getEnvType()));
+        } catch (Exception e) {
+            log.error("任务环境未配置！jobName={}", csCiJob.getName());
+        }
 
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(deploymentParam.getCiBuildId());
 
