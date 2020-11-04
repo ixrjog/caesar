@@ -27,6 +27,7 @@ import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
+import com.baiyi.caesar.jenkins.handler.JenkinsJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.JobWithDetails;
@@ -75,6 +76,9 @@ public class JobFacade {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
+
+    @Resource
+    private JenkinsJobHandler jenkinsJobHandler;
 
     @Resource
     private ServerGroupFacade serverGroupFacade;
@@ -183,19 +187,38 @@ public class JobFacade {
     }
 
     /**
-     *  校正构建Job引擎
+     * 校正构建Job引擎
+     *
      * @param buildType
      * @param jobId
      * @return
      */
-    public BusinessWrapper<Boolean> correctionBuildJobEngine(int buildType, int jobId) {
+    public BusinessWrapper<Boolean> correctionJobEngine(int buildType, int jobId) {
         List<CsJobEngine> csJobEngines = jobEngineHandler.queryJobEngine(buildType, jobId);
         if (!CollectionUtils.isEmpty(csJobEngines))
-            csJobEngines.forEach(e -> {
-
-
-            });
+            for (CsJobEngine csJobEngine : csJobEngines) {
+                CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+                if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
+                    try {
+                        JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
+                        if (job.getLastBuild() == null) {
+                            saveCsJobEngine(csJobEngine, 0);
+                        } else {
+                            saveCsJobEngine(csJobEngine, job.getLastBuild().getNumber());
+                        }
+                    } catch (Exception ex) {
+                        return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
+                    }
+                }
+            }
         return BusinessWrapper.SUCCESS;
+    }
+
+    private void saveCsJobEngine(CsJobEngine csJobEngine, int lastBuildNumber) {
+        if (csJobEngine.getLastBuildNumber() == lastBuildNumber && csJobEngine.getNextBuildNumber() == lastBuildNumber + 1) {
+            csJobEngine.setLastBuildNumber(lastBuildNumber);
+            csJobEngine.setNextBuildNumber(lastBuildNumber + 1);
+        }
     }
 
     public void trackJobBuildTask() {

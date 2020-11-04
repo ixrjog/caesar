@@ -194,7 +194,9 @@ public enum ErrorEnum {
     APPLICATION_KEY_NON_COMPLIANCE_WITH_RULES(13002, "应用名不合规！"),
     APPLICATION_SERVERGROUP_ALREADY_EXIST(12001, "应用服务器组配置已存在！"),
     APPLICATION_SERVERGROUP_NON_COMPLIANCE(12001, "应用中未指定此服务器组配置！"),
-    JENKINS_LIMIT_CONCURRENT_JOB(12001, "不允许并发执行任务，请等待任务执行完毕！")
+    JENKINS_LIMIT_CONCURRENT_JOB(12001, "不允许并发执行任务，请等待任务执行完毕！"),
+    JENKINS_CORRECTION_JOB_ENGINE(12001,"校正任务引擎错误！")
+
     ;
 
     private int code;

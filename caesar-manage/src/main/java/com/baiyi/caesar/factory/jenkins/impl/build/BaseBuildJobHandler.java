@@ -19,6 +19,7 @@ import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
+import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
@@ -91,6 +92,9 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private EnvFacade envFacade;
 
+    @Resource
+    private JobFacade jobFacade;
+
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
@@ -138,10 +142,15 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail, String username) {
-        BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csCiJob);
-        if (!wrapper.isSuccess())
-            return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
-        JobEngineVO.JobEngine jobEngine = wrapper.getBody();
+        BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csCiJob);
+        if (!jobEngineWrapper.isSuccess())
+            return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
+        // 校正引擎
+        BusinessWrapper<Boolean> correctionJobEngineWrapper = jobFacade.correctionJobEngine(BuildType.BUILD.getType(), csCiJob.getId());
+        if (!correctionJobEngineWrapper.isSuccess())
+            return correctionJobEngineWrapper;
+
+        JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username);
         try {
@@ -245,8 +254,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         params.put("bucketName", csOssBucket.getName());
         try {
             params.put("env", envFacade.queryEnvNameByType(csCiJob.getEnvType()));
-        }catch (Exception e){
-            log.error("任务环境未配置！jobName={}",csCiJob.getName());
+        } catch (Exception e) {
+            log.error("任务环境未配置！jobName={}", csCiJob.getName());
         }
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
 

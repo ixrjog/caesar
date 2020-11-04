@@ -17,6 +17,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.facade.EnvFacade;
+import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
@@ -81,6 +82,9 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     public CsJobBuildServerService csJobBuildServerService;
 
     @Resource
+    public JobFacade jobFacade;
+
+    @Resource
     public EnvFacade envFacade;
 
     protected CsApplication queryApplicationById(int applicationId) {
@@ -116,10 +120,15 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         if (!limitWrapper.isSuccess()) return limitWrapper;
 
         CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
-        BusinessWrapper<JobEngineVO.JobEngine> wrapper = acqJobEngine(csJob);
-        if (!wrapper.isSuccess())
-            return new BusinessWrapper<>(wrapper.getCode(), wrapper.getDesc());
-        JobEngineVO.JobEngine jobEngine = wrapper.getBody();
+        BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csJob);
+        if (!jobEngineWrapper.isSuccess())
+            return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
+        // 校正引擎
+        BusinessWrapper<Boolean> correctionJobEngineWrapper = jobFacade.correctionJobEngine(BuildType.BUILD.getType(), csJob.getId());
+        if (!correctionJobEngineWrapper.isSuccess())
+            return correctionJobEngineWrapper;
+
+        JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         raiseJobBuildNumber(csJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
 

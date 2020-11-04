@@ -1,5 +1,6 @@
 package com.baiyi.caesar.controller;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
@@ -89,4 +90,17 @@ public class JobController {
     public HttpResult<String> viewJobBuildOutput(@RequestBody @Valid JobBuildParam.ViewJobBuildOutputQuery query) {
         return new HttpResult<>(jobFacade.viewJobBuildOutput(query));
     }
+
+    @ApiOperation(value = "校正任务构建引擎")
+    @GetMapping(value = "/ci/engine/correction", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> correctionJobBuildEngineByJobId(@Valid int ciJobId) {
+        return new HttpResult<>(jobFacade.correctionJobEngine(BuildType.BUILD.getType(),ciJobId));
+    }
+
+    @ApiOperation(value = "校正任务部署引擎")
+    @GetMapping(value = "/cd/engine/correction", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> correctionJobDeployEngineByJobId(@Valid int cdJobId) {
+        return new HttpResult<>(jobFacade.correctionJobEngine(BuildType.BUILD.getType(),cdJobId));
+    }
+
 }
