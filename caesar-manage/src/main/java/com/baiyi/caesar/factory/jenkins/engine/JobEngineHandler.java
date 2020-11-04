@@ -3,9 +3,12 @@ package com.baiyi.caesar.factory.jenkins.engine;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
+
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -28,6 +31,8 @@ public interface JobEngineHandler {
     JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
 
     boolean tryJenkinsInstanceActive(int jenkinsInstanceId);
+
+    List<CsJobEngine> queryJobEngine(int buildType, int jobId);
 
     void trackJobBuild(BuildJobContext context);
 

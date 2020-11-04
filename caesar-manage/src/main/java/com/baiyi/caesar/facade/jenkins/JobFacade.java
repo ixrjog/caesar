@@ -26,6 +26,7 @@ import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.JobWithDetails;
@@ -87,6 +88,9 @@ public class JobFacade {
     @Resource
     private RedisUtil redisUtil;
 
+    @Resource
+    private JobEngineHandler jobEngineHandler;
+
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
@@ -103,7 +107,7 @@ public class JobFacade {
             if (!applicationFacade.isApplicationAdmin(csCiJobBuild.getApplicationId(), operationUser.getId()))
                 return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         }
-        redisUtil.set(RedisKeyUtils.getJobBuildAbortKey(ciBuildId),operationUser.getUsername(),600);
+        redisUtil.set(RedisKeyUtils.getJobBuildAbortKey(ciBuildId), operationUser.getUsername(), 600);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -178,6 +182,21 @@ public class JobFacade {
         return serverGroupFacade.queryServerGroupHostPattern(serverGroupName);
     }
 
+    /**
+     *  校正构建Job引擎
+     * @param buildType
+     * @param jobId
+     * @return
+     */
+    public BusinessWrapper<Boolean> correctionBuildJobEngine(int buildType, int jobId) {
+        List<CsJobEngine> csJobEngines = jobEngineHandler.queryJobEngine(buildType, jobId);
+        if (!CollectionUtils.isEmpty(csJobEngines))
+            csJobEngines.forEach(e -> {
+
+
+            });
+        return BusinessWrapper.SUCCESS;
+    }
 
     public void trackJobBuildTask() {
         List<CsCiJobBuild> csCiJobBuilds = csCiJobBuildService.queryCsCiJobBuildByFinalized(false);

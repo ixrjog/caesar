@@ -154,11 +154,12 @@ public class JobEngineHandlerImpl implements JobEngineHandler {
         return jenkinsServerHandler.isActive(csJenkinsInstance.getName());
     }
 
-    private List<CsJobEngine> queryJobEngine(int buildType, int ciJobId) {
-        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(buildType, ciJobId);
+    @Override
+    public List<CsJobEngine> queryJobEngine(int buildType, int jobId) {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(buildType, jobId);
         if (CollectionUtils.isEmpty(csJobEngines))
-            jenkinsCiJobFacade.createJobEngine(buildType, ciJobId);
-        return csJobEngineService.queryCsJobEngineByJobId(buildType, ciJobId);
+            jenkinsCiJobFacade.createJobEngine(buildType, jobId);
+        return csJobEngineService.queryCsJobEngineByJobId(buildType, jobId);
     }
 
     @Override

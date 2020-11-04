@@ -74,7 +74,6 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
                 );
             }
         });
-
-
     }
+
 }

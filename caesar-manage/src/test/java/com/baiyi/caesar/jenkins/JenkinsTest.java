@@ -33,7 +33,7 @@ public class JenkinsTest extends BaseUnit {
     private JenkinsTplFacade jenkinsTplFacade;
 
     @Resource
-    private JenkinsJobFacade jenkinsCiJobFacade;
+    private JenkinsJobFacade jenkinsJobFacade;
 
     @Test
     void versionTest() {
@@ -57,6 +57,29 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void jobTest() {
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "CAESAR_caesar-server-prod");
+        System.err.println(job);
+        job.getBuildByNumber(9);
+
+        Build build = job.getLastBuild();
+        try {
+            BuildWithDetails buildWithDetails = build.details();
+            String consoleOutputHtml = buildWithDetails.getConsoleOutputHtml();
+
+            //  System.err.println(consoleOutputHtml);
+            System.err.println(buildWithDetails.getConsoleOutputText());
+            List<BuildCause> list = buildWithDetails.getCauses();
+            String builtOn = buildWithDetails.getBuiltOn();
+            System.err.println(builtOn);
+            System.err.println(list);
+            System.err.println(buildWithDetails);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testJob2() {
         JobWithDetails job = jenkinsServerHandler.getJob("master-1", "CAESAR_caesar-server-prod");
         System.err.println(job);
         job.getBuildByNumber(9);
