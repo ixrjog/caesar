@@ -192,7 +192,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         if (!CollectionUtils.isEmpty(artifacts))
             params.put("ossPath", artifacts.get(0).getStoragePath());
         try {
-            params.put("env", envFacade.queryEnvNameByType(csCdJob.getEnvType()));
+            // 取build任务环境变量
+            params.put("env", envFacade.queryEnvNameByType(csCiJob.getEnvType()));
         } catch (Exception e) {
             log.error("任务环境未配置！jobName={}", csCiJob.getName());
         }
