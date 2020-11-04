@@ -8,6 +8,7 @@ import com.baiyi.caesar.domain.vo.caesar.HealthVO;
 import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +28,20 @@ public class CaesarController {
     @Resource
     private CaesarInstanceFacade caesarInstanceFacade;
 
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public class ResourceInactiveException extends RuntimeException {
+        // CaesarInstance维护模式
+    }
+
     @ApiOperation(value = "负载均衡健康检查接口")
     @GetMapping(value = "/health/slb-health-check", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<HealthVO.Health> checkHealth() {
-        return new HttpResult<>(caesarInstanceFacade.checkHealth());
+        HealthVO.Health health = caesarInstanceFacade.checkHealth();
+        if (health.isHealth()) {
+            return new HttpResult<>(caesarInstanceFacade.checkHealth());
+        } else {
+            throw new ResourceInactiveException();
+        }
     }
 
     @ApiOperation(value = "分页查询凯撒实例配置")

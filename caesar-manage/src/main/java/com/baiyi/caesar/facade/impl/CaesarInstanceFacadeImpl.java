@@ -54,15 +54,15 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
             InetAddress inetAddress = HostUtils.getInetAddress();
             CsInstance csInstance = csInstanceService.queryCsInstanceByHostIp(inetAddress.getHostAddress());
             if (csInstance == null)
-                return getHealth("ERROR");
+                return getHealth("ERROR", false);
             if (csInstance.getIsActive()) {
-                return getHealth(HEALTH_OK);
+                return getHealth(HEALTH_OK, true);
             } else {
-                return getHealth("INACTIVE");
+                return getHealth("INACTIVE", false);
             }
         } catch (UnknownHostException ignored) {
         }
-        return getHealth("ERROR");
+        return getHealth("ERROR", false);
     }
 
     @Override
@@ -72,9 +72,10 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
         return new DataTable<>(page, table.getTotalNum());
     }
 
-    private HealthVO.Health getHealth(String status) {
+    private HealthVO.Health getHealth(String status, boolean isHealth) {
         HealthVO.Health health = new HealthVO.Health();
         health.setStatus(status);
+        health.setHealth(isHealth);
         return health;
     }
 

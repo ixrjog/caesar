@@ -16,5 +16,7 @@ public class HealthVO {
     @ApiModel
     public static class Health {
         private String status;
+
+        private boolean isHealth;
     }
 }
