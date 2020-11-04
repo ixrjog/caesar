@@ -190,8 +190,9 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         List<CsJobBuildChange> changes = csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId);
         if (CollectionUtils.isEmpty(changes)) return changes;
         return changes.stream().peek(e -> {
-          String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
-          e.setCommitMsg(msg);
+            // String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
+            String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)", "");
+            e.setCommitMsg(msg);
         }).collect(Collectors.toList());
     }
 

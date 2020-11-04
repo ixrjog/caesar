@@ -48,4 +48,9 @@ public class CsJobBuildChangeServiceImpl implements CsJobBuildChangeService {
         criteria.andEqualTo("commitId", commitId);
         return csJobBuildChangeMapper.selectOneByExample(example);
     }
+
+    @Override
+    public CsJobBuildChange queryCsJobBuildChangeById(int id){
+        return csJobBuildChangeMapper.selectByPrimaryKey(id);
+    }
 }

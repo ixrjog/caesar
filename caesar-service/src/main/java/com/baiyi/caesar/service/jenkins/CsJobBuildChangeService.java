@@ -18,4 +18,6 @@ public interface CsJobBuildChangeService {
     List<CsJobBuildChange> queryCsJobBuildChangeByBuildId(int buildType,int buildId);
 
     CsJobBuildChange queryCsJobBuildChangeByUniqueKey(int buildType,int jobId, String commitId);
+
+    CsJobBuildChange queryCsJobBuildChangeById(int id);
 }

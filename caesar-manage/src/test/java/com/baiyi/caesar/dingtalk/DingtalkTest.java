@@ -10,6 +10,7 @@ import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.model.TestMessage;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.generator.caesar.CsJobBuildChange;
 import com.baiyi.caesar.facade.DingtalkFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
@@ -19,6 +20,7 @@ import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
+import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -45,6 +47,9 @@ public class DingtalkTest extends BaseUnit {
     @Resource
     private CsCdJobBuildService csCdJobBuildService;
 
+    @Resource
+    private CsJobBuildChangeService csJobBuildChangeService;
+
     @Test
     void doNotifyTest() {
         DingtalkContent content = DingtalkContent.builder()
@@ -67,10 +72,19 @@ public class DingtalkTest extends BaseUnit {
     void testBuildNotify() {
         String jobKey = JobType.IOS.getType();
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
-        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(522);
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(924);
         BuildJobContext context = iBuildJobHandler.acqBuildJobContext(csCiJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
-        dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
+        dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
+    }
+
+    @Test
+    void test2(){
+
+        CsJobBuildChange csJobBuildChange = csJobBuildChangeService.queryCsJobBuildChangeById(1862);
+        // String msg = csJobBuildChange.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
+        String msg = csJobBuildChange.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)", "");
+        System.err.println(msg);
     }
 
     @Test
