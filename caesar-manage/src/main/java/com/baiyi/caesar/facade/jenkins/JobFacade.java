@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade.jenkins;
 
 import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -22,6 +23,7 @@ import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.ServerGroupFacade;
 import com.baiyi.caesar.facade.UserFacade;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -105,6 +107,9 @@ public class JobFacade {
 
     @Resource
     private JenkinsJobFacade jenkinsJobFacade;
+
+    @Resource
+    private UserPermissionFacade userPermissionFacade;
 
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
@@ -257,18 +262,29 @@ public class JobFacade {
             if (!jenkinsJobFacade.deleteJobBuildEngine(ciJobId))
                 return new BusinessWrapper<>(ErrorEnum.JENKINS_DELETE_JOB_ENGINE_ERROR);
         }
+        // 清理job授权
+        userPermissionFacade.cleanBusinessPermission(BusinessType.APPLICATION_BUILD_JOB.getType(), ciJobId);
+        // 删除任务
+        csCiJobService.deleteCsCiJobById(ciJobId);
         return BusinessWrapper.SUCCESS;
     }
 
-    public void deleteDeploymentJob(int cdJobId) {
+    public BusinessWrapper<Boolean> deleteDeploymentJob(int cdJobId) {
         // 删除 build
         List<CsCdJobBuild> builds = csCdJobBuildService.queryCdJobBuildByCdJobId(cdJobId);
         if (!CollectionUtils.isEmpty(builds)) {
             for (CsCdJobBuild csCdJobBuild : builds) {
-                deleteBuildDetails(BuildType.BUILD.getType(), csCdJobBuild.getId());
+              if(!deleteBuildDetails(BuildType.BUILD.getType(), csCdJobBuild.getId()))
+                  return new BusinessWrapper<>(ErrorEnum.JENKINS_DELETE_JOB_BUILD_DETAILS_ERROR);
+                csCdJobBuildService.deleteCsCdJobBuildById(csCdJobBuild.getId());
             }
             jenkinsJobFacade.deleteJobDeploymentEngine(cdJobId);
         }
+        // 清理job授权
+        userPermissionFacade.cleanBusinessPermission(BusinessType.APPLICATION_DEPLOYMENT_JOB.getType(), cdJobId);
+        // 删除任务
+        csCdJobService.deleteCsCdJobById(cdJobId);
+        return BusinessWrapper.SUCCESS;
     }
 
     private boolean deleteBuildDetails(int buildType, int buildId) {

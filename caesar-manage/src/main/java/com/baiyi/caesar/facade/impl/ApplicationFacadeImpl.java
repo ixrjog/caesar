@@ -180,6 +180,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_BUILD_JOB_CONFIGURATION_WAS_NOT_DELETED);
         if(csCdJobService.countCsCdJobByApplicationId(id) != 0)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_DEPLOYMENT_JOB_CONFIGURATION_WAS_NOT_DELETED);
+        // 删除应用授权
+        userPermissionFacade.cleanBusinessPermission(BusinessType.APPLICATION.getType(), id);
         csApplicationService.deleteCsApplicationById(id);
         return BusinessWrapper.SUCCESS;
     }

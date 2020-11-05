@@ -107,6 +107,11 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
         return queryUserPermissionByUniqueKey(userId, businessType, businessId) != null;
     }
 
+    @Override
+    public void cleanBusinessPermission(int businessType, int businessId) {
+        ocUserPermissionService.queryUserBusinessPermissionByBusinessId(businessType, businessId).forEach(e ->
+                ocUserPermissionService.delOcUserPermissionById(e.getId()));
+    }
 
     @Override
     public OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId) {

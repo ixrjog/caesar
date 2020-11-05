@@ -26,6 +26,13 @@ public interface UserPermissionFacade {
 
     boolean tryUserBusinessPermission(int userId, int businessType, int businessId);
 
+    /**
+     * 清理业务授权
+     * @param businessType
+     * @param businessId
+     */
+    void cleanBusinessPermission(int businessType, int businessId);
+
     OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId);
 
     /**
