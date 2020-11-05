@@ -166,6 +166,20 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> deleteApplicationById(int id) {
+        // scmMember
+        if (!CollectionUtils.isEmpty(csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(id)))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_CONFIGURATION_WAS_NOT_DELETED);
+        // serverGroup
+        if (!CollectionUtils.isEmpty(csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(id)))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_CONFIGURATION_WAS_NOT_DELETED);
+        // applicationEngine
+        if (!CollectionUtils.isEmpty(csApplicationEngineService.queryCsApplicationEngineByApplicationId(id)))
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_ENGINE_CONFIGURATION_WAS_NOT_DELETED);
+        // job
+        if(csCiJobService.countCsCiJobByApplicationId(id) != 0)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_BUILD_JOB_CONFIGURATION_WAS_NOT_DELETED);
+        if(csCdJobService.countCsCdJobByApplicationId(id) != 0)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_DEPLOYMENT_JOB_CONFIGURATION_WAS_NOT_DELETED);
         csApplicationService.deleteCsApplicationById(id);
         return BusinessWrapper.SUCCESS;
     }

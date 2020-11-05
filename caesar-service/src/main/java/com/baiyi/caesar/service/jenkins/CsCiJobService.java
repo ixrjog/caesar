@@ -25,7 +25,9 @@ public interface CsCiJobService {
 
     CsCiJob queryCsCiJobById(int id);
 
-    List<CsCiJob> queryCsCiJobByScmMemberIdAndBranch(int scmMemberId,String branch);
+    List<CsCiJob> queryCsCiJobByScmMemberIdAndBranch(int scmMemberId, String branch);
 
-    CsCiJob queryCsCiJobByUniqueKey(int applicationId,String jobKey);
+    CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey);
+
+    int countCsCiJobByApplicationId(int applicationId);
 }

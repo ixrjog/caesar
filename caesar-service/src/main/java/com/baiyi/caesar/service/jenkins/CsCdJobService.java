@@ -25,4 +25,6 @@ public interface CsCdJobService {
     CsCdJob queryCsCdJobByUniqueKey(int applicationId, String jobKey);
 
     CsCdJob queryCsCdJobById(int id);
+
+    int countCsCdJobByApplicationId(int applicationId);
 }
