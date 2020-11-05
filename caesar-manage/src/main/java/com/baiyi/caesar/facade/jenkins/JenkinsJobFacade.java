@@ -63,6 +63,7 @@ public class JenkinsJobFacade {
     @Resource
     private JobEngineHandler jobEngineHandler;
 
+
     /**
      * 创建Job引擎配置
      *
@@ -74,6 +75,29 @@ public class JenkinsJobFacade {
         } else {
             createJobDeploymentEngine(jobId);
         }
+    }
+
+    public boolean deleteJobBuildEngine(int jobId) {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(), jobId);
+        return deleteCsJobEngines(csJobEngines);
+    }
+
+    public boolean deleteJobDeploymentEngine(int jobId) {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), jobId);
+        return deleteCsJobEngines(csJobEngines);
+    }
+
+    private boolean deleteCsJobEngines(List<CsJobEngine> csJobEngines) {
+        for (CsJobEngine csJobEngine : csJobEngines) {
+            CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+            try {
+                jenkinsServerHandler.deleteJob(csJenkinsInstance.getName(), csJobEngine.getName());
+            } catch (IOException e) {
+                return false;
+            }
+            csJobEngineService.deleteCsJobEngineById(csJobEngine.getId());
+        }
+        return true;
     }
 
     public void createJobBuildEngine(int jobId) {

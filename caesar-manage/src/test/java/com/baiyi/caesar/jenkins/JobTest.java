@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.tree.EngineVO;
@@ -121,5 +122,12 @@ public class JobTest extends BaseUnit {
         System.err.println(JSON.toJSONString(chart));
     }
 
+
+    @Test
+    void testJobDelete() {
+        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(62);
+        System.err.println(wrapper.isSuccess());
+
+    }
 
 }

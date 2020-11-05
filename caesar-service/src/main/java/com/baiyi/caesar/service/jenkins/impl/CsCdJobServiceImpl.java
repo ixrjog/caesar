@@ -70,4 +70,12 @@ public class CsCdJobServiceImpl implements CsCdJobService {
     public CsCdJob queryCsCdJobById(int id) {
         return csCdJobMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public int countCsCdJobByApplicationId(int applicationId) {
+        Example example = new Example(CsCdJob.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("applicationId", applicationId);
+        return csCdJobMapper.selectCountByExample(example);
+    }
 }

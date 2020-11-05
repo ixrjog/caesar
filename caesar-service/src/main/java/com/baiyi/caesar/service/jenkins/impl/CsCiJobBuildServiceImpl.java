@@ -51,6 +51,14 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
+    public List<CsCiJobBuild> queryCiJobBuildByCiJobId(int ciJobId) {
+        Example example = new Example(CsCiJobBuild.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("ciJobId", ciJobId);
+        return csCiJobBuildMapper.selectByExample(example);
+    }
+
+    @Override
     public List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
 
 //    <select id="queryCsCiJobBuildArtifactParam"
@@ -72,7 +80,7 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
 
 
         example.setOrderByClause("job_build_number desc");
-        return csCiJobBuildMapper.selectByExampleAndRowBounds(example,new RowBounds(0, query.getSize()));
+        return csCiJobBuildMapper.selectByExampleAndRowBounds(example, new RowBounds(0, query.getSize()));
     }
 
     @Override

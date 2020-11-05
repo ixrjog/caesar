@@ -27,7 +27,6 @@ import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
-import com.baiyi.caesar.jenkins.handler.JenkinsJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.JobWithDetails;
@@ -78,7 +77,16 @@ public class JobFacade {
     private JenkinsServerHandler jenkinsServerHandler;
 
     @Resource
-    private JenkinsJobHandler jenkinsJobHandler;
+    private CsJobBuildExecutorService csJobBuildExecutorService;
+
+    @Resource
+    private CsJobBuildServerService csJobBuildServerService;
+
+    @Resource
+    private CsJobBuildChangeService csJobBuildChangeService;
+
+    @Resource
+    private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
     private ServerGroupFacade serverGroupFacade;
@@ -94,6 +102,9 @@ public class JobFacade {
 
     @Resource
     private JobEngineHandler jobEngineHandler;
+
+    @Resource
+    private JenkinsJobFacade jenkinsJobFacade;
 
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
@@ -232,6 +243,52 @@ public class JobFacade {
                 jenkinsJobHandler.trackJobBuild(e);
             }
         });
+    }
+
+    public BusinessWrapper<Boolean> deleteBuildJob(int ciJobId) {
+        // 删除 build
+        List<CsCiJobBuild> builds = csCiJobBuildService.queryCiJobBuildByCiJobId(ciJobId);
+        if (!CollectionUtils.isEmpty(builds)) {
+            for (CsCiJobBuild csCiJobBuild : builds) {
+                if (!deleteBuildDetails(BuildType.BUILD.getType(), csCiJobBuild.getId()))
+                    return new BusinessWrapper<>(ErrorEnum.JENKINS_DELETE_JOB_BUILD_DETAILS_ERROR);
+                csCiJobBuildService.deleteCsCiJobBuildById(csCiJobBuild.getId());
+            }
+            if (!jenkinsJobFacade.deleteJobBuildEngine(ciJobId))
+                return new BusinessWrapper<>(ErrorEnum.JENKINS_DELETE_JOB_ENGINE_ERROR);
+        }
+        return BusinessWrapper.SUCCESS;
+    }
+
+    public void deleteDeploymentJob(int cdJobId) {
+        // 删除 build
+        List<CsCdJobBuild> builds = csCdJobBuildService.queryCdJobBuildByCdJobId(cdJobId);
+        if (!CollectionUtils.isEmpty(builds)) {
+            for (CsCdJobBuild csCdJobBuild : builds) {
+                deleteBuildDetails(BuildType.BUILD.getType(), csCdJobBuild.getId());
+            }
+            jenkinsJobFacade.deleteJobDeploymentEngine(cdJobId);
+        }
+    }
+
+    private boolean deleteBuildDetails(int buildType, int buildId) {
+        try {
+            // executor
+            csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(buildType, buildId)
+                    .forEach(e -> csJobBuildExecutorService.deleteCsJobBuildExecutorById(e.getId()));
+            // server
+            csJobBuildServerService.queryCsJobBuildServerByBuildId(buildType, buildId)
+                    .forEach(e -> csJobBuildServerService.deleteCsJobBuildServerById(e.getId()));
+            // change
+            csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId)
+                    .forEach(e -> csJobBuildChangeService.deleteCsJobBuildChangeById(e.getId()));
+            // artifact
+            csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(buildType, buildId)
+                    .forEach(e -> csJobBuildArtifactService.deleteCsJobBuildArtifactById(e.getId()));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
 }

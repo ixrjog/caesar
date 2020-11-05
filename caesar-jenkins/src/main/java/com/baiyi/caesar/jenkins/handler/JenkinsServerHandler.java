@@ -114,11 +114,15 @@ public class JenkinsServerHandler {
         return Maps.newHashMap();
     }
 
-
     public void createJob(String serverName, String jobName, String jobXml) throws IOException {
         JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
         assert jenkinsServer != null;
         jenkinsServer.createJob(jobName, jobXml, CRUMB_FLAG);
     }
 
+    public void deleteJob(String serverName, String jobName) throws IOException {
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
+        jenkinsServer.deleteJob(jobName, CRUMB_FLAG);
+    }
 }

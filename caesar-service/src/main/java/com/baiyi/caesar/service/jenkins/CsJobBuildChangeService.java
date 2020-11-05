@@ -20,4 +20,6 @@ public interface CsJobBuildChangeService {
     CsJobBuildChange queryCsJobBuildChangeByUniqueKey(int buildType,int jobId, String commitId);
 
     CsJobBuildChange queryCsJobBuildChangeById(int id);
+
+    void deleteCsJobBuildChangeById(int id);
 }

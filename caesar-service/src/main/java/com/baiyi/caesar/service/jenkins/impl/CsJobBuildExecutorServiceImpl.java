@@ -31,7 +31,7 @@ public class CsJobBuildExecutorServiceImpl implements CsJobBuildExecutorService 
     }
 
     @Override
-    public List<CsJobBuildExecutor> queryCsJobBuildExecutorByBuildId(int buildType,int buildId) {
+    public List<CsJobBuildExecutor> queryCsJobBuildExecutorByBuildId(int buildType, int buildId) {
         Example example = new Example(CsJobBuildExecutor.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildType", buildType);
@@ -40,12 +40,17 @@ public class CsJobBuildExecutorServiceImpl implements CsJobBuildExecutorService 
     }
 
     @Override
-    public CsJobBuildExecutor queryCsJobBuildExecutorByUniqueKey(int buildType,int buildId, String nodeName) {
+    public CsJobBuildExecutor queryCsJobBuildExecutorByUniqueKey(int buildType, int buildId, String nodeName) {
         Example example = new Example(CsJobBuildExecutor.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildType", buildType);
         criteria.andEqualTo("buildId", buildId);
         criteria.andEqualTo("nodeName", nodeName);
         return csJobBuildExecutorMapper.selectOneByExample(example);
+    }
+
+    @Override
+    public void deleteCsJobBuildExecutorById(int id) {
+        csJobBuildExecutorMapper.deleteByPrimaryKey(id);
     }
 }

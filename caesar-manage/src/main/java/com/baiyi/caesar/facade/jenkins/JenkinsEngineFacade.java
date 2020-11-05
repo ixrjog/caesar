@@ -10,6 +10,7 @@ import com.baiyi.caesar.util.JobBuildUtils;
 import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
 import com.offbytwo.jenkins.model.Job;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  * @Date 2020/8/31 5:46 下午
  * @Version 1.0
  */
+@Slf4j
 @Component
 public class JenkinsEngineFacade {
 
@@ -90,9 +92,8 @@ public class JenkinsEngineFacade {
                 }
             });
         } catch (Exception e) {
-
+            log.error("组装Jenkins引擎工作负载错误, err={}",e.getMessage());
         }
     }
-
 
 }

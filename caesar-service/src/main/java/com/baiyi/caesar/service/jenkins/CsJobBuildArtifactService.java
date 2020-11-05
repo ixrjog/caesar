@@ -20,4 +20,6 @@ public interface CsJobBuildArtifactService {
     CsJobBuildArtifact queryCsJobBuildArtifactByUniqueKey(int buildId, int buildType, String artifactFileName);
 
     int countCsJobBuildArtifactByBuildId(int buildType, int buildId);
+
+    void deleteCsJobBuildArtifactById(int id);
 }

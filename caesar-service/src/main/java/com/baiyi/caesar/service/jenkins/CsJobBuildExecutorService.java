@@ -18,4 +18,6 @@ public interface CsJobBuildExecutorService {
     List<CsJobBuildExecutor> queryCsJobBuildExecutorByBuildId(int buildType, int buildId);
 
     CsJobBuildExecutor queryCsJobBuildExecutorByUniqueKey(int buildType, int buildId, String nodeName);
+
+    void deleteCsJobBuildExecutorById(int id);
 }

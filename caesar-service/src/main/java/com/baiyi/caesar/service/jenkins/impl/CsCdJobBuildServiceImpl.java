@@ -35,6 +35,14 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     }
 
     @Override
+    public List<CsCdJobBuild> queryCdJobBuildByCdJobId(int cdJobId) {
+        Example example = new Example(CsCdJobBuild.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("cdJobId", cdJobId);
+        return csCdJobBuildMapper.selectByExample(example);
+    }
+
+    @Override
     public List<CsCdJobBuild> queryLastCdJobBuild(int cdJobId) {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();

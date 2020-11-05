@@ -58,4 +58,9 @@ public class CsJobBuildArtifactServiceImpl implements CsJobBuildArtifactService 
         return csJobBuildArtifactMapper.selectCountByExample(example);
     }
 
+    @Override
+    public void deleteCsJobBuildArtifactById(int id) {
+        csJobBuildArtifactMapper.deleteByPrimaryKey(id);
+    }
+
 }

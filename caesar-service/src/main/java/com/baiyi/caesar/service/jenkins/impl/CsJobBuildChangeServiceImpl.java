@@ -31,7 +31,7 @@ public class CsJobBuildChangeServiceImpl implements CsJobBuildChangeService {
     }
 
     @Override
-    public List<CsJobBuildChange> queryCsJobBuildChangeByBuildId(int buildType,int buildId) {
+    public List<CsJobBuildChange> queryCsJobBuildChangeByBuildId(int buildType, int buildId) {
         Example example = new Example(CsJobBuildChange.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildType", buildType);
@@ -40,7 +40,7 @@ public class CsJobBuildChangeServiceImpl implements CsJobBuildChangeService {
     }
 
     @Override
-    public CsJobBuildChange queryCsJobBuildChangeByUniqueKey(int buildType,int jobId, String commitId) {
+    public CsJobBuildChange queryCsJobBuildChangeByUniqueKey(int buildType, int jobId, String commitId) {
         Example example = new Example(CsJobBuildChange.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("buildType", buildType);
@@ -50,7 +50,12 @@ public class CsJobBuildChangeServiceImpl implements CsJobBuildChangeService {
     }
 
     @Override
-    public CsJobBuildChange queryCsJobBuildChangeById(int id){
+    public CsJobBuildChange queryCsJobBuildChangeById(int id) {
         return csJobBuildChangeMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void deleteCsJobBuildChangeById(int id) {
+        csJobBuildChangeMapper.deleteByPrimaryKey(id);
     }
 }

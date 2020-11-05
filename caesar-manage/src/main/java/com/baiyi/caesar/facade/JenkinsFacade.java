@@ -50,5 +50,6 @@ public interface JenkinsFacade {
     DataTable<CdJobVO.CdJob> queryCdJobTplPage(CdJobParam.CdJobTplPageQuery pageQuery);
 
     BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId);
+
     BusinessWrapper<Boolean> upgradeCdJobTplByJobId(int jobId);
 }
