@@ -29,6 +29,19 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
+  <resultMap id="BuildTaskGroupByHourMap" type="com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour">
+    <result column="hours" jdbcType="INTEGER" property="hours" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+  </resultMap>
+
+  <select id="queryCdJobBuildGroupByHour"
+          resultMap="BuildTaskGroupByHourMap">
+    select DATE_FORMAT(create_time,'%H') hours,count(id) count
+    from cs_cd_job_build
+    group by hours
+    order by hours;
+  </select>
+
 <!--  &lt;select id="queryCsCdJobByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam$DeploymentPageQuery" resultMap="BaseResultMap"&gt;-->
 <!--    select *-->
 <!--    from cs_cd_job_build-->

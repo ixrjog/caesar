@@ -82,6 +82,14 @@ public class DashboardFacadeImpl implements DashboardFacade {
         latestTasks.setDeploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild());
         return latestTasks;
     }
-
+    
+    @Override
+    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'taskExecutionGroupByHour'")
+    public DashboardVO.TaskExecutionGroupByHour queryTaskExecutionGroupByHour() {
+        DashboardVO.TaskExecutionGroupByHour charts = new DashboardVO.TaskExecutionGroupByHour();
+        charts.setBuildTaskGroupByHours(csCiJobBuildService.queryCiJobBuildGroupByHour());
+        charts.setDeploymentTaskGroupByHours(csCdJobBuildService.queryCdJobBuildGroupByHour());
+        return charts;
+    }
 
 }

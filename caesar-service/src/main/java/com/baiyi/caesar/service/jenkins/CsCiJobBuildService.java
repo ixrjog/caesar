@@ -3,6 +3,7 @@ package com.baiyi.caesar.service.jenkins;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
  * @Version 1.0
  */
 public interface CsCiJobBuildService {
+
+    List<BuildTaskGroupByHour> queryCiJobBuildGroupByHour();
 
     List<CsCiJobBuild> queryLatestCsCiJobBuild(int length);
 

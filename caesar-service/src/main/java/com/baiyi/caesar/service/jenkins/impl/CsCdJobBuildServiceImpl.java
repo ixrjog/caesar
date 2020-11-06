@@ -3,6 +3,7 @@ package com.baiyi.caesar.service.jenkins.impl;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
+import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour;
 import com.baiyi.caesar.mapper.caesar.CsCdJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.github.pagehelper.Page;
@@ -23,6 +24,11 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
 
     @Resource
     private CsCdJobBuildMapper csCdJobBuildMapper;
+
+    @Override
+    public List<BuildTaskGroupByHour> queryCdJobBuildGroupByHour() {
+        return csCdJobBuildMapper.queryCdJobBuildGroupByHour();
+    }
 
     @Override
     public List<CsCdJobBuild> queryLatestCsCdJobBuild(int length) {

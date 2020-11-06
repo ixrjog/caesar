@@ -36,4 +36,10 @@ public class DashboardController {
     public HttpResult<DashboardVO.LatestTasks> queryLatestTasks() {
         return new HttpResult<>(dashboardFacade.queryLatestTasks());
     }
+
+    @ApiOperation(value = "查询任务执行时间分布")
+    @GetMapping(value = "/task/execution/by/hour/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DashboardVO.TaskExecutionGroupByHour> queryTaskExecutionGroupByHour() {
+        return new HttpResult<>(dashboardFacade.queryTaskExecutionGroupByHour());
+    }
 }

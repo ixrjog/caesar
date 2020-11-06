@@ -50,4 +50,17 @@ public class DashboardVO {
         private int deploymentTaskTotal;
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class TaskExecutionGroupByHour implements Serializable {
+
+        private static final long serialVersionUID = 8995436097311659778L;
+
+        @ApiModelProperty(value = "构建任务按小时分布")
+        private List<BuildTaskGroupByHour> buildTaskGroupByHours;
+        @ApiModelProperty(value = "部署任务按小时分布")
+        private List<BuildTaskGroupByHour> deploymentTaskGroupByHours;
+    }
+
 }

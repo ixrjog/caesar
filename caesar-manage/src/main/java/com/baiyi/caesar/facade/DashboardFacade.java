@@ -12,4 +12,6 @@ public interface DashboardFacade {
     DashboardVO.TopCard queryTopCard();
 
     DashboardVO.LatestTasks queryLatestTasks();
+
+    DashboardVO.TaskExecutionGroupByHour queryTaskExecutionGroupByHour();
 }
