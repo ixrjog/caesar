@@ -15,6 +15,8 @@ public interface CsCdJobBuildService {
 
     List<CsCdJobBuild> queryLatestCsCdJobBuild(int length);
 
+    int countAllCsCdJobBuild();
+
     DataTable<CsCdJobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
 
     List<CsCdJobBuild> queryCdJobBuildByCdJobId(int cdJobId);

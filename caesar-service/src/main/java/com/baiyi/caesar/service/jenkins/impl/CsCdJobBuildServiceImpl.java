@@ -33,6 +33,11 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     }
 
     @Override
+    public int countAllCsCdJobBuild() {
+        return csCdJobBuildMapper.selectCountByExample(null);
+    }
+
+    @Override
     public DataTable<CsCdJobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery) {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();

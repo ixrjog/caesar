@@ -39,8 +39,15 @@ public class DashboardVO {
         private static final long serialVersionUID = 8963769393767259751L;
         @ApiModelProperty(value = "构建任务")
         private List<CiJobBuildVO.JobBuild> latestBuildTasks;
+
+        @ApiModelProperty(value = "构建任务总执行数")
+        private int buildTaskTotal;
+
         @ApiModelProperty(value = "部署任务")
-        private  List<CdJobBuildVO.JobBuild> latestDeploymentTasks;
+        private List<CdJobBuildVO.JobBuild> latestDeploymentTasks;
+
+        @ApiModelProperty(value = "部署任务总执行数")
+        private int deploymentTaskTotal;
     }
 
 }

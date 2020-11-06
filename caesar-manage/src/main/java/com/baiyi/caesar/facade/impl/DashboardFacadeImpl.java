@@ -53,10 +53,10 @@ public class DashboardFacadeImpl implements DashboardFacade {
     private JobDeploymentDecorator jobDeploymentDecorator;
 
     @Resource
-    private  CsCdJobBuildService csCdJobBuildService;
+    private CsCdJobBuildService csCdJobBuildService;
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO,key = "'topCard'")
+    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'topCard'")
     public DashboardVO.TopCard queryTopCard() {
         DashboardVO.TopCard topCard = new DashboardVO.TopCard();
         topCard.setApplicationTotal(csApplicationService.countAllCsApplication());
@@ -67,16 +67,19 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO,key = "'latestTasks'")
+    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'latestTasks'")
     public DashboardVO.LatestTasks queryLatestTasks() {
         DashboardVO.LatestTasks latestTasks = new DashboardVO.LatestTasks();
         final int LatestTasksLength = 9;
         List<CiJobBuildVO.JobBuild> latestBuildTasks = csCiJobBuildService.queryLatestCsCiJobBuild(LatestTasksLength)
                 .stream().map(e -> jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(e, CiJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
         latestTasks.setLatestBuildTasks(latestBuildTasks);
+        latestTasks.setBuildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild());
+
         List<CdJobBuildVO.JobBuild> latestDeploymentTasks = csCdJobBuildService.queryLatestCsCdJobBuild(LatestTasksLength)
-                .stream().map(e ->  jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(e, CdJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
-        latestTasks.setLatestDeploymentTasks(latestDeploymentTasks );
+                .stream().map(e -> jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(e, CdJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
+        latestTasks.setLatestDeploymentTasks(latestDeploymentTasks);
+        latestTasks.setDeploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild());
         return latestTasks;
     }
 

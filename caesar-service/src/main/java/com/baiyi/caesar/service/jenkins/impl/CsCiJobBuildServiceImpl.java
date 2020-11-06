@@ -5,7 +5,6 @@ import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.mapper.caesar.CsCiJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
-import com.baiyi.caesar.service.jenkins.CsJobBuildArtifactService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.RowBounds;
@@ -26,15 +25,20 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     @Resource
     private CsCiJobBuildMapper csCiJobBuildMapper;
 
-    @Resource
-    private CsJobBuildArtifactService csJobBuildArtifactService;
+//    @Resource
+//    private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Override
-    public List<CsCiJobBuild> queryLatestCsCiJobBuild(int length){
+    public List<CsCiJobBuild> queryLatestCsCiJobBuild(int length) {
         Example example = new Example(CsCiJobBuild.class);
         example.setOrderByClause(" create_time DESC");
         PageHelper.startPage(1, length);
-        return  csCiJobBuildMapper.selectByExample(example);
+        return csCiJobBuildMapper.selectByExample(example);
+    }
+
+    @Override
+    public int countAllCsCiJobBuild() {
+        return csCiJobBuildMapper.selectCountByExample(null);
     }
 
     @Override

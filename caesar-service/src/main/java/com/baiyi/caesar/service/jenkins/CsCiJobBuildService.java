@@ -15,6 +15,8 @@ public interface CsCiJobBuildService {
 
     List<CsCiJobBuild> queryLatestCsCiJobBuild(int length);
 
+    int countAllCsCiJobBuild();
+
     DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
 
     List<CsCiJobBuild> queryCiJobBuildByCiJobId(int ciJobId);
