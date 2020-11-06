@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,9 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild {
+    public static class JobBuild implements Serializable {
+
+        private static final long serialVersionUID = -448531182053453517L;
 
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
@@ -76,7 +79,6 @@ public class CiJobBuildVO {
         private String parameters;
         private String dingtalkMsg;
         private String comment;
-
     }
 
 

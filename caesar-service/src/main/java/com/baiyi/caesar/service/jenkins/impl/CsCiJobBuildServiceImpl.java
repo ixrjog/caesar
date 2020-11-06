@@ -30,6 +30,14 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Override
+    public List<CsCiJobBuild> queryLatestCsCiJobBuild(int length){
+        Example example = new Example(CsCiJobBuild.class);
+        example.setOrderByClause(" create_time DESC");
+        PageHelper.startPage(1, length);
+        return  csCiJobBuildMapper.selectByExample(example);
+    }
+
+    @Override
     public DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery) {
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         Example example = new Example(CsCiJobBuild.class);
@@ -41,7 +49,7 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
-    public List<CsCiJobBuild> queryLastCiJobBuild(int ciJobId) {
+    public List<CsCiJobBuild> queryLatestCiJobBuildByCiJobId(int ciJobId) {
         Example example = new Example(CsCiJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("ciJobId", ciJobId);

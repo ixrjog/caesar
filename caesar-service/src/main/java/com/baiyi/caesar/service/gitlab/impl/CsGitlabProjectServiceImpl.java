@@ -75,4 +75,9 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     public void deleteCsGitlabProjectById(int id) {
         csGitlabProjectMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public int countAllCsGitlabProject(){
+       return csGitlabProjectMapper.selectCount(null);
+    }
 }

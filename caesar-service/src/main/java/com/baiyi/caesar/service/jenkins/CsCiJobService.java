@@ -30,4 +30,6 @@ public interface CsCiJobService {
     CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey);
 
     int countCsCiJobByApplicationId(int applicationId);
+
+    int countAllCsCiJob();
 }

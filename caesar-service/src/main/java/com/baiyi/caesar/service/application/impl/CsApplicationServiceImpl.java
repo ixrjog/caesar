@@ -31,7 +31,7 @@ public class CsApplicationServiceImpl implements CsApplicationService {
     }
 
     @Override
-    public DataTable<CsApplication> queryMyCsApplicationByParam(ApplicationParam.MyApplicationPageQuery pageQuery){
+    public DataTable<CsApplication> queryMyCsApplicationByParam(ApplicationParam.MyApplicationPageQuery pageQuery) {
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
         List<CsApplication> list = csApplicationMapper.queryMyCsApplicationByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
@@ -55,6 +55,11 @@ public class CsApplicationServiceImpl implements CsApplicationService {
     @Override
     public void deleteCsApplicationById(int id) {
         csApplicationMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int countAllCsApplication() {
+        return csApplicationMapper.selectCount(null);
     }
 
 }

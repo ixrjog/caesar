@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +23,9 @@ public class CdJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild {
+    public static class JobBuild implements Serializable {
 
+        private static final long serialVersionUID = 1322824272757498254L;
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
         private List<BuildArtifactVO.BuildArtifact> artifacts;

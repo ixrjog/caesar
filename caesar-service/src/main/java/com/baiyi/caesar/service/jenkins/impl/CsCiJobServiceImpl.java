@@ -83,4 +83,9 @@ public class CsCiJobServiceImpl implements CsCiJobService {
         criteria.andEqualTo("applicationId", applicationId);
         return csCiJobMapper.selectCountByExample(example);
     }
+
+    @Override
+    public int countAllCsCiJob(){
+        return csCiJobMapper.selectCount(null);
+    }
 }

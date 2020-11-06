@@ -78,4 +78,9 @@ public class CsCdJobServiceImpl implements CsCdJobService {
         criteria.andEqualTo("applicationId", applicationId);
         return csCdJobMapper.selectCountByExample(example);
     }
+
+    @Override
+    public int countAllCsCdJob() {
+        return csCdJobMapper.selectCount(null);
+    }
 }

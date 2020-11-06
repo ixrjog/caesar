@@ -70,42 +70,46 @@ public class JobDeploymentDecorator {
     }
 
     public CdJobBuildVO.JobBuild decorator(CdJobBuildVO.JobBuild jobBuild, Integer extend) {
-        if (extend == 0) return jobBuild;
-        // 装饰工作引擎
-        CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
-        if (csCiJobEngine != null) {
-            JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
-            jobBuild.setJobEngine(jobEngine);
-
-            String jobBuildUrl = Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
-            jobBuild.setJobBuildUrl(jobBuildUrl);
-        }
-
-        CsCiJob csCiJob = getCsCiJobByJobBuild(jobBuild);
-        CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-        List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
-        jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
+        if (extend == 1) {
 
 
-        if (!StringUtils.isEmpty(jobBuild.getUsername())) {
-            OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
-            if (ocUser != null) {
-                ocUser.setPassword("");
-                jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+            // 装饰工作引擎
+            CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
+            if (csCiJobEngine != null) {
+                JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
+                jobBuild.setJobEngine(jobEngine);
+
+                String jobBuildUrl = Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
+                jobBuild.setJobBuildUrl(jobBuildUrl);
             }
+
+            CsCiJob csCiJob = getCsCiJobByJobBuild(jobBuild);
+            CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
+            List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
+            jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
+
+
+            if (!StringUtils.isEmpty(jobBuild.getUsername())) {
+                OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
+                if (ocUser != null) {
+                    ocUser.setPassword("");
+                    jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+                }
+            }
+
+            if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
+                long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
+                jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
+            }
+
+            jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
+
+            List<CsJobBuildServer> csJobBuildServers = csJobBuildServerService.queryCsJobBuildServerByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
+            jobBuild.setServers(BeanCopierUtils.copyListProperties(csJobBuildServers, DeploymentServerVO.BuildServer.class));
         }
         // Ago
         jobBuild.setAgo(TimeAgoUtils.format(jobBuild.getStartTime()));
 
-        if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
-            long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
-            jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
-        }
-
-        jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
-
-        List<CsJobBuildServer> csJobBuildServers = csJobBuildServerService.queryCsJobBuildServerByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
-        jobBuild.setServers( BeanCopierUtils.copyListProperties(csJobBuildServers, DeploymentServerVO.BuildServer.class));
         return jobBuild;
     }
 

@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface CsCiJobBuildService {
 
+    List<CsCiJobBuild> queryLatestCsCiJobBuild(int length);
+
     DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
 
     List<CsCiJobBuild> queryCiJobBuildByCiJobId(int ciJobId);
@@ -21,7 +23,7 @@ public interface CsCiJobBuildService {
 
     CsCiJobBuild queryCiJobBuildById(int id);
 
-    List<CsCiJobBuild> queryLastCiJobBuild(int ciJobId);
+    List<CsCiJobBuild> queryLatestCiJobBuildByCiJobId(int ciJobId);
 
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);
 

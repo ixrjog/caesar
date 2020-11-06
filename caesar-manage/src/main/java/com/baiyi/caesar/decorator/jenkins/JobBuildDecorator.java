@@ -63,46 +63,47 @@ public class JobBuildDecorator {
     private OcUserService ocUserService;
 
     public CiJobBuildVO.JobBuild decorator(CiJobBuildVO.JobBuild jobBuild, Integer extend) {
-        if (extend == 0) return jobBuild;
-        // 装饰工作引擎
-        CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
-        if (csCiJobEngine != null) {
-            JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
-            jobBuild.setJobEngine(jobEngine);
+        if (extend == 1) {
+            // 装饰工作引擎
+            CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
+            if (csCiJobEngine != null) {
+                JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
+                jobBuild.setJobEngine(jobEngine);
 
-            String jobBuildUrl = Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
-            jobBuild.setJobBuildUrl(jobBuildUrl);
-        }
-
-        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
-        CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-
-        List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), jobBuild.getId());
-        if (CollectionUtils.isEmpty(artifacts)) {
-            jobBuild.setNoArtifact(true);
-        } else {
-            jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
-            jobBuild.setNoArtifact(false);
-        }
-
-        jobBuild.setChanges(getBuildChangeByBuildId(jobBuild.getId()));
-
-        if (!StringUtils.isEmpty(jobBuild.getUsername())) {
-            OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
-            if (ocUser != null) {
-                ocUser.setPassword("");
-                jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+                String jobBuildUrl = Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
+                jobBuild.setJobBuildUrl(jobBuildUrl);
             }
+
+            CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
+            CsOssBucket csOssBucket = ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
+
+            List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), jobBuild.getId());
+            if (CollectionUtils.isEmpty(artifacts)) {
+                jobBuild.setNoArtifact(true);
+            } else {
+                jobBuild.setArtifacts(jobBuildArtifactDecorator.decorator(artifacts, csOssBucket));
+                jobBuild.setNoArtifact(false);
+            }
+
+            jobBuild.setChanges(getBuildChangeByBuildId(jobBuild.getId()));
+
+            if (!StringUtils.isEmpty(jobBuild.getUsername())) {
+                OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
+                if (ocUser != null) {
+                    ocUser.setPassword("");
+                    jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+                }
+            }
+            if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
+                long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
+                jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
+            }
+
+            jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
         }
         // Ago
         jobBuild.setAgo(TimeAgoUtils.format(jobBuild.getStartTime()));
 
-        if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
-            long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
-            jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
-        }
-
-        jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
         return jobBuild;
     }
 

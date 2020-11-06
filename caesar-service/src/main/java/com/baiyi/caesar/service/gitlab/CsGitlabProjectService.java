@@ -28,4 +28,6 @@ public interface CsGitlabProjectService {
     void updateCsGitlabProject(CsGitlabProject csGitlabProject);
 
     void deleteCsGitlabProjectById(int id);
+
+    int countAllCsGitlabProject();
 }

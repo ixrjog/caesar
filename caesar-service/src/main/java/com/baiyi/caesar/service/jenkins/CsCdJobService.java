@@ -27,4 +27,6 @@ public interface CsCdJobService {
     CsCdJob queryCsCdJobById(int id);
 
     int countCsCdJobByApplicationId(int applicationId);
+
+    int countAllCsCdJob();
 }

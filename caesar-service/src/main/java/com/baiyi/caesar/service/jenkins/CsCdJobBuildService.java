@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface CsCdJobBuildService {
 
+    List<CsCdJobBuild> queryLatestCsCdJobBuild(int length);
+
     DataTable<CsCdJobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
 
     List<CsCdJobBuild> queryCdJobBuildByCdJobId(int cdJobId);
