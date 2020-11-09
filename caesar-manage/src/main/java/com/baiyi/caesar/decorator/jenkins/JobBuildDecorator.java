@@ -87,13 +87,6 @@ public class JobBuildDecorator {
 
             jobBuild.setChanges(getBuildChangeByBuildId(jobBuild.getId()));
 
-            if (!StringUtils.isEmpty(jobBuild.getUsername())) {
-                OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
-                if (ocUser != null) {
-                    ocUser.setPassword("");
-                    jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
-                }
-            }
             if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
                 long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
                 jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
@@ -103,7 +96,13 @@ public class JobBuildDecorator {
         }
         // Ago
         jobBuild.setAgo(TimeAgoUtils.format(jobBuild.getStartTime()));
-
+        if (!StringUtils.isEmpty(jobBuild.getUsername())) {
+            OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
+            if (ocUser != null) {
+                ocUser.setPassword("");
+                jobBuild.setUser(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+            }
+        }
         return jobBuild;
     }
 
