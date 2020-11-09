@@ -3,6 +3,8 @@ package com.baiyi.caesar.service.jenkins.impl;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
+import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGoupByWeek;
+import com.baiyi.caesar.domain.vo.dashboard.JobTypeTotal;
 import com.baiyi.caesar.mapper.caesar.CsCiJobMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.github.pagehelper.Page;
@@ -23,6 +25,16 @@ public class CsCiJobServiceImpl implements CsCiJobService {
 
     @Resource
     private CsCiJobMapper csCiJobMapper;
+
+    @Override
+    public List<BuildTaskGoupByWeek> queryBuildTaskGoupByWeek() {
+        return csCiJobMapper.queryBuildTaskGoupByWeek();
+    }
+
+    @Override
+    public List<JobTypeTotal> queryJobTypeTotal() {
+        return csCiJobMapper.queryJobTypeTotal();
+    }
 
     @Override
     public DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobPageQuery pageQuery) {
@@ -85,7 +97,7 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     }
 
     @Override
-    public int countAllCsCiJob(){
+    public int countAllCsCiJob() {
         return csCiJobMapper.selectCount(null);
     }
 }

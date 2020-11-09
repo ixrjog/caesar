@@ -14,4 +14,8 @@ public interface DashboardFacade {
     DashboardVO.LatestTasks queryLatestTasks();
 
     DashboardVO.TaskExecutionGroupByHour queryTaskExecutionGroupByHour();
+
+    DashboardVO.JobTypeStatistics queryJobTypeStatistics();
+
+    DashboardVO.TaskExecutionGroupByWeek queryTaskExecutionGroupByWeek();
 }

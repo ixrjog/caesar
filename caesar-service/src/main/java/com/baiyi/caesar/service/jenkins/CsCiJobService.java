@@ -3,6 +3,8 @@ package com.baiyi.caesar.service.jenkins;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
+import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGoupByWeek;
+import com.baiyi.caesar.domain.vo.dashboard.JobTypeTotal;
 
 import java.util.List;
 
@@ -12,6 +14,10 @@ import java.util.List;
  * @Version 1.0
  */
 public interface CsCiJobService {
+
+    List<BuildTaskGoupByWeek> queryBuildTaskGoupByWeek();
+
+    List<JobTypeTotal> queryJobTypeTotal();
 
     DataTable<CsCiJob> queryCsCiJobByParam(CiJobParam.CiJobPageQuery pageQuery);
 

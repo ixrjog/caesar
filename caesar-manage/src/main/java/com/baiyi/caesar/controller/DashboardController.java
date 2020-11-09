@@ -42,4 +42,17 @@ public class DashboardController {
     public HttpResult<DashboardVO.TaskExecutionGroupByHour> queryTaskExecutionGroupByHour() {
         return new HttpResult<>(dashboardFacade.queryTaskExecutionGroupByHour());
     }
+
+    @ApiOperation(value = "查询任务分类统计")
+    @GetMapping(value = "/job/type/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DashboardVO.JobTypeStatistics> queryJobTypeStatistics() {
+        return new HttpResult<>(dashboardFacade.queryJobTypeStatistics());
+    }
+
+    @ApiOperation(value = "查询按周统计任务执行次数")
+    @GetMapping(value = "/task/execution/by/week/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DashboardVO.TaskExecutionGroupByWeek> queryTaskExecutionGroupByWeek() {
+        return new HttpResult<>(dashboardFacade.queryTaskExecutionGroupByWeek());
+    }
+
 }
