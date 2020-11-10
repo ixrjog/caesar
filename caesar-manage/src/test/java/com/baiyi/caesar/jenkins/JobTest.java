@@ -3,14 +3,17 @@ package com.baiyi.caesar.jenkins;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.tree.EngineVO;
 import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
@@ -42,6 +45,9 @@ public class JobTest extends BaseUnit {
 
     @Resource
     private JenkinsEngineFacade jenkinsEngineFacade;
+
+    @Resource
+    private CsCiJobService csCiJobService;
 
     @Test
     void testBuild() {
@@ -128,6 +134,14 @@ public class JobTest extends BaseUnit {
         BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(5);
         System.err.println(wrapper.isSuccess());
 
+    }
+
+    @Test
+    void testTryAuthorizedUser() {
+        SessionUtils.setUsername("gechong");
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
+        BusinessWrapper<Boolean> wrapper =  jobFacade.tryAuthorizedUser(csCiJob);
+        System.err.println(JSON.toJSON(wrapper));
     }
 
 }

@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade.jenkins;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
@@ -19,27 +20,27 @@ import java.util.List;
 
 public interface JobFacade {
 
+    BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob);
 
-    public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam);
+    BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam);
 
-    public BusinessWrapper<Boolean> abortCiJobBuild(int ciBuildId);
+    BusinessWrapper<Boolean> abortCiJobBuild(int ciBuildId);
 
-    public BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam);
+    BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam);
 
-    public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
+    DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
 
-    public DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
+    DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
 
-    public List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
+    List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
 
-    public BusinessWrapper<String> viewJobBuildOutput(JobBuildParam.ViewJobBuildOutputQuery query);
+    BusinessWrapper<String> viewJobBuildOutput(JobBuildParam.ViewJobBuildOutputQuery query);
 
+    CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId);
 
-    public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId);
+    CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(@Valid int buildId);
 
-    public CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(@Valid int buildId);
-
-    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId);
+    BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId);
 
     /**
      * 校正构建Job引擎
@@ -48,14 +49,13 @@ public interface JobFacade {
      * @param jobId
      * @return
      */
-    public BusinessWrapper<Boolean> correctionJobEngine(int buildType, int jobId);
+    BusinessWrapper<Boolean> correctionJobEngine(int buildType, int jobId);
 
+    void trackJobBuildTask();
 
-    public void trackJobBuildTask();
+    BusinessWrapper<Boolean> deleteBuildJob(int ciJobId);
 
-    public BusinessWrapper<Boolean> deleteBuildJob(int ciJobId);
-
-    public BusinessWrapper<Boolean> deleteDeploymentJob(int cdJobId);
+    BusinessWrapper<Boolean> deleteDeploymentJob(int cdJobId);
 
 
 }

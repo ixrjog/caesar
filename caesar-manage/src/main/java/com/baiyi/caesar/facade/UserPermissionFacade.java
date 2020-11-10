@@ -33,6 +33,8 @@ public interface UserPermissionFacade {
      */
     void cleanBusinessPermission(int businessType, int businessId);
 
+    List<OcUserPermission> queryBusinessPermission(int businessType, int businessId);
+
     OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId);
 
     /**

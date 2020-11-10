@@ -1,6 +1,7 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
 
+import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
@@ -21,10 +22,7 @@ import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
-import com.baiyi.caesar.facade.ApplicationFacade;
-import com.baiyi.caesar.facade.ServerGroupFacade;
-import com.baiyi.caesar.facade.UserFacade;
-import com.baiyi.caesar.facade.UserPermissionFacade;
+import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
@@ -117,10 +115,42 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
+        // 鉴权
+        BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
+        if (!tryAuthorizedUserWrapper.isSuccess())
+            return tryAuthorizedUserWrapper;
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
         if (StringUtils.isEmpty(buildParam.getBranch()))
             buildParam.setBranch(csCiJob.getBranch());
         iBuildJobHandler.build(csCiJob, buildParam);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob) {
+        OcUser operationUser = userFacade.getOcUserBySession();
+        // 允许运维操作
+        BusinessWrapper<Boolean> checkAccessLevelWrapper = userPermissionFacade.checkAccessLevel(operationUser, AccessLevel.OPS.getLevel());
+        if (checkAccessLevelWrapper.isSuccess())
+            return checkAccessLevelWrapper;
+
+        // 应用管理员
+        OcUserPermission ocUserPermission
+                = userPermissionFacade.queryUserPermissionByUniqueKey(operationUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId());
+        if (ocUserPermission != null && "ADMIN".equalsIgnoreCase(ocUserPermission.getRoleName()))
+            return BusinessWrapper.SUCCESS;
+
+        List<OcUserPermission> permissions = userPermissionFacade.queryBusinessPermission(BusinessType.APPLICATION_BUILD_JOB.getType(), csCiJob.getId());
+        // 判断是否有任务授权
+        if (CollectionUtils.isEmpty(permissions)) {
+            // 鉴权到应用
+            if (!userPermissionFacade.tryUserBusinessPermission(operationUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId()))
+                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        } else {
+            // 鉴权到job
+            if (permissions.stream().noneMatch(e -> e.getUserId().equals(operationUser.getId())))
+                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+        }
         return BusinessWrapper.SUCCESS;
     }
 
@@ -290,7 +320,7 @@ public class JobFacadeImpl implements JobFacade {
         List<CsCdJobBuild> builds = csCdJobBuildService.queryCdJobBuildByCdJobId(cdJobId);
         if (!CollectionUtils.isEmpty(builds)) {
             for (CsCdJobBuild csCdJobBuild : builds) {
-                if(!deleteBuildDetails(BuildType.BUILD.getType(), csCdJobBuild.getId()))
+                if (!deleteBuildDetails(BuildType.BUILD.getType(), csCdJobBuild.getId()))
                     return new BusinessWrapper<>(ErrorEnum.JENKINS_DELETE_JOB_BUILD_DETAILS_ERROR);
                 csCdJobBuildService.deleteCsCdJobBuildById(csCdJobBuild.getId());
             }
