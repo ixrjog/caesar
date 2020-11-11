@@ -55,4 +55,10 @@ public class DashboardController {
         return new HttpResult<>(dashboardFacade.queryTaskExecutionGroupByWeek());
     }
 
+    @ApiOperation(value = "查询热门排行")
+    @GetMapping(value = "/hot/top/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DashboardVO.HotTopStatistics> queryHotTopStatistics() {
+        return new HttpResult<>(dashboardFacade.queryHotTopStatistics());
+    }
+
 }

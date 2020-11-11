@@ -73,8 +73,6 @@ public class DashboardVO {
         private List<BuildTaskGoupByWeek> buildTaskGoupByWeeks;
     }
 
-
-
     @Data
     @NoArgsConstructor
     @ApiModel
@@ -86,4 +84,17 @@ public class DashboardVO {
 
     }
 
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class HotTopStatistics implements Serializable {
+
+        private static final long serialVersionUID = -1797833619843266343L;
+        @ApiModelProperty(value = "热门应用")
+        private List<HotApplication> hotApplications;
+
+        @ApiModelProperty(value = "活跃用户")
+        private List<HotUser> hotUsers;
+    }
 }

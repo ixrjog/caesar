@@ -18,4 +18,6 @@ public interface DashboardFacade {
     DashboardVO.JobTypeStatistics queryJobTypeStatistics();
 
     DashboardVO.TaskExecutionGroupByWeek queryTaskExecutionGroupByWeek();
+
+    DashboardVO.HotTopStatistics queryHotTopStatistics();
 }

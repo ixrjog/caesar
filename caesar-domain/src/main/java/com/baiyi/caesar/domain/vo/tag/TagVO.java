@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,8 +19,10 @@ public class TagVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Tag {
+    public static class Tag implements Serializable {
 
+        private static final long serialVersionUID = 1445359231777384339L;
+        
         @ApiModelProperty(value = "主键",example="1")
         private Integer id;
 

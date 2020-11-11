@@ -9,6 +9,7 @@ import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
 import com.baiyi.caesar.facade.UserPermissionFacade;
@@ -43,6 +44,12 @@ public class ApplicationDecorator {
 
     @Resource
     private CsApplicationServerGroupService csApplicationServerGroupService;
+
+    public HotApplication decorator(HotApplication hotApplication) {
+        List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(hotApplication.getId());
+        hotApplication.setTags(acqTagsByMembers(members));
+        return hotApplication;
+    }
 
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
         if (extend == 0) return application;

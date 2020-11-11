@@ -4,6 +4,8 @@ import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour;
+import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
+import com.baiyi.caesar.domain.vo.dashboard.HotUser;
 
 import java.util.List;
 
@@ -13,6 +15,10 @@ import java.util.List;
  * @Version 1.0
  */
 public interface CsCiJobBuildService {
+
+    List<HotApplication> queryHotApplication(int length);
+
+    List<HotUser> queryHotUser(int length);
 
     List<BuildTaskGroupByHour> queryCiJobBuildGroupByHour();
 

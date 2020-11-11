@@ -4,6 +4,8 @@ import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour;
+import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
+import com.baiyi.caesar.domain.vo.dashboard.HotUser;
 import com.baiyi.caesar.mapper.caesar.CsCiJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.github.pagehelper.Page;
@@ -26,9 +28,17 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     @Resource
     private CsCiJobBuildMapper csCiJobBuildMapper;
 
-//    @Resource
-//    private CsJobBuildArtifactService csJobBuildArtifactService;
+    @Override
+    public List<HotApplication> queryHotApplication(int length) {
+        PageHelper.startPage(1, length);
+        return csCiJobBuildMapper.queryHotApplication();
+    }
 
+    @Override
+    public List<HotUser> queryHotUser(int length) {
+        PageHelper.startPage(1, length);
+        return csCiJobBuildMapper.queryHotUser();
+    }
 
     @Override
     public List<BuildTaskGroupByHour> queryCiJobBuildGroupByHour() {
