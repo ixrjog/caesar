@@ -20,8 +20,8 @@ public class GitlabBranchHandler {
         return GitlabServerContainer.getGitlabAPI(gitlabName).getBranches(projectId);
     }
 
-    public GitlabBranch getBranch(String gitlabName, Integer projectId,String branch) throws IOException {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getBranch(projectId,branch);
+    public GitlabBranch getBranch(String gitlabName, Integer projectId, String branch) throws IOException {
+        return GitlabServerContainer.getGitlabAPI(gitlabName).getBranch(projectId, branch);
     }
 
     public List<GitlabTag> getTags(String gitlabName, Integer projectId) {

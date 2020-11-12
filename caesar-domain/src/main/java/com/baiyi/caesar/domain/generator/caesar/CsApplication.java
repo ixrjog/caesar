@@ -33,15 +33,21 @@ public class CsApplication {
     private Integer engineType;
 
     /**
+     * 启用GitFlow
+     */
+    @Column(name = "enable_gitflow")
+    private Boolean enableGitflow;
+
+    /**
      * 创建时间
      */
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
@@ -133,6 +139,24 @@ public class CsApplication {
      */
     public void setEngineType(Integer engineType) {
         this.engineType = engineType;
+    }
+
+    /**
+     * 获取启用GitFlow
+     *
+     * @return enable_gitflow - 启用GitFlow
+     */
+    public Boolean getEnableGitflow() {
+        return enableGitflow;
+    }
+
+    /**
+     * 设置启用GitFlow
+     *
+     * @param enableGitflow 启用GitFlow
+     */
+    public void setEnableGitflow(Boolean enableGitflow) {
+        this.enableGitflow = enableGitflow;
     }
 
     /**

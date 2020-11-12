@@ -31,6 +31,7 @@ public class ApplicationVO {
         private String name;
         private String applicationKey;
         private Integer kubernetesApplicationId;
+        private Boolean enableGitflow;
         private Integer engineType;
         private Date createTime;
         private Date updateTime;

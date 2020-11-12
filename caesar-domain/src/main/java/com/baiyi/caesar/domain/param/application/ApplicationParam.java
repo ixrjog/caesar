@@ -51,6 +51,9 @@ public class ApplicationParam {
     @ApiModel
     public static class ScmMemberBranchQuery {
 
+        @ApiModelProperty(value = "构建任务id")
+        private Integer ciJobId;
+
         @ApiModelProperty(value = "scm成员id")
         @NotNull
         private Integer scmMemberId;

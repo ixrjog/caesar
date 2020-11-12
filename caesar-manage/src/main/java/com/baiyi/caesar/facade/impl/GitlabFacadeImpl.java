@@ -6,6 +6,7 @@ import com.baiyi.caesar.builder.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
@@ -21,6 +22,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.*;
 import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
@@ -28,10 +30,12 @@ import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
+import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -111,7 +115,16 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Resource
-    private  ApplicationFacade  applicationFacade;
+    private CsApplicationService csApplicationService;
+
+    @Resource
+    private ApplicationFacade applicationFacade;
+
+    @Resource
+    private CsCiJobService csCiJobService;
+
+    @Resource
+    private EnvFacade envFacade;
 
     private BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
@@ -289,8 +302,19 @@ public class GitlabFacadeImpl implements GitlabFacade {
         CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberBranchQuery.getScmMemberId());
         if (csApplicationScmMember == null)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
-        return queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag());
+        CsApplication csApplication = csApplicationService.queryCsApplicationById(csApplicationScmMember.getApplicationId());
+        String envName = null;
+        if (csApplication.getEnableGitflow() && !IDUtils.isEmpty(scmMemberBranchQuery.getCiJobId())) {
+            CsCiJob csCiJob = csCiJobService.queryCsCiJobById(scmMemberBranchQuery.getCiJobId());
+            envName = envFacade.queryEnvNameByType(csCiJob.getEnvType());
+        }
+        BusinessWrapper<GitlabBranchVO.Repository> repositoryWrapper
+                = queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag(), csApplication.getEnableGitflow(), envName);
+        if (!repositoryWrapper.isSuccess())
+            return repositoryWrapper;
+        return repositoryWrapper;
     }
+
 
     @Override
     public BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
@@ -300,10 +324,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
         return queryGitlabProjectBranchCommit(csApplicationScmMember.getScmId(), query.getBranch());
     }
 
-    private BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag) {
+    private BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag, boolean enableGitflow, String envName) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
         List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
+        if (enableGitflow && !StringUtils.isEmpty(envName))
+            branches = branches.stream().filter(e -> filterBranchByGitflow(envName, e)).collect(Collectors.toList());
         GitlabBranchVO.Repository repository = new GitlabBranchVO.Repository();
         List<GitlabBranchVO.Option> options = Lists.newArrayList();
         options.add(GitlabBranchConvert.build("Branches", branches));
@@ -315,4 +341,35 @@ public class GitlabFacadeImpl implements GitlabFacade {
         return new BusinessWrapper<>(repository);
     }
 
+    private boolean filterBranchByGitflow(String envName, GitlabBranchVO.BaseBranch baseBranch) {
+        if ("dev".equals(envName) || "daily".equals(envName)) {
+            if (baseBranch.getName().equals("dev")
+                    || baseBranch.getName().equals("develop")
+                    || baseBranch.getName().equals("daily")
+                    || baseBranch.getName().startsWith("feature/")
+                    || baseBranch.getName().startsWith("support/")
+                    || baseBranch.getName().startsWith("release/")
+                    || baseBranch.getName().startsWith("hotfix/")
+                    || baseBranch.getName().equals("master")
+            ) return true;
+            return false;
+        }
+        if ("gray".equals(envName)) {
+            if (baseBranch.getName().equals("gray")
+                    || baseBranch.getName().startsWith("support/")
+                    || baseBranch.getName().startsWith("release/")
+                    || baseBranch.getName().startsWith("hotfix/")
+                    || baseBranch.getName().equals("master")
+            ) return true;
+            return false;
+        }
+        if ("prod".equals(envName)) {
+            if (baseBranch.getName().startsWith("support/")
+                    || baseBranch.getName().startsWith("hotfix/")
+                    || baseBranch.getName().equals("master")
+            ) return true;
+            return false;
+        }
+        return true;
+    }
 }

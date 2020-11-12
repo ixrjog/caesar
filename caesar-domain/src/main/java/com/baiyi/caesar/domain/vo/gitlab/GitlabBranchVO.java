@@ -17,7 +17,6 @@ public class GitlabBranchVO {
     @NoArgsConstructor
     @ApiModel
     public static class Repository {
-        // private Map<String, List<GitlabBranchVO.BaseBranch>>  branchMap;
         private List<Option> options;
     }
 
