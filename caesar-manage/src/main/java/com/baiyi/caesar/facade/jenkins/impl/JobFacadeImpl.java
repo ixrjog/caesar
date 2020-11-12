@@ -280,6 +280,7 @@ public class JobFacadeImpl implements JobFacade {
         if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != lastBuildNumber + 1) {
             csJobEngine.setLastBuildNumber(lastBuildNumber);
             csJobEngine.setNextBuildNumber(lastBuildNumber + 1);
+            csJobEngineService.updateCsJobEngine(csJobEngine);
         }
     }
 
