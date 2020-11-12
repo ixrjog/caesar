@@ -343,33 +343,27 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     private boolean filterBranchByGitflow(String envName, GitlabBranchVO.BaseBranch baseBranch) {
         if ("dev".equals(envName) || "daily".equals(envName)) {
-            if (baseBranch.getName().equals("dev")
+            return baseBranch.getName().equals("dev")
                     || baseBranch.getName().equals("develop")
                     || baseBranch.getName().equals("daily")
                     || baseBranch.getName().startsWith("feature/")
                     || baseBranch.getName().startsWith("support/")
                     || baseBranch.getName().startsWith("release/")
                     || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master")
-            ) return true;
-            return false;
+                    || baseBranch.getName().equals("master");
         }
         if ("gray".equals(envName)) {
-            if (baseBranch.getName().equals("gray")
+            return baseBranch.getName().equals("gray")
                     || baseBranch.getName().startsWith("support/")
                     || baseBranch.getName().startsWith("release/")
                     || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master")
-            ) return true;
-            return false;
+                    || baseBranch.getName().equals("master");
         }
         if ("prod".equals(envName)) {
-            if (baseBranch.getName().startsWith("support/")
+            return baseBranch.getName().startsWith("support/")
                     || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master")
-            ) return true;
-            return false;
+                    || baseBranch.getName().equals("master");
         }
-        return true;
+        return true; 
     }
 }
