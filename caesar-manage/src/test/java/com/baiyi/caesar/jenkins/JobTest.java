@@ -2,6 +2,7 @@ package com.baiyi.caesar.jenkins;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.RegexUtils;
 import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
@@ -48,6 +49,11 @@ public class JobTest extends BaseUnit {
 
     @Resource
     private CsCiJobService csCiJobService;
+
+    @Test
+    void testCorrectionJobEngine(){
+        jobFacade.correctionJobEngine(BuildType.BUILD.getType(),95);
+    }
 
     @Test
     void testBuild() {

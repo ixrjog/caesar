@@ -364,6 +364,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
                     || baseBranch.getName().startsWith("hotfix/")
                     || baseBranch.getName().equals("master");
         }
-        return true; 
+        return true;
     }
 }
