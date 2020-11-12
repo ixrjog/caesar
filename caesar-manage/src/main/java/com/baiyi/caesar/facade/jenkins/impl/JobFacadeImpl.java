@@ -233,6 +233,8 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJobId);
+
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
         Map<String, String> paramMap = JenkinsUtils.convert(jenkinsJobParameters);
         if (!paramMap.containsKey("serverGroup"))
@@ -242,7 +244,7 @@ public class JobFacadeImpl implements JobFacade {
         // 鉴权（必须在应用中指定服务器组配置）
         if (serverGroups.stream().noneMatch(e -> e.getServerGroupName().equals(serverGroupName)))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
-        return serverGroupFacade.queryServerGroupHostPattern(serverGroupName);
+        return serverGroupFacade.queryServerGroupHostPattern(serverGroupName, csCiJob.getEnvType());
     }
 
     /**

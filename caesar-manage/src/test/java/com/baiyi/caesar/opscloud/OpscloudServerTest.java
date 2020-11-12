@@ -1,5 +1,6 @@
 package com.baiyi.caesar.opscloud;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
@@ -29,8 +30,8 @@ public class OpscloudServerTest extends BaseUnit {
     @Test
     void testQueryServer() {
         try {
-            Map<String, List<OcServer>> map = opscloudServer.queryServerGroupHostPattern("group_opscloud");
-            System.err.println(map);
+            Map<String, List<OcServer>> map = opscloudServer.queryServerGroupHostPattern("group_opscloud",4);
+            System.err.println(JSON.toJSON(map));
         } catch (IOException e) {
         }
     }

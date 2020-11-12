@@ -31,10 +31,11 @@ public class OpscloudServer {
      * @return
      * @throws IOException
      */
-    public Map<String, List<OcServer>> queryServerGroupHostPattern(String serverGroupName) throws IOException {
-        String url = "/server/group/pattern/query";
-        ServerGroupParam.ServerGroupHostPatternQuery query = new ServerGroupParam.ServerGroupHostPatternQuery();
+    public Map<String, List<OcServer>> queryServerGroupHostPattern(String serverGroupName,int envType) throws IOException {
+        String url = "/server/group/env/pattern/query";
+        ServerGroupParam.ServerGroupEnvHostPatternQuery query = new ServerGroupParam.ServerGroupEnvHostPatternQuery();
         query.setServerGroupName(serverGroupName);
+        query.setEnvType(envType);
         JsonNode jsonNode = OpscloudHttpUtils.httpPostExecutor(url, query);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<Map<String, List<OcServer>>>() {

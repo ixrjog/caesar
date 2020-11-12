@@ -16,10 +16,13 @@ public class ServerGroupParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ServerGroupHostPatternQuery {
+    public static class ServerGroupEnvHostPatternQuery {
 
         @ApiModelProperty(value = "服务器组名")
         private String serverGroupName;
+
+        @ApiModelProperty(value = "环境类型")
+        private Integer envType;
 
     }
 

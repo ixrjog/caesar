@@ -378,9 +378,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     }
 
     @Override
-    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName) {
+    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName,Integer envType) {
         try {
-            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName);
+            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName,envType);
             List<ServerGroupHostPatternVO.HostPattern> hostPatterns = Lists.newArrayList();
             hostPatternMap.forEach((k, v) -> {
                 ServerGroupHostPatternVO.HostPattern hostPattern = ServerGroupHostPatternVO.HostPattern.builder()
