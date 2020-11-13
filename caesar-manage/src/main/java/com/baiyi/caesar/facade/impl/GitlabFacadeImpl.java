@@ -6,6 +6,7 @@ import com.baiyi.caesar.builder.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.GitlabUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
@@ -73,8 +74,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private CsGitlabGroupService csGitlabGroupService;
-
-
+    
     @Resource
     private GitlabInstanceDecorator gitlabInstanceDecorator;
 
@@ -234,7 +234,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
             deleteGitlabGroupByMap(groupMap); // 删除不存在的项目
         } catch (IOException e) {
         }
-
     }
 
     private void saveGitlabProject(int instanceId, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
@@ -284,7 +283,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
         });
     }
 
-
     private Map<Integer, CsGitlabProject> getGitlabProjectMap(int instanceId) {
         List<CsGitlabProject> projects = csGitlabProjectService.queryCsGitlabProjectByInstanceId(instanceId);
         if (CollectionUtils.isEmpty(projects)) return Maps.newHashMap();
@@ -315,7 +313,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
         return repositoryWrapper;
     }
 
-
     @Override
     public BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
         CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(query.getScmMemberId());
@@ -329,7 +326,8 @@ public class GitlabFacadeImpl implements GitlabFacade {
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
         List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
         if (enableGitflow && !StringUtils.isEmpty(envName))
-            branches = branches.stream().filter(e -> filterBranchByGitflow(envName, e)).collect(Collectors.toList());
+            branches = branches.stream().filter(e ->
+                    GitlabUtils.filterBranchByGitflow(envName, e)).collect(Collectors.toList());
         GitlabBranchVO.Repository repository = new GitlabBranchVO.Repository();
         List<GitlabBranchVO.Option> options = Lists.newArrayList();
         options.add(GitlabBranchConvert.build("Branches", branches));
@@ -341,29 +339,4 @@ public class GitlabFacadeImpl implements GitlabFacade {
         return new BusinessWrapper<>(repository);
     }
 
-    private boolean filterBranchByGitflow(String envName, GitlabBranchVO.BaseBranch baseBranch) {
-        if ("dev".equals(envName) || "daily".equals(envName)) {
-            return baseBranch.getName().equals("dev")
-                    || baseBranch.getName().equals("develop")
-                    || baseBranch.getName().equals("daily")
-                    || baseBranch.getName().startsWith("feature/")
-                    || baseBranch.getName().startsWith("support/")
-                    || baseBranch.getName().startsWith("release/")
-                    || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master");
-        }
-        if ("gray".equals(envName)) {
-            return baseBranch.getName().equals("gray")
-                    || baseBranch.getName().startsWith("support/")
-                    || baseBranch.getName().startsWith("release/")
-                    || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master");
-        }
-        if ("prod".equals(envName)) {
-            return baseBranch.getName().startsWith("support/")
-                    || baseBranch.getName().startsWith("hotfix/")
-                    || baseBranch.getName().equals("master");
-        }
-        return true;
-    }
 }

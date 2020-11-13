@@ -16,7 +16,6 @@ import org.gitlab.api.models.GitlabBranchCommit;
  */
 public interface GitlabFacade {
 
-
     DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery);
 
     void webhooksV1(GitlabHooksVO.Webhooks webhooks);
