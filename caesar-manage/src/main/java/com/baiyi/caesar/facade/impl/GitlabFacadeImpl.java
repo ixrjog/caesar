@@ -74,7 +74,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private CsGitlabGroupService csGitlabGroupService;
-    
+
     @Resource
     private GitlabInstanceDecorator gitlabInstanceDecorator;
 
