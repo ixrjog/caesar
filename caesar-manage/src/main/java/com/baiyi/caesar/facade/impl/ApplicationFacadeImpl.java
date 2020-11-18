@@ -3,6 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.bo.UserPermissionBO;
 import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RegexUtils;
@@ -19,6 +20,8 @@ import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
+import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.opscloud.OpscloudServer;
 import com.baiyi.caesar.service.application.CsApplicationEngineService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
@@ -176,9 +179,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (!CollectionUtils.isEmpty(csApplicationEngineService.queryCsApplicationEngineByApplicationId(id)))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_ENGINE_CONFIGURATION_WAS_NOT_DELETED);
         // job
-        if(csCiJobService.countCsCiJobByApplicationId(id) != 0)
+        if (csCiJobService.countCsCiJobByApplicationId(id) != 0)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_BUILD_JOB_CONFIGURATION_WAS_NOT_DELETED);
-        if(csCdJobService.countCsCdJobByApplicationId(id) != 0)
+        if (csCdJobService.countCsCdJobByApplicationId(id) != 0)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_DEPLOYMENT_JOB_CONFIGURATION_WAS_NOT_DELETED);
         // 删除应用授权
         userPermissionFacade.cleanBusinessPermission(BusinessType.APPLICATION.getType(), id);
@@ -262,6 +265,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJob.getId());
+        boolean isUpdateJobEngine = ciJob.getJobTpl() != null && !ciJob.getJobTpl().getId().equals(csCiJob.getJobTplId());
         OcUser ocUser = userFacade.getOcUserBySession();
         if (!isApplicationAdmin(csCiJob.getApplicationId(), ocUser.getId()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
@@ -270,12 +274,17 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (ciJob.getJobTpl() != null)
             pre.setJobTplId(ciJob.getJobTpl().getId());
         csCiJobService.updateCsCiJob(pre);
+        if (isUpdateJobEngine) {
+            IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.BUILD.getType());
+            iJobEngine.updateJobEngine(csCiJob.getId());
+        }
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJob.getId());
+        boolean isUpdateJobEngine = cdJob.getJobTplId() != null && !cdJob.getJobTpl().getId().equals(csCdJob.getJobTplId());
         OcUser ocUser = userFacade.getOcUserBySession();
         if (!isApplicationAdmin(csCdJob.getApplicationId(), ocUser.getId()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
@@ -284,6 +293,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (cdJob.getJobTpl() != null)
             pre.setJobTplId(cdJob.getJobTpl().getId());
         csCdJobService.updateCsCdJob(pre);
+        if (isUpdateJobEngine) {
+            IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.DEPLOYMENT.getType());
+            iJobEngine.updateJobEngine(csCdJob.getId());
+        }
         return BusinessWrapper.SUCCESS;
     }
 

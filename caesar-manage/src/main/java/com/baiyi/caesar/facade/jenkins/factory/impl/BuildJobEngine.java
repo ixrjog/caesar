@@ -4,6 +4,7 @@ import com.baiyi.caesar.builder.jenkins.JobEngineBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
@@ -59,18 +60,23 @@ public class BuildJobEngine<T> extends BaseJobEngine<T> {
         return !jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId());
     }
 
-    protected void updateJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
-        CsCiJob csCiJob = (CsCiJob) job;
+    protected boolean tryJenkinsEngine(int jobId, CsJobEngine engine) {
+        if (csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.BUILD.getType(), jobId, engine.getJenkinsInstanceId()) == null)
+            return true;
+        return !jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId());
+    }
 
-        if (tryJenkinsEngine(csCiJob.getId(), engine))
+    protected void updateJobEngine(CsApplication csApplication, T job, CsJobEngine csJobEngine) {
+        CsCiJob csCiJob = (CsCiJob) job;
+        if (tryJenkinsEngine(csCiJob.getId(), csJobEngine))
             return;
         // 更新JenkinsJob
         try {
-            CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCiJob, engine);
-            updateJobEngine(csJobEngine, csCiJob.getJobTplId(), engine);
+            CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+            updateJobEngine(csJobEngine, csCiJob.getJobTplId(), csJenkinsInstance.getName());
             csJobEngineService.updateCsJobEngine(csJobEngine);
         } catch (IOException e) {
-            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};", engine.getJenkinsInstanceId(), csCiJob.getName());
+            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};", csJobEngine.getJenkinsInstanceId(), csCiJob.getName());
         }
     }
 

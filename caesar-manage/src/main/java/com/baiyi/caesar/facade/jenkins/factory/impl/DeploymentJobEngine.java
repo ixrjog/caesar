@@ -2,9 +2,7 @@ package com.baiyi.caesar.facade.jenkins.factory.impl;
 
 import com.baiyi.caesar.builder.jenkins.JobEngineBuilder;
 import com.baiyi.caesar.common.base.BuildType;
-import com.baiyi.caesar.domain.generator.caesar.CsApplication;
-import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
-import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +43,13 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
         return !jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId());
     }
 
+    protected boolean tryJenkinsEngine(int jobId, CsJobEngine engine) {
+        if (csJobEngineService.queryCsJobEngineByUniqueKey(BuildType.BUILD.getType(), jobId, engine.getJenkinsInstanceId()) == null)
+            return true;
+        return !jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId());
+    }
+
+
     protected void createJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
         CsCdJob csCdJob = (CsCdJob) job;
         if (tryJenkinsEngine(csCdJob.getId(), engine))
@@ -59,17 +64,20 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
         }
     }
 
-    protected void updateJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
+
+
+    protected void updateJobEngine(CsApplication csApplication, T job, CsJobEngine csJobEngine) {
         CsCdJob csCdJob = (CsCdJob) job;
-        if (tryJenkinsEngine(csCdJob.getId(), engine))
+        if (tryJenkinsEngine(csCdJob.getId(), csJobEngine))
             return;
         // 更新JenkinsJob
         try {
-            CsJobEngine csJobEngine = JobEngineBuilder.build(csApplication, csCdJob, engine);
-            updateJobEngine(csJobEngine, csCdJob.getJobTplId(), engine);
+            CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+            updateJobEngine(csJobEngine, csCdJob.getJobTplId(), csJenkinsInstance.getName());
             csJobEngineService.updateCsJobEngine(csJobEngine);
+
         } catch (IOException e) {
-            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};", engine.getJenkinsInstanceId(), csCdJob.getName());
+            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};",csJobEngine.getJenkinsInstanceId(), csCdJob.getName());
         }
     }
 
