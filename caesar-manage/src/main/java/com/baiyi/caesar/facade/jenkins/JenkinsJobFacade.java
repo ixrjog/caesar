@@ -19,13 +19,18 @@ public interface JenkinsJobFacade {
      */
     void createJobEngine(int buildType, int jobId);
 
+    /**
+     * 更新Job引擎配置
+     * @param buildType
+     * @param jobId
+     */
+    void updateJobEngine(int buildType, int jobId);
+
     boolean deleteJobBuildEngine(int jobId);
 
     boolean deleteJobDeploymentEngine(int jobId);
 
-    void createJobBuildEngine(int jobId);
 
-    void createJobDeploymentEngine(int jobId);
 
     List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId);
 }
