@@ -9,7 +9,6 @@ import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -36,9 +35,9 @@ public interface JobFacade {
 
     BusinessWrapper<String> viewJobBuildOutput(JobBuildParam.ViewJobBuildOutputQuery query);
 
-    CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId);
+    CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId);
 
-    CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(@Valid int buildId);
+    CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(int buildId);
 
     BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId);
 
