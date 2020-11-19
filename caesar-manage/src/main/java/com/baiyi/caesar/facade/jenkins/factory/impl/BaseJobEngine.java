@@ -55,9 +55,6 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
-
-
-
     abstract protected T acqJob(int jobId);
 
     abstract protected CsApplication acqApplication(T job);
@@ -77,7 +74,6 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         T job = acqJob(jobId);
         CsApplication csApplication = acqApplication(job);
         List<CsJobEngine> engines = csJobEngineService.queryCsJobEngineByJobId(getKey(), jobId);
-        // List<ApplicationVO.Engine> engines = acqEngines(csApplication);
         if (CollectionUtils.isEmpty(engines)) return;
         engines.forEach(e -> updateJobEngine(csApplication, job, e));
     }
@@ -88,22 +84,20 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
 
     protected void createJobEngine(CsJobEngine csJobEngine, int jobTplId, ApplicationVO.Engine engine) throws IOException {
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(jobTplId);
-        if (csJobTpl != null) {
-            jenkinsServerHandler.createJob(engine.getInstance().getName(), csJobEngine.getName(), csJobTpl.getTplContent());
-            if (jenkinsServerHandler.getJob(engine.getInstance().getName(), csJobEngine.getName()) != null) {
-                csJobEngine.setTplVersion(csJobTpl.getTplVersion());
-                csJobEngine.setTplHash(csJobTpl.getTplHash());
-            }
+        if (csJobTpl == null) return;
+        jenkinsServerHandler.createJob(engine.getInstance().getName(), csJobEngine.getName(), csJobTpl.getTplContent());
+        if (jenkinsServerHandler.getJob(engine.getInstance().getName(), csJobEngine.getName()) != null) {
+            csJobEngine.setTplVersion(csJobTpl.getTplVersion());
+            csJobEngine.setTplHash(csJobTpl.getTplHash());
         }
     }
 
     protected void updateJobEngine(CsJobEngine csJobEngine, int jobTplId, String jenkinsInstanceName) throws IOException {
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(jobTplId);
-        if (csJobTpl != null) {
-            jenkinsServerHandler.updateJob(jenkinsInstanceName, csJobEngine.getName(), csJobTpl.getTplContent());
-            csJobEngine.setTplVersion(csJobTpl.getTplVersion());
-            csJobEngine.setTplHash(csJobTpl.getTplHash());
-        }
+        if (csJobTpl == null) return;
+        jenkinsServerHandler.updateJob(jenkinsInstanceName, csJobEngine.getName(), csJobTpl.getTplContent());
+        csJobEngine.setTplVersion(csJobTpl.getTplVersion());
+        csJobEngine.setTplHash(csJobTpl.getTplHash());
     }
 
     protected List<ApplicationVO.Engine> acqEngines(CsApplication csApplication) {

@@ -233,7 +233,6 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJobId);
-
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
         Map<String, String> paramMap = JenkinsUtils.convert(jenkinsJobParameters);
@@ -244,7 +243,30 @@ public class JobFacadeImpl implements JobFacade {
         // 鉴权（必须在应用中指定服务器组配置）
         if (serverGroups.stream().noneMatch(e -> e.getServerGroupName().equals(serverGroupName)))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
+
+        BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> hostPatternWrapper
+                = serverGroupFacade.queryServerGroupHostPattern(serverGroupName, csCiJob.getEnvType());
+        if (!hostPatternWrapper.isSuccess())
+            return hostPatternWrapper;
+
+        if (paramMap.containsKey("hostPattern")) {
+            String hostPattern = paramMap.get("hostPattern");
+            try {
+                // 默认选中主机分组
+                ServerGroupHostPatternVO.HostPattern hp = acqHostPattern(hostPatternWrapper.getBody(), hostPattern);
+            } catch (NullPointerException e) {
+
+            }
+        }
         return serverGroupFacade.queryServerGroupHostPattern(serverGroupName, csCiJob.getEnvType());
+    }
+
+    private ServerGroupHostPatternVO.HostPattern acqHostPattern(List<ServerGroupHostPatternVO.HostPattern> hostPatterns, String hostPattern) throws NullPointerException {
+        for (ServerGroupHostPatternVO.HostPattern h : hostPatterns) {
+            if (h.getHostPattern().equals(hostPattern))
+                return h;
+        }
+        throw new NullPointerException();
     }
 
     /**

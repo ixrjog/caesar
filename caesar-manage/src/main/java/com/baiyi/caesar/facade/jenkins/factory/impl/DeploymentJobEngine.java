@@ -49,7 +49,6 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
         return !jobEngineHandler.tryJenkinsInstanceActive(engine.getJenkinsInstanceId());
     }
 
-
     protected void createJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
         CsCdJob csCdJob = (CsCdJob) job;
         if (tryJenkinsEngine(csCdJob.getId(), engine))
@@ -64,8 +63,6 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
         }
     }
 
-
-
     protected void updateJobEngine(CsApplication csApplication, T job, CsJobEngine csJobEngine) {
         CsCdJob csCdJob = (CsCdJob) job;
         if (tryJenkinsEngine(csCdJob.getId(), csJobEngine))
@@ -75,7 +72,6 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
             CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
             updateJobEngine(csJobEngine, csCdJob.getJobTplId(), csJenkinsInstance.getName());
             csJobEngineService.updateCsJobEngine(csJobEngine);
-
         } catch (IOException e) {
             log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};",csJobEngine.getJenkinsInstanceId(), csCdJob.getName());
         }

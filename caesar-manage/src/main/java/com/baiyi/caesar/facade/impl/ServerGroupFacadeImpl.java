@@ -17,10 +17,7 @@ import com.baiyi.caesar.domain.param.server.SeverGroupPropertyParam;
 import com.baiyi.caesar.domain.param.user.UserServerTreeParam;
 import com.baiyi.caesar.domain.vo.server.*;
 import com.baiyi.caesar.domain.vo.tree.TreeVO;
-import com.baiyi.caesar.facade.ServerBaseFacade;
-import com.baiyi.caesar.facade.ServerCacheFacade;
-import com.baiyi.caesar.facade.ServerGroupFacade;
-import com.baiyi.caesar.facade.UserPermissionFacade;
+import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.factory.attribute.impl.AttributeAnsible;
 import com.baiyi.caesar.opscloud.OpscloudServer;
 import com.baiyi.caesar.server.facade.ServerAttributeFacade;
@@ -95,6 +92,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Resource
     private CsJobBuildServerService csJobBuildServerService;
+
+    @Resource
+    private EnvFacade envFacade;
 
     public static final boolean ACTION_ADD = true;
     public static final boolean ACTION_UPDATE = false;
@@ -378,13 +378,16 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     }
 
     @Override
-    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName,Integer envType) {
+    public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName, Integer envType) {
         try {
-            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName,envType);
+            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName, envType);
             List<ServerGroupHostPatternVO.HostPattern> hostPatterns = Lists.newArrayList();
+            String envName = envFacade.queryEnvNameByType(envType);
             hostPatternMap.forEach((k, v) -> {
                 ServerGroupHostPatternVO.HostPattern hostPattern = ServerGroupHostPatternVO.HostPattern.builder()
                         .hostPattern(k)
+                        .isSelected(false)
+                        .isMaster(k.endsWith("-" + envName))
                         .servers(convert(v))
                         .build();
                 hostPatterns.add(hostPattern);
@@ -397,14 +400,12 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     private List<ServerVO.Server> convert(List<OcServer> ocServers) {
         List<ServerVO.Server> servers = BeanCopierUtils.copyListProperties(ocServers, ServerVO.Server.class);
-        return servers.stream().map(s -> {
+        return servers.stream().peek(s -> {
             CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
-            if(csJobBuildServer != null){
-
-                ServerVO.DeployVersion deployVersion = BeanCopierUtils.copyProperties(csJobBuildServer,ServerVO.DeployVersion.class);
+            if (csJobBuildServer != null) {
+                ServerVO.DeployVersion deployVersion = BeanCopierUtils.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
                 s.setDeployVersion(deployVersion);
             }
-            return s;
         }).collect(Collectors.toList());
     }
 
