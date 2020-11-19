@@ -1,7 +1,10 @@
 package com.baiyi.caesar.facade.jenkins.factory.impl;
 
 import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
+import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
+import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
@@ -14,6 +17,7 @@ import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
+import com.offbytwo.jenkins.model.JobWithDetails;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -60,6 +64,35 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     abstract protected CsApplication acqApplication(T job);
 
     abstract boolean tryJenkinsEngine(int jobId, ApplicationVO.Engine engine);
+
+    private List<CsJobEngine> acqJobEngine(int jobId) {
+        return jobEngineHandler.queryJobEngine(getKey(), jobId);
+    }
+
+    public BusinessWrapper<Boolean> correctionJobEngine(int jobId) {
+        List<CsJobEngine> csJobEngines = acqJobEngine(jobId);
+        if (!CollectionUtils.isEmpty(csJobEngines))
+            for (CsJobEngine csJobEngine : csJobEngines) {
+                CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+                if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
+                    try {
+                        JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
+                        saveCsJobEngine(csJobEngine, job.getLastBuild() == null? 0: job.getLastBuild().getNumber());
+                    } catch (Exception ex) {
+                        return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
+                    }
+                }
+            }
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private void saveCsJobEngine(CsJobEngine csJobEngine, int lastBuildNumber) {
+        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != lastBuildNumber + 1) {
+            csJobEngine.setLastBuildNumber(lastBuildNumber);
+            csJobEngine.setNextBuildNumber(lastBuildNumber + 1);
+            csJobEngineService.updateCsJobEngine(csJobEngine);
+        }
+    }
 
     @Override
     public void createJobEngine(int jobId) {

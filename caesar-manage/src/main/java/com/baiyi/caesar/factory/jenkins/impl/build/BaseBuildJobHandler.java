@@ -20,6 +20,8 @@ import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
+import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
@@ -134,7 +136,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         BusinessWrapper<Boolean> wrapper = tryLimitConcurrentJob(csCiJob);
         if (!wrapper.isSuccess()) return wrapper;
-
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
@@ -145,11 +146,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csCiJob);
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
-        // 校正引擎
-        BusinessWrapper<Boolean> correctionJobEngineWrapper = jobFacade.correctionJobEngine(BuildType.BUILD.getType(), csCiJob.getId());
-        if (!correctionJobEngineWrapper.isSuccess())
-            return correctionJobEngineWrapper;
-
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username);

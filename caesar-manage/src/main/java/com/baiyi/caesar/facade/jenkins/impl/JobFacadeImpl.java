@@ -22,14 +22,18 @@ import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
-import com.baiyi.caesar.facade.*;
+import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.ServerGroupFacade;
+import com.baiyi.caesar.facade.UserFacade;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
+import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.JobWithDetails;
@@ -104,9 +108,6 @@ public class JobFacadeImpl implements JobFacade {
     private RedisUtil redisUtil;
 
     @Resource
-    private JobEngineHandler jobEngineHandler;
-
-    @Resource
     private JenkinsJobFacade jenkinsJobFacade;
 
     @Resource
@@ -119,6 +120,13 @@ public class JobFacadeImpl implements JobFacade {
         BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
         if (!tryAuthorizedUserWrapper.isSuccess())
             return tryAuthorizedUserWrapper;
+
+        // 校正引擎
+        IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.BUILD.getType());
+        BusinessWrapper<Boolean> correctionWrapper = iJobEngine.correctionJobEngine(csCiJob.getId());
+        if (!correctionWrapper.isSuccess())
+            return correctionWrapper;
+
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
         if (StringUtils.isEmpty(buildParam.getBranch()))
             buildParam.setBranch(csCiJob.getBranch());
@@ -169,6 +177,13 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById((deploymentParam.getCdJobId()));
+
+        // 校正引擎
+        IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.DEPLOYMENT.getType());
+        BusinessWrapper<Boolean> correctionWrapper = iJobEngine.correctionJobEngine(csCdJob.getId());
+        if (!correctionWrapper.isSuccess())
+            return correctionWrapper;
+
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(csCdJob.getJobType());
         iDeploymentJobHandler.deployment(csCdJob, deploymentParam);
         return BusinessWrapper.SUCCESS;
@@ -278,32 +293,8 @@ public class JobFacadeImpl implements JobFacade {
      */
     @Override
     public BusinessWrapper<Boolean> correctionJobEngine(int buildType, int jobId) {
-        List<CsJobEngine> csJobEngines = jobEngineHandler.queryJobEngine(buildType, jobId);
-        if (!CollectionUtils.isEmpty(csJobEngines))
-            for (CsJobEngine csJobEngine : csJobEngines) {
-                CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
-                if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
-                    try {
-                        JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
-                        if (job.getLastBuild() == null) {
-                            saveCsJobEngine(csJobEngine, 0);
-                        } else {
-                            saveCsJobEngine(csJobEngine, job.getLastBuild().getNumber());
-                        }
-                    } catch (Exception ex) {
-                        return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
-                    }
-                }
-            }
-        return BusinessWrapper.SUCCESS;
-    }
-
-    private void saveCsJobEngine(CsJobEngine csJobEngine, int lastBuildNumber) {
-        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != lastBuildNumber + 1) {
-            csJobEngine.setLastBuildNumber(lastBuildNumber);
-            csJobEngine.setNextBuildNumber(lastBuildNumber + 1);
-            csJobEngineService.updateCsJobEngine(csJobEngine);
-        }
+        IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(buildType);
+        return iJobEngine.correctionJobEngine(jobId);
     }
 
     @Override

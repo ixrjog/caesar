@@ -123,10 +123,6 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csJob);
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
-        // 校正引擎
-        BusinessWrapper<Boolean> correctionJobEngineWrapper = jobFacade.correctionJobEngine(BuildType.BUILD.getType(), csJob.getId());
-        if (!correctionJobEngineWrapper.isSuccess())
-            return correctionJobEngineWrapper;
 
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         raiseJobBuildNumber(csJob); // buildNumber +1
