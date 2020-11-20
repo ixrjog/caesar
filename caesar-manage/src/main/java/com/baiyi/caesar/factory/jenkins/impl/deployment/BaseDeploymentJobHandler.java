@@ -17,10 +17,10 @@ import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.facade.EnvFacade;
-import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.factory.engine.JobEngineCenter;
+import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -55,7 +55,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     private CsCdJobService csCdJobService;
 
     @Resource
-    private JobEngineHandler jenkinsJobEngineHandler;
+    private JobEngineCenter jenkinsJobEngineHandler;
 
     @Resource
     private CsApplicationService csApplicationService;
@@ -82,7 +82,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     public CsJobBuildServerService csJobBuildServerService;
 
     @Resource
-    public JobFacade jobFacade;
+    private JobEngineCenter jobEngineCenter;
 
     @Resource
     public EnvFacade envFacade;
@@ -150,7 +150,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                     .build();
             saveDetails(context);
             deploymentStartNotify(context); // 通知
-            jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+
+            jobEngineCenter.trackJobBuild(context);  // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,7 +172,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
     private void saveCsCdJobBuild(CsCdJobBuild csCdJobBuild) {
         csCdJobBuildService.addCsCdJobBuild(csCdJobBuild); // 写入任务
-        jenkinsJobEngineHandler.trackJobBuildHeartbeat(BuildType.DEPLOYMENT.getType(), csCdJobBuild.getId()); // 心跳
+        // 心跳
+        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()).trackJobBuildHeartbeat(csCdJobBuild.getId());
     }
 
     private QueueReference build(JobWithDetails job, Map<String, String> params) throws IOException {
@@ -231,13 +233,13 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     }
 
     private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCdJob csJob) {
-        return jenkinsJobEngineHandler.acqJobEngine(csJob);
+        return JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()).acqJobEngine(csJob.getId());
     }
 
     @Override
     public void trackJobDeployment(CsCdJobBuild csCdJobBuild) {
         DeploymentJobContext context = acqDeploymentJobContext(csCdJobBuild);
-        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()).trackJobBuild(context); // 追踪任务
     }
 
     @Override

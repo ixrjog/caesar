@@ -11,7 +11,8 @@ import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
-import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
+import com.baiyi.caesar.factory.engine.JobEngineCenter;
+import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
@@ -51,7 +52,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     protected CsJobEngineService csJobEngineService;
 
     @Resource
-    protected JobEngineHandler jobEngineHandler;
+    protected JobEngineCenter jobEngineHandler;
 
     @Resource
     private CsJobTplService csJobTplService;
@@ -66,7 +67,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     abstract boolean tryJenkinsEngine(int jobId, ApplicationVO.Engine engine);
 
     private List<CsJobEngine> acqJobEngine(int jobId) {
-        return jobEngineHandler.queryJobEngine(getKey(), jobId);
+        return JobEngineHandlerFactory.getIJobEngineHandlerByKey(getKey()).queryJobEngine(jobId);
     }
 
     public BusinessWrapper<Boolean> correctionJobEngine(int jobId) {
@@ -77,7 +78,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
                 if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
                     try {
                         JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
-                        saveCsJobEngine(csJobEngine, job.getLastBuild() == null? 0: job.getLastBuild().getNumber());
+                        saveCsJobEngine(csJobEngine, job.getLastBuild() == null ? 0 : job.getLastBuild().getNumber());
                     } catch (Exception ex) {
                         return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
                     }

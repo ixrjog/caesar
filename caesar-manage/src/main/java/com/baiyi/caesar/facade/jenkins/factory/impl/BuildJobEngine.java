@@ -42,7 +42,7 @@ public class BuildJobEngine<T> extends BaseJobEngine<T> {
 
     protected void createJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
         CsCiJob csCiJob = (CsCiJob) job;
-        if (tryJenkinsEngine(csCiJob.getId(), engine))
+        if (!tryJenkinsEngine(csCiJob.getId(), engine))
             return;
         // 创建JenkinsJob
         try {

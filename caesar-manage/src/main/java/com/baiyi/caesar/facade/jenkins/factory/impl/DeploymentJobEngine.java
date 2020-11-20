@@ -51,7 +51,7 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
 
     protected void createJobEngine(CsApplication csApplication, T job, ApplicationVO.Engine engine) {
         CsCdJob csCdJob = (CsCdJob) job;
-        if (tryJenkinsEngine(csCdJob.getId(), engine))
+        if (!tryJenkinsEngine(csCdJob.getId(), engine))
             return;
         // 创建JenkinsJob
         try {

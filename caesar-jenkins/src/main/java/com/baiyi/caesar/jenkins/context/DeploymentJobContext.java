@@ -17,10 +17,12 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class DeploymentJobContext {
+public class DeploymentJobContext implements BaseJobContext{
 
-    @Builder.Default
-    private int buildType = BuildType.DEPLOYMENT.getType();
+    @Override
+    public int getBuildType(){
+        return BuildType.DEPLOYMENT.getType();
+    }
 
     private CsApplication csApplication;
 

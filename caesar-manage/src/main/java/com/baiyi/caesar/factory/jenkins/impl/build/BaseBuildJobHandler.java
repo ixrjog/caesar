@@ -19,12 +19,10 @@ import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
-import com.baiyi.caesar.facade.jenkins.JobFacade;
-import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
-import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
+import com.baiyi.caesar.factory.engine.JobEngineCenter;
+import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
-import com.baiyi.caesar.factory.jenkins.engine.JobEngineHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
@@ -65,7 +63,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private ApplicationFacade applicationFacade;
 
     @Resource
-    private JobEngineHandler jenkinsJobEngineHandler;
+    private JobEngineCenter jenkinsJobEngineHandler;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -95,7 +93,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private EnvFacade envFacade;
 
     @Resource
-    private JobFacade jobFacade;
+    private JobEngineCenter jobEngineCenter;
 
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
@@ -161,15 +159,15 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         try {
             csCiJobBuild.setParameters(JSON.toJSONString(jobParamDetail.getJenkinsJobParameters()));
             saveCsCiJobBuild(csCiJobBuild);
-            BuildJobContext jobBuildContext = BuildJobContext.builder()
+            BuildJobContext context = BuildJobContext.builder()
                     .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                     .csCiJob(csCiJob)
                     .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
                     .build();
-            buildStartNotify(jobBuildContext); // 通知
-            jenkinsJobEngineHandler.trackJobBuild(jobBuildContext); // 追踪任务
+            buildStartNotify(context); // 通知
+            jobEngineCenter.trackJobBuild(context);  // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,13 +176,14 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     private void saveCsCiJobBuild(CsCiJobBuild csCiJobBuild) {
         csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
-        jenkinsJobEngineHandler.trackJobBuildHeartbeat(BuildType.BUILD.getType(), csCiJobBuild.getId()); // 心跳
+        // 心跳
+        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuildHeartbeat(csCiJobBuild.getId());
     }
 
     @Override
     public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
         BuildJobContext context = acqBuildJobContext(csCiJobBuild);
-        jenkinsJobEngineHandler.trackJobBuild(context); // 追踪任务
+        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuild(context); // 追踪任务
     }
 
     @Override
@@ -276,8 +275,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         return Joiner.on("/").join(applicationName, jobName, jobBuildNumber, csJobBuildArtifact.getArtifactFileName());
     }
 
-    private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCiJob csCiJob) {
-        return jenkinsJobEngineHandler.acqJobEngine(csCiJob);
+    private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCiJob csJob) {
+        return JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).acqJobEngine(csJob.getId());
     }
 
     private JobEngineVO.JobEngine acqJobEngineById(int jobEngineId) {

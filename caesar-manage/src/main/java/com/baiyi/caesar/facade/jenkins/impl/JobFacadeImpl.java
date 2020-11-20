@@ -177,7 +177,6 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById((deploymentParam.getCdJobId()));
-
         // 校正引擎
         IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.DEPLOYMENT.getType());
         BusinessWrapper<Boolean> correctionWrapper = iJobEngine.correctionJobEngine(csCdJob.getId());

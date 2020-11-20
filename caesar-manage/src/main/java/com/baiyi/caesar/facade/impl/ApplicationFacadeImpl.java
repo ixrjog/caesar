@@ -18,7 +18,10 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.user.UserBusinessGroupParam;
 import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
-import com.baiyi.caesar.facade.*;
+import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.ServerGroupFacade;
+import com.baiyi.caesar.facade.UserFacade;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
@@ -32,6 +35,7 @@ import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserGroupService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
+import org.springframework.ldap.AttributeInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -362,7 +366,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     .roleName("USER")
                     .build();
             userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
-            grantUserJenkinsUser(userId);
+            try {
+                grantUserJenkinsUser(userId);
+            }catch (AttributeInUseException ignored){
+            }
         }
         return BusinessWrapper.SUCCESS;
     }
