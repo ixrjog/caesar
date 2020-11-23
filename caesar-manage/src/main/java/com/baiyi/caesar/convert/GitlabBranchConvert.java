@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  */
 public class GitlabBranchConvert {
 
-
     public static GitlabBranchVO.Option build(String label, List<GitlabBranchVO.BaseBranch> branches) {
         List<GitlabBranchVO.Children> options = branches.stream().map(e -> {
             GitlabBranchVO.Children children = new GitlabBranchVO.Children();

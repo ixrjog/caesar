@@ -91,7 +91,7 @@ public abstract class BaseJobEngineHandler<T extends BaseJobContext> implements 
                 tryJenkinsInstanceActive(e.getJenkinsInstanceId())
         ).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(activeEngines))
-            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_NO_ENGINES_AVAILABLE); // 没有可用的工作引擎
+            return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_NO_ENGINES_AVAILABLE); // 无可用工作引擎
         return new BusinessWrapper<>(buildRandomCiJobEngine(activeEngines));
     }
 
@@ -101,7 +101,6 @@ public abstract class BaseJobEngineHandler<T extends BaseJobContext> implements 
         CsJobEngine csCiJobEngine = activeEngines.get(n);
         return jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
     }
-
 
     public boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jenkinsInstanceId);
