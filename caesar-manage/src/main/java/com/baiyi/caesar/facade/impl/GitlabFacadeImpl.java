@@ -1,8 +1,9 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.builder.GitlabGroupBuilder;
-import com.baiyi.caesar.builder.GitlabProjectBuilder;
-import com.baiyi.caesar.builder.GitlabWebhookBuilder;
+import com.baiyi.caesar.builder.gitlab.GitlabBaseBranchBuilder;
+import com.baiyi.caesar.builder.gitlab.GitlabGroupBuilder;
+import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
+import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -126,12 +127,13 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private EnvFacade envFacade;
 
-    private BusinessWrapper<GitlabBranchCommit> queryGitlabProjectBranchCommit(int id, String branch) {
+    private BusinessWrapper<GitlabBranchVO.BaseBranch> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
         try {
             GitlabBranch gitlabBranch = gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
-            return new BusinessWrapper<>(gitlabBranch.getCommit());
+            GitlabBranchCommit gitlabBranchCommit = gitlabBranch.getCommit();
+            return new BusinessWrapper<>(GitlabBaseBranchBuilder.build(csGitlabProject,gitlabBranchCommit,branch));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -314,7 +316,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    public BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
+    public BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query) {
         CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(query.getScmMemberId());
         if (csApplicationScmMember == null)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);

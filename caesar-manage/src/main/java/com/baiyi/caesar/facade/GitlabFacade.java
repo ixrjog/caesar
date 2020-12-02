@@ -7,7 +7,6 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.*;
-import org.gitlab.api.models.GitlabBranchCommit;
 
 /**
  * @Author baiyi
@@ -36,7 +35,7 @@ public interface GitlabFacade {
 
     BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
 
-    BusinessWrapper<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
+    BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
 
 
 }

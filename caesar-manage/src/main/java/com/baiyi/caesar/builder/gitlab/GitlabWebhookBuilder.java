@@ -1,4 +1,4 @@
-package com.baiyi.caesar.builder;
+package com.baiyi.caesar.builder.gitlab;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.gitlab.GitlabWebhookBO;

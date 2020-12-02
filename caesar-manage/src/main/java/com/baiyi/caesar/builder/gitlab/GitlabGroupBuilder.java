@@ -1,4 +1,4 @@
-package com.baiyi.caesar.builder;
+package com.baiyi.caesar.builder.gitlab;
 
 import com.baiyi.caesar.bo.gitlab.GitlabGroupBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;

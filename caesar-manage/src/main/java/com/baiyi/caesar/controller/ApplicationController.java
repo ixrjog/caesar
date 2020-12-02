@@ -87,7 +87,7 @@ public class ApplicationController {
 
     @ApiOperation(value = "查询应用SCM分支commit详情")
     @PostMapping(value = "/scm/member/branch/commit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<GitlabBranchCommit> queryApplicationSCMMemberBranchCommit(@RequestBody @Valid ApplicationParam.ScmMemberBranchCommitQuery query) {
+    public HttpResult<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(@RequestBody @Valid ApplicationParam.ScmMemberBranchCommitQuery query) {
         return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranchCommit(query));
     }
 

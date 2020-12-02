@@ -57,6 +57,7 @@ public class GitlabBranchVO {
         private String message;
         private String commit;
         private String commitMessage;
+        private String commitUrl;
     }
 
 }
