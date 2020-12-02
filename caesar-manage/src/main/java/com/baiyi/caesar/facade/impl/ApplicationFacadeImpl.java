@@ -5,8 +5,10 @@ import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
+import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.decorator.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -18,10 +20,7 @@ import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.user.UserBusinessGroupParam;
 import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
-import com.baiyi.caesar.facade.ApplicationFacade;
-import com.baiyi.caesar.facade.ServerGroupFacade;
-import com.baiyi.caesar.facade.UserFacade;
-import com.baiyi.caesar.facade.UserPermissionFacade;
+import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
@@ -35,6 +34,7 @@ import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.user.OcUserGroupService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
+import com.baiyi.caesar.service.user.OcUserService;
 import org.springframework.ldap.AttributeInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -108,6 +108,12 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private CsApplicationServerGroupService csApplicationServerGroupService;
+
+    @Resource
+    private EnvFacade envFacade;
+
+    @Resource
+    private OcUserService ocUserService;
 
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
@@ -368,7 +374,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
             try {
                 grantUserJenkinsUser(userId);
-            }catch (AttributeInUseException ignored){
+            } catch (AttributeInUseException ignored) {
             }
         }
         return BusinessWrapper.SUCCESS;
@@ -401,9 +407,13 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public BusinessWrapper<Boolean> grantUserApplicationBuildJob(int ciJobId, int userId) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(ciJobId);
-
         if (!tryApplicationAdmin(csCiJob.getApplicationId()))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_NOT_ADMIN);
+        // 测试总监权限控制
+        BusinessWrapper<Boolean> wrapper = enhanceAuthentication(csCiJob);
+        if (!wrapper.isSuccess())
+            return wrapper;
+
         if (!userPermissionFacade.tryUserBusinessPermission(userId, BusinessType.APPLICATION_BUILD_JOB.getType(), ciJobId)) {
             UserPermissionBO userPermissionBO = UserPermissionBO.builder()
                     .userId(userId)
@@ -414,7 +424,35 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
         }
         return BusinessWrapper.SUCCESS;
+    }
 
+    /**
+     * 测试总监权限控制
+     * @param csCiJob
+     * @return
+     */
+    @Deprecated
+    private BusinessWrapper<Boolean> enhanceAuthentication(CsCiJob csCiJob) {
+        if (!csCiJob.getJobType().equals(JobType.JAVA.getType()))
+            return BusinessWrapper.SUCCESS;
+        if (!"daily".equals(envFacade.queryEnvNameByType(csCiJob.getEnvType())))
+            return BusinessWrapper.SUCCESS;
+
+        // 应用管理员 tonghongping 童红平
+        String username = SessionUtils.getUsername();
+
+        // 是否测试总监配置
+        if ("tonghongping".equals(username)){
+            return BusinessWrapper.SUCCESS;
+        }else{
+            OcUser ocUser = ocUserService.queryOcUserByUsername("tonghongping");
+           // 非总监
+            OcUserPermission ocUserPermission
+                    = userPermissionFacade.queryUserPermissionByUniqueKey(ocUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId());
+            if (ocUserPermission == null || "USER".equalsIgnoreCase(ocUserPermission.getRoleName()))
+                return BusinessWrapper.SUCCESS;
+        }
+        return new BusinessWrapper<>(ErrorEnum.APPLICATION_JOB_AUTHENTICATION_FAILUER);
     }
 
     @Override
