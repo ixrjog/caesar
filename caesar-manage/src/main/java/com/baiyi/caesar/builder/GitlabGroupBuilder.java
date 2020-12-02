@@ -3,6 +3,7 @@ package com.baiyi.caesar.builder;
 import com.baiyi.caesar.bo.gitlab.GitlabGroupBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import org.gitlab.api.models.GitlabGroup;
 
 /**
@@ -12,10 +13,14 @@ import org.gitlab.api.models.GitlabGroup;
  */
 public class GitlabGroupBuilder {
 
-    public static CsGitlabGroup build(int instanceId, GitlabGroup gitlabGroup) {
-
+    public static CsGitlabGroup build(CsGitlabInstance csGitlabInstance, GitlabGroup gitlabGroup) {
+        // 协议跟随 Gitlab实例url转换
+        String webUrl = gitlabGroup.getWebUrl();
+        if (csGitlabInstance.getUrl().startsWith("https")) {
+            webUrl = webUrl.replace("http", "https");
+        }
         GitlabGroupBO bo = GitlabGroupBO.builder()
-                .instanceId(instanceId)
+                .instanceId(csGitlabInstance.getId())
                 .groupId(gitlabGroup.getId())
                 .name(gitlabGroup.getName())
                 .path(gitlabGroup.getPath())
@@ -23,7 +28,7 @@ public class GitlabGroupBuilder {
                 .groupVisibility(gitlabGroup.getVisibility().toString())
                 .fullName(gitlabGroup.getFullName())
                 .fullPath(gitlabGroup.getFullPath())
-                .webUrl(gitlabGroup.getWebUrl())
+                .webUrl(webUrl)
                 .build();
         return covert(bo);
     }

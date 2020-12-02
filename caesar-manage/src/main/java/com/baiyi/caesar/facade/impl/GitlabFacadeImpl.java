@@ -218,7 +218,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
         List<GitlabProject> gitlabProjects = gitlabProjectHandler.getProjects(csGitlabInstance.getName());
         if (CollectionUtils.isEmpty(gitlabProjects)) return;
-        gitlabProjects.forEach(e -> saveGitlabProject(instanceId, e, projectMap));
+        gitlabProjects.forEach(e -> saveGitlabProject(csGitlabInstance, e, projectMap));
         deleteGitlabProjectByMap(projectMap); // 删除不存在的项目
     }
 
@@ -230,14 +230,14 @@ public class GitlabFacadeImpl implements GitlabFacade {
         try {
             List<GitlabGroup> gitlabGroups = gitlabGroupHandler.getGroups(csGitlabInstance.getName());
             if (CollectionUtils.isEmpty(gitlabGroups)) return;
-            gitlabGroups.forEach(e -> saveGitlabGroup(instanceId, e, groupMap));
+            gitlabGroups.forEach(e -> saveGitlabGroup(csGitlabInstance, e, groupMap));
             deleteGitlabGroupByMap(groupMap); // 删除不存在的项目
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
-    private void saveGitlabProject(int instanceId, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
-        CsGitlabProject pre = GitlabProjectBuilder.build(instanceId, gitlabProject);
+    private void saveGitlabProject(CsGitlabInstance csGitlabInstance, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
+        CsGitlabProject pre = GitlabProjectBuilder.build(csGitlabInstance, gitlabProject);
         if (projectMap.containsKey(pre.getProjectId())) {
             CsGitlabProject csGitlabProject = projectMap.get(pre.getProjectId());
             pre.setId(csGitlabProject.getId());
@@ -249,8 +249,8 @@ public class GitlabFacadeImpl implements GitlabFacade {
         applicationFacade.updateApplicationScmMember(pre);
     }
 
-    private void saveGitlabGroup(int instanceId, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
-        CsGitlabGroup pre = GitlabGroupBuilder.build(instanceId, gitlabGroup);
+    private void saveGitlabGroup(CsGitlabInstance csGitlabInstance, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
+        CsGitlabGroup pre = GitlabGroupBuilder.build(csGitlabInstance, gitlabGroup);
         if (groupMap.containsKey(pre.getGroupId())) {
             CsGitlabGroup csGitlabGroup = groupMap.get(pre.getGroupId());
             pre.setId(csGitlabGroup.getId());

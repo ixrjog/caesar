@@ -2,6 +2,7 @@ package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.GitlabProjectBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import org.gitlab.api.models.GitlabNamespace;
 import org.gitlab.api.models.GitlabProject;
@@ -13,10 +14,17 @@ import org.gitlab.api.models.GitlabProject;
  */
 public class GitlabProjectBuilder {
 
-    public static CsGitlabProject build(Integer instanceId, GitlabProject gitlabProject) {
+    public static CsGitlabProject build(CsGitlabInstance csGitlabInstance, GitlabProject gitlabProject) {
+        // 协议跟随 Gitlab实例url转换
+        String webUrl = gitlabProject.getWebUrl();
+        String httpUrl = gitlabProject.getHttpUrl();
+        if (csGitlabInstance.getUrl().startsWith("https")) {
+            webUrl = webUrl.replace("http", "https");
+            httpUrl = httpUrl.replace("http", "https");
+        }
         GitlabNamespace namespace = gitlabProject.getNamespace();
         GitlabProjectBO bo = GitlabProjectBO.builder()
-                .instanceId(instanceId)
+                .instanceId(csGitlabInstance.getId())
                 .name(gitlabProject.getName())
                 .projectId(gitlabProject.getId())
                 .path(gitlabProject.getPath())
@@ -28,8 +36,8 @@ public class GitlabProjectBuilder {
                 .namespaceKind(namespace.getKind())
                 .description(gitlabProject.getDescription())
                 .sshUrl(gitlabProject.getSshUrl())
-                .webUrl(gitlabProject.getWebUrl())
-                .httpUrl(gitlabProject.getHttpUrl())
+                .webUrl(webUrl)
+                .httpUrl(httpUrl)
                 .defaultBranch(gitlabProject.getDefaultBranch())
                 .build();
         return covert(bo);
