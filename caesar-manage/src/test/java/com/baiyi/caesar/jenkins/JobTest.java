@@ -137,7 +137,9 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testJobDelete() {
-        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(5);
+        // canal-client-service-server-prod
+        // community-admin-server-gray
+        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(126);
         System.err.println(wrapper.isSuccess());
 
     }

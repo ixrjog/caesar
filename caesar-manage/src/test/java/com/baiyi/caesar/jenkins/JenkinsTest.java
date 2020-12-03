@@ -2,8 +2,6 @@ package com.baiyi.caesar.jenkins;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
 import com.baiyi.caesar.jenkins.config.JenkinsConfig;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
@@ -29,11 +27,6 @@ public class JenkinsTest extends BaseUnit {
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
-    @Resource
-    private JenkinsTplFacade jenkinsTplFacade;
-
-    @Resource
-    private JenkinsJobFacade jenkinsJobFacade;
 
     @Test
     void versionTest() {
