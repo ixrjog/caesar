@@ -1,6 +1,7 @@
 package com.baiyi.caesar.common.util;
 
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.google.common.base.Joiner;
 import org.springframework.util.StringUtils;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 public class GitlabUtils {
 
     // refs/heads/feature/deliver-report
+    public static final String COMMIT_BASE = "-/commit";
 
     private static final String REFS_BRANCH_PREFIX = "refs/heads/";
 
@@ -46,5 +48,15 @@ public class GitlabUtils {
                     || baseBranch.getName().equals("master");
         }
         return true;
+    }
+
+    /**
+     * 取CommitUrl
+     * @param webUrl
+     * @param commitId
+     * @return
+     */
+    public static String acqCommitUrl(String webUrl, String commitId) {
+        return Joiner.on("/").join(webUrl, COMMIT_BASE, commitId);
     }
 }

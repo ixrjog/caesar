@@ -12,6 +12,7 @@ import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
+import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -191,8 +192,7 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery) {
         DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);
-        List<CiJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobBuildVO.JobBuild.class);
-        return new DataTable<>(page.stream().map(e -> jobBuildDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(jobBuildDecorator.decorator(table.getData(), pageQuery.getExtend()), table.getTotalNum());
     }
 
     @Override
@@ -206,8 +206,7 @@ public class JobFacadeImpl implements JobFacade {
     public List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
         if (query.getSize() == null)
             query.setSize(10);
-        return csCiJobBuildService.queryCiJobBuildArtifact(query)
-                .stream().map(e -> jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(e, CiJobBuildVO.JobBuild.class), 1)).collect(Collectors.toList());
+        return  jobBuildDecorator.decorator(csCiJobBuildService.queryCiJobBuildArtifact(query),1);
     }
 
     @Override
@@ -235,7 +234,7 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
-        return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1);
+        return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class),JobBuildContext.builder().build(), 1);
     }
 
     @Override

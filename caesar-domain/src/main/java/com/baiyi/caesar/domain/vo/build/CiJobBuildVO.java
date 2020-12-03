@@ -59,6 +59,10 @@ public class CiJobBuildVO {
         private Integer engineBuildNumber;
         private String versionName;
         private String versionDesc;
+
+        @ApiModelProperty(value = "commit详情")
+        private BaseCommit commitDetails;
+
         private String commit;
         private String buildPhase;
         private String buildStatus;
@@ -81,11 +85,19 @@ public class CiJobBuildVO {
         private String comment;
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class BaseCommit {
+        private String commit;
+        private String commitUrl;
+    }
+
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildChange {
+    public static class BuildChange extends BaseCommit{
         @ApiModelProperty(value = "7位commitId")
         private String shortCommitId;
 
@@ -101,8 +113,9 @@ public class CiJobBuildVO {
         private String authorAbsoluteUrl;
         private Date updateTime;
         private Date createTime;
-        private String commit;
+        // private String commit;
         private String commitMsg;
+        // private String commitUrl;
     }
 
     @Data

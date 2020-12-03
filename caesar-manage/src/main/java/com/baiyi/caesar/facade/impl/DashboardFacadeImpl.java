@@ -75,9 +75,10 @@ public class DashboardFacadeImpl implements DashboardFacade {
     public DashboardVO.LatestTasks queryLatestTasks() {
         DashboardVO.LatestTasks latestTasks = new DashboardVO.LatestTasks();
         final int LatestTasksLength = 9;
-        List<CiJobBuildVO.JobBuild> latestBuildTasks = csCiJobBuildService.queryLatestCsCiJobBuild(LatestTasksLength)
-                .stream().map(e -> jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(e, CiJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
-        latestTasks.setLatestBuildTasks(latestBuildTasks);
+
+        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(LatestTasksLength),0);
+
+                latestTasks.setLatestBuildTasks(latestBuildTasks);
         latestTasks.setBuildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild());
 
         List<CdJobBuildVO.JobBuild> latestDeploymentTasks = csCdJobBuildService.queryLatestCsCdJobBuild(LatestTasksLength)

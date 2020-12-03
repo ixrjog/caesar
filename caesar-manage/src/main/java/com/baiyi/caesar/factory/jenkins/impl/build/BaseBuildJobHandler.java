@@ -9,6 +9,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -162,7 +163,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
             BuildJobContext context = BuildJobContext.builder()
                     .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                     .csCiJob(csCiJob)
-                    .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
+                    .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), JobBuildContext.builder().build(), 1))
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
                     .build();
@@ -192,7 +193,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         BuildJobContext context = BuildJobContext.builder()
                 .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                 .csCiJob(csCiJob)
-                .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1))
+                .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class),JobBuildContext.builder().build(), 1))
                 .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
                 .build();
         return context;
