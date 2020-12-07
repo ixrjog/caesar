@@ -116,6 +116,8 @@ public class JobFacadeImpl implements JobFacade {
 
     @Override
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
+        if(buildParam.getIsSilence() == null)
+            buildParam.setIsSilence(false);
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
         // 鉴权
         BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);

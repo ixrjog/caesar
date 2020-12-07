@@ -128,7 +128,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
-        build(csCiJob, csApplication, jobParamDetail, username);
+        build(csCiJob, csApplication, jobParamDetail, username, true);
     }
 
     @Override
@@ -138,16 +138,16 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername());
+        return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername(), buildParam.getIsSilence());
     }
 
-    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail, String username) {
+    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail, String username, Boolean isSilence) {
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csCiJob);
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
-        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username);
+        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username, isSilence);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             if (job == null)
@@ -193,7 +193,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         BuildJobContext context = BuildJobContext.builder()
                 .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                 .csCiJob(csCiJob)
-                .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class),JobBuildContext.builder().build(), 1))
+                .jobBuild(jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), JobBuildContext.builder().build(), 1))
                 .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
                 .build();
         return context;
@@ -211,6 +211,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     private void buildStartNotify(BuildJobContext context) {
+        if(context.getJobBuild().getIsSilence()) // 消息静默
+            return;
         try {
             IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
             dingtalkNotify.doNotify(NoticePhase.START.getType(), context);

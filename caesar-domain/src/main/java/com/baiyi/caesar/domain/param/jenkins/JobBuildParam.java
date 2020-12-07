@@ -75,6 +75,9 @@ public class JobBuildParam {
         @ApiModelProperty(value = "版本说明")
         private String versionDesc;
 
+        @ApiModelProperty(value = "通知静默")
+        private Boolean isSilence;
+
         private Map<String, String> paramMap;
 
     }

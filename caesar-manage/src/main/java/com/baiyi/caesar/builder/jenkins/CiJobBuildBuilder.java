@@ -18,10 +18,10 @@ import org.springframework.util.StringUtils;
  */
 public class CiJobBuildBuilder {
 
-    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, JobEngineVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch,String username) {
+    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, JobEngineVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch, String username, Boolean isSilence) {
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
         Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
-        String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", csCiJob.getJobBuildNumber() ) : jobParamDetail.getVersionName();
+        String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", csCiJob.getJobBuildNumber()) : jobParamDetail.getVersionName();
 
         String commit = gitlabBranch != null ? gitlabBranch.getCommit().getId() : "";
 
@@ -37,6 +37,7 @@ public class CiJobBuildBuilder {
                 .commit(commit)
                 .versionName(versionName)
                 .versionDesc(jobParamDetail.getVersionDesc())
+                .isSilence(isSilence != null ? isSilence : false)
                 .build();
         return covert(bo);
     }

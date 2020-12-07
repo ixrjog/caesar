@@ -27,6 +27,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="parameters" jdbcType="LONGVARCHAR" property="parameters"/>
         <result column="dingtalk_msg" jdbcType="LONGVARCHAR" property="dingtalkMsg"/>
+        <result column="is_silence" jdbcType="BIT" property="isSilence" />
         <result column="comment" jdbcType="LONGVARCHAR" property="comment"/>
     </resultMap>
 

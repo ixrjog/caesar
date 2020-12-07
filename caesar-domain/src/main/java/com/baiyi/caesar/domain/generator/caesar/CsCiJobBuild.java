@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "cs_ci_job_build")
 public class CsCiJobBuild {
@@ -105,6 +105,9 @@ public class CsCiJobBuild {
      */
     @Column(name = "dingtalk_msg")
     private String dingtalkMsg;
+
+    @Column(name = "is_silence")
+    private Boolean isSilence;
 
     /**
      * 描述
@@ -469,6 +472,14 @@ public class CsCiJobBuild {
      */
     public void setDingtalkMsg(String dingtalkMsg) {
         this.dingtalkMsg = dingtalkMsg;
+    }
+
+    public Boolean getSilence() {
+        return isSilence;
+    }
+
+    public void setSilence(Boolean silence) {
+        isSilence = silence;
     }
 
     /**

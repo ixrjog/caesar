@@ -180,6 +180,8 @@ public class BuildJobEngineHandler<T extends BaseJobContext> extends BaseJobEngi
     }
 
     private void buildEndNotify(BuildJobContext context) {
+        if(context.getJobBuild().getIsSilence()) // 消息静默
+            return;
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
