@@ -84,6 +84,12 @@ public class CsCiJobBuild {
     private String operationUsername;
 
     /**
+     * 静默
+     */
+    @Column(name = "is_silence")
+    private Boolean isSilence;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -105,9 +111,6 @@ public class CsCiJobBuild {
      */
     @Column(name = "dingtalk_msg")
     private String dingtalkMsg;
-
-    @Column(name = "is_silence")
-    private Boolean isSilence;
 
     /**
      * 描述
@@ -403,6 +406,24 @@ public class CsCiJobBuild {
     }
 
     /**
+     * 获取静默
+     *
+     * @return is_silence - 静默
+     */
+    public Boolean getIsSilence() {
+        return isSilence;
+    }
+
+    /**
+     * 设置静默
+     *
+     * @param isSilence 静默
+     */
+    public void setIsSilence(Boolean isSilence) {
+        this.isSilence = isSilence;
+    }
+
+    /**
      * 获取创建时间
      *
      * @return create_time - 创建时间
@@ -472,14 +493,6 @@ public class CsCiJobBuild {
      */
     public void setDingtalkMsg(String dingtalkMsg) {
         this.dingtalkMsg = dingtalkMsg;
-    }
-
-    public Boolean getSilence() {
-        return isSilence;
-    }
-
-    public void setSilence(Boolean silence) {
-        isSilence = silence;
     }
 
     /**

@@ -15,4 +15,4 @@ public interface CsCiJobBuildMapper extends Mapper<CsCiJobBuild> {
     List<HotUser> queryHotUser();
 
     List<HotApplication> queryHotApplication();
- }
+}
