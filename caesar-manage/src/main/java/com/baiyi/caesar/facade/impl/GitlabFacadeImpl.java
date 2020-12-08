@@ -133,7 +133,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         try {
             GitlabBranch gitlabBranch = gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
             GitlabBranchCommit gitlabBranchCommit = gitlabBranch.getCommit();
-            return new BusinessWrapper<>(GitlabBaseBranchBuilder.build(csGitlabProject,gitlabBranchCommit,branch));
+            return new BusinessWrapper<>(GitlabBaseBranchBuilder.build(csGitlabProject, gitlabBranchCommit, branch));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -264,7 +264,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
     }
 
-
     private void deleteGitlabProjectByMap(Map<Integer, CsGitlabProject> projectMap) {
         if (projectMap.isEmpty()) return;
         projectMap.keySet().forEach(k -> {
@@ -308,11 +307,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
             CsCiJob csCiJob = csCiJobService.queryCsCiJobById(scmMemberBranchQuery.getCiJobId());
             envName = envFacade.queryEnvNameByType(csCiJob.getEnvType());
         }
-        BusinessWrapper<GitlabBranchVO.Repository> repositoryWrapper
-                = queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag(), csApplication.getEnableGitflow(), envName);
-        if (!repositoryWrapper.isSuccess())
-            return repositoryWrapper;
-        return repositoryWrapper;
+        return queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag(), csApplication.getEnableGitflow(), envName);
     }
 
     @Override

@@ -73,7 +73,7 @@ public class DeploymentJobEngine<T> extends BaseJobEngine<T> {
             updateJobEngine(csJobEngine, csCdJob.getJobTplId(), csJenkinsInstance.getName());
             csJobEngineService.updateCsJobEngine(csJobEngine);
         } catch (IOException e) {
-            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};",csJobEngine.getJenkinsInstanceId(), csCdJob.getName());
+            log.error("更新任务引擎错误，jenkinsInstanceId = {}, csCiJobName = {};", csJobEngine.getJenkinsInstanceId(), csCdJob.getName());
         }
     }
 

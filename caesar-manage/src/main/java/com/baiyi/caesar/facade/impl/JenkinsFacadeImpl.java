@@ -228,22 +228,26 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
 
     private void upgradeJobTpl(CsJobTpl csJobTpl, List<CsJobEngine> csJobEngines) {
         if (CollectionUtils.isEmpty(csJobEngines)) return;
-        csJobEngines.forEach(e -> {
-            if (csJobTpl.getTplVersion() > e.getTplVersion()) {
-                try {
-                    CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(e.getJenkinsInstanceId());
-                    if (jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), e.getName())) {
-                        jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
-                    } else {
-                        jenkinsServerHandler.createJob(csJenkinsInstance.getName(), e.getName(), csJobTpl.getTplContent());
-                    }
-                    e.setTplVersion(csJobTpl.getTplVersion());
-                    e.setTplHash(csJobTpl.getTplHash());
-                    csJobEngineService.updateCsJobEngine(e);
-                } catch (IOException ignored) {
-                }
+        filterCsJobEnginesVersion(csJobTpl, csJobEngines).forEach(e -> upgradeJobTpl(csJobTpl, e));
+    }
+
+    private void upgradeJobTpl(CsJobTpl csJobTpl, CsJobEngine csJobEngine) {
+        try {
+            CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+            if (jenkinsServerHandler.tryJob(csJenkinsInstance.getName(), csJobEngine.getName())) {
+                jenkinsServerHandler.updateJob(csJenkinsInstance.getName(), csJobEngine.getName(), csJobTpl.getTplContent());
+            } else {
+                jenkinsServerHandler.createJob(csJenkinsInstance.getName(), csJobEngine.getName(), csJobTpl.getTplContent());
             }
-        });
+            csJobEngine.setTplVersion(csJobTpl.getTplVersion());
+            csJobEngine.setTplHash(csJobTpl.getTplHash());
+            csJobEngineService.updateCsJobEngine(csJobEngine);
+        } catch (IOException ignored) {
+        }
+    }
+    
+    private List<CsJobEngine> filterCsJobEnginesVersion(CsJobTpl csJobTpl, List<CsJobEngine> csJobEngines) {
+        return csJobEngines.stream().filter(e -> csJobTpl.getTplVersion() > e.getTplVersion()).collect(Collectors.toList());
     }
 
 }

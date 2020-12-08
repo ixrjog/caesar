@@ -42,13 +42,12 @@ public class KeyboxFacadeImpl implements KeyboxFacade {
         OcKeybox ocKeybox = ocKeyboxService.queryOcKeyboxBySystemUser(systemUser);
         if (ocKeybox == null)
             return null;
-        SSHKeyCredential key = SSHKeyCredential.builder()
+        return SSHKeyCredential.builder()
                 .systemUser(systemUser)
                 .privateKey(stringEncryptor.decrypt(ocKeybox.getPrivateKey()))
                 .publicKey(ocKeybox.getPublicKey())
                 .passphrase(StringUtils.isEmpty(ocKeybox.getPassphrase()) ? "" : stringEncryptor.decrypt(ocKeybox.getPassphrase()))
                 .build();
-        return key;
     }
 
     @Override

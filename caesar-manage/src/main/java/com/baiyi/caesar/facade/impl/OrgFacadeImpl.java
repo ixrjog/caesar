@@ -110,8 +110,7 @@ public class OrgFacadeImpl implements OrgFacade {
         List<OcOrgDepartment> children = queryDepartmentByParentId(dropDept.getParentId());
         draggingDept.setParentId(dropDept.getParentId());
         int order = 1;
-        for (int i = 0; i < children.size(); i++) {
-            OcOrgDepartment c = children.get(i);
+        for (OcOrgDepartment c : children) {
             if (c.getId() == dropDept.getId()) {
                 draggingDept.setDeptOrder(order);
                 ocOrgDepartmentService.updateOcOrgDepartment(draggingDept);
@@ -135,8 +134,7 @@ public class OrgFacadeImpl implements OrgFacade {
         List<OcOrgDepartment> children = queryDepartmentByParentId(dropDept.getParentId());
         draggingDept.setParentId(dropDept.getParentId());
         int order = 1;
-        for (int i = 0; i < children.size(); i++) {
-            OcOrgDepartment c = children.get(i);
+        for (OcOrgDepartment c : children) {
             c.setDeptOrder(order);
             ocOrgDepartmentService.updateOcOrgDepartment(c);
             order += 1;

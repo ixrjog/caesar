@@ -311,6 +311,7 @@ public class JobFacadeImpl implements JobFacade {
         });
     }
 
+    @Override
     public BusinessWrapper<Boolean> deleteBuildJob(int ciJobId) {
         // 删除 build
         List<CsCiJobBuild> builds = csCiJobBuildService.queryCiJobBuildByCiJobId(ciJobId);
