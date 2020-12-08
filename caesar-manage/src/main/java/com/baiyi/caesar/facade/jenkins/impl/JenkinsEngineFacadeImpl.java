@@ -8,6 +8,8 @@ import com.baiyi.caesar.factory.jenkins.model.JobBuild;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.util.JobBuildUtils;
+import com.google.common.base.Joiner;
+import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
 import com.offbytwo.jenkins.model.Job;
@@ -34,24 +36,27 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
 
+    public final static String ENGINES = "Engines";
+
+    public final static String INACTIVE = "(inactive)";
+
+    public final static String MASTER = "master";
+
+    public final static String IDLE = "idle";
+
     @Override
     @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ENGINE_CHART_CACHE_REPO)
     public EngineVO.Children buildEngineChart() {
         EngineVO.Children root = EngineVO.Children.builder()
-                .name("Engines")
+                .name(ENGINES)
                 .build();
         csJenkinsInstanceService.queryAll().forEach(e -> {
-            EngineVO.Children instance;
+            EngineVO.Children instance = EngineVO.Children.builder()
+                    .name(buildEngineName(e, e.getIsActive()))
+                    .build();
             if (e.getIsActive()) {
-                instance = EngineVO.Children.builder()
-                        .name(e.getName())
-                        .build();
-                invokeComputer(e, instance);
+                assembleComputer(e, instance);
                 instance.setValue(instance.getChildren().size());
-            } else {
-                instance = EngineVO.Children.builder()
-                        .name(e.getName() + "(inactive)")
-                        .build();
             }
             root.addChildren(instance);
         });
@@ -59,11 +64,26 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
         return root;
     }
 
-    private void invokeComputer(CsJenkinsInstance csJenkinsInstance, EngineVO.Children instance) {
+    /**
+     *  取引擎名称
+     * @param instance
+     * @param isActive
+     * @return
+     */
+    private String buildEngineName(CsJenkinsInstance instance, boolean isActive) {
+        if (isActive) {
+            JenkinsVersion version = jenkinsServerHandler.getVersion(instance.getName());
+            return Joiner.on("").join(instance.getName(), "(", version.getLiteralVersion(), ")");
+        } else {
+            return Joiner.on("").join(instance.getName(), INACTIVE);
+        }
+    }
+
+    private void assembleComputer(CsJenkinsInstance csJenkinsInstance, EngineVO.Children instance) {
         try {
             Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(csJenkinsInstance.getName());
             computerMap.keySet().forEach(k -> {
-                if (!k.equals("master")) {
+                if (!k.equals(MASTER)) {
                     EngineVO.Children node = EngineVO.Children.builder()
                             .name(k)
                             .build();
@@ -79,9 +99,9 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                                         .name(jobBuild.getJobName())
                                         .value(1)
                                         .build();
-                            }else{
+                            } else {
                                 executor = EngineVO.Children.builder()
-                                        .name("idle")
+                                        .name(IDLE)
                                         .value(1)
                                         .build();
                             }
@@ -94,7 +114,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                 }
             });
         } catch (Exception e) {
-            log.error("组装Jenkins引擎工作负载错误, err={}",e.getMessage());
+            log.error("组装Jenkins引擎工作负载错误, err={}", e.getMessage());
         }
     }
 
