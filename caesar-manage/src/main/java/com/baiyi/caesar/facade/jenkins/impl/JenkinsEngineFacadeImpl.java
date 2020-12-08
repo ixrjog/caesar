@@ -12,6 +12,7 @@ import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
+import com.offbytwo.jenkins.model.Executor;
 import com.offbytwo.jenkins.model.Job;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -65,7 +66,8 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
     }
 
     /**
-     *  取引擎名称
+     * 取引擎名称
+     *
      * @param instance
      * @param isActive
      * @return
@@ -91,20 +93,10 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                     try {
                         ComputerWithDetails computerWithDetails = computer.details();
                         computerWithDetails.getExecutors().forEach(e -> {
-                            EngineVO.Children executor;
-                            if (e.getCurrentExecutable() != null) {
-                                Job job = e.getCurrentExecutable();
-                                JobBuild jobBuild = JobBuildUtils.convert(job.getUrl());
-                                executor = EngineVO.Children.builder()
-                                        .name(jobBuild.getJobName())
-                                        .value(1)
-                                        .build();
-                            } else {
-                                executor = EngineVO.Children.builder()
-                                        .name(IDLE)
-                                        .value(1)
-                                        .build();
-                            }
+                            EngineVO.Children executor = EngineVO.Children.builder()
+                                    .name(acqExecutorName(e))
+                                    .value(1)
+                                    .build();
                             node.addChildren(executor);
                         });
                         node.setValue(node.getChildren().size());
@@ -115,6 +107,16 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
             });
         } catch (Exception e) {
             log.error("组装Jenkins引擎工作负载错误, err={}", e.getMessage());
+        }
+    }
+
+    private String acqExecutorName(Executor executor){
+        if (executor.getCurrentExecutable() != null) {
+            Job job = executor.getCurrentExecutable();
+            JobBuild jobBuild = JobBuildUtils.convert(job.getUrl());
+            return jobBuild.getJobName();
+        } else {
+           return IDLE;
         }
     }
 

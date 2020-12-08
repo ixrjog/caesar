@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author baiyi
@@ -17,15 +18,15 @@ import java.util.List;
 public class GitlabBranchHandler {
 
     public List<GitlabBranch> getBranches(String gitlabName, Integer projectId) {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getBranches(projectId);
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getBranches(projectId);
     }
 
     public GitlabBranch getBranch(String gitlabName, Integer projectId, String branch) throws IOException {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getBranch(projectId, branch);
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getBranch(projectId, branch);
     }
 
     public List<GitlabTag> getTags(String gitlabName, Integer projectId) {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getTags(projectId);
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getTags(projectId);
     }
 
 }
