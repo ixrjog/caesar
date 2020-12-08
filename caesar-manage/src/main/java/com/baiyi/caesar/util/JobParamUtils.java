@@ -17,15 +17,17 @@ public class JobParamUtils {
 
     private static final String HOST_PATTERN = "hostPattern";
 
-    public static void invokeJobBuildNumberParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
+    private static final String CONCURRENT = "concurrent";
+
+    public static void assembleJobBuildNumberParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
         jobParamDetail.getParams().put("jobBuildNumber", String.valueOf(csCdJob.getJobBuildNumber()));
     }
 
-    public static void invokeJobBuildNumberParam(CsCiJob csCiJob, JobParamDetail jobParamDetail) {
+    public static void assembleJobBuildNumberParam(CsCiJob csCiJob, JobParamDetail jobParamDetail) {
         jobParamDetail.getParams().put("jobBuildNumber", String.valueOf(csCiJob.getJobBuildNumber()));
     }
 
-    public static void invokeOssJobUrlParam(CsCiJob csCiJob, JobParamDetail jobParamDetail) {
+    public static void assembleOssJobUrlParam(CsCiJob csCiJob, JobParamDetail jobParamDetail) {
         if (jobParamDetail.getCsOssBucket() == null)
             return;
         // https://caesar-store.oss-cn-hangzhou.aliyuncs.com/ZEBRA-IOS-APP/ZEBRA-IOS-APP_zebra_ios_track/1/GlobalScanner.ipa
@@ -34,7 +36,7 @@ public class JobParamUtils {
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
     }
 
-    public static void invokeOssJobUrlParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
+    public static void assembleOssJobUrlParam(CsCdJob csCdJob, JobParamDetail jobParamDetail) {
         if (jobParamDetail.getCsOssBucket() == null)
             return;
         // https://caesar-store.oss-cn-hangzhou.aliyuncs.com/ZEBRA-IOS-APP/ZEBRA-IOS-APP_zebra_ios_track/1/GlobalScanner.ipa
@@ -43,30 +45,33 @@ public class JobParamUtils {
         jobParamDetail.getParams().put("ossJobUrl", "https://" + url);
     }
 
-    public static void invokeHostPatternParam(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
+    public static void assembleHostPatternParam(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
         if (deploymentParam.getParamMap().containsKey(HOST_PATTERN))
             jobParamDetail.getParams().put(HOST_PATTERN, deploymentParam.getParamMap().get(HOST_PATTERN));
     }
 
-    public static void invokePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
+    public static void assemblePodUpdate(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("podUpdate")) return;
         jobParamDetail.getParams().put("podUpdate", buildParam.getParamMap().get("podUpdate"));
     }
 
-    public static void invokePubGet(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
+    public static void assemblePubGet(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("pubGet")) return;
         jobParamDetail.getParams().put("pubGet", buildParam.getParamMap().get("pubGet"));
     }
 
-    public static void invokeBuildType(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
+    public static void assembleBuildType(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("BUILD_TYPE")) return;
         jobParamDetail.getParams().put("BUILD_TYPE", buildParam.getParamMap().get("BUILD_TYPE"));
     }
 
-    public static void invokeProductFlavor(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
+    public static void assembleProductFlavor(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
         if (!buildParam.getParamMap().containsKey("PRODUCT_FLAVOR")) return;
         jobParamDetail.getParams().put("PRODUCT_FLAVOR", buildParam.getParamMap().get("PRODUCT_FLAVOR"));
     }
 
+    public static void assembleConcurrentParam(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
+        jobParamDetail.getParams().put(CONCURRENT, deploymentParam.getParamMap().getOrDefault(CONCURRENT, "1"));
+    }
 
 }

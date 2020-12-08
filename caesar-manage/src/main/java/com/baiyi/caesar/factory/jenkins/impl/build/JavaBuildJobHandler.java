@@ -27,7 +27,7 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
+        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
         return jobParamDetail;
     }
 

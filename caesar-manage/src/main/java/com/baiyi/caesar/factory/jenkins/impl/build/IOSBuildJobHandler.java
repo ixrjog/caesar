@@ -27,10 +27,10 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
-        JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
-        JobParamUtils.invokePodUpdate(jobParamDetail, buildParam);
-        JobParamUtils.invokePubGet(jobParamDetail, buildParam);
+        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
+        JobParamUtils.assembleOssJobUrlParam(csCiJob, jobParamDetail);
+        JobParamUtils.assemblePodUpdate(jobParamDetail, buildParam);
+        JobParamUtils.assemblePubGet(jobParamDetail, buildParam);
         return jobParamDetail;
     }
 

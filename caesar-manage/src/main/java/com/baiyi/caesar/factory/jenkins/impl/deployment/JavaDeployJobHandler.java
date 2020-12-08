@@ -49,9 +49,10 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCdJob, jobParamDetail);
-        JobParamUtils.invokeOssJobUrlParam(csCdJob, jobParamDetail);
-        JobParamUtils.invokeHostPatternParam(jobParamDetail, deploymentParam);
+        JobParamUtils.assembleJobBuildNumberParam(csCdJob, jobParamDetail);
+        JobParamUtils.assembleOssJobUrlParam(csCdJob, jobParamDetail);
+        JobParamUtils.assembleHostPatternParam(jobParamDetail, deploymentParam);
+        JobParamUtils.assembleConcurrentParam(jobParamDetail, deploymentParam);
         return jobParamDetail;
     }
 

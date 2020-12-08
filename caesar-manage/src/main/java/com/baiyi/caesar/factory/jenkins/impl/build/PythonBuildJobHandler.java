@@ -27,7 +27,7 @@ public class PythonBuildJobHandler extends BaseBuildJobHandler implements IBuild
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
+        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
         return jobParamDetail;
     }
 

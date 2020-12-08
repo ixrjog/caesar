@@ -53,7 +53,7 @@ public class JobDeploymentParam {
 
         @ApiModelProperty(value = "版本说明")
         private String versionDesc;
-
+        
         private Map<String, String> paramMap;
 
     }

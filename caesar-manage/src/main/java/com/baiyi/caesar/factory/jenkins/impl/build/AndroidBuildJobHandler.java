@@ -27,10 +27,10 @@ public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuil
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCiJob, jobParamDetail);
-        JobParamUtils.invokeOssJobUrlParam(csCiJob, jobParamDetail);
-        JobParamUtils.invokeBuildType(jobParamDetail, buildParam);
-        JobParamUtils.invokeProductFlavor(jobParamDetail, buildParam);
+        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
+        JobParamUtils.assembleOssJobUrlParam(csCiJob, jobParamDetail);
+        JobParamUtils.assembleBuildType(jobParamDetail, buildParam);
+        JobParamUtils.assembleProductFlavor(jobParamDetail, buildParam);
         return jobParamDetail;
     }
 

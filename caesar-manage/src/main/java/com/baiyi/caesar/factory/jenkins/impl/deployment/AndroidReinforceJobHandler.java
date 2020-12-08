@@ -42,8 +42,8 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
-        JobParamUtils.invokeJobBuildNumberParam(csCdJob, jobParamDetail);
-        JobParamUtils.invokeOssJobUrlParam(csCdJob, jobParamDetail);
+        JobParamUtils.assembleJobBuildNumberParam(csCdJob, jobParamDetail);
+        JobParamUtils.assembleOssJobUrlParam(csCdJob, jobParamDetail);
         invokeChannelGroup(jobParamDetail, deploymentParam);
         return jobParamDetail;
     }
