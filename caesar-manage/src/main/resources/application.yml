@@ -13,6 +13,8 @@ spring:
       force: true
       charset: utf-8
       enabled: true
+
+
   jackson:
     time-zone: GMT+8
   jmx:

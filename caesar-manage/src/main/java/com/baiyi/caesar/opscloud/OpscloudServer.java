@@ -24,6 +24,9 @@ import java.util.Map;
 @Component
 public class OpscloudServer {
 
+    public static final String QUERY_SERVER_GROUP_HOST_PATTERN_API = "/server/group/env/pattern/query";
+    public static final String QUERY_SERVER_GROUP_PAGE_API = "/server/group/page/query";
+
     /**
      * 查询服务器分组信息
      *
@@ -31,12 +34,11 @@ public class OpscloudServer {
      * @return
      * @throws IOException
      */
-    public Map<String, List<OcServer>> queryServerGroupHostPattern(String serverGroupName,int envType) throws IOException {
-        String url = "/server/group/env/pattern/query";
+    public Map<String, List<OcServer>> queryServerGroupHostPattern(String serverGroupName, int envType) throws IOException {
         ServerGroupParam.ServerGroupEnvHostPatternQuery query = new ServerGroupParam.ServerGroupEnvHostPatternQuery();
         query.setServerGroupName(serverGroupName);
         query.setEnvType(envType);
-        JsonNode jsonNode = OpscloudHttpUtils.httpPostExecutor(url, query);
+        JsonNode jsonNode = OpscloudHttpUtils.httpPostExecutor(QUERY_SERVER_GROUP_HOST_PATTERN_API, query);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<Map<String, List<OcServer>>>() {
             }.getType();
@@ -49,18 +51,18 @@ public class OpscloudServer {
 
     /**
      * 查询服务器组信息
+     *
      * @param pageQuery
      * @return
      * @throws IOException
      */
     public DataTable<ServerGroupVO.ServerGroup> queryServerGroupPage(com.baiyi.caesar.domain.param.server.ServerGroupParam.PageQuery pageQuery) throws IOException {
-        String url = "/server/group/page/query";
         Map<String, String> param = Maps.newHashMap();
         param.put("name", pageQuery.getName());
         param.put("grpType", "");
         param.put("length", pageQuery.getLength().toString());
         param.put("page", pageQuery.getPage().toString());
-        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(url, param);
+        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(QUERY_SERVER_GROUP_PAGE_API, param);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<DataTable<ServerGroupVO.ServerGroup>>() {
             }.getType();
