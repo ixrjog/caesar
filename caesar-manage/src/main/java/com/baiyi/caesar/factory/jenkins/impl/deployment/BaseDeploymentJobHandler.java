@@ -3,6 +3,7 @@ package com.baiyi.caesar.factory.jenkins.impl.deployment;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CdJobBuildBuilder;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -140,13 +141,15 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
 
         CsCdJobBuild csCdJobBuild = CdJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, deploymentParam.getCiBuildId());
-        updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
+        if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+            updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCdJobBuild.getJobName()).details();
             QueueReference queueReference = build(job, jobParamDetail.getParams());
         } catch (IOException e) {
             e.printStackTrace();
-            updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
+            if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+                updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
             return new BusinessWrapper<>(100001, "执行任务失败: " + e.getMessage());
         }
         try {
@@ -163,7 +166,6 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                     .build();
             saveDetails(context);
             deploymentStartNotify(context); // 通知
-
             jobEngineCenter.trackBuildTask(context);  // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();

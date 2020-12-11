@@ -77,7 +77,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
                     buildEndNotify(context); // 任务结束通知
-                    if (context.getCsCiJob().getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+                    if (context.getCsCdJob().getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
                         updateHostStatus(context.getCsApplication(), context.getJobParamDetail().getParams(), HOST_STATUS_ENABLE);
                     break;
                 }
