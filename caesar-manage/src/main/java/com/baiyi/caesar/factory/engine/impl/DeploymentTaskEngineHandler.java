@@ -3,6 +3,7 @@ package com.baiyi.caesar.factory.engine.impl;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
+import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
 
 /**
  * @Author baiyi
@@ -42,7 +44,7 @@ import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
  */
 @Slf4j
 @Component("DeploymentJobEngineHandler")
-public class DeploymentJobEngineHandler<T extends BaseJobContext> extends BaseJobEngineHandler<T> {
+public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEngineHandler<T> {
 
     @Override
     public Integer getKey() {
@@ -75,6 +77,8 @@ public class DeploymentJobEngineHandler<T extends BaseJobContext> extends BaseJo
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
                     buildEndNotify(context); // 任务结束通知
+                    if (context.getCsCiJob().getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+                        updateHostStatus(context.getCsApplication(), context.getJobParamDetail().getParams(), HOST_STATUS_ENABLE);
                     break;
                 }
             } catch (RetryException e) {

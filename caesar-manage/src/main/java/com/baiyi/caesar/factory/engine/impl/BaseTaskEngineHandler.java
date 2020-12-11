@@ -11,8 +11,9 @@ import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.facade.ServerBaseFacade;
 import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
-import com.baiyi.caesar.factory.engine.IJobEngineHandler;
-import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
+import com.baiyi.caesar.factory.engine.ITaskEngineHandler;
+import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
+import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
 import com.baiyi.caesar.jenkins.context.BaseJobContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -27,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Slf4j
-public abstract class BaseJobEngineHandler<T extends BaseJobContext> implements IJobEngineHandler<T>, InitializingBean {
+public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements ITaskEngineHandler<T>, InitializingBean {
 
     @Resource
     protected RedisUtil redisUtil;
@@ -77,11 +79,18 @@ public abstract class BaseJobEngineHandler<T extends BaseJobContext> implements 
     @Resource
     protected CsJobBuildChangeService csJobBuildChangeService;
 
+    @Resource
+    protected MonitorHandler monitorHandler;
+
     public static final int TRACK_SLEEP_SECONDS = 5;
 
     @Override
     public BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(int jobId) {
         return acqJobEngineByJobEngines(queryJobEngine(jobId));
+    }
+
+    protected void updateHostStatus(CsApplication csApplication, Map<String, String> params, int status) {
+        monitorHandler.updateHostStatus(csApplication, params, status);
     }
 
     private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngineByJobEngines(List<CsJobEngine> csJobEngines) {
@@ -170,6 +179,6 @@ public abstract class BaseJobEngineHandler<T extends BaseJobContext> implements 
      */
     @Override
     public void afterPropertiesSet() {
-        JobEngineHandlerFactory.register(this);
+        TaskEngineHandlerFactory.register(this);
     }
 }

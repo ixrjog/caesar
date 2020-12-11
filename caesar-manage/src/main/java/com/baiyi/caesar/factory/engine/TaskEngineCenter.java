@@ -10,13 +10,13 @@ import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
  * @Version 1.0
  */
 
-public interface JobEngineCenter {
+public interface TaskEngineCenter {
 
     JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId);
 
     boolean tryJenkinsInstanceActive(int jenkinsInstanceId);
 
-    void trackJobBuild( BuildJobContext context);
+    void trackBuildTask(BuildJobContext context);
 
-    void trackJobBuild(DeploymentJobContext context);
+    void trackBuildTask(DeploymentJobContext context);
 }

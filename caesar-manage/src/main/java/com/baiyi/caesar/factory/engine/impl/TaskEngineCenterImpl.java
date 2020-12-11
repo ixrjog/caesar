@@ -6,9 +6,9 @@ import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.factory.engine.IJobEngineHandler;
-import com.baiyi.caesar.factory.engine.JobEngineCenter;
-import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
+import com.baiyi.caesar.factory.engine.ITaskEngineHandler;
+import com.baiyi.caesar.factory.engine.TaskEngineCenter;
+import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -29,7 +29,7 @@ import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
  */
 @Slf4j
 @Component
-public class JobEngineCenterImpl implements JobEngineCenter {
+public class TaskEngineCenterImpl implements TaskEngineCenter {
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -62,16 +62,16 @@ public class JobEngineCenterImpl implements JobEngineCenter {
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void trackJobBuild(BuildJobContext context) {
-        IJobEngineHandler iJobEngineHandler = JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()); // 追踪任务
-        iJobEngineHandler.trackJobBuild(context);
+    public void trackBuildTask(BuildJobContext context) {
+        ITaskEngineHandler iTaskEngineHandler = TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()); // 追踪任务
+        iTaskEngineHandler.trackJobBuild(context);
     }
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void trackJobBuild(DeploymentJobContext context) {
-        IJobEngineHandler iJobEngineHandler = JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()); // 追踪任务
-        iJobEngineHandler.trackJobBuild(context);
+    public void trackBuildTask(DeploymentJobContext context) {
+        ITaskEngineHandler iTaskEngineHandler = TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()); // 追踪任务
+        iTaskEngineHandler.trackJobBuild(context);
     }
 
 

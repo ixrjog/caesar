@@ -8,15 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/11/20 9:50 上午
  * @Version 1.0
  */
-public class JobEngineHandlerFactory {
+public class TaskEngineHandlerFactory {
 
-    static Map<Integer, IJobEngineHandler> context = new ConcurrentHashMap<>();
+    static Map<Integer, ITaskEngineHandler> context = new ConcurrentHashMap<>();
 
-    public static IJobEngineHandler getIJobEngineHandlerByKey(Integer key) {
+    public static ITaskEngineHandler getIJobEngineHandlerByKey(Integer key) {
         return context.get(key);
     }
 
-    public static void register(IJobEngineHandler bean) {
+    public static void register(ITaskEngineHandler bean) {
         context.put(bean.getKey(), bean);
     }
 }

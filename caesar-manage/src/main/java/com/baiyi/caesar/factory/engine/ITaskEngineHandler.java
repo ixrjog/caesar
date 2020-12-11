@@ -12,7 +12,7 @@ import java.util.List;
  * @Date 2020/11/20 9:50 上午
  * @Version 1.0
  */
-public interface IJobEngineHandler<T extends BaseJobContext> {
+public interface ITaskEngineHandler<T extends BaseJobContext> {
 
     Integer getKey();
 

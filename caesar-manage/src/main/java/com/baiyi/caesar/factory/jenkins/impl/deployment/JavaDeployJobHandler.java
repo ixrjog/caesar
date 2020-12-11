@@ -12,6 +12,7 @@ import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.util.JobParamUtils;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.baiyi.caesar.dingtalk.impl.JavaDeploymentNotify.HOST_PATTERN;
@@ -44,6 +46,14 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     @Override
     protected boolean isLimitConcurrentJob() {
         return true;
+    }
+
+    @Resource
+    private MonitorHandler monitorHandler;
+
+    @Override
+    protected void updateHostStatus(CsApplication csApplication, Map<String, String> params, int status) {
+        monitorHandler.updateHostStatus(csApplication, params, status);
     }
 
     @Override

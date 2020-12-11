@@ -4,6 +4,7 @@ import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
+
 /**
  * @Author baiyi
  * @Date 2020/11/20 9:54 上午
@@ -40,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component("BuildJobEngineHandler")
-public class BuildJobEngineHandler<T extends BaseJobContext> extends BaseJobEngineHandler<T> {
+public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEngineHandler<T> {
 
     @Resource
     private CsJobBuildExecutorService csJobBuildExecutorService;
@@ -80,6 +83,8 @@ public class BuildJobEngineHandler<T extends BaseJobContext> extends BaseJobEngi
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
                     buildEndNotify(context);
+                    if (context.getCsCiJob().getJobType().equals(JobType.JAVA.getType()))
+                        updateHostStatus(context.getCsApplication(), context.getJobParamDetail().getParams(), HOST_STATUS_ENABLE);
                     break;
                 }
             } catch (RetryException e) {
@@ -160,7 +165,7 @@ public class BuildJobEngineHandler<T extends BaseJobContext> extends BaseJobEngi
     protected String acqOssPath(T context, CsJobBuildArtifact csJobBuildArtifact) {
         BuildJobContext buildJobContext = (BuildJobContext) context;
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(buildJobContext.getCsCiJob().getJobType());
-       return iBuildJobHandler.acqOssPath(buildJobContext.getJobBuild(), csJobBuildArtifact);
+        return iBuildJobHandler.acqOssPath(buildJobContext.getJobBuild(), csJobBuildArtifact);
     }
 
     /**
@@ -180,7 +185,7 @@ public class BuildJobEngineHandler<T extends BaseJobContext> extends BaseJobEngi
     }
 
     private void buildEndNotify(BuildJobContext context) {
-        if(context.getJobBuild().getIsSilence()) // 消息静默
+        if (context.getJobBuild().getIsSilence()) // 消息静默
             return;
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCiJob().getJobType());
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);

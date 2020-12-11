@@ -5,6 +5,8 @@ import com.baiyi.caesar.opscloud.param.MonitorHostParam;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ public class OpscloudMonitor {
 
     public static final String MASS_UPDATE_MONITOR_HOST_STATUS_API = "/monitor/host/mass/update/status";
 
+    @Retryable(value = IOException.class, backoff = @Backoff(delay = 2000))
     public BusinessWrapper<Boolean> massUpdateMonitorHostStatus(String serverGroupName, String hostPattern, int status) throws IOException {
         MonitorHostParam.MassUpdateMonitorHostStatus param = new MonitorHostParam.MassUpdateMonitorHostStatus();
         param.setServerGroupName(serverGroupName);

@@ -20,8 +20,8 @@ import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
-import com.baiyi.caesar.factory.engine.JobEngineCenter;
-import com.baiyi.caesar.factory.engine.JobEngineHandlerFactory;
+import com.baiyi.caesar.factory.engine.TaskEngineCenter;
+import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
@@ -46,6 +46,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
+import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
+
 /**
  * @Author baiyi
  * @Date 2020/8/5 9:46 上午
@@ -64,7 +67,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private ApplicationFacade applicationFacade;
 
     @Resource
-    private JobEngineCenter jenkinsJobEngineHandler;
+    private TaskEngineCenter jenkinsJobEngineHandler;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -94,7 +97,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private EnvFacade envFacade;
 
     @Resource
-    private JobEngineCenter jobEngineCenter;
+    private TaskEngineCenter jobEngineCenter;
+
 
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
@@ -141,6 +145,16 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         return build(csCiJob, csApplication, jobParamDetail, SessionUtils.getUsername(), buildParam.getIsSilence());
     }
 
+    /**
+     * impl重写
+     *
+     * @param csApplication
+     * @param params
+     * @param status
+     */
+    protected void updateHostStatus(CsApplication csApplication, Map<String, String> params, int status) {
+    }
+
     private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParamDetail jobParamDetail, String username, Boolean isSilence) {
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csCiJob);
         if (!jobEngineWrapper.isSuccess())
@@ -148,10 +162,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username, isSilence);
+        updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
-            if (job == null)
+            if (job == null) {
+                updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_ENABLE);
                 return new BusinessWrapper<>(100001, "Jenkins引擎故障，无法获取任务详情");
+            }
             QueueReference queueReference = build(job, jobParamDetail.getParams());
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,7 +185,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                     .jobParamDetail(jobParamDetail)
                     .build();
             buildStartNotify(context); // 通知
-            jobEngineCenter.trackJobBuild(context);  // 追踪任务
+            jobEngineCenter.trackBuildTask(context);  // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,13 +195,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private void saveCsCiJobBuild(CsCiJobBuild csCiJobBuild) {
         csCiJobBuildService.addCsCiJobBuild(csCiJobBuild); // 写入任务
         // 心跳
-        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuildHeartbeat(csCiJobBuild.getId());
+        TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuildHeartbeat(csCiJobBuild.getId());
     }
 
     @Override
     public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
         BuildJobContext context = acqBuildJobContext(csCiJobBuild);
-        JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuild(context); // 追踪任务
+        TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuild(context); // 追踪任务
     }
 
     @Override
@@ -211,7 +228,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     private void buildStartNotify(BuildJobContext context) {
-        if(context.getJobBuild().getIsSilence()) // 消息静默
+        if (context.getJobBuild().getIsSilence()) // 消息静默
             return;
         try {
             IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
@@ -279,7 +296,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     private BusinessWrapper<JobEngineVO.JobEngine> acqJobEngine(CsCiJob csJob) {
-        return JobEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).acqJobEngine(csJob.getId());
+        return TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).acqJobEngine(csJob.getId());
     }
 
     private JobEngineVO.JobEngine acqJobEngineById(int jobEngineId) {
