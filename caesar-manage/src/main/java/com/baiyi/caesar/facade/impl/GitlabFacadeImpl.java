@@ -53,6 +53,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -161,13 +162,26 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     private void saveWebhooks(GitlabHooksVO.Webhooks webhooks) {
-        List<CsGitlabInstance> instances = csGitlabInstanceService.queryAll().stream().filter(e -> webhooks.getProject().getWeb_url().startsWith(e.getUrl())).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(instances))
+        CsGitlabInstance instance = filter(csGitlabInstanceService.queryAll(), webhooks);
+        if (instance == null)
             return;
         OcUser ocUser = ocUserService.queryOcUserByUsername(webhooks.getUser_username());
-        CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhooks, instances.get(0), ocUser);
+        CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhooks, instance, ocUser);
         csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
         gitlabWebhooksConsumer.consumerWebhooks(csGitlabWebhook);
+    }
+
+    private CsGitlabInstance filter(List<CsGitlabInstance> instances, GitlabHooksVO.Webhooks webhooks) {
+        for (CsGitlabInstance instance : instances) {
+            try {
+                java.net.URL instanceUrl = new java.net.URL(instance.getUrl());
+                java.net.URL webhooksUrl = new java.net.URL(webhooks.getProject().getWeb_url());
+                if (instanceUrl.getHost().equals(webhooksUrl.getHost()))
+                    return instance;
+            } catch (MalformedURLException e) {
+            }
+        }
+        return null;
     }
 
     @Override
