@@ -99,6 +99,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private TaskEngineCenter jobEngineCenter;
 
+    public static final boolean SEND_DINGTALK = false;
+
 
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
@@ -132,7 +134,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
-        build(csCiJob, csApplication, jobParamDetail, username, true);
+        build(csCiJob, csApplication, jobParamDetail, username, SEND_DINGTALK);
     }
 
     @Override

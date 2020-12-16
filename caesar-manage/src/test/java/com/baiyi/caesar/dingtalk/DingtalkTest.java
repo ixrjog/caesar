@@ -70,9 +70,9 @@ public class DingtalkTest extends BaseUnit {
 
     @Test
     void testBuildNotify() {
-        String jobKey = JobType.IOS.getType();
+        String jobKey = JobType.HTML5.getType();
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
-        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(924);
+        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(3562);
         BuildJobContext context = iBuildJobHandler.acqBuildJobContext(csCiJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
