@@ -80,6 +80,11 @@ public class CsCiJobServiceImpl implements CsCiJobService {
     }
 
     @Override
+    public List<CsCiJob> selectAll() {
+        return csCiJobMapper.selectAll();
+    }
+
+    @Override
     public CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey) {
         Example example = new Example(CsCiJob.class);
         Example.Criteria criteria = example.createCriteria();

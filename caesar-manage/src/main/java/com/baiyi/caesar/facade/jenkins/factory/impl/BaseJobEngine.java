@@ -19,6 +19,7 @@ import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  * @Date 2020/11/18 11:34 上午
  * @Version 1.0
  */
+@Slf4j
 @Component
 public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
 
@@ -70,6 +72,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         return TaskEngineHandlerFactory.getIJobEngineHandlerByKey(getKey()).queryJobEngine(jobId);
     }
 
+    @Override
     public BusinessWrapper<Boolean> correctionJobEngine(int jobId) {
         List<CsJobEngine> csJobEngines = acqJobEngine(jobId);
         if (!CollectionUtils.isEmpty(csJobEngines))
@@ -78,7 +81,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
                 if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
                     try {
                         JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
-                        saveCsJobEngine(csJobEngine, job.getLastBuild() == null ? 0 : job.getLastBuild().getNumber());
+                        saveCsJobEngineBuildNumber(csJobEngine, job.getLastBuild() == null ? 0 : job.getLastBuild().getNumber());
                     } catch (Exception ex) {
                         return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
                     }
@@ -87,10 +90,17 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         return BusinessWrapper.SUCCESS;
     }
 
-    private void saveCsJobEngine(CsJobEngine csJobEngine, int lastBuildNumber) {
-        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != lastBuildNumber + 1) {
+    private void saveCsJobEngineBuildNumber(CsJobEngine csJobEngine, int lastBuildNumber) {
+        int nextBuildNumber = lastBuildNumber + 1;
+        if (lastBuildNumber == 0)
+            nextBuildNumber = 1;
+        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != nextBuildNumber) {
+            log.info("更新引擎指针 jenkinsInstanceId = {}, engineName = {} , lastBuildNumber = {} -> {}, nextBuildNumber = {} -> {}"
+                    , csJobEngine.getJenkinsInstanceId(), csJobEngine.getName(),
+                    csJobEngine.getLastBuildNumber(), lastBuildNumber,
+                    csJobEngine.getNextBuildNumber(), nextBuildNumber);
             csJobEngine.setLastBuildNumber(lastBuildNumber);
-            csJobEngine.setNextBuildNumber(lastBuildNumber + 1);
+            csJobEngine.setNextBuildNumber(nextBuildNumber);
             csJobEngineService.updateCsJobEngine(csJobEngine);
         }
     }
