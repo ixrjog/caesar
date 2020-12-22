@@ -1,5 +1,6 @@
 package com.baiyi.caesar.builder.gitlab;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.gitlab.GitlabSystemHookBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
@@ -20,6 +21,7 @@ public class GitlabSystemHookBuilder {
                 .groupId(systemHook.getGroupId())
                 .name(systemHook.getName())
                 .eventName(systemHook.getEventName())
+                .hooksContent(JSON.toJSONString(systemHook))
                 .build();
         return covert(bo);
     }

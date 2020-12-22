@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Slf4j
+@Component
 public abstract class BaseGitlabEventHandler implements IGitlabEventHandler, InitializingBean {
 
     @Resource

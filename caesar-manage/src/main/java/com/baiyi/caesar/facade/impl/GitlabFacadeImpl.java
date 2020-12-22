@@ -164,7 +164,6 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
     public void systemHooksV1(GitlabHooksVO.SystemHook systemHook) {
         // 处理系统消息
         try {

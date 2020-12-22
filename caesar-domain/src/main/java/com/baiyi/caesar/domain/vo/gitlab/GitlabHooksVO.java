@@ -103,9 +103,12 @@ public class GitlabHooksVO {
     public static class SystemHook implements Serializable {
 
         private static final long serialVersionUID = -2133573254767532104L;
+
         @JsonProperty("event_name")
         private String eventName;
+
         private String name;
+
         @JsonProperty("project_id")
         private Integer projectId;
 
