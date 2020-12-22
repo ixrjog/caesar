@@ -35,8 +35,7 @@ public class GitlabGroupCreatedEventHandler extends BaseGitlabEventHandler imple
         try {
             csGitlabGroupService.addCsGitlabGroup(csGitlabGroup);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("新增Gitlab群组错误，instance = {} , groupId = {}", csGitlabInstance.getName(), gitlabGroup.getId());
+            log.error("新增Gitlab群组错误，instance = {} , groupId = {}", csGitlabInstance.getName(), gitlabGroup.getId(), e);
         }
     }
 

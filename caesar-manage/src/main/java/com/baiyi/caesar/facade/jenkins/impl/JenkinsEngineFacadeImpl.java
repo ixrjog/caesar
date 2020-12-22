@@ -106,17 +106,17 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                 }
             });
         } catch (Exception e) {
-            log.error("组装Jenkins引擎工作负载错误, err={}", e.getMessage());
+            log.error("组装Jenkins引擎工作负载错误!, err={}", e.getMessage());
         }
     }
 
-    private String acqExecutorName(Executor executor){
+    private String acqExecutorName(Executor executor) {
         if (executor.getCurrentExecutable() != null) {
             Job job = executor.getCurrentExecutable();
             JobBuild jobBuild = JobBuildUtils.convert(job.getUrl());
             return jobBuild.getJobName();
         } else {
-           return IDLE;
+            return IDLE;
         }
     }
 

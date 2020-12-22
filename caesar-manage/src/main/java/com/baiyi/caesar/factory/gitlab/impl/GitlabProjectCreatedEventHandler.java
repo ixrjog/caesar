@@ -35,8 +35,7 @@ public class GitlabProjectCreatedEventHandler extends BaseGitlabEventHandler imp
         try {
             csGitlabProjectService.addCsGitlabProject(csGitlabProject);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("新增Gitlab项目错误，instance = {} , projectId = {}", csGitlabInstance.getName(), gitlabProject.getId());
+            log.error("新增Gitlab项目错误，instance = {} , projectId = {}", csGitlabInstance.getName(), gitlabProject.getId(),e);
         }
     }
 
