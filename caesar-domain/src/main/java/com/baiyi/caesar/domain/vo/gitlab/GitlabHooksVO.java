@@ -1,9 +1,11 @@
 package com.baiyi.caesar.domain.vo.gitlab;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ public class GitlabHooksVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Webhooks {
+    public static class Webhook {
         public String ver = "1.0.0";
         private String object_kind;
         private String event_name;
@@ -90,6 +92,28 @@ public class GitlabHooksVO {
     public static class Author {
         private String name;
         private String email;
+    }
+
+    /**
+     * https://gitlab.xinc818.com/help/system_hooks/system_hooks.md
+     */
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class SystemHook implements Serializable {
+
+        private static final long serialVersionUID = -2133573254767532104L;
+        @JsonProperty("event_name")
+        private String eventName;
+        private String name;
+        @JsonProperty("project_id")
+        private Integer projectId;
+
+        @JsonProperty("user_id")
+        private Integer userId;
+
+        @JsonProperty("group_id")
+        private Integer groupId;
     }
 
 

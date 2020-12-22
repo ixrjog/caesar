@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_gitlab_instance")
 public class CsGitlabInstance {
@@ -25,6 +25,12 @@ public class CsGitlabInstance {
     private String token;
 
     /**
+     * 仅用于判断gitlab实例
+     */
+    @Column(name = "system_hooks_token")
+    private String systemHooksToken;
+
+    /**
      * 有效
      */
     @Column(name = "is_active")
@@ -39,13 +45,13 @@ public class CsGitlabInstance {
     /**
      * 创建时间
      */
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     private String comment;
@@ -116,6 +122,24 @@ public class CsGitlabInstance {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+
+    /**
+     * 获取仅用于判断gitlab实例
+     *
+     * @return system_hooks_token - 仅用于判断gitlab实例
+     */
+    public String getSystemHooksToken() {
+        return systemHooksToken;
+    }
+
+    /**
+     * 设置仅用于判断gitlab实例
+     *
+     * @param systemHooksToken 仅用于判断gitlab实例
+     */
+    public void setSystemHooksToken(String systemHooksToken) {
+        this.systemHooksToken = systemHooksToken;
     }
 
     /**

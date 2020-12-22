@@ -21,6 +21,10 @@ public class GitlabGroupHandler {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getGroups();
     }
 
+    public GitlabGroup getGroup(String gitlabName, Integer groupId) throws IOException {
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getGroup(groupId);
+    }
+
     public List<GitlabNamespace> getNamespace(String gitlabName) {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getNamespaces();
     }

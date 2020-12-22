@@ -34,13 +34,20 @@ public class GitlabController {
     /**
      * https://caesar域名/cs/gitlab/v1/webhooks
      *
-     * @param webhooks
+     * @param webhook
      * @return
      */
-    @ApiOperation(value = "Gitlab webhook")
+    @ApiOperation(value = "Gitlab webhooks")
     @PostMapping(value =  "/v1/webhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooksVO.Webhooks webhooks) {
-        gitlabFacade.webhooksV1(webhooks);
+    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooksVO.Webhook webhook) {
+        gitlabFacade.webhooksV1(webhook);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "Gitlab system hooks")
+    @PostMapping(value =  "/v1/systemhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> trigerSystemHooks(@RequestBody GitlabHooksVO.SystemHook systemHook) {
+        gitlabFacade.systemHooksV1(systemHook);
         return HttpResult.SUCCESS;
     }
 

@@ -17,6 +17,8 @@ public interface CsGitlabGroupService {
 
     List<CsGitlabGroup> queryCsGitlabGroupByInstanceId(Integer instanceId);
 
+    CsGitlabGroup queryCsGitlabGroupByUniqueKey(int instanceId, int groupId);
+
     int countCsGitlabGroupByInstanceId(Integer instanceId);
 
     CsGitlabGroup queryCsGitlabGroupById(int id);

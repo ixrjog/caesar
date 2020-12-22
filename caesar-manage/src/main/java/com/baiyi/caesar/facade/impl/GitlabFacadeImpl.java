@@ -27,6 +27,8 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
+import com.baiyi.caesar.factory.gitlab.GitlabEventHandlerFactory;
+import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
@@ -150,18 +152,31 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
-    public void webhooksV1(GitlabHooksVO.Webhooks webhooks) {
+    public void webhooksV1(GitlabHooksVO.Webhook webhook) {
         try {
             // 处理push事件
-            if (webhooks.getEvent_name().equals(GitlabEventType.PUSH.getDesc())) {
-                saveWebhooks(webhooks);
+            if (webhook.getEvent_name().equals(GitlabEventType.PUSH.getDesc())) {
+                saveWebhooks(webhook);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void saveWebhooks(GitlabHooksVO.Webhooks webhooks) {
+    @Override
+    @Async(value = ASYNC_POOL_TASK_COMMON)
+    public void systemHooksV1(GitlabHooksVO.SystemHook systemHook) {
+        // 处理系统消息
+        try {
+            IGitlabEventHandler iGitlabEventHandler = GitlabEventHandlerFactory.getGitlabEventHanlderByKey(systemHook.getEventName());
+            if (iGitlabEventHandler != null)
+                iGitlabEventHandler.consumeEvent(systemHook);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveWebhooks(GitlabHooksVO.Webhook webhooks) {
         CsGitlabInstance instance = filter(csGitlabInstanceService.queryAll(), webhooks);
         if (instance == null)
             return;
@@ -171,7 +186,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         gitlabWebhooksConsumer.consumerWebhooks(csGitlabWebhook);
     }
 
-    private CsGitlabInstance filter(List<CsGitlabInstance> instances, GitlabHooksVO.Webhooks webhooks) {
+    private CsGitlabInstance filter(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhooks) {
         for (CsGitlabInstance instance : instances) {
             try {
                 java.net.URL instanceUrl = new java.net.URL(instance.getUrl());
@@ -252,7 +267,8 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
     }
 
-    private void saveGitlabProject(CsGitlabInstance csGitlabInstance, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
+    @Override
+    public void saveGitlabProject(CsGitlabInstance csGitlabInstance, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap) {
         CsGitlabProject pre = GitlabProjectBuilder.build(csGitlabInstance, gitlabProject);
         if (projectMap.containsKey(pre.getProjectId())) {
             CsGitlabProject csGitlabProject = projectMap.get(pre.getProjectId());
@@ -265,7 +281,8 @@ public class GitlabFacadeImpl implements GitlabFacade {
         applicationFacade.updateApplicationScmMember(pre);
     }
 
-    private void saveGitlabGroup(CsGitlabInstance csGitlabInstance, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
+    @Override
+    public void saveGitlabGroup(CsGitlabInstance csGitlabInstance, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap) {
         CsGitlabGroup pre = GitlabGroupBuilder.build(csGitlabInstance, gitlabGroup);
         if (groupMap.containsKey(pre.getGroupId())) {
             CsGitlabGroup csGitlabGroup = groupMap.get(pre.getGroupId());

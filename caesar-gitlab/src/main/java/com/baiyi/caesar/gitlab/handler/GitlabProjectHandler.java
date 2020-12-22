@@ -18,7 +18,7 @@ import java.util.Objects;
 public class GitlabProjectHandler {
 
     public List<GitlabProject> getProjects(String gitlabName) {
-        return  Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getAllProjects();
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getAllProjects();
     }
 
     public GitlabProject getProject(String gitlabName, Serializable projectId) throws IOException {

@@ -15,7 +15,7 @@ import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
  */
 public class GitlabWebhookBuilder {
 
-    public static CsGitlabWebhook build(GitlabHooksVO.Webhooks webhooks, CsGitlabInstance csGitlabInstance, OcUser ocUser) {
+    public static CsGitlabWebhook build(GitlabHooksVO.Webhook webhooks, CsGitlabInstance csGitlabInstance, OcUser ocUser) {
         GitlabWebhookBO bo = GitlabWebhookBO.builder()
                 .instanceId(csGitlabInstance.getId())
                 .name(webhooks.getProject().getName())

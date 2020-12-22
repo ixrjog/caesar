@@ -101,7 +101,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     public static final boolean SEND_DINGTALK = false;
 
-
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
