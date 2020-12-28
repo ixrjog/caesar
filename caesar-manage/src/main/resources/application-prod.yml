@@ -16,7 +16,7 @@ caesar:
 
 spring:
   profiles:
-    include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core
+    include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core.,sonar-prod
   redis:
     host: r-bp11vlmf4cijpn4s1d.redis.rds.aliyuncs.com
     port: 6379

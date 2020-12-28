@@ -74,4 +74,8 @@ public class JobParamUtils {
         jobParamDetail.getParams().put(CONCURRENT, deploymentParam.getParamMap().getOrDefault(CONCURRENT, "1"));
     }
 
+    public static void assembleIsSonarParam(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
+        if (!buildParam.getParamMap().containsKey("isSonar")) return;
+        jobParamDetail.getParams().put("isSonar", buildParam.getParamMap().get("isSonar"));
+    }
 }

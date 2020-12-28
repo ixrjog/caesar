@@ -5,6 +5,7 @@ import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
+import com.baiyi.caesar.domain.vo.sonar.SonarEntry;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -54,6 +55,9 @@ public class CiJobVO {
         @ApiModelProperty(value = "任务引擎")
         private List<JobEngineVO.JobEngine> jobEngines;
 
+        @ApiModelProperty(value = "质量管理")
+        private SonarQube sonarQube;
+
         @ApiModelProperty(value = "需要升级模版")
         private Boolean needUpgrade;
 
@@ -70,6 +74,7 @@ public class CiJobVO {
         private Integer envType;
         private String jobType;
         private Boolean enableTag;
+        private Boolean enableSonar;
         private Integer scmMemberId;
         private Integer ossBucketId;
         private Integer dingtalkId;
@@ -82,6 +87,51 @@ public class CiJobVO {
         private Date createTime;
         private String parameterYaml;
         private String comment;
+
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class SonarQube {
+
+        private Map<String, SonarEntry.Measure> measures;
+
+        // http://sonar.xinc818.com/dashboard?id=DATA-CENTER_data-center-server-dev
+        private String projectUrl;
+
+        @ApiModelProperty(value = "警报")
+        private String alertStatus;
+
+        @ApiModelProperty(value = "Bugs")
+        private String bugs;
+
+        @ApiModelProperty(value = "异味")
+        private String codeSmells;
+
+        @ApiModelProperty(value = "覆盖率%")
+        private String coverage;
+
+        @ApiModelProperty(value = "重复行%")
+        private String duplicatedLinesDensity;
+
+        @ApiModelProperty(value = "代码行数")
+        private String ncloc;
+
+        @ApiModelProperty(value = "SQALE评级")
+        private String sqaleRating;
+
+        @ApiModelProperty(value = "可靠性评级")
+        private String reliabilityRating;
+
+        @ApiModelProperty(value = "安全评级")
+        private String securityRating;
+
+        @ApiModelProperty(value = "技术债务")
+        private String sqaleIndex;
+
+        @ApiModelProperty(value = "漏洞")
+        private String vulnerabilities;
 
     }
 

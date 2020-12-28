@@ -20,6 +20,7 @@
         <module>caesar-dingtalk</module>
         <module>caesar-aliyun-oss</module>
         <module>caesar-aliyun-core</module>
+        <module>caesar-sonar</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -231,6 +232,12 @@
             <dependency>
                 <groupId>com.baiyi</groupId>
                 <artifactId>caesar-aliyun-oss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baiyi</groupId>
+                <artifactId>caesar-sonar</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

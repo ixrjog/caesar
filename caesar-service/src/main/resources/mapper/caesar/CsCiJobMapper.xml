@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.baiyi.caesar.mapper.caesar.CsCiJobMapper">
-    <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsCiJob">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="application_id" jdbcType="INTEGER" property="applicationId"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="job_key" jdbcType="VARCHAR" property="jobKey"/>
-        <result column="branch" jdbcType="VARCHAR" property="branch"/>
-        <result column="env_type" jdbcType="INTEGER" property="envType"/>
-        <result column="job_type" jdbcType="VARCHAR" property="jobType"/>
-        <result column="enable_tag" jdbcType="BIT" property="enableTag"/>
-        <result column="scm_member_id" jdbcType="INTEGER" property="scmMemberId"/>
-        <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber"/>
-        <result column="hide" jdbcType="BIT" property="hide"/>
-        <result column="job_tpl_id" jdbcType="INTEGER" property="jobTplId"/>
-        <result column="deployment_job_id" jdbcType="INTEGER" property="deploymentJobId"/>
-        <result column="at_all" jdbcType="BIT" property="atAll"/>
-        <result column="oss_bucket_id" jdbcType="INTEGER" property="ossBucketId"/>
-        <result column="dingtalk_id" jdbcType="INTEGER" property="dingtalkId"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml"/>
-        <result column="comment" jdbcType="LONGVARCHAR" property="comment"/>
-    </resultMap>
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsCiJob">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="job_key" jdbcType="VARCHAR" property="jobKey" />
+    <result column="branch" jdbcType="VARCHAR" property="branch" />
+    <result column="env_type" jdbcType="INTEGER" property="envType" />
+    <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+    <result column="enable_tag" jdbcType="BIT" property="enableTag" />
+    <result column="scm_member_id" jdbcType="INTEGER" property="scmMemberId" />
+    <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
+    <result column="hide" jdbcType="BIT" property="hide" />
+    <result column="job_tpl_id" jdbcType="INTEGER" property="jobTplId" />
+    <result column="deployment_job_id" jdbcType="INTEGER" property="deploymentJobId" />
+    <result column="enable_sonar" jdbcType="TINYINT" property="enableSonar" />
+    <result column="at_all" jdbcType="BIT" property="atAll" />
+    <result column="oss_bucket_id" jdbcType="INTEGER" property="ossBucketId" />
+    <result column="dingtalk_id" jdbcType="INTEGER" property="dingtalkId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
 
     <resultMap id="JobTypeTotalResultMap" type="com.baiyi.caesar.domain.vo.dashboard.JobTypeTotal">
-        <result column="job_type" jdbcType="VARCHAR" property="jobType"/>
-        <result column="total" jdbcType="INTEGER" property="total"/>
+        <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+        <result column="total" jdbcType="INTEGER" property="total" />
     </resultMap>
 
     <resultMap id="BuildTaskGoupByWeekResultMap" type="com.baiyi.caesar.domain.vo.dashboard.BuildTaskGoupByWeek">
-        <result column="weeks" jdbcType="VARCHAR" property="weeks"/>
-        <result column="count" jdbcType="INTEGER" property="count"/>
+        <result column="weeks" jdbcType="VARCHAR" property="weeks" />
+        <result column="count" jdbcType="INTEGER" property="count" />
     </resultMap>
 
-    <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobPageQuery"
-            resultMap="BaseResultMap">
+    <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobPageQuery" resultMap="BaseResultMap">
         select * from cs_ci_job
         <where>
             application_id = #{applicationId}
@@ -48,9 +48,7 @@
         </where>
     </select>
 
-    <select id="queryCsCiJobTplByParam"
-            parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobTplPageQuery"
-            resultMap="BaseResultMap">
+    <select id="queryCsCiJobTplByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobTplPageQuery" resultMap="BaseResultMap">
         select * from cs_ci_job
         <where>
             job_tpl_id = #{jobTplId}
@@ -60,13 +58,11 @@
         </where>
     </select>
 
-    <select id="queryJobTypeTotal"
-            resultMap="JobTypeTotalResultMap">
+    <select id="queryJobTypeTotal" resultMap="JobTypeTotalResultMap">
         select job_type , count(*) total from cs_ci_job group by job_type
     </select>
 
-    <select id="queryBuildTaskGoupByWeek"
-            resultMap="BuildTaskGoupByWeekResultMap">
+    <select id="queryBuildTaskGoupByWeek" resultMap="BuildTaskGoupByWeekResultMap">
         select DATE_FORMAT(create_time,'%Y%u') weeks,count(*) count from cs_ci_job_build group by weeks;
     </select>
 </mapper>
