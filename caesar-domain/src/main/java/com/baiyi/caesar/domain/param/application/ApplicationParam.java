@@ -66,6 +66,19 @@ public class ApplicationParam {
     @Data
     @NoArgsConstructor
     @ApiModel
+    public static class CreateScmMemberBranch {
+
+        @ApiModelProperty(value = "scm成员id")
+        @NotNull
+        private Integer scmMemberId;
+
+    }
+
+
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
     public static class ScmMemberBranchCommitQuery {
 
         @ApiModelProperty(value = "scm成员id")

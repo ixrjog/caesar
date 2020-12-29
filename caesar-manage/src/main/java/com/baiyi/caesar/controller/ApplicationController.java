@@ -13,7 +13,6 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.gitlab.api.models.GitlabBranchCommit;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +82,12 @@ public class ApplicationController {
     @PostMapping(value = "/scm/member/branch/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.ScmMemberBranchQuery query) {
         return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranch(query));
+    }
+
+    @ApiOperation(value = "创建应用SCM默认发布分支")
+    @PostMapping(value = "/scm/member/branch/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> createApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.CreateScmMemberBranch createParam) {
+        return new HttpResult<>(gitlabFacade.createApplicationSCMMemberBranch(createParam));
     }
 
     @ApiOperation(value = "查询应用SCM分支commit详情")

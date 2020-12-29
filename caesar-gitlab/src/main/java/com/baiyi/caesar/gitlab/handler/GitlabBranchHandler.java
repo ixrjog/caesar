@@ -29,4 +29,16 @@ public class GitlabBranchHandler {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getTags(projectId);
     }
 
+    /**
+     * 创建分支
+     * @param gitlabName
+     * @param projectId
+     * @param branch 目标分支
+     * @param ref 原分支
+     * @throws IOException
+     */
+    public void createBranch(String gitlabName, Integer projectId, String branch, String ref) throws IOException {
+        Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).createBranch(projectId, branch, ref);
+    }
+
 }

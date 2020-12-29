@@ -130,6 +130,10 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private EnvFacade envFacade;
 
+    public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "daily", "gray"};
+
+    public static final String DEFAULT_DEF_BRANCH = "master";
+
     private BusinessWrapper<GitlabBranchVO.BaseBranch> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
@@ -338,6 +342,29 @@ public class GitlabFacadeImpl implements GitlabFacade {
             envName = envFacade.queryEnvNameByType(csCiJob.getEnvType());
         }
         return queryGitlabProjectRepository(csApplicationScmMember.getScmId(), scmMemberBranchQuery.getEnableTag(), csApplication.getEnableGitflow(), envName);
+    }
+
+    @Override
+    public BusinessWrapper<Boolean> createApplicationSCMMemberBranch(ApplicationParam.CreateScmMemberBranch createParam) {
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(createParam.getScmMemberId());
+        if (csApplicationScmMember == null)
+            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
+        CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
+        for (String branch : DEFAULT_DEPLOY_BRANCHES) {
+            GitlabBranch gitlabBranch = null;
+            try {
+                gitlabBranch = gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
+                // FileNotFoundException
+            } catch (IOException ignored) {
+            }
+            try {
+                if (gitlabBranch == null)
+                    gitlabBranchHandler.createBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch, DEFAULT_DEF_BRANCH);
+            } catch (IOException ignored) {
+            }
+        }
+        return BusinessWrapper.SUCCESS;
     }
 
     @Override

@@ -48,6 +48,8 @@ public interface GitlabFacade {
 
     BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
 
+    BusinessWrapper<Boolean> createApplicationSCMMemberBranch(ApplicationParam.CreateScmMemberBranch createParam);
+
     BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
 
 

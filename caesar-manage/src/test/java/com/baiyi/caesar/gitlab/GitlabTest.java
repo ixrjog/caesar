@@ -53,9 +53,24 @@ public class GitlabTest extends BaseUnit {
     @Test
     void testGetProject() {
         try {
-            GitlabProject  p= gitlabProjectHandler.getProject("gitlab-1",88);
+            GitlabProject p = gitlabProjectHandler.getProject("gitlab-1", 72);
+            gitlabBranchHandler.createBranch("gitlab-1", 72, "test999", "master");
             System.err.println(p);
         } catch (IOException e) {
+        }
+
+    }
+
+    @Test
+    void testGetProjectBranch() {
+        try {
+            GitlabBranch b = gitlabBranchHandler.getBranch("gitlab-1", 72, "test998");
+            System.err.println(b);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.err.println("----------------------");
+            System.err.println(e.getLocalizedMessage());
+
         }
 
     }
@@ -95,7 +110,7 @@ public class GitlabTest extends BaseUnit {
 
     @Test
     void testSyncGroup() {
-       gitlabFacade.syncGitlabInstanceGroup(1);
+        gitlabFacade.syncGitlabInstanceGroup(1);
     }
 
 }
