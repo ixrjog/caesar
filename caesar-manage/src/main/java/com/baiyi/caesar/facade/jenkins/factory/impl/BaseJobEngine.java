@@ -81,7 +81,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
                 if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
                     try {
                         JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
-                        saveCsJobEngineBuildNumber(csJobEngine, job.getLastBuild() == null ? 0 : job.getLastBuild().getNumber());
+                        saveCsJobEngineBuildNumber(csJobEngine, job.getNextBuildNumber());
                     } catch (Exception ex) {
                         return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
                     }
@@ -90,10 +90,8 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         return BusinessWrapper.SUCCESS;
     }
 
-    private void saveCsJobEngineBuildNumber(CsJobEngine csJobEngine, int lastBuildNumber) {
-        int nextBuildNumber = lastBuildNumber + 1;
-        if (lastBuildNumber == 0)
-            nextBuildNumber = 1;
+    private void saveCsJobEngineBuildNumber(CsJobEngine csJobEngine, int nextBuildNumber) {
+        int lastBuildNumber = nextBuildNumber == 1 ? 0 : nextBuildNumber - 1;
         if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != nextBuildNumber) {
             log.info("更新引擎指针 jenkinsInstanceId = {}, engineName = {} , lastBuildNumber = {} -> {}, nextBuildNumber = {} -> {}"
                     , csJobEngine.getJenkinsInstanceId(), csJobEngine.getName(),
@@ -104,6 +102,21 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
             csJobEngineService.updateCsJobEngine(csJobEngine);
         }
     }
+
+//    private void saveCsJobEngineBuildNumber2(CsJobEngine csJobEngine, int lastBuildNumber) {
+//        int nextBuildNumber = lastBuildNumber + 1;
+//        if (lastBuildNumber == 0)
+//            nextBuildNumber = 1;
+//        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != nextBuildNumber) {
+//            log.info("更新引擎指针 jenkinsInstanceId = {}, engineName = {} , lastBuildNumber = {} -> {}, nextBuildNumber = {} -> {}"
+//                    , csJobEngine.getJenkinsInstanceId(), csJobEngine.getName(),
+//                    csJobEngine.getLastBuildNumber(), lastBuildNumber,
+//                    csJobEngine.getNextBuildNumber(), nextBuildNumber);
+//            csJobEngine.setLastBuildNumber(lastBuildNumber);
+//            csJobEngine.setNextBuildNumber(nextBuildNumber);
+//            csJobEngineService.updateCsJobEngine(csJobEngine);
+//        }
+//    }
 
     @Override
     public void createJobEngine(int jobId) {

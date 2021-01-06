@@ -50,7 +50,7 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void jobTest() {
-        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "CAESAR_caesar-server-prod");
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "ITEM-CATEGORY_item-category-server-deploy-prod");
         System.err.println(job);
         job.getBuildByNumber(9);
 

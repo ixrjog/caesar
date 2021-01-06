@@ -42,6 +42,7 @@ public class CiJobParam {
         @NotNull(message = "必须模版id")
         private Integer jobTplId;
 
+        @ApiModelProperty(value = "查询值")
         private String queryName;
 
     }

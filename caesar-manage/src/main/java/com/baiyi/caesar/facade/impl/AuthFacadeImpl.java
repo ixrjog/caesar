@@ -22,6 +22,7 @@ import com.baiyi.caesar.opscloud.OpscloudUserRole;
 import com.baiyi.caesar.service.auth.*;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +40,7 @@ import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
  * @Date 2020/2/13 8:21 下午
  * @Version 1.0
  */
+@Slf4j
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
@@ -76,8 +78,7 @@ public class AuthFacadeImpl implements AuthFacade {
     public DataTable<RoleVO.Role> queryRolePage(RoleParam.PageQuery pageQuery) {
         DataTable<OcAuthRole> table = ocAuthRoleService.queryOcAuthRoleByParam(pageQuery);
         List<RoleVO.Role> page = BeanCopierUtils.copyListProperties(table.getData(), RoleVO.Role.class);
-        DataTable<RoleVO.Role> dataTable = new DataTable<>(page, table.getTotalNum());
-        return dataTable;
+        return new DataTable<>(page, table.getTotalNum());
     }
 
     @Override
@@ -212,29 +213,30 @@ public class AuthFacadeImpl implements AuthFacade {
     @Async(value = ASYNC_POOL_TASK_EXECUTOR)
     public void syncUserRole() {
         List<OcUser> users = ocUserService.queryOcUserActive();
-        users.forEach(u -> {
-            try {
-                List<UserRoleVO.UserRole> userRoles = opscloudUserRole.queryUserRoles(u.getUsername());
-                if (!CollectionUtils.isEmpty(userRoles))
-                    userRoles.forEach(r -> {
-                        UserRoleVO.UserRole userRole = new UserRoleVO.UserRole();
-                        userRole.setUsername(u.getUsername());
-                        userRole.setRoleName(r.getRoleName());
-                        addUserRole(userRole);
-                    });
-            } catch (IOException e) {
-            }
-        });
+        users.parallelStream().forEach(this::syncUserRole);
+    }
+
+    private void syncUserRole(OcUser ocUser) {
+        try {
+            List<UserRoleVO.UserRole> userRoles = opscloudUserRole.queryUserRoles(ocUser.getUsername());
+            if (!CollectionUtils.isEmpty(userRoles))
+                userRoles.parallelStream().forEach(r -> {
+                    UserRoleVO.UserRole userRole = new UserRoleVO.UserRole();
+                    userRole.setUsername(ocUser.getUsername());
+                    userRole.setRoleName(r.getRoleName());
+                    addUserRole(userRole);
+                });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public DataTable<UserRoleVO.UserRole> queryUserRolePage(UserRoleParam.PageQuery pageQuery) {
         DataTable<OcAuthUserRole> table = ocAuthUserRoleService.queryOcAuthUserRoleByParam(pageQuery);
         List<UserRoleVO.UserRole> page = BeanCopierUtils.copyListProperties(table.getData(), UserRoleVO.UserRole.class);
-        return new DataTable<>(page.stream().map(e-> userRoleDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> userRoleDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
-
-
 
     @Override
     public void addUserRole(UserRoleVO.UserRole userRole) {
@@ -246,9 +248,12 @@ public class AuthFacadeImpl implements AuthFacade {
                 if (ocAuthRole == null) return;
                 ocAuthUserRole.setRoleId(ocAuthRole.getId());
             }
-            if (ocAuthUserRoleService.queryOcAuthUserRoleByUniqueKey(ocAuthUserRole) == null)
+            if (ocAuthUserRoleService.queryOcAuthUserRoleByUniqueKey(ocAuthUserRole) == null) {
                 ocAuthUserRoleService.addOcAuthUserRole(ocAuthUserRole);
-        } catch (Exception ignored) {
+                log.info("创建用户角色: username = {}, roleName = {}", userRole.getUsername(), userRole.getRoleName());
+            }
+        } catch (Exception e) {
+            log.error("创建用户角色错误: username = {}, roleName = {}", userRole.getUsername(), userRole.getRoleName(), e);
         }
     }
 

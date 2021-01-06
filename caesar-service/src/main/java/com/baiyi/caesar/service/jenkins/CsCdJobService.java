@@ -4,6 +4,8 @@ import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 
+import java.util.List;
+
 /**
  * @Author baiyi
  * @Date 2020/8/26 2:45 下午
@@ -15,8 +17,9 @@ public interface CsCdJobService {
 
     DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobTplPageQuery pageQuery);
 
+    List<CsCdJob> selectAll();
 
-    void addCsCdJob(CsCdJob csCdJob);
+    void addCsCdJob(CsCdJob csCdJb);
 
     void updateCsCdJob(CsCdJob csCdJob);
 

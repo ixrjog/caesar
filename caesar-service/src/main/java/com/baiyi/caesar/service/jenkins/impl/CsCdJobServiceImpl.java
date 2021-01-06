@@ -43,6 +43,11 @@ public class CsCdJobServiceImpl implements CsCdJobService {
     }
 
     @Override
+    public List<CsCdJob> selectAll(){
+        return csCdJobMapper.selectAll();
+    }
+
+    @Override
     public void addCsCdJob(CsCdJob csCdJob) {
         csCdJobMapper.insert(csCdJob);
     }
