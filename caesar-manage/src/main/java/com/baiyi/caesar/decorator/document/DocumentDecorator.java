@@ -17,7 +17,6 @@ import java.util.Map;
 public class DocumentDecorator {
 
     public DocumentVO.Doc decorator(DocumentVO.Doc doc) {
-
         Map<String, String> valuesMap = Maps.newHashMap();
         valuesMap.put("animal", "quick brown fox");
         valuesMap.put("username", SessionUtils.getUsername());

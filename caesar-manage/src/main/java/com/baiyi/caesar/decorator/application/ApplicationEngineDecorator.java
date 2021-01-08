@@ -23,7 +23,7 @@ public class ApplicationEngineDecorator {
     public ApplicationVO.Engine decorator(ApplicationVO.Engine engine, Integer extend) {
         if (extend == 0) return engine;
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(engine.getJenkinsInstanceId());
-        if(csJenkinsInstance != null){
+        if (csJenkinsInstance != null) {
             engine.setInstance(BeanCopierUtils.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
         }
         return engine;

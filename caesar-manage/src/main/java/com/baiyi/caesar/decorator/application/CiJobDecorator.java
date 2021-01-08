@@ -7,6 +7,7 @@ import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.DataTable;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class CiJobDecorator {
+public class CiJobDecorator extends BaseJobDecorator {
 
     @Resource
     private OcEnvService ocEnvService;
@@ -184,18 +185,7 @@ public class CiJobDecorator {
         sonarQube.setMeasures(convertMeasuresMap(sonarMeasures));
         sonarQube.setAlertStatus(new SonarParamsBO(projectKey, "alert_status").toString());
         // http://sonar.xinc818.com/dashboard?id=DATA-CENTER_data-center-server-dev
-
         sonarQube.setProjectUrl(Joiner.on("/").join(sonarConfig.getUrl(), "dashboard?id=") + projectKey);
-
-//        sonarQube.setBugs(new SonarParamsBO(projectKey, "bugs").toString());
-//        sonarQube.setCodeSmells(new SonarParamsBO(projectKey, "code_smells").toString());
-//        sonarQube.setCoverage(new SonarParamsBO(projectKey, "coverage").toString());
-//        sonarQube.setDuplicatedLinesDensity(new SonarParamsBO(projectKey, "duplicated_lines_density").toString());
-//        sonarQube.setNcloc(new SonarParamsBO(projectKey, "ncloc").toString());
-//        sonarQube.setSqaleRating(new SonarParamsBO(projectKey, "sqale_rating").toString());
-//        sonarQube.setReliabilityRating(new SonarParamsBO(projectKey, "reliability_rating").toString());
-//        sonarQube.setSqaleIndex(new SonarParamsBO(projectKey, "sqale_index").toString());
-//        sonarQube.setVulnerabilities(new SonarParamsBO(projectKey, "vulnerabilities").toString());
         return sonarQube;
     }
 
@@ -214,15 +204,9 @@ public class CiJobDecorator {
             CiJobBuildVO.JobBuildView jobBuildView = new CiJobBuildVO.JobBuildView();
             jobBuildView.setBuildNumber(e.getJobBuildNumber());
             jobBuildView.setBuilding(!e.getFinalized());
-            if (!e.getFinalized()) {
-                jobBuildView.setColor("#E07D06");
-            } else {
-                if (e.getBuildStatus().equals("SUCCESS")) {
-                    jobBuildView.setColor("#17BA14");
-                } else {
-                    jobBuildView.setColor("#DD3E03");
-                }
-            }
+
+            assembleJobBuildView(jobBuildView,e.getFinalized() ,e.getBuildStatus());
+
             jobBuildView.setExecutors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()));
             return jobBuildView;
         }).collect(Collectors.toList());

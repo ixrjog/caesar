@@ -28,8 +28,6 @@ public class JobBuildArtifactDecorator {
         return artifacts.stream().map(e -> {
             BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtils.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
 
-
-
             if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
                 buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));
             if (csOssBucket != null) {

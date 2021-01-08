@@ -28,36 +28,39 @@ public class AnsiblePlaybookDecorator {
 
     public AnsiblePlaybookVO.AnsiblePlaybook decorator(OcAnsiblePlaybook ocAnsiblePlaybook) {
         AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook = BeanCopierUtils.copyProperties(ocAnsiblePlaybook, AnsiblePlaybookVO.AnsiblePlaybook.class);
-        try{
+        try {
             PlaybookTags tags = PlaybookUtils.buildTags(ansiblePlaybook.getTags());
-            invokeTags(ansiblePlaybook, tags);
+            assembleTags(ansiblePlaybook, tags);
             ansiblePlaybook.setTasks(tags.getTasks());
             ansiblePlaybook.setFormatError(false);
-        }catch (Exception e){
+        } catch (Exception e) {
             ansiblePlaybook.setFormatError(true);
         }
-
         ansiblePlaybook.setPath(ansibleConfig.getPlaybookPath(ocAnsiblePlaybook));
         return ansiblePlaybook;
     }
 
-    private void invokeTags(AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook, PlaybookTags tags) {
+    private void assembleTags(AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook, PlaybookTags tags) {
         Set<String> selectedTags = Sets.newHashSet();
         List<PlaybookTask> tasks = tags.getTasks();
-        if(tasks == null || tasks.isEmpty()){
+        if (tasks == null || tasks.isEmpty()) {
             ansiblePlaybook.setTasks(Lists.newArrayList());
             ansiblePlaybook.setSelectedTags(selectedTags);
             return;
         }
-
-        for (PlaybookTask task : tags.getTasks()) {
-            if (task.getChoose() == null)
-                task.setChoose(true);
-            if (task.getChoose())
-                selectedTags.add(task.getTags());
-        }
+        assembleSelectedTags(selectedTags, tags);
         ansiblePlaybook.setTasks(tags.getTasks());
         ansiblePlaybook.setSelectedTags(selectedTags);
+    }
+
+    private void assembleSelectedTags(Set<String> selectedTags, PlaybookTags tags) {
+        tags.getTasks().parallelStream().forEach(e -> {
+            if (e.getChoose() == null)
+                e.setChoose(true);
+            if (e.getChoose())
+                selectedTags.add(e.getTags());
+
+        });
     }
 
 }

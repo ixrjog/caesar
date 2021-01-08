@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.vo.tree.TreeVO;
 import com.baiyi.caesar.facade.OrgFacade;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -22,15 +23,15 @@ public class DepartmentDecorator {
     private OrgFacade orgFacade;
 
     public List<TreeVO.DeptTree> deptListToTree(List<OcOrgDepartment> deptList) {
-        if (deptList == null || deptList.isEmpty())
+        if (CollectionUtils.isEmpty(deptList))
             return null;
         List<TreeVO.DeptTree> treeList = Lists.newArrayList();
-        deptList.forEach(e -> {
+        deptList.parallelStream().forEach(e -> {
             TreeVO.DeptTree tree = TreeVO.DeptTree.builder()
                     .id(e.getId())
                     .label(e.getName())
                     .build();
-            invokeChildren(tree);
+            assembleChildren(tree);
             treeList.add(tree);
         });
         return treeList;
@@ -41,15 +42,12 @@ public class DepartmentDecorator {
      *
      * @param tree
      */
-    private void invokeChildren(TreeVO.DeptTree tree) {
+    private void assembleChildren(TreeVO.DeptTree tree) {
         DepartmentTreeVO.DepartmentTree departmentTree = orgFacade.queryDepartmentTree(tree.getId());
-        if (departmentTree == null)
-            return;
-        if (departmentTree.getTree() != null) {
-            departmentTree.getTree().forEach(this::invokeChildren);
+        if (departmentTree != null && departmentTree.getTree() != null) {
+            departmentTree.getTree().parallelStream().forEach(this::assembleChildren);
             tree.setChildren(departmentTree.getTree());
         }
     }
-
 
 }

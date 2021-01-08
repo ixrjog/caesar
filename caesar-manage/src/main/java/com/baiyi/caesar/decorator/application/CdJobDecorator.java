@@ -5,6 +5,7 @@ import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class CdJobDecorator {
+public class CdJobDecorator extends BaseJobDecorator {
 
     @Resource
     private CsJobTplService csJobTplService;
@@ -118,15 +119,9 @@ public class CdJobDecorator {
             CdJobBuildVO.JobBuildView jobBuildView = new CdJobBuildVO.JobBuildView();
             jobBuildView.setBuildNumber(e.getJobBuildNumber());
             jobBuildView.setBuilding(!e.getFinalized());
-            if (!e.getFinalized()) {
-                jobBuildView.setColor("#E07D06");
-            } else {
-                if ("SUCCESS".equals(e.getBuildStatus())) {
-                    jobBuildView.setColor("#17BA14");
-                } else {
-                    jobBuildView.setColor("#DD3E03");
-                }
-            }
+
+            assembleJobBuildView(jobBuildView,e.getFinalized() ,e.getBuildStatus());
+
             jobBuildView.setExecutors(jobDeploymentDecorator.getBuildExecutorByBuildId(e.getId()));
             return jobBuildView;
         }).collect(Collectors.toList());
