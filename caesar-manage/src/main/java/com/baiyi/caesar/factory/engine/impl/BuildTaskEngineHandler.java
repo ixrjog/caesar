@@ -56,9 +56,10 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
         return BuildType.BUILD.getType();
     }
 
+
     @Override
     public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, 10);
+        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, HEARBEAT_CACHE_SECONDS);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
 
     private void trackJobBuildComputer(BuildJobContext context) {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
-        computerMap.keySet().forEach(k -> {
+        computerMap.keySet().parallelStream().forEach(k -> {
             if (!k.equals("master")) {
                 Computer computer = computerMap.get(k);
                 try {

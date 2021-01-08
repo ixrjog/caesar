@@ -381,7 +381,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public BusinessWrapper<Boolean> syncUserGroup() {
         List<Group> groupList = groupRepo.getGroupList();
-        groupList.forEach(g -> {
+        groupList.parallelStream().forEach(g -> {
             try {
                 UserGroupBO userGroupBO = UserGroupBO.builder()
                         .name(g.getGroupName())
@@ -403,7 +403,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public BusinessWrapper<Boolean> syncUser() {
         accountCenter.sync(AccountCenter.LDAP_ACCOUNT_KEY); // 同步Ldap用户数据
-        personRepo.getAllPersonNames().forEach(e -> {
+        personRepo.getAllPersonNames().parallelStream().forEach(e -> {
             OcUser ocUser = ocUserService.queryOcUserByUsername(e);
             if (ocUser != null)
                 syncUserPermission(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));

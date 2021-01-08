@@ -14,7 +14,6 @@ import java.net.InetAddress;
 public class CaesarInstanceBuilder {
 
     public static CsInstance build(InetAddress inetAddress) {
-
         CaesarInstanceBO bo = CaesarInstanceBO.builder()
                 .hostIp(inetAddress.getHostAddress())
                 .hostName(inetAddress.getHostName())

@@ -93,7 +93,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
 
     private void trackJobBuildComputer(DeploymentJobContext context) {
         Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(context.getJobEngine().getJenkinsInstance().getName());
-        computerMap.keySet().forEach(k -> {
+        computerMap.keySet().parallelStream().forEach(k -> {
             if (!k.equals("master")) {
                 Computer computer = computerMap.get(k);
                 try {
@@ -148,16 +148,14 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
         context.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact((T) context, e));
     }
 
-
     private void buildEndNotify(DeploymentJobContext context) {
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(context.getCsCdJob().getJobType());
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
 
-
     @Override
     public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, 10);
+        redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, HEARBEAT_CACHE_SECONDS);
     }
 
 }

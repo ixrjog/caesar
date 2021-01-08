@@ -30,7 +30,7 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
 
     @Override
     public void syncUserBusinessPermission(List<UserVO.User> userList, int businessType, int businessId) {
-        userList.forEach(e -> {
+        userList.parallelStream().forEach(e -> {
             try {
                 OcUserPermission ocUserPermission = new OcUserPermission();
                 ocUserPermission.setBusinessType(businessType);
@@ -45,7 +45,7 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
     @Override
     public void syncUserBusinessPermission(int userId, int businessType, List<Integer> businessIds) {
         try {
-            businessIds.forEach(e -> {
+            businessIds.parallelStream().forEach(e -> {
                 try {
                     OcUserPermission ocUserPermission = new OcUserPermission();
                     ocUserPermission.setBusinessType(businessType);

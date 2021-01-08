@@ -74,14 +74,14 @@ public class DashboardFacadeImpl implements DashboardFacade {
     @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'latestTasks'")
     public DashboardVO.LatestTasks queryLatestTasks() {
         DashboardVO.LatestTasks latestTasks = new DashboardVO.LatestTasks();
-        final int LatestTasksLength = 9;
+        final int latestTasksLength = 9;
 
-        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(LatestTasksLength),0);
+        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength),0);
 
                 latestTasks.setLatestBuildTasks(latestBuildTasks);
         latestTasks.setBuildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild());
 
-        List<CdJobBuildVO.JobBuild> latestDeploymentTasks = csCdJobBuildService.queryLatestCsCdJobBuild(LatestTasksLength)
+        List<CdJobBuildVO.JobBuild> latestDeploymentTasks = csCdJobBuildService.queryLatestCsCdJobBuild(latestTasksLength)
                 .stream().map(e -> jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(e, CdJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
         latestTasks.setLatestDeploymentTasks(latestDeploymentTasks);
         latestTasks.setDeploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild());

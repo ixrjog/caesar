@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements ITaskEngineHandler<T>, InitializingBean {
 
+    public static final long HEARBEAT_CACHE_SECONDS = 10;
+
     @Resource
     protected RedisUtil redisUtil;
 

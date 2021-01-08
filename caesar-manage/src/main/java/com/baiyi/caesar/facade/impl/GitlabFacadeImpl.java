@@ -196,7 +196,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
                 java.net.URL webhooksUrl = new java.net.URL(webhooks.getProject().getWeb_url());
                 if (instanceUrl.getHost().equals(webhooksUrl.getHost()))
                     return instance;
-            } catch (MalformedURLException e) {
+            } catch (MalformedURLException ignored) {
             }
         }
         return null;
@@ -300,7 +300,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     private void deleteGitlabProjectByMap(Map<Integer, CsGitlabProject> projectMap) {
         if (projectMap.isEmpty()) return;
-        projectMap.keySet().forEach(k -> {
+        projectMap.keySet().parallelStream().forEach(k -> {
             CsGitlabProject csGitlabProject = projectMap.get(k);
             // 清除业务标签
             tagFacade.clearBusinessTags(BusinessType.GITLAB_PROJECT.getType(), csGitlabProject.getId());
@@ -310,7 +310,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     private void deleteGitlabGroupByMap(Map<Integer, CsGitlabGroup> groupMap) {
         if (groupMap.isEmpty()) return;
-        groupMap.keySet().forEach(k -> {
+        groupMap.keySet().parallelStream().forEach(k -> {
             CsGitlabGroup csGitlabGroup = groupMap.get(k);
             // 清除业务标签
             tagFacade.clearBusinessTags(BusinessType.GITLAB_GROUP.getType(), csGitlabGroup.getId());

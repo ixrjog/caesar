@@ -27,6 +27,8 @@ public class MonitorHandler {
 
     public static final int HOST_STATUS_DISABLE = 1;
 
+    public static final String SERVER_GROUP_KEY = "serverGroup";
+
     @Resource
     private CsApplicationServerGroupService csApplicationServerGroupService;
 
@@ -49,8 +51,8 @@ public class MonitorHandler {
     }
 
     private String acqServerGroupName(CsApplication csApplication, Map<String, String> params, String hostPattern) {
-        if (params.containsKey("serverGroup"))
-            return params.get("serverGroup");
+        if (params.containsKey(SERVER_GROUP_KEY))
+            return params.get(SERVER_GROUP_KEY);
         List<CsApplicationServerGroup> groups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(csApplication.getId());
         for (CsApplicationServerGroup group : groups) {
             String shortName = group.getServerGroupName().replace("group_", "");

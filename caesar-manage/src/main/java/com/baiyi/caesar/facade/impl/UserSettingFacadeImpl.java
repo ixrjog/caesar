@@ -51,7 +51,7 @@ public class UserSettingFacadeImpl implements UserSettingFacade, InitializingBea
         // 当前用户配置
         List<OcUserSetting> settings = ocUserSettingService.queryOcUserSettingBySettingGroup(ocUser.getId(), userSetting.getSettingGroup());
 
-        userSetting.getSettingMap().keySet().forEach(k -> {
+        userSetting.getSettingMap().keySet().parallelStream().forEach(k -> {
             String settingValue = userSetting.getSettingMap().get(k);
             OcUserSetting ocUserSetting = getOcUserSettingByName(k, settings);
             if (ocUserSetting != null) {
@@ -82,7 +82,6 @@ public class UserSettingFacadeImpl implements UserSettingFacade, InitializingBea
         return settings.stream().collect(Collectors.toMap(OcUserSetting::getName, OcUserSetting::getSettingValue, (k1, k2) -> k1));
     }
 
-
     @Override
     public void afterPropertiesSet() {
         Map<String, String> xtermSettingGroup = Maps.newHashMap();
@@ -92,6 +91,5 @@ public class UserSettingFacadeImpl implements UserSettingFacade, InitializingBea
         xtermSettingGroup.put("XTERM_LAYOUT", "0");  // 终端窗口布局
         settingGroupMap.put(UserSettingGroup.XTERM.getName(), xtermSettingGroup);
     }
-
 
 }
