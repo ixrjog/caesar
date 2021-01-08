@@ -48,7 +48,7 @@ public class InitialProcess extends BaseProcess implements IXTermProcess {
         boolean isAdmin = isOps(ocUser);
         heartbeat(ocTerminalSession.getSessionId());
 
-        xtermMessage.getInstanceIds().forEach(k -> {
+        xtermMessage.getInstanceIds().parallelStream().forEach(k -> {
             if (serverTreeHostPatternMap.containsKey(k)) {
                 String host = serverTreeHostPatternMap.get(k);
                 HostSystem hostSystem = buildHostSystem(ocUser, host, xtermMessage, isAdmin);

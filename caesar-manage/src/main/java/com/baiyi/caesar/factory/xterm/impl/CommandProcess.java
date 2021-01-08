@@ -44,7 +44,7 @@ public class CommandProcess extends BaseProcess implements IXTermProcess {
             printCommand(ocTerminalSession.getSessionId(), xtermMessage.getInstanceId(), xtermMessage.getData());
         } else {
             Map<String, JSchSession> sessionMap = JSchSessionMap.getBySessionId(ocTerminalSession.getSessionId());
-            sessionMap.keySet().forEach(e -> printCommand(ocTerminalSession.getSessionId(), e, xtermMessage.getData()));
+            sessionMap.keySet().parallelStream().forEach(e -> printCommand(ocTerminalSession.getSessionId(), e, xtermMessage.getData()));
         }
     }
 
