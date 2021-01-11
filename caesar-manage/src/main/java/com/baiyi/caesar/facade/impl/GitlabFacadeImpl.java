@@ -252,7 +252,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
         List<GitlabProject> gitlabProjects = gitlabProjectHandler.getProjects(csGitlabInstance.getName());
         if (CollectionUtils.isEmpty(gitlabProjects)) return;
-        gitlabProjects.forEach(e -> saveGitlabProject(csGitlabInstance, e, projectMap));
+        gitlabProjects.parallelStream().forEach(e -> saveGitlabProject(csGitlabInstance, e, projectMap));
         deleteGitlabProjectByMap(projectMap); // 删除不存在的项目
     }
 
@@ -264,7 +264,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         try {
             List<GitlabGroup> gitlabGroups = gitlabGroupHandler.getGroups(csGitlabInstance.getName());
             if (CollectionUtils.isEmpty(gitlabGroups)) return;
-            gitlabGroups.forEach(e -> saveGitlabGroup(csGitlabInstance, e, groupMap));
+            gitlabGroups.parallelStream().forEach(e -> saveGitlabGroup(csGitlabInstance, e, groupMap));
             deleteGitlabGroupByMap(groupMap); // 删除不存在的项目
         } catch (IOException ignored) {
         }

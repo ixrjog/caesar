@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @Author baiyi
@@ -30,30 +29,12 @@ public class GitlabServerContainer implements InitializingBean {
     @Resource
     private StringEncryptor stringEncryptor;
 
-    private static String createRandomString() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-    }
-
-//    private void checkInvalidCredentials() throws IOException {
-//        try {
-//            api.dispatch().with("login", "INVALID").with("password", createRandomString()).to("session", GitlabUser.class);
-//        } catch (GitlabAPIException e) {
-//            final String message = e.getMessage();
-//            if (!message.equals("{\"message\":\"401 Unauthorized\"}")) {
-//                throw new AssertionError("Expected an unauthorized message", e);
-//            } else if (e.getResponseCode() != 401) {
-//                throw new AssertionError("Expected 401 code", e);
-//            }
-//        }
+//    private static String createRandomString() {
+//        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 //    }
 
     private GitlabAPI buildGitlabAPI(CsGitlabInstance csGitlabInstance) {
-        try {
-            return GitlabAPI.connect(csGitlabInstance.getUrl(), stringEncryptor.decrypt(csGitlabInstance.getToken()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return GitlabAPI.connect(csGitlabInstance.getUrl(), stringEncryptor.decrypt(csGitlabInstance.getToken()));
     }
 
     private void initialGitlabAPI() {
@@ -61,8 +42,7 @@ public class GitlabServerContainer implements InitializingBean {
         csGitlabInstanceService.queryAll().forEach(e -> {
             try {
                 GitlabAPI gitlabAPI = buildGitlabAPI(e);
-                if (gitlabAPI != null)
-                    GitlabServerContainer.gitlabAPIContainer.put(e.getName(), gitlabAPI);
+                GitlabServerContainer.gitlabAPIContainer.put(e.getName(), gitlabAPI);
             } catch (Exception ignored) {
             }
         });
