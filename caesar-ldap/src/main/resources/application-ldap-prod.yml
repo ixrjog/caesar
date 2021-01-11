@@ -7,17 +7,17 @@
 
 spring:
   ldap:
-    urls: ldap://ldap.xinc818.com:389
+    urls: ldap://ldap.xinc818.com:1389
     base: dc=xincheng,dc=org
-    username: 'cn=openldap,dc=xincheng,dc=org'
-    password: ENC(qq58+/rxv7G6AVgzQsbDOvJ4ZurhVOv4)
+    username: 'cn=Directory Manager'
+    password: ENC(QXDPnj4ptUmTrjHXK9f0OAUqcMQYF53X9NnK51Q0CxfhyHQakqKZAO2VUYdIkNuj)
 
 
 ldap:
   custom:  {userId: cn,
-            userBaseDN: ou=Group,
+            userBaseDN: ou=Users,
             userObjectClass: inetOrgPerson,
             groupId: cn,
-            groupBaseDN: ou=Group,
+            groupBaseDN: ou=Groups,
             groupObjectClass: groupOfUniqueNames,
             groupMember: uniqueMember}
