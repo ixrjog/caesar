@@ -5,10 +5,14 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.baiyi.caesar.common.base.Build.*;
 
 /**
  * @Author baiyi
@@ -27,10 +31,15 @@ public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuil
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
-        JobParamUtils.assembleOssJobUrlParam(csCiJob, jobParamDetail);
-        JobParamUtils.assembleBuildType(jobParamDetail, buildParam);
-        JobParamUtils.assembleProductFlavor(jobParamDetail, buildParam);
+
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntry(BUILD_TYPE,buildParam)
+                .paramEntry(PRODUCT_FLAVOR,buildParam)
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
+                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), jobParamDetail))
+                .build();
+        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
+
         return jobParamDetail;
     }
 

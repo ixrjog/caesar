@@ -49,10 +49,6 @@ public class DingtalkHandler {
         HttpResponse response = httpclient.execute(httppost);
         String result = EntityUtils.toString(response.getEntity());
         log.warn("notify dingtalk content={} result={}", JSON.toJSONString(content), result);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            return true;
-        } else {
-            return false;
-        }
+        return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
     }
 }

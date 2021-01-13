@@ -67,6 +67,7 @@ public class JobBuildParam {
         private Integer ciJobId;
 
         @ApiModelProperty(value = "分支")
+        @NotNull
         private String branch;
 
         @ApiModelProperty(value = "版本名称")
@@ -78,6 +79,10 @@ public class JobBuildParam {
         @ApiModelProperty(value = "通知静默")
         private Boolean isSilence;
 
+        @ApiModelProperty(value = "回滚操作")
+        private Boolean isRollback;
+
+        @ApiModelProperty(value = "自定义参数")
         private Map<String, String> paramMap;
 
     }

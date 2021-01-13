@@ -16,14 +16,20 @@ import java.util.Map;
 @Builder
 public class JobParamDetail {
 
-    private String versionName;
-    private String versionDesc;
+    @Builder.Default
+    private String versionName = "";
+    @Builder.Default
+    private String versionDesc= "";
 
     private CsOssBucket csOssBucket;
     private String jobName;
 
     private JenkinsJobParameters jenkinsJobParameters;
     private Map<String, String> params;
+
+    public void putParams(Map<String, String> params){
+        this.params.putAll(params);
+    }
 
 
     public String getParamByKey(String key){

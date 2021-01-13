@@ -22,6 +22,8 @@ import com.baiyi.caesar.factory.engine.TaskEngineCenter;
 import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -41,6 +43,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.baiyi.caesar.common.base.Build.*;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
 
 /**
@@ -203,39 +206,36 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
      */
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
-
-        params.put("applicationName", csApplication.getApplicationKey());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-        params.put("bucketName", csOssBucket.getName());
+
         // 插入ossPath
         List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
-        if (!CollectionUtils.isEmpty(artifacts))
-            params.put("ossPath", artifacts.get(0).getStoragePath());
-        try {
-            // 取build任务环境变量
-            params.put("env", envFacade.queryEnvNameByType(csCiJob.getEnvType()));
-        } catch (Exception e) {
-            log.error("任务环境未配置！jobName={}", csCiJob.getName());
-        }
+
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntries(JenkinsUtils.convert(jenkinsJobParameters))
+                .paramEntry(APPLICATION_NAME, csApplication.getApplicationKey())
+                .paramEntry(BUCKET_NAME, csOssBucket.getName())
+                .paramEntry(ENV, envFacade.queryEnvNameByType(csCiJob.getEnvType()))
+                .paramEntry(OSS_PATH, !CollectionUtils.isEmpty(artifacts) ? artifacts.get(0).getStoragePath() : null)
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
+                .build();
 
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(deploymentParam.getCiBuildId());
 
-        String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
-
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
-                .params(params)
+                .params(jenkinsJobParamsMap.getParams())
                 .csOssBucket(csOssBucket)
-                .jobName(jobName)
+                .jobName(Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey()))
                 .versionName(StringUtils.isEmpty(deploymentParam.getVersionName()) ? csCiJobBuild.getVersionName() : deploymentParam.getVersionName())
                 .versionDesc(StringUtils.isEmpty(deploymentParam.getVersionDesc()) ? csCiJobBuild.getVersionDesc() : deploymentParam.getVersionDesc())
                 .build();
     }
 
-    protected List<CsJobBuildArtifact> acqBuildArtifacts(int ciBuildId) {
-        return filterBuildArtifacts(csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), ciBuildId));
+    @Override
+    public List<CsJobBuildArtifact> acqBuildArtifacts(int buildId) {
+        return filterBuildArtifacts(csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), buildId));
     }
 
     protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {

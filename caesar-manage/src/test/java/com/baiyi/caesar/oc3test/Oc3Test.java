@@ -124,8 +124,8 @@ public class Oc3Test extends BaseUnit {
     }
 
     @Test
-    void ioTest(){
-        IOUtils.appendFile("22222","/Users/liangjian/Documents/workspace/opscloud-data/xterm/audit/7179ef7d-20a2-451a-91fb-bb4c62c08cc2/test.log");
+    void ioTest() {
+        IOUtils.appendFile("22222", "/Users/liangjian/Documents/workspace/opscloud-data/xterm/audit/7179ef7d-20a2-451a-91fb-bb4c62c08cc2/test.log");
     }
 
 }

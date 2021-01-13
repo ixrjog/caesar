@@ -24,6 +24,8 @@ import com.baiyi.caesar.factory.engine.TaskEngineCenter;
 import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
@@ -39,6 +41,7 @@ import com.google.common.base.Joiner;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.models.GitlabBranch;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -46,6 +49,8 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.baiyi.caesar.common.base.Build.*;
+import static com.baiyi.caesar.common.base.Global.BRANCH;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
 
@@ -99,7 +104,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Resource
     private TaskEngineCenter jobEngineCenter;
 
-    public static final boolean SEND_DINGTALK = false;
+    public static final boolean SEND_DINGTALK_MESSAGE = false;
 
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
@@ -133,7 +138,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
-        build(csCiJob, csApplication, jobParamDetail, username, SEND_DINGTALK);
+        build(csCiJob, csApplication, jobParamDetail, username, SEND_DINGTALK_MESSAGE);
     }
 
     @Override
@@ -161,7 +166,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
-        GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault("branch", ""));
+        GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, jobParamDetail.getParams().getOrDefault(BRANCH, ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, jobParamDetail, gitlabBranch, username, isSilence);
         updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
         try {
@@ -252,36 +257,38 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
      */
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
-        jobParamDetail.getParams().put("branch", buildParam.getBranch());
+        if (!StringUtils.isEmpty(buildParam.getBranch()))
+            jobParamDetail.getParams().put(BRANCH, buildParam.getBranch());
         jobParamDetail.setVersionName(buildParam.getVersionName());
         jobParamDetail.setVersionDesc(buildParam.getVersionDesc());
         return jobParamDetail;
     }
 
     private JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob) {
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
-        if (csApplicationScmMember != null)
-            params.put("sshUrl", csApplicationScmMember.getScmSshUrl());
-        params.put("branch", csCiJob.getBranch());
-        params.put("applicationName", csApplication.getApplicationKey());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-        params.put("bucketName", csOssBucket.getName());
-        try {
-            params.put("env", envFacade.queryEnvNameByType(csCiJob.getEnvType()));
-        } catch (Exception e) {
-            log.error("任务环境未配置！jobName={}", csCiJob.getName());
-        }
-        String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
+
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntries(JenkinsUtils.convert(jenkinsJobParameters))
+                .paramEntry(SSH_URL, csApplicationScmMember != null ? csApplicationScmMember.getScmSshUrl() : null)
+                .paramEntry(BRANCH, csCiJob.getBranch())
+                .paramEntry(APPLICATION_NAME, csApplication.getApplicationKey())
+                .paramEntry(BUCKET_NAME, csOssBucket.getName())
+                .paramEntry(ENV, envFacade.queryEnvNameByType(csCiJob.getEnvType()))
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
+                .build();
+
+//        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
+//        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+//        params.putAll(jenkinsJobParamsMap.getParams());
 
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
-                .params(params)
+                .params(jenkinsJobParamsMap.getParams())
                 .csOssBucket(csOssBucket)
-                .jobName(jobName)
-                .versionName("")
-                .versionDesc("")
+                .jobName(Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey()))
                 .build();
     }
 

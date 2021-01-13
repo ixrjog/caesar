@@ -15,8 +15,19 @@ import com.baiyi.caesar.jenkins.context.BuildJobContext;
  */
 public interface IBuildJobHandler {
 
+    /**
+     * 手动构建
+     * @param csCiJob
+     * @param buildParam
+     * @return
+     */
     BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam);
 
+    /**
+     * 自动触发
+     * @param csCiJob
+     * @param username
+     */
     void build(CsCiJob csCiJob, String username);
 
     void trackJobBuild(CsCiJobBuild csCiJobBuild);

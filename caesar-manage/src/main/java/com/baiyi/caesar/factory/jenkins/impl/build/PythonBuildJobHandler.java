@@ -5,10 +5,13 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
-import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.baiyi.caesar.common.base.Build.JOB_BUILD_NUMBER;
 
 /**
  * @Author baiyi
@@ -27,7 +30,11 @@ public class PythonBuildJobHandler extends BaseBuildJobHandler implements IBuild
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
-        JobParamUtils.assembleJobBuildNumberParam(csCiJob, jobParamDetail);
+
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
+                .build();
+        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
         return jobParamDetail;
     }
 

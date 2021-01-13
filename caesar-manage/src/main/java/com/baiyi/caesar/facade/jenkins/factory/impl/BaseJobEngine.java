@@ -103,21 +103,6 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         }
     }
 
-//    private void saveCsJobEngineBuildNumber2(CsJobEngine csJobEngine, int lastBuildNumber) {
-//        int nextBuildNumber = lastBuildNumber + 1;
-//        if (lastBuildNumber == 0)
-//            nextBuildNumber = 1;
-//        if (csJobEngine.getLastBuildNumber() != lastBuildNumber || csJobEngine.getNextBuildNumber() != nextBuildNumber) {
-//            log.info("更新引擎指针 jenkinsInstanceId = {}, engineName = {} , lastBuildNumber = {} -> {}, nextBuildNumber = {} -> {}"
-//                    , csJobEngine.getJenkinsInstanceId(), csJobEngine.getName(),
-//                    csJobEngine.getLastBuildNumber(), lastBuildNumber,
-//                    csJobEngine.getNextBuildNumber(), nextBuildNumber);
-//            csJobEngine.setLastBuildNumber(lastBuildNumber);
-//            csJobEngine.setNextBuildNumber(nextBuildNumber);
-//            csJobEngineService.updateCsJobEngine(csJobEngine);
-//        }
-//    }
-
     @Override
     public void createJobEngine(int jobId) {
         T job = acqJob(jobId);

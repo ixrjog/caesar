@@ -8,6 +8,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.baiyi.caesar.util.JobParamUtils;
 import com.google.common.base.Joiner;
@@ -20,6 +22,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.Build.*;
 
 /**
  * @Author baiyi
@@ -35,16 +39,17 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
         return JobType.ANDROID_REINFORCE.getType();
     }
 
-    private static final String CHANNEL_TYPE = "channelType";
-
-    private static final String CHANNEL_GROUP = "channelGroup";
-
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
-        JobParamUtils.assembleJobBuildNumberParam(csCdJob, jobParamDetail);
-        JobParamUtils.assembleOssJobUrlParam(csCdJob, jobParamDetail);
-        invokeChannelGroup(jobParamDetail, deploymentParam);
+
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCdJob.getJobBuildNumber()))
+                .paramEntry(CHANNEL_GROUP, acqChannelGroup(deploymentParam))
+                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCdJob.getJobBuildNumber(), jobParamDetail))
+                .build();
+        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
+
         return jobParamDetail;
     }
 
@@ -53,15 +58,13 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
         return artifacts.stream().filter(e -> RegexUtils.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
     }
 
-    private void invokeChannelGroup(JobParamDetail jobParamDetail, JobDeploymentParam.DeploymentParam deploymentParam) {
-        if (deploymentParam.getParamMap().get(CHANNEL_TYPE).equals("0")) return;
-        if (!deploymentParam.getParamMap().containsKey(CHANNEL_GROUP)) return;
+    private String acqChannelGroup(JobDeploymentParam.DeploymentParam deploymentParam) {
+        if (deploymentParam.getParamMap().get(CHANNEL_TYPE).equals("0")) return null;
+        if (!deploymentParam.getParamMap().containsKey(CHANNEL_GROUP)) return null;
         Type type = new TypeToken<Set<String>>() {
         }.getType();
         Set<String> channelGroupSet = new GsonBuilder().create().fromJson(deploymentParam.getParamMap().get(CHANNEL_GROUP), type);
-
-        String channelGroup = Joiner.on(" ").join(channelGroupSet.stream().map(this::buildApkName).collect(Collectors.toList()));
-        jobParamDetail.getParams().put(CHANNEL_GROUP, channelGroup);
+        return Joiner.on(" ").join(channelGroupSet.stream().map(this::buildApkName).collect(Collectors.toList()));
     }
 
     private String buildApkName(String channelType) {

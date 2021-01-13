@@ -43,11 +43,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.Global.HOST_PATTERN;
+import static com.baiyi.caesar.common.base.Global.SERVER_GRUOP;
 
 /**
  * @Author baiyi
@@ -234,13 +236,13 @@ public class JobFacadeImpl implements JobFacade {
     }
 
     @Override
-    public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId) {
+    public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
         return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class),JobBuildContext.builder().build(), 1);
     }
 
     @Override
-    public CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(@Valid int buildId) {
+    public CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(int buildId) {
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(buildId);
         return jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1);
     }
@@ -251,9 +253,9 @@ public class JobFacadeImpl implements JobFacade {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
         Map<String, String> paramMap = JenkinsUtils.convert(jenkinsJobParameters);
-        if (!paramMap.containsKey("serverGroup"))
+        if (!paramMap.containsKey(SERVER_GRUOP))
             return new BusinessWrapper(ErrorEnum.JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED);
-        String serverGroupName = paramMap.get("serverGroup");
+        String serverGroupName = paramMap.get(SERVER_GRUOP);
         List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups = applicationFacade.queryApplicationServerGroupByApplicationId(csCdJob.getApplicationId());
         // 鉴权（必须在应用中指定服务器组配置）
         if (serverGroups.stream().noneMatch(e -> e.getServerGroupName().equals(serverGroupName)))
@@ -264,8 +266,8 @@ public class JobFacadeImpl implements JobFacade {
         if (!hostPatternWrapper.isSuccess())
             return hostPatternWrapper;
 
-        if (paramMap.containsKey("hostPattern")) {
-            String hostPattern = paramMap.get("hostPattern");
+        if (paramMap.containsKey(HOST_PATTERN)) {
+            String hostPattern = paramMap.get(HOST_PATTERN);
             try {
                 // 默认选中主机分组
                 ServerGroupHostPatternVO.HostPattern hp = acqHostPattern(hostPatternWrapper.getBody(), hostPattern);

@@ -12,6 +12,8 @@ import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.baiyi.caesar.jenkins.context.JobParamDetail;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.baiyi.caesar.common.base.Build.*;
 import static com.baiyi.caesar.dingtalk.impl.JavaDeploymentNotify.HOST_PATTERN;
 
 /**
@@ -59,10 +62,17 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     @Override
     protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
-        JobParamUtils.assembleJobBuildNumberParam(csCdJob, jobParamDetail);
-        JobParamUtils.assembleOssJobUrlParam(csCdJob, jobParamDetail);
-        JobParamUtils.assembleHostPatternParam(jobParamDetail, deploymentParam);
-        JobParamUtils.assembleConcurrentParam(jobParamDetail, deploymentParam);
+
+        JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntry(HOST_PATTERN, deploymentParam)
+                .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCdJob.getJobBuildNumber()))
+                .paramEntry(CONCURRENT, deploymentParam.getParamMap().getOrDefault(CONCURRENT, "1"))
+                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCdJob.getJobBuildNumber(), jobParamDetail))
+                .build();
+        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
+
+
+
         return jobParamDetail;
     }
 
@@ -77,11 +87,11 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
         if (!wrapper.isSuccess()) return;
         JobParamDetail jobParamDetail = context.getJobParamDetail();
         String hostPattern = jobParamDetail.getParams().get(HOST_PATTERN);
-        wrapper.getBody().forEach(e -> {
+        wrapper.getBody().parallelStream().forEach(e -> {
             if (e.getHostPattern().equals(hostPattern)) {
                 List<ServerVO.Server> servers = e.getServers();
-                servers.forEach(s ->
-                        csJobBuildServerService.addCsJobBuildServer(JobBuildServerBuilder.build(context, hostPattern, s))
+                servers.parallelStream().forEach(server ->
+                        csJobBuildServerService.addCsJobBuildServer(JobBuildServerBuilder.build(context, hostPattern, server))
                 );
             }
         });

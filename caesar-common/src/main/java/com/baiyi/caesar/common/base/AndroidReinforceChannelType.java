@@ -7,13 +7,11 @@ package com.baiyi.caesar.common.base;
  */
 public enum AndroidReinforceChannelType {
 
-    shero("shero", "官网"),
-    yyb("yyb", "腾讯应用宝"),
-    huawei("huawei", "华为"),
-    xiaomi("xiaomi", "小米"),
-    oppo("oppo", "oppo手机"),
-    vivo("vivo", "vivo"),
-    bmhy("bmhy", "斑马会员");
+    YYB("yyb", "腾讯应用宝"),
+    HUAWEI("huawei", "华为"),
+    XIAOMI("xiaomi", "小米"),
+    OPPO("oppo", "oppo手机"),
+    VIVO("vivo", "vivo");
 
     private String code;
     private String desc;
