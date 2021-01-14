@@ -8,7 +8,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -81,7 +81,7 @@ public class CiJobDecorator extends BaseJobDecorator {
     private CsApplicationService csApplicationService;
 
     @Resource
-    private JobBuildDecorator jobBuildDecorator;
+    private JobBuildsDecorator jobBuildsDecorator;
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -207,7 +207,7 @@ public class CiJobDecorator extends BaseJobDecorator {
 
             assembleJobBuildView(jobBuildView,e.getFinalized() ,e.getBuildStatus());
 
-            jobBuildView.setExecutors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()));
+            jobBuildView.setExecutors(jobBuildsDecorator.getBuildExecutorByBuildId(e.getId()));
             return jobBuildView;
         }).collect(Collectors.toList());
     }
