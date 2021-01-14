@@ -16,7 +16,16 @@ caesar:
 
 spring:
   profiles:
-    include: common,account-pre,ldap-pre,gitlab-pre,ansible-pre,xterm-pre,kubernetes-pre,jenkins,dingtalk
+    include:
+      - common
+      - account-pre
+      - ldap-pre
+      - gitlab-pre
+      - ansible-pre
+      - xterm-pre
+      - kubernetes-pre
+      - jenkins
+      - dingtalk
   redis:
     host: 127.0.0.1
     port: 6379

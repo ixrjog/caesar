@@ -16,7 +16,15 @@ caesar:
 
 spring:
   profiles:
-    include: common,account-open,ldap-open,gitlab-open,ansible-open,xterm-open,kubernetes-open,dingtalk
+    include:
+      - common
+      - account-open
+      - ldap-open
+      - gitlab-open
+      - ansible-open
+      - xterm-open
+      - kubernetes-open
+      - dingtalk
   redis:
     host: redis.opscloud.top
     port: 6379
