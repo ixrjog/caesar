@@ -33,6 +33,8 @@ public interface CsCiJobService {
 
     List<CsCiJob> queryCsCiJobByScmMemberIdAndBranch(int scmMemberId, String branch);
 
+    List<CsCiJob> queryCsCiJobByJobTplId(int jobTplId);
+
     List<CsCiJob> selectAll();
 
     CsCiJob queryCsCiJobByUniqueKey(int applicationId, String jobKey);

@@ -27,6 +27,7 @@ import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.baiyi.caesar.service.jenkins.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,6 +35,8 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -212,9 +215,23 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     public BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobId);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
+        upgradeCiJobTpl(jobId, csJobTpl);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private void upgradeCiJobTpl(int jobId, CsJobTpl csJobTpl) {
         List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(), jobId);
         upgradeJobTpl(csJobTpl, csJobEngines);
-        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    @Async(value = ASYNC_POOL_TASK_COMMON)
+    public void upgradeJobTplByTplId(int tplId) {
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(tplId);
+        csCiJobService.queryCsCiJobByJobTplId(tplId).forEach(job ->
+                upgradeCiJobTpl(job.getId(), csJobTpl));
+        csCdJobService.queryCsCdJobByJobTplId(tplId).forEach(job ->
+                upgradeCdJobTpl(job.getId(), csJobTpl));
     }
 
     @Override
@@ -224,6 +241,11 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
         List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), jobId);
         upgradeJobTpl(csJobTpl, csJobEngines);
         return BusinessWrapper.SUCCESS;
+    }
+
+    private void upgradeCdJobTpl(int jobId, CsJobTpl csJobTpl) {
+        List<CsJobEngine> csJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), jobId);
+        upgradeJobTpl(csJobTpl, csJobEngines);
     }
 
     private void upgradeJobTpl(CsJobTpl csJobTpl, List<CsJobEngine> csJobEngines) {
@@ -245,7 +267,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
         } catch (IOException ignored) {
         }
     }
-    
+
     private List<CsJobEngine> filterCsJobEnginesVersion(CsJobTpl csJobTpl, List<CsJobEngine> csJobEngines) {
         return csJobEngines.stream().filter(e -> csJobTpl.getTplVersion() > e.getTplVersion()).collect(Collectors.toList());
     }

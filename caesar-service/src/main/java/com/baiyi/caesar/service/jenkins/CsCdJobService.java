@@ -17,6 +17,8 @@ public interface CsCdJobService {
 
     DataTable<CsCdJob> queryCsCdJobByParam(CdJobParam.CdJobTplPageQuery pageQuery);
 
+    List<CsCdJob> queryCsCdJobByJobTplId(int jobTplId);
+
     List<CsCdJob> selectAll();
 
     void addCsCdJob(CsCdJob csCdJb);

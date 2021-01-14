@@ -43,6 +43,14 @@ public class CsCdJobServiceImpl implements CsCdJobService {
     }
 
     @Override
+    public List<CsCdJob> queryCsCdJobByJobTplId(int jobTplId) {
+        Example example = new Example(CsCdJob.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("jobTplId", jobTplId);
+        return csCdJobMapper.selectByExample(example);
+    }
+
+    @Override
     public List<CsCdJob> selectAll(){
         return csCdJobMapper.selectAll();
     }

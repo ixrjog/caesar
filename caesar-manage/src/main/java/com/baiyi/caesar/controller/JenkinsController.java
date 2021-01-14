@@ -129,6 +129,13 @@ public class JenkinsController {
         return new HttpResult<>(jenkinsFacade.upgradeCiJobTplByJobId(jobId));
     }
 
+    @ApiOperation(value = "批量更新任务模版")
+    @GetMapping(value = "/tpl/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> upgradeJobTplByTplId(@Valid int tplId) {
+        jenkinsFacade.upgradeJobTplByTplId(tplId);
+        return HttpResult.SUCCESS;
+    }
+
     @ApiOperation(value = "更新任务模版")
     @GetMapping(value = "/tpl/cd/job/upgrade", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> upgradeCdJobTplByJobId(@Valid int jobId) {

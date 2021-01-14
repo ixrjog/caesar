@@ -23,7 +23,7 @@ public interface JenkinsFacade {
 
     DataTable<JenkinsInstanceVO.Instance> queryJenkinsInstancePage(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery);
 
-    BusinessWrapper<Boolean>  setJenkinsInstanceActive(int id);
+    BusinessWrapper<Boolean> setJenkinsInstanceActive(int id);
 
     BusinessWrapper<Boolean> addJenkinsInstance(JenkinsInstanceVO.Instance instance);
 
@@ -50,6 +50,8 @@ public interface JenkinsFacade {
     DataTable<CdJobVO.CdJob> queryCdJobTplPage(CdJobParam.CdJobTplPageQuery pageQuery);
 
     BusinessWrapper<Boolean> upgradeCiJobTplByJobId(int jobId);
+
+    void upgradeJobTplByTplId(int tplId);
 
     BusinessWrapper<Boolean> upgradeCdJobTplByJobId(int jobId);
 }
