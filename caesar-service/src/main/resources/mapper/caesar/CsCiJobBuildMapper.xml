@@ -24,6 +24,7 @@
     <result column="finalized" jdbcType="BIT" property="finalized" />
     <result column="operation_username" jdbcType="VARCHAR" property="operationUsername" />
     <result column="is_silence" jdbcType="BIT" property="isSilence" />
+    <result column="is_rollback" jdbcType="BIT" property="isRollback" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="parameters" jdbcType="LONGVARCHAR" property="parameters" />

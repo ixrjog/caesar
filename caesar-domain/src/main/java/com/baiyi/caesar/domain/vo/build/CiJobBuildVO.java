@@ -57,6 +57,8 @@ public class CiJobBuildVO {
         private String username;
         private Integer jobBuildNumber;
         private Integer engineBuildNumber;
+        @ApiModelProperty(value = "支持回滚版本")
+        private Boolean supportRollback;
         private String versionName;
         private String versionDesc;
 
@@ -83,6 +85,7 @@ public class CiJobBuildVO {
         private String parameters;
         private String dingtalkMsg;
         private Boolean isSilence;
+        private Boolean isRollback;
         private String comment;
     }
 

@@ -73,8 +73,9 @@ public class JobBuildDecorator {
     private CsGitlabProjectService csGitlabProjectService;
 
     public List<CiJobBuildVO.JobBuild> decorator(List<CsCiJobBuild> jobBuilds, Integer extend) {
-        JobBuildContext context = JobBuildContext.builder().build();
-        return jobBuilds.stream().map(e -> decorator(e, context, extend)).collect(Collectors.toList());
+        return jobBuilds.stream().map(e ->
+                decorator(e, JobBuildContext.builder().build(), extend)
+        ).collect(Collectors.toList());
     }
 
     private CiJobBuildVO.JobBuild decorator(CsCiJobBuild csCiJobBuild, JobBuildContext context, Integer extend) {
@@ -88,7 +89,7 @@ public class JobBuildDecorator {
      * @param jobBuild
      * @param context
      */
-    private void encapsulationJobEngine(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
+    private void assembleJobEngine(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         if (!context.getJobEngineMap().containsKey(jobBuild.getJobEngineId())) {
             CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
             if (csCiJobEngine != null) {
@@ -105,7 +106,7 @@ public class JobBuildDecorator {
         }
     }
 
-    private void encapsulationChanges(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
+    private void assembleChanges(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         if (context.getCsGitlabProject() == null) {
             CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(context.getCsCiJob().getScmMemberId());
             CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
@@ -114,7 +115,7 @@ public class JobBuildDecorator {
         jobBuild.setChanges(getBuildChangeByBuildId(context.getCsGitlabProject(), jobBuild.getId()));
     }
 
-    private void encapsulationArtifacts(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
+    private void assembleArtifacts(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         if (context.getCsOssBucket() == null) {
             CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
             context.setCsCiJob(csCiJob);
@@ -130,14 +131,14 @@ public class JobBuildDecorator {
         }
     }
 
-    private void encapsulationBuildTimes(CiJobBuildVO.JobBuild jobBuild) {
+    private void assembleBuildTimes(CiJobBuildVO.JobBuild jobBuild) {
         if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
             long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
             jobBuild.setBuildTime(TimeUtils.acqBuildTime(buildTime));
         }
     }
 
-    private void encapsulationAgo(CiJobBuildVO.JobBuild jobBuild) {
+    private void assembleAgo(CiJobBuildVO.JobBuild jobBuild) {
         jobBuild.setAgo(TimeAgoUtils.format(jobBuild.getStartTime()));
         if (!StringUtils.isEmpty(jobBuild.getUsername())) {
             OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
@@ -150,24 +151,25 @@ public class JobBuildDecorator {
 
     public CiJobBuildVO.JobBuild decorator(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context, Integer extend) {
         // Ago
-        encapsulationAgo(jobBuild);
+        assembleAgo(jobBuild);
 
         if (extend == 0) return jobBuild;
         // 组装工作引擎
-        encapsulationJobEngine(jobBuild, context);
+        assembleJobEngine(jobBuild, context);
         // 组装构件
-        encapsulationArtifacts(jobBuild, context);
+        assembleArtifacts(jobBuild, context);
         // 组装边更记录
-        encapsulationChanges(jobBuild, context);
+        assembleChanges(jobBuild, context);
         // 组装构建时间
-        encapsulationBuildTimes(jobBuild);
+        assembleBuildTimes(jobBuild);
         jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
         // 组装Commit详情
-        encapsulationCommitDetails(jobBuild, context);
+        assembleCommitDetails(jobBuild, context);
+        // 支持
         return jobBuild;
     }
 
-    private void encapsulationCommitDetails(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
+    private void assembleCommitDetails(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         CiJobBuildVO.BaseCommit baseCommit = new CiJobBuildVO.BaseCommit();
         baseCommit.setCommit(jobBuild.getCommit());
         baseCommit.setCommitUrl(GitlabUtils.acqCommitUrl(context.getCsGitlabProject().getWebUrl(), jobBuild.getCommit()));

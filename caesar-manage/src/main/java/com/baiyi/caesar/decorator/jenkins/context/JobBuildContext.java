@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.google.common.collect.Maps;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,8 @@ public class JobBuildContext {
     private CsCiJob csCiJob;
 
     private CsGitlabProject csGitlabProject;
+
+    private JobTplVO.JobTpl jobTpl;
 
     @Builder.Default
     private Map<Integer, JobEngineVO.JobEngine> jobEngineMap = Maps.newHashMap();

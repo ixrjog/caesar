@@ -3,7 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.common.config.CachingConfig;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
@@ -48,7 +48,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     private CsGitlabProjectService csGitlabProjectService;
 
     @Resource
-    private JobBuildDecorator jobBuildDecorator;
+    private JobBuildsDecorator jobBuildsDecorator;
 
     @Resource
     private JobDeploymentDecorator jobDeploymentDecorator;
@@ -76,7 +76,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
         DashboardVO.LatestTasks latestTasks = new DashboardVO.LatestTasks();
         final int latestTasksLength = 9;
 
-        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength),0);
+        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildsDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength),0);
 
                 latestTasks.setLatestBuildTasks(latestBuildTasks);
         latestTasks.setBuildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild());

@@ -38,5 +38,6 @@ public class CiJobBuildBO {
     private String parameters;
     private String dingtalkMsg;
     private Boolean isSilence;
+    private Boolean isRollback;
     private String comment;
 }

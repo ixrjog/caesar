@@ -9,4 +9,5 @@ import java.util.List;
 public interface CsJobTplMapper extends Mapper<CsJobTpl> {
 
     List<CsJobTpl> queryCsJobTplByParam(JobTplParam.JobTplPageQuery pageQuery);
+
 }

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_ci_job_build")
 public class CsCiJobBuild {
@@ -88,6 +88,12 @@ public class CsCiJobBuild {
      */
     @Column(name = "is_silence")
     private Boolean isSilence;
+
+    /**
+     * 是否回滚操作
+     */
+    @Column(name = "is_rollback")
+    private Boolean isRollback;
 
     /**
      * 创建时间
@@ -421,6 +427,24 @@ public class CsCiJobBuild {
      */
     public void setIsSilence(Boolean isSilence) {
         this.isSilence = isSilence;
+    }
+
+    /**
+     * 获取是否回滚操作
+     *
+     * @return is_rollback - 是否回滚操作
+     */
+    public Boolean getIsRollback() {
+        return isRollback;
+    }
+
+    /**
+     * 设置是否回滚操作
+     *
+     * @param isRollback 是否回滚操作
+     */
+    public void setIsRollback(Boolean isRollback) {
+        this.isRollback = isRollback;
     }
 
     /**

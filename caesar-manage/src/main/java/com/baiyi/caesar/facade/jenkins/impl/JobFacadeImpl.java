@@ -10,9 +10,8 @@ import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
-import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
-import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -40,7 +39,6 @@ import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -75,7 +73,7 @@ public class JobFacadeImpl implements JobFacade {
     private CsJobEngineService csJobEngineService;
 
     @Resource
-    private JobBuildDecorator jobBuildDecorator;
+    private JobBuildsDecorator jobBuildsDecorator;
 
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
@@ -118,8 +116,6 @@ public class JobFacadeImpl implements JobFacade {
 
     @Override
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
-        if(buildParam.getIsSilence() == null)
-            buildParam.setIsSilence(false);
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
         // 鉴权
         BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
@@ -132,10 +128,8 @@ public class JobFacadeImpl implements JobFacade {
         if (!correctionWrapper.isSuccess())
             return correctionWrapper;
 
-        IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());
-        if (StringUtils.isEmpty(buildParam.getBranch()))
-            buildParam.setBranch(csCiJob.getBranch());
-        iBuildJobHandler.build(csCiJob, buildParam);
+        BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType())
+                .build(csCiJob, buildParam);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -196,7 +190,7 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery) {
         DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);
-        return new DataTable<>(jobBuildDecorator.decorator(table.getData(), pageQuery.getExtend()), table.getTotalNum());
+        return new DataTable<>(jobBuildsDecorator.decorator(table.getData(), pageQuery.getExtend()), table.getTotalNum());
     }
 
     @Override
@@ -210,7 +204,7 @@ public class JobFacadeImpl implements JobFacade {
     public List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
         if (query.getSize() == null)
             query.setSize(10);
-        return  jobBuildDecorator.decorator(csCiJobBuildService.queryCiJobBuildArtifact(query),1);
+        return jobBuildsDecorator.decorator(csCiJobBuildService.queryCiJobBuildArtifact(query), 1);
     }
 
     @Override
@@ -238,7 +232,7 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
-        return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class),JobBuildContext.builder().build(), 1);
+        return jobBuildsDecorator.decorator(csCiJobBuild, 1);
     }
 
     @Override

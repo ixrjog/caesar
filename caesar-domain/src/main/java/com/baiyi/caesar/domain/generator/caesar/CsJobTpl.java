@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_job_tpl")
 public class CsJobTpl {
@@ -27,6 +27,18 @@ public class CsJobTpl {
     private String tplName;
 
     /**
+     * 支持回滚
+     */
+    @Column(name = "support_rollback")
+    private Boolean supportRollback;
+
+    /**
+     * 0: commit回滚  1: 包回滚
+     */
+    @Column(name = "rollback_type")
+    private Integer rollbackType;
+
+    /**
      * 模版类型
      */
     @Column(name = "tpl_type")
@@ -44,13 +56,13 @@ public class CsJobTpl {
     /**
      * 更新时间
      */
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
      * 创建时间
      */
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
@@ -133,6 +145,42 @@ public class CsJobTpl {
      */
     public void setTplName(String tplName) {
         this.tplName = tplName;
+    }
+
+    /**
+     * 获取支持回滚
+     *
+     * @return support_rollback - 支持回滚
+     */
+    public Boolean getSupportRollback() {
+        return supportRollback;
+    }
+
+    /**
+     * 设置支持回滚
+     *
+     * @param supportRollback 支持回滚
+     */
+    public void setSupportRollback(Boolean supportRollback) {
+        this.supportRollback = supportRollback;
+    }
+
+    /**
+     * 获取0: commit回滚  1: 包回滚
+     *
+     * @return rollback_type - 0: commit回滚  1: 包回滚
+     */
+    public Integer getRollbackType() {
+        return rollbackType;
+    }
+
+    /**
+     * 设置0: commit回滚  1: 包回滚
+     *
+     * @param rollbackType 0: commit回滚  1: 包回滚
+     */
+    public void setRollbackType(Integer rollbackType) {
+        this.rollbackType = rollbackType;
     }
 
     /**

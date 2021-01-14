@@ -9,6 +9,8 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="jenkins_instance_id" jdbcType="INTEGER" property="jenkinsInstanceId" />
     <result column="tpl_name" jdbcType="VARCHAR" property="tplName" />
+    <result column="support_rollback" jdbcType="BIT" property="supportRollback" />
+    <result column="rollback_type" jdbcType="INTEGER" property="rollbackType" />
     <result column="tpl_type" jdbcType="VARCHAR" property="tplType" />
     <result column="tpl_version" jdbcType="INTEGER" property="tplVersion" />
     <result column="tpl_hash" jdbcType="VARCHAR" property="tplHash" />
@@ -19,8 +21,7 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-    <select id="queryCsJobTplByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobTplParam$JobTplPageQuery"
-            resultMap="BaseResultMap">
+    <select id="queryCsJobTplByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobTplParam$JobTplPageQuery" resultMap="BaseResultMap">
         select * from cs_job_tpl
         <where>
             <if test="queryName != null and queryName != ''">

@@ -18,22 +18,27 @@ public class JobParamDetail {
 
     @Builder.Default
     private String versionName = "";
+
     @Builder.Default
-    private String versionDesc= "";
+    private String versionDesc = "";
+
+    @Builder.Default
+    private Boolean isRollback = false;
 
     private CsOssBucket csOssBucket;
+
     private String jobName;
 
     private JenkinsJobParameters jenkinsJobParameters;
+
     private Map<String, String> params;
 
-    public void putParams(Map<String, String> params){
+    public void putParams(Map<String, String> params) {
         this.params.putAll(params);
     }
 
-
-    public String getParamByKey(String key){
-       return params.getOrDefault(key,"");
+    public String getParamByKey(String key) {
+        return params.getOrDefault(key, "");
     }
 
 }

@@ -259,6 +259,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
         if (!StringUtils.isEmpty(buildParam.getBranch()))
             jobParamDetail.getParams().put(BRANCH, buildParam.getBranch());
+        if (buildParam.getIsRollback() != null && buildParam.getIsRollback())
+            jobParamDetail.setIsRollback(true);
         jobParamDetail.setVersionName(buildParam.getVersionName());
         jobParamDetail.setVersionDesc(buildParam.getVersionDesc());
         return jobParamDetail;
@@ -279,10 +281,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                 .paramEntry(ENV, envFacade.queryEnvNameByType(csCiJob.getEnvType()))
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
                 .build();
-
-//        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
-//        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
-//        params.putAll(jenkinsJobParamsMap.getParams());
 
         return JobParamDetail.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)

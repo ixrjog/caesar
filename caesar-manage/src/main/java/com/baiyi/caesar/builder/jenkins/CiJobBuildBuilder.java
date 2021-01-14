@@ -39,6 +39,7 @@ public class CiJobBuildBuilder {
                 .versionName(versionName)
                 .versionDesc(jobParamDetail.getVersionDesc())
                 .isSilence(isSilence != null ? isSilence : false)
+                .isRollback(jobParamDetail.getIsRollback())
                 .build();
         return covert(bo);
     }

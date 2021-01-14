@@ -48,7 +48,7 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
                 .paramEntry(IS_SONAR, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
                  // rollback
-                .paramEntries(getRollbackParams( jobParamDetail, buildParam))
+                .paramEntries(getRollbackParams(jobParamDetail, buildParam))
                 .build();
         jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
 

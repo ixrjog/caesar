@@ -34,6 +34,8 @@ public class JobTplVO {
         private Date createTime;
         private String tplContent;
         private String parameterYaml;
+        private Boolean supportRollback;
+        private Integer rollbackType;
         private String comment;
 
     }
