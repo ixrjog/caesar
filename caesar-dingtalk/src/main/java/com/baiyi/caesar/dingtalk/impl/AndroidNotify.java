@@ -49,7 +49,7 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
         return templateMap.getTemplate();
     }
 
-    // https://caesar.ops.yangege.cn/index.html#/job/build/android?buildId=168
+    // https://caesar.example.org/index.html#/job/build/android?buildId=168
     private String acqBuildDetailsUrl(int buildId) {
         return Joiner.on("/").join(hostConfig.getUrl(), "index.html#/job/build/android?buildId=") + buildId;
     }
