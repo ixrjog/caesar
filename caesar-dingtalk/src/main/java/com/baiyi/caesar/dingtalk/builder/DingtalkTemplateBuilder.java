@@ -1,4 +1,4 @@
-package com.baiyi.caesar.dingtalk.content;
+package com.baiyi.caesar.dingtalk.builder;
 
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildChange;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
