@@ -34,7 +34,6 @@ public class JenkinsJobParamsBuilder {
         return this;
     }
 
-
     public JenkinsJobParamsBuilder paramEntry(String paramName, String value) {
         if (!StringUtils.isEmpty(value))
             paramsMap.putParam(paramName, value);

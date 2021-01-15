@@ -4,6 +4,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateBuilder;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateMap;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +34,12 @@ public class IOSNotify extends BaseDingtalkNotify implements IDingtalkNotify {
 
     @Override
     protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext context) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(VERSION_NAME, context.getJobBuild().getVersionName());
-        if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
-        }
-        return contentMap;
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntryVersionName(context.getJobBuild().getVersionName())
+                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .build();
+        return templateMap.getTemplate();
     }
 
     // https://caesar.ops.yangege.cn/index.html#/job/build/ios?buildId=168

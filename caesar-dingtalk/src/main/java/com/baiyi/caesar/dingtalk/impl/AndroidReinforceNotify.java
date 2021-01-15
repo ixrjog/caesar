@@ -4,6 +4,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateBuilder;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateMap;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
@@ -27,21 +29,25 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
     }
 
     @Override
-    protected int getBuildType(){
+    protected int getBuildType() {
         return BuildType.DEPLOYMENT.getType();
     }
 
     @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(BUILD_PHASE, noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束");
-        if (noticePhase == NoticePhase.START.getType()) {
-            CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
-            contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
-        } else {
-            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
-        }
-        return contentMap;
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束")
+                .paramEntryVersionName(noticePhase == NoticePhase.START.getType() ? acqVersionName(context) : null)
+                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .build();
+
+        return templateMap.getTemplate();
+    }
+
+    private String acqVersionName(DeploymentJobContext context) {
+        CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
+        return csCiJobBuild.getVersionName();
     }
 
     // https://caesar.ops.yangege.cn/index.html#/job/build/android/reinforce?buildId=168

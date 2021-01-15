@@ -4,6 +4,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateBuilder;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateMap;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -30,20 +32,21 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
     }
 
     @Override
-    protected int getBuildType(){
+    protected int getBuildType() {
         return BuildType.BUILD.getType();
     }
 
     @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(VERSION_NAME, context.getJobBuild().getVersionName());
-        contentMap.put(BUILD_TYPE, context.getJobParamDetail().getParamByKey(BUILD_TYPE));
-        contentMap.put(PRODUCT_FLAVOR, context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR));
-        if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
-        }
-        return contentMap;
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntryVersionName(context.getJobBuild().getVersionName())
+                .paramEntryBuildType(context.getJobParamDetail().getParamByKey(BUILD_TYPE))
+                .paramEntryProductFlavor(context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR))
+                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .build();
+
+        return templateMap.getTemplate();
     }
 
     // https://caesar.ops.yangege.cn/index.html#/job/build/android?buildId=168

@@ -9,6 +9,8 @@ import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateBuilder;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateMap;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.util.AtUserUtils;
 import com.baiyi.caesar.domain.DataTable;
@@ -23,9 +25,7 @@ import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
 import com.baiyi.caesar.service.user.OcUserService;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,12 +44,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class BaseDingtalkNotify implements IDingtalkNotify, InitializingBean {
-
-    public static final String VERSION_NAME = "versionName";
-
-    public static final String BUILD_DETAILS_URL = "buildDetailsUrl";
-
-    public static final String BUILD_PHASE = "buildPhase";
 
     @Resource
     protected HostConfig hostConfig;
@@ -100,11 +94,25 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
                     .msg(renderTemplate(csDingtalkTemplate, contentMap))
-                    .webHook(dingtalkConfig.getWebHook(stringEncryptor.decrypt(csDingtalk.getDingtalkToken())))
+                    .webHook(buildWebHook(csDingtalk))
                     .build();
             dingtalkHandler.doNotify(dingtalkContent);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
+    }
+
+    private String buildWebHook(CsDingtalk csDingtalk) {
+        return dingtalkConfig.getWebHook(decryptToken(csDingtalk.getDingtalkToken()));
+    }
+
+    /**
+     * 解密
+     *
+     * @param ciphertext
+     * @return
+     */
+    private String decryptToken(String ciphertext) {
+        return stringEncryptor.decrypt(ciphertext);
     }
 
     @Override
@@ -121,10 +129,10 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
                     .msg(renderTemplate(csDingtalkTemplate, contentMap))
-                    .webHook(dingtalkConfig.getWebHook(stringEncryptor.decrypt(csDingtalk.getDingtalkToken())))
+                    .webHook(buildWebHook(csDingtalk))
                     .build();
             dingtalkHandler.doNotify(dingtalkContent);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -136,23 +144,22 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @return
      */
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
-        Map<String, Object> contentMap = Maps.newHashMap();
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
-        contentMap.put("applicationName", context.getCsApplication().getApplicationKey()); // 应用名称只显示key
-        contentMap.put("jobName", context.getCsCdJob().getJobKey()); // 任务名称只显示key
-        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "部署开始" : "部署结束");
-        contentMap.put("envName", ocEnv != null ? ocEnv.getEnvName() : "default");
-        contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : context.getJobBuild().getUsername());
-        String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
-        contentMap.put("consoleUrl", consolerUrl); // console日志url
-        contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
-        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()));
-        if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put("buildStatus", context.getJobBuild().getBuildStatus());
-        }
-        return contentMap;
+
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntryApplicationName(context.getCsApplication().getApplicationKey())
+                .paramEntryJobName(context.getCsCiJob().getJobKey())
+                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
+                .paramEntryEnvName(ocEnv)
+                .paramEntryDisplayName(context.getJobBuild().getUsername(), ocUser)
+                .paramEntryConsoleUrl(context.getJobBuild().getJobBuildUrl())
+                .paramEntryBuildNumber(context.getJobBuild().getJobBuildNumber())
+                .paramEntryUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
+                .paramEntryBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
+                .build();
+        return templateMap.getTemplate();
     }
 
     /**
@@ -163,34 +170,30 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @return
      */
     protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
-        Map<String, Object> contentMap = Maps.newHashMap();
-
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
-        contentMap.put("applicationName", context.getCsApplication().getApplicationKey()); // 应用名称只显示key
-        contentMap.put("jobName", context.getCsCiJob().getJobKey()); // 任务名称只显示key
-        contentMap.put("buildPhase", noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束");
-        contentMap.put("envName", ocEnv != null ? ocEnv.getEnvName() : "default");
-        contentMap.put("displayName", ocUser != null ? ocUser.getDisplayName() : context.getJobBuild().getUsername());
-        String consolerUrl = Joiner.on("/").join(context.getJobBuild().getJobBuildUrl(), "console");
-        contentMap.put("consoleUrl", consolerUrl); // console日志url
-        contentMap.put("buildNumber", context.getJobBuild().getJobBuildNumber()); // 构建编号
-        contentMap.put("branch", context.getJobBuild().getBranch()); // 构建分支
-        contentMap.put("commit", context.getJobBuild().getCommit().substring(0, 7)); // 取7位commit
-        contentMap.put("users", acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()));
-        if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put("changes", acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()));
-            contentMap.put("buildStatus", context.getJobBuild().getBuildStatus());
-        }
-        return contentMap;
+
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntryApplicationName(context.getCsApplication().getApplicationKey())
+                .paramEntryJobName(context.getCsCiJob().getJobKey())
+                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
+                .paramEntryEnvName(ocEnv)
+                .paramEntryDisplayName(context.getJobBuild().getUsername(), ocUser)
+                .paramEntryConsoleUrl(context.getJobBuild().getJobBuildUrl())
+                .paramEntryBuildNumber(context.getJobBuild().getJobBuildNumber())
+                .paramEntryBranch(context.getJobBuild().getBranch())
+                .paramEntryCommit(context.getJobBuild().getCommit(), 7)
+                .paramEntryUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
+                .paramEntryChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
+                .paramEntryBuildStatus(noticePhase == NoticePhase.END.getType()?context.getJobBuild().getBuildStatus():null)
+                .build();
+        return templateMap.getTemplate();
     }
 
     private List<CsJobBuildChange> acqChanges(int buildType, int buildId) {
-        //     log.replaceAll("(\n|\r\n)\\s+", "");
         List<CsJobBuildChange> changes = csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId);
         if (CollectionUtils.isEmpty(changes)) return changes;
         return changes.stream().peek(e -> {
-            // String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)\\s+", "");
             String msg = e.getCommitMsg().replaceAll("(\n|\r\n|\"|'|\\+|-)", "");
             e.setCommitMsg(msg);
         }).collect(Collectors.toList());
@@ -205,18 +208,16 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @return
      */
     private List<OcUser> acqAtUsers(OcUser ocUser, int applicationId, CsCiJob csCiJob) {
-        List<OcUser> users = Lists.newArrayList();
         if (csCiJob.getAtAll()) {
             UserParam.UserIncludeApplicationPageQuery pageQuery = new UserParam.UserIncludeApplicationPageQuery();
             pageQuery.setApplicationId(applicationId);
             pageQuery.setPage(1);
             pageQuery.setLength(20);
             DataTable<OcUser> dataTable = ocUserService.queryApplicationIncludeUserParam(pageQuery);
-            users = AtUserUtils.acqAtUsers(ocUser, dataTable.getData());
+            return AtUserUtils.acqAtUsers(ocUser, dataTable.getData());
         } else {
-            users.add(ocUser);
+            return Lists.newArrayList(ocUser);
         }
-        return users;
     }
 
     protected List<CsJobBuildServer> acqBuildServers(int buildId) {

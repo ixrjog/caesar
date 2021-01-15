@@ -4,6 +4,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateBuilder;
+import com.baiyi.caesar.dingtalk.content.DingtalkTemplateMap;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;
@@ -31,24 +33,25 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
     }
 
     @Override
-    protected int getBuildType(){
+    protected int getBuildType() {
         return BuildType.DEPLOYMENT.getType();
     }
 
     @Override
     protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
-        Map<String, Object> contentMap = super.acqTemplateContent(noticePhase, context);
-        contentMap.put(BUILD_PHASE, noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束");
-        contentMap.put(SERVER_GROUP, context.getJobParamDetail().getParamByKey(SERVER_GROUP));
-        contentMap.put(HOST_PATTERN, context.getJobParamDetail().getParamByKey(HOST_PATTERN));
-        contentMap.put(SERVERS,  acqBuildServers(context.getJobBuild().getId()));
-
         CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
-        contentMap.put(VERSION_NAME, csCiJobBuild.getVersionName());
-        if (noticePhase == NoticePhase.END.getType()) {
-            contentMap.put(BUILD_DETAILS_URL, acqBuildDetailsUrl(context.getJobBuild().getId()));
-        }
-        return contentMap;
+
+        DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
+                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束")
+                .paramEntryServerGroup(context.getJobParamDetail().getParamByKey(SERVER_GROUP))
+                .paramEntryHostPattern(context.getJobParamDetail().getParamByKey(HOST_PATTERN))
+                .paramEntryServers(acqBuildServers(context.getJobBuild().getId()))
+                .paramEntryVersionName(csCiJobBuild.getVersionName())
+                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .build();
+
+        return templateMap.getTemplate();
     }
 
 
