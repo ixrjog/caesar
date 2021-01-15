@@ -137,6 +137,19 @@ public class AuthBaseFacadeImpl implements AuthBaseFacade {
     }
 
     /**
+     * 吊销Token
+     *
+     * @param username
+     * @param retain   (保留token数量)
+     */
+    private void revokeUserToken(String username, int retain) {
+        int validTokenSize = ocUserTokenService.countValidOcUserTokenByUsername(username);
+        if (retain >= validTokenSize) return; // 当前有效token少于保留数量
+        List<OcUserToken> tokens = ocUserTokenService.queryValidOcUserTokenByUsername(username, validTokenSize - retain);
+        tokens.forEach(e->  ocUserTokenService.updateOcUserTokenInvalid(e));
+    }
+
+    /**
      * 设置用户Token
      *
      * @param username
@@ -144,7 +157,7 @@ public class AuthBaseFacadeImpl implements AuthBaseFacade {
      */
     @Override
     public void setUserToken(String username, String token) {
-        revokeUserToken(username); // 吊销Token
+        revokeUserToken(username,1); // 吊销Token
         OcUserToken ocUserToken = new OcUserToken();
         ocUserToken.setValid(true);
         ocUserToken.setUsername(username);
@@ -166,12 +179,12 @@ public class AuthBaseFacadeImpl implements AuthBaseFacade {
     @Override
     public void authorizedAdminAllRole(OcUser ocUser) {
         ocAuthRoleService.queryAllOcAuthRole().forEach(e -> {
-            try{
+            try {
                 OcAuthUserRole ocAuthUserRole = new OcAuthUserRole();
                 ocAuthUserRole.setRoleId(e.getId());
                 ocAuthUserRole.setUsername(ocUser.getUsername());
                 ocAuthUserRoleService.addOcAuthUserRole(ocAuthUserRole);
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
             }
         });
     }

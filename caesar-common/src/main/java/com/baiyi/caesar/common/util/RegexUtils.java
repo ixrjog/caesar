@@ -60,7 +60,7 @@ public class RegexUtils {
     }
 
     public static boolean isEmail(String email) {
-        String repx = "\\w+@([\\w]+[\\w-]*)(\\.[\\w]+[-\\w]*)+";
+        String repx = "[A-z0-9-_\\.]+@([\\w]+[\\w-]*)(\\.[\\w]+[-\\w]*)+";
         return email.matches(repx);
     }
 
@@ -128,5 +128,31 @@ public class RegexUtils {
         return serviceName.matches(repx);
     }
 
+
+    public static boolean checkApk(String fileName) {
+        return fileName.endsWith(".apk");
+    }
+
+    public static boolean checkJar(String fileName) {
+        return fileName.endsWith(".jar");
+    }
+
+    /**
+     * 验证jobKey，3-64位,不能包含中文 a-z -
+     *
+     * @param key
+     * @return
+     */
+    public static boolean isJobKeyRule(String key) {
+        if (key.endsWith("-") || key.startsWith("-"))
+            return false;
+        return key.matches("[a-z0-9-]{3,64}");
+    }
+
+    public static boolean isApplicationKeyRule(String key) {
+        if (key.endsWith("-") || key.startsWith("-"))
+            return false;
+        return key.matches("[A-Z0-9-]{3,32}");
+    }
 
 }

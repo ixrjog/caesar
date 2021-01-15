@@ -1,60 +1,60 @@
 package com.baiyi.caesar.facade.jenkins;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
+import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
-import com.baiyi.caesar.factory.jenkins.IJenkinsJobHandler;
-import com.baiyi.caesar.factory.jenkins.JenkinsJobHandlerFactory;
-import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
  * @Date 2020/8/6 3:51 下午
  * @Version 1.0
  */
-@Component
-public class JobFacade {
 
-    @Resource
-    private CsCiJobService csCiJobService;
+public interface JobFacade {
 
-    @Resource
-    private CsCiJobBuildService csCiJobBuildService;
+    BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob);
 
-    @Resource
-    private JobBuildDecorator jobBuildDecorator;
+    BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam);
 
-    public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.CiBuildParam buildParam) {
-        CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
-        IJenkinsJobHandler jenkinsJobHandler = JenkinsJobHandlerFactory.getJenkinsJobBuildByKey(csCiJob.getJobType());
-        if (StringUtils.isEmpty(buildParam.getBranch()))
-            buildParam.setBranch(csCiJob.getBranch());
-        jenkinsJobHandler.build(csCiJob, buildParam);
-        return BusinessWrapper.SUCCESS;
-    }
+    BusinessWrapper<Boolean> abortCiJobBuild(int ciBuildId);
 
-    public DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery) {
-        DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);
-        List<CiJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobBuildVO.JobBuild.class);
-        return new DataTable<>(page.stream().map(e -> jobBuildDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
-    }
+    BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam);
 
-    public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(@Valid int buildId) {
-        CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
-        return jobBuildDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class), 1);
-    }
+    DataTable<CiJobBuildVO.JobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
+
+    DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery);
+
+    List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
+
+    BusinessWrapper<String> viewJobBuildOutput(JobBuildParam.ViewJobBuildOutputQuery query);
+
+    CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId);
+
+    CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(int buildId);
+
+    BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId);
+
+    /**
+     * 校正构建Job引擎
+     *
+     * @param buildType
+     * @param jobId
+     * @return
+     */
+    BusinessWrapper<Boolean> correctionJobEngine(int buildType, int jobId);
+
+    void trackJobBuildTask();
+
+    BusinessWrapper<Boolean> deleteBuildJob(int ciJobId);
+
+    BusinessWrapper<Boolean> deleteDeploymentJob(int cdJobId);
+
 
 }

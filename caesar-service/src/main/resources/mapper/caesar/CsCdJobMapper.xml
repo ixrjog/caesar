@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsCdJobMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsCdJob">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
+    <result column="ci_job_id" jdbcType="INTEGER" property="ciJobId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="job_key" jdbcType="VARCHAR" property="jobKey" />
+    <result column="env_type" jdbcType="INTEGER" property="envType" />
+    <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+    <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
+    <result column="job_tpl_id" jdbcType="INTEGER" property="jobTplId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+
+  <select id="queryCsCdJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CdJobParam$CdJobPageQuery"
+          resultMap="BaseResultMap">
+    select * from cs_cd_job
+    <where>
+      application_id = #{applicationId}
+      <if test="queryName != null and queryName != ''">
+        and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
+      </if>
+    </where>
+  </select>
+</mapper>

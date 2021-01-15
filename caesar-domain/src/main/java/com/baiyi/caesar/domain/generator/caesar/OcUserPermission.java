@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "oc_user_permission")
 public class OcUserPermission {
@@ -34,6 +34,11 @@ public class OcUserPermission {
     private String roleName;
 
     private String content;
+
+    /**
+     * 评分
+     */
+    private Integer rate;
 
     @Column(name = "create_time")
     private Date createTime;
@@ -139,6 +144,24 @@ public class OcUserPermission {
      */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    /**
+     * 获取评分
+     *
+     * @return rate - 评分
+     */
+    public Integer getRate() {
+        return rate;
+    }
+
+    /**
+     * 设置评分
+     *
+     * @param rate 评分
+     */
+    public void setRate(Integer rate) {
+        this.rate = rate;
     }
 
     /**

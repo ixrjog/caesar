@@ -20,6 +20,7 @@ public class UserPermissionVO {
         private Integer userId;
         private Integer businessId;
         private Integer businessType;
+        private Integer rate;
         private String roleName;
         private String content;
 

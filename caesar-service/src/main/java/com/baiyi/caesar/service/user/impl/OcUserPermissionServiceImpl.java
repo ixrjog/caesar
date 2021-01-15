@@ -36,6 +36,11 @@ public class OcUserPermissionServiceImpl implements OcUserPermissionService {
     }
 
     @Override
+    public OcUserPermission queryOcUserPermissionById(int id) {
+        return ocUserPermissionMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public OcUserPermission queryOcUserPermissionByUniqueKey(OcUserPermission ocUserPermission) {
         Example example = new Example(OcUserPermission.class);
         Example.Criteria criteria = example.createCriteria();
@@ -46,10 +51,11 @@ public class OcUserPermissionServiceImpl implements OcUserPermissionService {
     }
 
     @Override
-    public List<OcUserPermission> queryUserBusinessPermissionByUserId(int userId, int businessId) {
+    public List<OcUserPermission> queryUserBusinessPermissionByUserId(int userId, int businessType) {
         Example example = new Example(OcUserPermission.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("businessType", businessType);
         return ocUserPermissionMapper.selectByExample(example);
     }
 

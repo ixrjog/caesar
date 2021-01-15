@@ -1,11 +1,20 @@
 package com.baiyi.caesar.jenkins;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
+import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.vo.tree.EngineVO;
+import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import com.offbytwo.jenkins.model.Computer;
 import com.offbytwo.jenkins.model.ComputerWithDetails;
@@ -32,13 +41,23 @@ public class JobTest extends BaseUnit {
     @Resource
     private CsJobTplService csJobTplService;
 
-
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
+    @Resource
+    private JenkinsEngineFacade jenkinsEngineFacade;
+
+    @Resource
+    private CsCiJobService csCiJobService;
+
+    @Test
+    void testCorrectionJobEngine(){
+        jobFacade.correctionJobEngine(BuildType.BUILD.getType(),95);
+    }
+
     @Test
     void testBuild() {
-        JobBuildParam.CiBuildParam buildParam = new JobBuildParam.CiBuildParam();
+        JobBuildParam.BuildParam buildParam = new JobBuildParam.BuildParam();
         buildParam.setCiJobId(2);
         jobFacade.buildCiJob(buildParam);
     }
@@ -61,20 +80,21 @@ public class JobTest extends BaseUnit {
         }
     }
 
-
     @Test
     void testTpl() {
-
-        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(6);
+        CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(9);
         try {
-            jenkinsServerHandler.updateJob("master-2", "CAESAR_caesar-server-prod", csJobTpl.getTplContent());
+            jenkinsServerHandler.updateJob("master-1", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
+            jenkinsServerHandler.updateJob("master-2", "CANNON_cannon-server-prod", csJobTpl.getTplContent());
         } catch (IOException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
-
-
     }
 
+    @Test
+    void testTrackJobBuildTask() {
+        jobFacade.trackJobBuildTask();
+    }
 
     @Test
     void testJenkins() {
@@ -97,11 +117,39 @@ public class JobTest extends BaseUnit {
                 } catch (IOException e) {
                 }
             }
-
-
         });
 
         System.err.println(computerMap);
+    }
+
+    @Test
+    void testApk() {
+        String fileName = "bm_debug_[ceshi].apk";
+        System.err.println(RegexUtils.checkApk(fileName));
+    }
+
+    @Test
+    void testBuildEngineChart() {
+        EngineVO.Children chart = jenkinsEngineFacade.buildEngineChart();
+        System.err.println(JSON.toJSONString(chart));
+    }
+
+
+    @Test
+    void testJobDelete() {
+        // canal-client-service-server-prod
+        // community-admin-server-gray
+        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(126);
+        System.err.println(wrapper.isSuccess());
+
+    }
+
+    @Test
+    void testTryAuthorizedUser() {
+        SessionUtils.setUsername("gechong");
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
+        BusinessWrapper<Boolean> wrapper =  jobFacade.tryAuthorizedUser(csCiJob);
+        System.err.println(JSON.toJSON(wrapper));
     }
 
 }

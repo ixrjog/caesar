@@ -1,7 +1,8 @@
 package com.baiyi.caesar.task;
 
-import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.config.OpscloudConfig;
+import com.baiyi.caesar.common.util.RandomUtils;
+import com.baiyi.caesar.config.CaesarConfig;
+import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import com.baiyi.caesar.task.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,12 +22,23 @@ public abstract class BaseTask {
     protected TaskUtil taskUtil;
 
     @Resource
-    protected RedisUtil redisUtil;
+    private CaesarConfig caesarConfig;
 
     @Resource
-    private OpscloudConfig opscloudConfig;
+    private CaesarInstanceFacade caesarInstanceFacade;
 
     private static final int LOCK_MINUTE = 5;
+
+    protected boolean isHealth() {
+        return caesarInstanceFacade.isHealth();
+    }
+
+    protected void sleep(int maxSleep){
+        try{
+            Thread.sleep(RandomUtils.acqRandom(maxSleep));//等进程执行一会，再终止它
+        }catch (InterruptedException ignored){
+        }
+    }
 
     /**
      * 尝试加锁
@@ -34,7 +46,7 @@ public abstract class BaseTask {
      * @return
      */
     protected boolean tryLock() {
-        if (!opscloudConfig.getOpenTask()) return true;
+        if (!caesarConfig.getOpenTask()) return true;
         if (taskUtil.tryLock(getLock())) return true;
         taskUtil.lock(getLock(), getLockMinute());
         log.info("{} : 开始执行!", getTaskName());

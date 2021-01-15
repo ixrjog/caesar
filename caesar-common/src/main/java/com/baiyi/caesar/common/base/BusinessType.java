@@ -20,8 +20,12 @@ public enum BusinessType {
     GITLAB_PROJECT(9),
     JENKINS_TPL(10),
     DINGTALK(11),
-    ALIYUN_OSS_BUCKET(12)
-
+    ALIYUN_OSS_BUCKET(12),
+    /** 构建任务 **/
+    APPLICATION_BUILD_JOB(13),
+    /** 部署任务 **/
+    APPLICATION_DEPLOYMENT_JOB(14),
+    GITLAB_GROUP(15)
     ;
 
     private int type;

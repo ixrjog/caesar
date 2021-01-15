@@ -2,10 +2,12 @@ package com.baiyi.caesar.domain.vo.application;
 
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
+import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -23,10 +25,13 @@ public class ApplicationVO {
 
         private List<TagVO.Tag> tags;
         private List<ScmMember> scmMembers;
+        private List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups;
+        private UserPermissionVO.UserPermission userPermission;
         private Integer id;
         private String name;
         private String applicationKey;
         private Integer kubernetesApplicationId;
+        private Boolean enableGitflow;
         private Integer engineType;
         private Date createTime;
         private Date updateTime;
@@ -65,5 +70,16 @@ public class ApplicationVO {
         private String comment;
     }
 
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class MyApplicationRate {
+
+        @NotNull(message = "授权id不能为空")
+        private Integer userPermissionId;
+        @NotNull(message = "评分不能为空")
+        private Integer rate;
+
+    }
 
 }

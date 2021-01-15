@@ -3,11 +3,12 @@ package com.baiyi.caesar.facade;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.application.*;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 
 import java.util.List;
 
@@ -26,7 +27,24 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application);
 
+    /**
+     * 是否为此应用管理员
+     *
+     * @param applicationId
+     * @param userId
+     * @return
+     */
+    boolean isApplicationAdmin(int applicationId, int userId);
+
     BusinessWrapper<Boolean> updateApplication(ApplicationVO.Application application);
+
+    /**
+     * 修改我的评分
+     *
+     * @param applicationRate
+     * @return
+     */
+    BusinessWrapper<Boolean> updateMyApplicationRate(ApplicationVO.MyApplicationRate applicationRate);
 
     BusinessWrapper<Boolean> deleteApplicationById(int id);
 
@@ -38,11 +56,15 @@ public interface ApplicationFacade {
 
     DataTable<CiJobVO.CiJob> queryCiJobPage(CiJobParam.CiJobPageQuery pageQuery);
 
+    DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery);
+
     BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob);
+
+    BusinessWrapper<Boolean> addCdJob(CdJobVO.CdJob cdJob);
 
     BusinessWrapper<Boolean> updateCiJob(CiJobVO.CiJob ciJob);
 
-    BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
+    BusinessWrapper<Boolean> updateCdJob(CdJobVO.CdJob cdJob);
 
     List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId);
 
@@ -58,13 +80,27 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> removeApplicationEngine(int id);
 
-    BusinessWrapper<Boolean> createCiJobEngine(int ciJobId);
+    BusinessWrapper<Boolean> createJobEngine(int buildType, int jobId);
 
-    List<CiJobVO.JobEngine> queryCiJobEngine(int ciJobId);
+    List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId);
 
     BusinessWrapper<Boolean> grantUserApplication(int applicationId, int userId);
 
     BusinessWrapper<Boolean> revokeUserApplication(int applicationId, int userId);
 
+    BusinessWrapper<Boolean> grantUserApplicationBuildJob(int ciJobId, int userId);
+
+    BusinessWrapper<Boolean> revokeUserApplicationBuildJob(int ciJobId, int userId);
+
     BusinessWrapper<Boolean> updateUserApplicationPermission(int applicationId, int userId);
+
+    DataTable<ServerGroupVO.ServerGroup> queryServerGroupPage(ApplicationParam.ServerGroupPageQuery pageQuery);
+
+    List<ApplicationServerGroupVO.ApplicationServerGroup> queryApplicationServerGroupByApplicationId(int applicationId);
+
+    BusinessWrapper<Boolean> addApplicationServerGroup(ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup);
+
+    BusinessWrapper<Boolean> removeApplicationServerGroup(int id);
+
+    void updateApplicationScmMember(CsGitlabProject csGitlabProject);
 }

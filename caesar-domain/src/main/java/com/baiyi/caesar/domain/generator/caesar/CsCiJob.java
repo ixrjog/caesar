@@ -76,6 +76,12 @@ public class CsCiJob {
     private Integer deploymentJobId;
 
     /**
+     * 启用sonar
+     */
+    @Column(name = "enable_sonar")
+    private Boolean enableSonar;
+
+    /**
      * 通知所有人
      */
     @Column(name = "at_all")
@@ -340,6 +346,24 @@ public class CsCiJob {
      */
     public void setDeploymentJobId(Integer deploymentJobId) {
         this.deploymentJobId = deploymentJobId;
+    }
+
+    /**
+     * 获取启用sonar
+     *
+     * @return enable_sonar - 启用sonar
+     */
+    public Boolean getEnableSonar() {
+        return enableSonar;
+    }
+
+    /**
+     * 设置启用sonar
+     *
+     * @param enableSonar 启用sonar
+     */
+    public void setEnableSonar(Boolean enableSonar) {
+        this.enableSonar = enableSonar;
     }
 
     /**

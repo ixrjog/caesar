@@ -30,7 +30,7 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
 
     @Override
     public void syncUserBusinessPermission(List<UserVO.User> userList, int businessType, int businessId) {
-        userList.forEach(e -> {
+        userList.parallelStream().forEach(e -> {
             try {
                 OcUserPermission ocUserPermission = new OcUserPermission();
                 ocUserPermission.setBusinessType(businessType);
@@ -45,7 +45,7 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
     @Override
     public void syncUserBusinessPermission(int userId, int businessType, List<Integer> businessIds) {
         try {
-            businessIds.forEach(e -> {
+            businessIds.parallelStream().forEach(e -> {
                 try {
                     OcUserPermission ocUserPermission = new OcUserPermission();
                     ocUserPermission.setBusinessType(businessType);
@@ -104,11 +104,32 @@ public class UserPermissionFacadeImpl implements UserPermissionFacade {
 
     @Override
     public boolean tryUserBusinessPermission(int userId, int businessType, int businessId) {
+        return queryUserPermissionByUniqueKey(userId, businessType, businessId) != null;
+    }
+
+    @Override
+    public void cleanBusinessPermission(int businessType, int businessId) {
+        ocUserPermissionService.queryUserBusinessPermissionByBusinessId(businessType, businessId).forEach(e ->
+                ocUserPermissionService.delOcUserPermissionById(e.getId()));
+    }
+
+    @Override
+    public List<OcUserPermission> queryBusinessPermission(int businessType, int businessId) {
+        return ocUserPermissionService.queryUserBusinessPermissionByBusinessId(businessType, businessId);
+    }
+
+    @Override
+    public OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId) {
         OcUserPermission ocUserPermission = new OcUserPermission();
         ocUserPermission.setBusinessType(businessType);
         ocUserPermission.setBusinessId(businessId);
         ocUserPermission.setUserId(userId);
-        return ocUserPermissionService.queryOcUserPermissionByUniqueKey(ocUserPermission) != null;
+        return ocUserPermissionService.queryOcUserPermissionByUniqueKey(ocUserPermission);
+    }
+
+    @Override
+    public List<OcUserPermission> queryUserBusinessPermissionByUserId(int userId, int businessType) {
+        return ocUserPermissionService.queryUserBusinessPermissionByUserId(userId, businessType);
     }
 
 }

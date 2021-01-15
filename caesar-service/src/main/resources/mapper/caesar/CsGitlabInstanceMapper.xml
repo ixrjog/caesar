@@ -9,6 +9,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="system_hooks_token" jdbcType="VARCHAR" property="systemHooksToken" />
     <result column="is_active" jdbcType="BIT" property="isActive" />
     <result column="server_id" jdbcType="INTEGER" property="serverId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -16,8 +17,7 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-  <select id="queryCsGitlabInstanceByParam"
-          parameterType="com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam$PageQuery" resultMap="BaseResultMap">
+  <select id="queryCsGitlabInstanceByParam" parameterType="com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam$PageQuery" resultMap="BaseResultMap">
     select * from cs_gitlab_instance
     <where>
       <if test="queryName != null and queryName != ''">

@@ -35,7 +35,7 @@ public class SwaggerConfigurer {
     //api接口作者相关信息
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("CAESAR 0.1")
+                .title("CAESAR 0.2.0")
                 .description("CAESAR  OPENAPI接口文档")
                 .version("0.0.1-SNAPSHOT")
                 .license("GNU General Public License v2")

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author baiyi
@@ -17,10 +18,10 @@ import java.util.List;
 public class GitlabProjectHandler {
 
     public List<GitlabProject> getProjects(String gitlabName) {
-        return  GitlabServerContainer.getGitlabAPI(gitlabName).getAllProjects();
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getAllProjects();
     }
 
     public GitlabProject getProject(String gitlabName, Serializable projectId) throws IOException {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getProject(projectId);
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getProject(projectId);
     }
 }

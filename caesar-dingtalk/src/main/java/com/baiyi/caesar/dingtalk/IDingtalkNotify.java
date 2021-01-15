@@ -1,6 +1,7 @@
 package com.baiyi.caesar.dingtalk;
 
-import com.baiyi.caesar.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.jenkins.context.BuildJobContext;
+import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 
 /**
  * @Author baiyi
@@ -11,6 +12,8 @@ public interface IDingtalkNotify {
 
     String getKey();
 
-    void doNotify(int noticeType,int noticePhase, JobBuildContext jobBuildContext );
+    void doNotify(int noticePhase, BuildJobContext context);
+
+    void doNotify(int noticePhase, DeploymentJobContext context);
 
 }

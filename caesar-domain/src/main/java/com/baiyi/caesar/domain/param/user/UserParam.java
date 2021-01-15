@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
 import java.util.Date;
 
 /**
@@ -56,6 +57,33 @@ public class UserParam {
 
         @ApiModelProperty(value = "应用id")
         private Integer applicationId;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class UserExcludeApplicationBuildJobPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "查询名称")
+        private String queryName;
+
+        @ApiModelProperty(value = "应用id")
+        private Integer applicationId;
+
+        @ApiModelProperty(value = "构建任务Id")
+        private Integer ciJobId;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class UserIncludeApplicationBuildJobPageQuery extends PageParam {
+
+        @ApiModelProperty(value = "应用id")
+        private Integer applicationId;
+
+        @ApiModelProperty(value = "构建任务Id")
+        private Integer ciJobId;
     }
 
 

@@ -106,9 +106,17 @@ cs_ci_job_build
 cs_ci_job_build_artifact
 cs_ci_job_build_change
 cs_ci_job_build_executor
+cs_dingtalk_template
+cs_cd_job
+cs_job_build_artifact
+cs_cd_job_build
+cs_job_build_change
+cs_instance
+cs_gitlab_webhook
+cs_gitlab_group
        -->
 
-        <table tableName="cs_dingtalk_template">
+        <table tableName="cs_ci_job">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

@@ -16,7 +16,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 import javax.sql.DataSource;
 
 /**
- * @author feixue
+ * @author baiyi
  */
 @Configuration
 @MapperScan(

@@ -1,10 +1,12 @@
 package com.baiyi.caesar.controller;
 
-import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabGroupVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import com.baiyi.caesar.facade.GitlabFacade;
@@ -28,6 +30,26 @@ public class GitlabController {
 
     @Resource
     private GitlabFacade gitlabFacade;
+
+    /**
+     * https://caesar域名/cs/gitlab/v1/webhooks
+     *
+     * @param webhook
+     * @return
+     */
+    @ApiOperation(value = "Gitlab webhooks")
+    @PostMapping(value =  "/v1/webhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooksVO.Webhook webhook) {
+        gitlabFacade.webhooksV1(webhook);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "Gitlab system hooks")
+    @PostMapping(value =  "/v1/systemhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> trigerSystemHooks(@RequestBody GitlabHooksVO.SystemHook systemHook) {
+        gitlabFacade.systemHooksV1(systemHook);
+        return HttpResult.SUCCESS;
+    }
 
     @ApiOperation(value = "分页查Gitlab实例配置")
     @PostMapping(value = "/instance/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +77,7 @@ public class GitlabController {
 
     @ApiOperation(value = "分页查Gitlab项目")
     @PostMapping(value = "/project/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<DataTable<GitlabProjectVO.Project>> queryGitlabProjectPage(@RequestBody @Valid GitlabProjectParam.PageQuery pageQuery) {
+    public HttpResult<DataTable<GitlabProjectVO.Project>> queryGitlabProjectPage(@RequestBody @Valid GitlabProjectParam.GitlabProjectPageQuery pageQuery) {
         return new HttpResult<>(gitlabFacade.queryGitlabProjectPage(pageQuery));
     }
 
@@ -63,6 +85,19 @@ public class GitlabController {
     @GetMapping(value = "/project/sync",  produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> syncGitlabInstanceProject(@Valid int instanceId) {
         gitlabFacade.syncGitlabInstanceProject(instanceId);
-        return new HttpResult<>(BusinessWrapper.SUCCESS);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "分页查Gitlab群组")
+    @PostMapping(value = "/group/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<GitlabGroupVO.Group>> queryGitlabGroupPage(@RequestBody @Valid GitlabGroupParam.GitlabGroupPageQuery pageQuery) {
+        return new HttpResult<>(gitlabFacade.queryGitlabGroupPage(pageQuery));
+    }
+
+    @ApiOperation(value = "同步Gitlab群组")
+    @GetMapping(value = "/group/sync",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> syncGitlabInstanceGroup(@Valid int instanceId) {
+        gitlabFacade.syncGitlabInstanceGroup(instanceId);
+        return HttpResult.SUCCESS;
     }
 }

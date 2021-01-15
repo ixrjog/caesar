@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsCdJobBuildMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cd_job_id" jdbcType="INTEGER" property="cdJobId" />
+    <result column="job_engine_id" jdbcType="INTEGER" property="jobEngineId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="ci_build_id" jdbcType="INTEGER" property="ciBuildId" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
+    <result column="engine_build_number" jdbcType="INTEGER" property="engineBuildNumber" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+    <result column="version_desc" jdbcType="VARCHAR" property="versionDesc" />
+    <result column="build_phase" jdbcType="VARCHAR" property="buildPhase" />
+    <result column="build_status" jdbcType="VARCHAR" property="buildStatus" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="operation_username" jdbcType="VARCHAR" property="operationUsername" />
+    <result column="finalized" jdbcType="BIT" property="finalized" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="parameters" jdbcType="LONGVARCHAR" property="parameters" />
+    <result column="dingtalk_msg" jdbcType="LONGVARCHAR" property="dingtalkMsg" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
+
+  <resultMap id="BuildTaskGroupByHourMap" type="com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour">
+    <result column="hours" jdbcType="INTEGER" property="hours" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+  </resultMap>
+
+  <select id="queryCdJobBuildGroupByHour"
+          resultMap="BuildTaskGroupByHourMap">
+    select DATE_FORMAT(create_time,'%H') hours,count(id) count
+    from cs_cd_job_build
+    group by hours
+    order by hours;
+  </select>
+
+<!--  &lt;select id="queryCsCdJobByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam$DeploymentPageQuery" resultMap="BaseResultMap"&gt;-->
+<!--    select *-->
+<!--    from cs_cd_job_build-->
+<!--    where cd_job_id = #{cdJobId}-->
+<!--    order by job_build_number desc-->
+<!--  &lt;/select&gt;-->
+
+</mapper>

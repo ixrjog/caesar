@@ -202,4 +202,17 @@ public class UserController {
         return new HttpResult<>(userFacade.queryApplicationIncludeUserPage(pageQuery));
     }
 
+    @ApiOperation(value = "分页查询构建任务未授权的用户列表")
+    @PostMapping(value = "/application/build/job/exclude/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<UserVO.User>> queryApplicationBuildJobExcludeUserPage(@RequestBody @Valid UserParam.UserExcludeApplicationBuildJobPageQuery pageQuery) {
+        return new HttpResult<>(userFacade.queryApplicationBuildJobExcludeUserPage(pageQuery));
+    }
+
+    @ApiOperation(value = "分页查询构建任务授权的用户列表")
+    @PostMapping(value = "/application/build/job/include/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<UserVO.User>> queryApplicationBuildJobIncludeUserPage(@RequestBody @Valid UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery) {
+        return new HttpResult<>(userFacade.queryApplicationBuildJobIncludeUserPage(pageQuery));
+    }
+
+
 }

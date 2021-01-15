@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,9 @@ public class UserVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class User {
+    public static class User implements Serializable {
 
+        private static final long serialVersionUID = -4936990694008673929L;
         private Map<String, UserCredentialVO.UserCredential> credentialMap;
 
         private List<UserGroupVO.UserGroup> userGroups;

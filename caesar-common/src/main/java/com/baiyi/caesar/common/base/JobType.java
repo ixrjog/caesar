@@ -11,7 +11,10 @@ public enum JobType {
     ANDROID("ANDROID"),
     SPRINGBOOT("SPRINGBOOT"),
     HTML5("HTML5"),
-    JAVA("JAVA")
+    JAVA("JAVA"),
+    PYTHON("PYTHON"),
+    JAVA_DEPLOYMENT("JAVA_DEPLOYMENT"),
+    ANDROID_REINFORCE("ANDROID_REINFORCE")
     ;
 
     private String type;

@@ -1,13 +1,16 @@
 package com.baiyi.caesar.controller;
 
+import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
-import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
+import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
+import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -30,6 +33,9 @@ public class ApplicationController {
     @Resource
     private ApplicationFacade applicationFacade;
 
+    @Resource
+    private GitlabFacade gitlabFacade;
+
     @ApiOperation(value = "分页查询应用配置")
     @PostMapping(value = "/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<ApplicationVO.Application>> queryApplicationPage(@RequestBody @Valid ApplicationParam.ApplicationPageQuery pageQuery) {
@@ -40,6 +46,12 @@ public class ApplicationController {
     @PostMapping(value = "/my/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<ApplicationVO.Application>> queryMyApplicationPage(@RequestBody @Valid ApplicationParam.ApplicationPageQuery pageQuery) {
         return new HttpResult<>(applicationFacade.queryMyApplicationPage(pageQuery));
+    }
+
+    @ApiOperation(value = "更新我的应用评分")
+    @PutMapping(value = "/my/rate/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateMyApplicationRate(@RequestBody @Valid ApplicationVO.MyApplicationRate applicationRate) {
+        return new HttpResult<>(applicationFacade.updateMyApplicationRate(applicationRate));
     }
 
     @ApiOperation(value = "新增应用配置")
@@ -68,8 +80,20 @@ public class ApplicationController {
 
     @ApiOperation(value = "查询应用SCM分支详情")
     @PostMapping(value = "/scm/member/branch/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery) {
-        return new HttpResult<>(applicationFacade.queryApplicationSCMMemberBranch(scmMemberBranchQuery));
+    public HttpResult<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.ScmMemberBranchQuery query) {
+        return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranch(query));
+    }
+
+    @ApiOperation(value = "创建应用SCM默认发布分支")
+    @PostMapping(value = "/scm/member/branch/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> createApplicationSCMMemberBranch(@RequestBody @Valid ApplicationParam.CreateScmMemberBranch createParam) {
+        return new HttpResult<>(gitlabFacade.createApplicationSCMMemberBranch(createParam));
+    }
+
+    @ApiOperation(value = "查询应用SCM分支commit详情")
+    @PostMapping(value = "/scm/member/branch/commit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(@RequestBody @Valid ApplicationParam.ScmMemberBranchCommitQuery query) {
+        return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranchCommit(query));
     }
 
     @ApiOperation(value = "新增应用SCM配置")
@@ -90,6 +114,13 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.queryCiJobPage(pageQuery));
     }
 
+    @ApiOperation(value = "分页查询持续集成任务配置")
+    @PostMapping(value = "/cd/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<CdJobVO.CdJob>> queryCdJobPage(@RequestBody @Valid CdJobParam.CdJobPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryCdJobPage(pageQuery));
+    }
+
+
     @ApiOperation(value = "新增持续集成任务配置")
     @PostMapping(value = "/ci/job/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addCiJob(@RequestBody @Valid CiJobVO.CiJob ciJob) {
@@ -102,16 +133,40 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.updateCiJob(ciJob));
     }
 
+    @ApiOperation(value = "新增持续集成部署任务配置")
+    @PostMapping(value = "/cd/job/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addCdJob(@RequestBody @Valid CdJobVO.CdJob cdJob) {
+        return new HttpResult<>(applicationFacade.addCdJob(cdJob));
+    }
+
+    @ApiOperation(value = "更新持续集成部署任务配置")
+    @PutMapping(value = "/cd/job/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> updateCdJob(@RequestBody @Valid CdJobVO.CdJob cdJob) {
+        return new HttpResult<>(applicationFacade.updateCdJob(cdJob));
+    }
+
     @ApiOperation(value = "创建任务工作引擎")
     @PutMapping(value = "/ci/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> createCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.createCiJobEngine(ciJobId));
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.BUILD.getType(), ciJobId));
     }
 
-    @ApiOperation(value = "查询任务工作引擎")
+    @ApiOperation(value = "创建任务工作引擎")
+    @PutMapping(value = "/cd/job/engine/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> createCdJobEngine(@Valid int cdJobId) {
+        return new HttpResult<>(applicationFacade.createJobEngine(BuildType.DEPLOYMENT.getType(), cdJobId));
+    }
+
+    @ApiOperation(value = "查询构建任务工作引擎")
     @GetMapping(value = "/ci/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<List<CiJobVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
-        return new HttpResult<>(applicationFacade.queryCiJobEngine(ciJobId));
+    public HttpResult<List<JobEngineVO.JobEngine>> queryCiJobEngine(@Valid int ciJobId) {
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.BUILD.getType(), ciJobId));
+    }
+
+    @ApiOperation(value = "查询部署任务工作引擎")
+    @GetMapping(value = "/cd/job/engine/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<JobEngineVO.JobEngine>> queryCdJobEngine(@Valid int cdJobId) {
+        return new HttpResult<>(applicationFacade.queryJobEngine(BuildType.DEPLOYMENT.getType(), cdJobId));
     }
 
     @ApiOperation(value = "查询应用工作引擎配置")
@@ -144,10 +199,46 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.revokeUserApplication(applicationId, userId));
     }
 
+    @ApiOperation(value = "授权构建任务给用户")
+    @PutMapping(value = "/build/job/user/grant", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> grantUserApplicationBuildJob(@Valid int ciJobId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.grantUserApplicationBuildJob(ciJobId, userId));
+    }
+
+    @ApiOperation(value = "撤销用户的构建任务授权")
+    @DeleteMapping(value = "/build/job/user/revoke", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> revokeUserApplicationBuildJob(@Valid int ciJobId, @Valid int userId) {
+        return new HttpResult<>(applicationFacade.revokeUserApplicationBuildJob(ciJobId, userId));
+    }
+
     @ApiOperation(value = "更新用户权限")
     @PutMapping(value = "/user/permission/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> updateUserApplicationPermission(@Valid int applicationId, @Valid int userId) {
         return new HttpResult<>(applicationFacade.updateUserApplicationPermission(applicationId, userId));
+    }
+
+    @ApiOperation(value = "指定数据源分页查询serverGroup列表")
+    @PostMapping(value = "/server/group/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<ServerGroupVO.ServerGroup>> queryServerGroupPage(@RequestBody @Valid ApplicationParam.ServerGroupPageQuery pageQuery) {
+        return new HttpResult<>(applicationFacade.queryServerGroupPage(pageQuery));
+    }
+
+    @ApiOperation(value = "查询应用服务器组配置")
+    @GetMapping(value = "/server/group/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<ApplicationServerGroupVO.ApplicationServerGroup>> queryApplicationServerGroup(@Valid int applicationId) {
+        return new HttpResult<>(applicationFacade.queryApplicationServerGroupByApplicationId(applicationId));
+    }
+
+    @ApiOperation(value = "新增应用服务器组配置")
+    @PutMapping(value = "/server/group/add", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addApplicationServerGroup(@RequestBody @Valid ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup) {
+        return new HttpResult<>(applicationFacade.addApplicationServerGroup(applicationServerGroup));
+    }
+
+    @ApiOperation(value = "移除应用服务器组配置")
+    @DeleteMapping(value = "/server/group/remove", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> removeApplicationServerGroup(@Valid int id) {
+        return new HttpResult<>(applicationFacade.removeApplicationServerGroup(id));
     }
 
 }

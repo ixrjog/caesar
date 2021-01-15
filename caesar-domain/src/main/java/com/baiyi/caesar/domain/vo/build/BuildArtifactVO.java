@@ -1,0 +1,37 @@
+package com.baiyi.caesar.domain.vo.build;
+
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+/**
+ * @Author baiyi
+ * @Date 2020/8/31 2:57 下午
+ * @Version 1.0
+ */
+public class BuildArtifactVO {
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
+    public static class BuildArtifact {
+
+        private String artifactFileSize; // 产出物文件容量
+        private String ossUrl;
+
+        private Integer id;
+        private Integer buildType;
+        private Integer buildId;
+        private Integer jobId;
+        private String jobName;
+        private String artifactDisplayPath;
+        private String artifactFileName;
+        private String artifactRelativePath;
+        private Long artifactSize;
+        private String storagePath;
+        private Date updateTime;
+        private Date createTime;
+    }
+}

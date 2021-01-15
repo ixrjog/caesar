@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.baiyi.caesar.mapper.caesar.CsApplicationMapper">
-    <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsApplication">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="application_key" jdbcType="VARCHAR" property="applicationKey"/>
-        <result column="kubernetes_application_id" jdbcType="INTEGER" property="kubernetesApplicationId"/>
-        <result column="engine_type" jdbcType="INTEGER" property="engineType"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="comment" jdbcType="LONGVARCHAR" property="comment"/>
-    </resultMap>
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsApplication">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="application_key" jdbcType="VARCHAR" property="applicationKey" />
+    <result column="kubernetes_application_id" jdbcType="INTEGER" property="kubernetesApplicationId" />
+    <result column="engine_type" jdbcType="INTEGER" property="engineType" />
+    <result column="enable_gitflow" jdbcType="BIT" property="enableGitflow" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
+  </resultMap>
 
-    <select id="queryCsApplicationByParam"
-            parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery"
-            resultMap="BaseResultMap">
+    <select id="queryCsApplicationByParam" parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery" resultMap="BaseResultMap">
         select * from cs_application
         <where>
             <if test="queryName != null and queryName != ''">
@@ -26,18 +25,15 @@
         </where>
     </select>
 
-    <select id="queryMyCsApplicationByParam"
-            parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$MyApplicationPageQuery"
-            resultMap="BaseResultMap">
-        select * from cs_application
+    <select id="queryMyCsApplicationByParam" parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$MyApplicationPageQuery" resultMap="BaseResultMap">
+        select a0.* from oc_user_permission as a1 inner join cs_application as a0 on
+        a0.id = a1.business_id and a1.business_type = 8 and a1.user_id = #{userId}
         <where>
-            <if test="userId != null and userId > 0">
-                id in ( select business_id from oc_user_permission where business_type = 8 and user_id = #{userId})
-            </if>
             <if test="queryName != null and queryName != ''">
-                and ( name like "%" #{queryName} "%" or application_key like "%" #{queryName} "%" )
+                a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%"
             </if>
         </where>
+        order by a1.rate desc
     </select>
 
 </mapper>

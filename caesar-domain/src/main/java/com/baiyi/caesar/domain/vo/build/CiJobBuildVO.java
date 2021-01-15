@@ -1,14 +1,15 @@
 package com.baiyi.caesar.domain.vo.build;
 
 
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.domain.vo.server.ServerVO;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,15 +23,20 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild {
+    public static class JobBuild implements Serializable {
 
-        private CiJobVO.JobEngine jobEngine;
+        private static final long serialVersionUID = -448531182053453517L;
+
+        private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
-        private List<BuildArtifact> artifacts;
+        private List<BuildArtifactVO.BuildArtifact> artifacts;
+
+        private Boolean noArtifact; // 没有构件（前端下拉列表禁止选中）
+
         @ApiModelProperty(value = "变更记录")
         private List<BuildChange> changes;
         @ApiModelProperty(value = "执行节点")
-        private List<CiJobBuildVO.BuildExecutor> executors;
+        private List<BuildExecutorVO.BuildExecutor> executors;
 
         private String jobBuildUrl;
         @ApiModelProperty(value = "构建用户")
@@ -53,9 +59,14 @@ public class CiJobBuildVO {
         private Integer engineBuildNumber;
         private String versionName;
         private String versionDesc;
+
+        @ApiModelProperty(value = "commit详情")
+        private BaseCommit commitDetails;
+
         private String commit;
         private String buildPhase;
         private String buildStatus;
+        private String operationUsername;
         @ApiModelProperty(value = "开始时间")
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
         private Date startTime;
@@ -71,41 +82,30 @@ public class CiJobBuildVO {
         private Date updateTime;
         private String parameters;
         private String dingtalkMsg;
+        private Boolean isSilence;
         private String comment;
-
     }
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildArtifact {
-
-        private String artifactFileSize; // 产出物文件容量
-        private String ossUrl;
-
-        private Integer id;
-        private Integer buildId;
-        private Integer ciJobId;
-        private String jobName;
-        private String artifactDisplayPath;
-        private String artifactFileName;
-        private String artifactRelativePath;
-        private Long artifactSize;
-        private String storagePath;
-        private Date updateTime;
-        private Date createTime;
+    public static class BaseCommit {
+        private String commit;
+        private String commitUrl;
     }
+
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildChange {
+    public static class BuildChange extends BaseCommit{
         @ApiModelProperty(value = "7位commitId")
         private String shortCommitId;
 
         private Integer id;
+        private Integer buildType;
         private Integer buildId;
-        private Integer ciJobId;
+        private Integer jobId;
         private String jobName;
         private String commitId;
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -114,38 +114,17 @@ public class CiJobBuildVO {
         private String authorAbsoluteUrl;
         private Date updateTime;
         private Date createTime;
-        private String commit;
+        // private String commit;
         private String commitMsg;
+        // private String commitUrl;
     }
-
-
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class BuildExecutor {
-        private ServerVO.Server server;
-
-        private Integer id;
-        private Integer buildId;
-        private Integer ciJobId;
-        private String jobName;
-        private String nodeName;
-        private String privateIp;
-        private String rootDirectory;
-        private String workspace;
-        private String jobUrl;
-        private Integer buildNumber;
-        private Date createTime;
-        private Date updateTime;
-    }
-
 
     @Data
     @NoArgsConstructor
     @ApiModel
     public static class JobBuildView {
 
-        private List<CiJobBuildVO.BuildExecutor> executors;
+        private List<BuildExecutorVO.BuildExecutor> executors;
 
         private String color;
         private Integer buildNumber;

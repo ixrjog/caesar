@@ -2,11 +2,18 @@ package com.baiyi.caesar.facade;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
+import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
+import com.baiyi.caesar.domain.vo.gitlab.*;
+import org.gitlab.api.models.GitlabGroup;
+import org.gitlab.api.models.GitlabProject;
+
+import java.util.Map;
 
 /**
  * @Author baiyi
@@ -17,6 +24,10 @@ public interface GitlabFacade {
 
     DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery);
 
+    void webhooksV1(GitlabHooksVO.Webhook webhook);
+
+    void systemHooksV1(GitlabHooksVO.SystemHook systemHook);
+
     BusinessWrapper<Boolean> addGitlabInstance(GitlabInstanceVO.Instance instance);
 
     BusinessWrapper<Boolean> updateGitlabInstance(GitlabInstanceVO.Instance instance);
@@ -25,7 +36,21 @@ public interface GitlabFacade {
 
     void syncGitlabInstanceProject(int instanceId);
 
-    DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.PageQuery pageQuery);
+    void syncGitlabInstanceGroup(int instanceId);
 
-    BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag);
+    void saveGitlabProject(CsGitlabInstance csGitlabInstance, GitlabProject gitlabProject, Map<Integer, CsGitlabProject> projectMap);
+
+    void saveGitlabGroup(CsGitlabInstance csGitlabInstance, GitlabGroup gitlabGroup, Map<Integer, CsGitlabGroup> groupMap);
+
+    DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.GitlabProjectPageQuery pageQuery);
+
+    DataTable<GitlabGroupVO.Group> queryGitlabGroupPage(GitlabGroupParam.GitlabGroupPageQuery pageQuery);
+
+    BusinessWrapper<GitlabBranchVO.Repository> queryApplicationSCMMemberBranch(ApplicationParam.ScmMemberBranchQuery scmMemberBranchQuery);
+
+    BusinessWrapper<Boolean> createApplicationSCMMemberBranch(ApplicationParam.CreateScmMemberBranch createParam);
+
+    BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
+
+
 }

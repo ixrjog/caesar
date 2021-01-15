@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author baiyi
@@ -17,10 +18,14 @@ import java.util.List;
 public class GitlabGroupHandler {
 
     public List<GitlabGroup> getGroups(String gitlabName) throws IOException {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getGroups();
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getGroups();
+    }
+
+    public GitlabGroup getGroup(String gitlabName, Integer groupId) throws IOException {
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getGroup(groupId);
     }
 
     public List<GitlabNamespace> getNamespace(String gitlabName) {
-        return GitlabServerContainer.getGitlabAPI(gitlabName).getNamespaces();
+        return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getNamespaces();
     }
 }

@@ -63,6 +63,29 @@
             and id in ( select user_id from oc_user_permission where business_type = 8 and business_id = #{applicationId})
     </select>
 
+    <select id="queryApplicationBuildJobExcludeUserParam"
+            parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserExcludeApplicationBuildJobPageQuery"
+            resultMap="BaseResultMap">
+        select * from oc_user
+        <where>
+            is_active = true
+            and id not in ( select user_id from oc_user_permission where business_type = 13 and business_id = #{ciJobId})
+            and id in ( select user_id from oc_user_permission where business_type = 8 and business_id = #{applicationId} )
+            <if test="queryName != null and queryName != ''">
+                and ( username like "%" #{queryName} "%" or display_name like "%" #{queryName} "%" )
+            </if>
+        </where>
+    </select>
+
+    <select id="queryApplicationBuildJobIncludeUserParam"
+            parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserIncludeApplicationBuildJobPageQuery"
+            resultMap="BaseResultMap">
+        select * from oc_user
+        where
+            is_active = true
+            and id in ( select user_id from oc_user_permission where business_type = 13 and business_id = #{ciJobId})
+    </select>
+
     <select id="fuzzyQueryUserByParam" parameterType="com.baiyi.caesar.domain.param.user.UserParam$UserPageQuery"
             resultMap="BaseResultMap">
         select * from oc_user

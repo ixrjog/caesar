@@ -17,6 +17,8 @@ public interface CsGitlabInstanceService {
 
     CsGitlabInstance queryCsGitlabInstanceById(int id);
 
+    CsGitlabInstance queryCsGitlabInstanceByToken(String token);
+
     DataTable<CsGitlabInstance> queryCsGitlabInstanceByParam(GitlabInstanceParam.PageQuery pageQuery);
 
     void addCsGitlabInstance(CsGitlabInstance csGitlabInstance);

@@ -4,9 +4,17 @@ import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
+import com.baiyi.caesar.domain.generator.caesar.CsApplicationServerGroup;
+import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
+import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
+import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
+import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
+import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
+import com.baiyi.caesar.service.application.CsApplicationServerGroupService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
@@ -31,11 +39,33 @@ public class ApplicationDecorator {
     @Resource
     private TagDecorator tagDecorator;
 
+    @Resource
+    private UserPermissionFacade userPermissionFacade;
+
+    @Resource
+    private CsApplicationServerGroupService csApplicationServerGroupService;
+
+    public HotApplication decorator(HotApplication hotApplication) {
+        List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(hotApplication.getId());
+        hotApplication.setTags(acqTagsByMembers(members));
+        return hotApplication;
+    }
+
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
         if (extend == 0) return application;
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
         application.setTags(acqTagsByMembers(members));
-        application.setScmMembers(BeanCopierUtils.copyListProperties(members,ApplicationVO.ScmMember.class));
+        application.setScmMembers(BeanCopierUtils.copyListProperties(members, ApplicationVO.ScmMember.class));
+        List<CsApplicationServerGroup> csApplicationServerGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(application.getId());
+        if (!CollectionUtils.isEmpty(csApplicationServerGroups))
+            application.setServerGroups(BeanCopierUtils.copyListProperties(csApplicationServerGroups, ApplicationServerGroupVO.ApplicationServerGroup.class));
+        return application;
+    }
+
+    public ApplicationVO.Application decorator(ApplicationVO.Application application, OcUser ocUser, Integer extend) {
+        application = decorator(application, extend);
+        OcUserPermission ocUserPermission = userPermissionFacade.queryUserPermissionByUniqueKey(ocUser.getId(), BusinessType.APPLICATION.getType(), application.getId());
+        application.setUserPermission(BeanCopierUtils.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
         return application;
     }
 

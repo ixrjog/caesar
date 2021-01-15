@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsGitlabWebhookMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="object_kind" jdbcType="VARCHAR" property="objectKind" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="before_commit" jdbcType="VARCHAR" property="beforeCommit" />
+    <result column="after_commit" jdbcType="VARCHAR" property="afterCommit" />
+    <result column="ref" jdbcType="VARCHAR" property="ref" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="ssh_url" jdbcType="VARCHAR" property="sshUrl" />
+    <result column="web_url" jdbcType="VARCHAR" property="webUrl" />
+    <result column="http_url" jdbcType="VARCHAR" property="httpUrl" />
+    <result column="homepage" jdbcType="VARCHAR" property="homepage" />
+    <result column="total_commits_count" jdbcType="INTEGER" property="totalCommitsCount" />
+    <result column="is_trigger" jdbcType="BIT" property="isTrigger" />
+    <result column="job_key" jdbcType="VARCHAR" property="jobKey" />
+    <result column="is_consumed" jdbcType="BIT" property="isConsumed" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="hooks_content" jdbcType="LONGVARCHAR" property="hooksContent" />
+  </resultMap>
+</mapper>

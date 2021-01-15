@@ -19,4 +19,6 @@ public interface EnvFacade {
     BusinessWrapper<Boolean> updateEnv(EnvVO.Env env);
 
     BusinessWrapper<Boolean> deleteEnvById(int id);
+
+    String queryEnvNameByType(Integer envType);
 }

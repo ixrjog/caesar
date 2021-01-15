@@ -2,12 +2,11 @@ package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.CiJobBuildBO;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
-import com.baiyi.caesar.domain.vo.application.CiJobVO;
-import com.baiyi.caesar.factory.jenkins.model.JobParamDetail;
+import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.jenkins.context.JobParamDetail;
 import com.google.common.base.Joiner;
 import org.gitlab.api.models.GitlabBranch;
 import org.springframework.util.StringUtils;
@@ -19,10 +18,11 @@ import org.springframework.util.StringUtils;
  */
 public class CiJobBuildBuilder {
 
-    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, CiJobVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch) {
+    public static CsCiJobBuild build(CsApplication csApplication, CsCiJob csCiJob, JobEngineVO.JobEngine jobEngine, JobParamDetail jobParamDetail, GitlabBranch gitlabBranch,
+                                     String username, Boolean isSilence) {
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCiJob.getJobKey());
         Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
-        String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", engineBuildNumber) : jobParamDetail.getVersionName();
+        String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", csCiJob.getJobBuildNumber()) : jobParamDetail.getVersionName();
 
         String commit = gitlabBranch != null ? gitlabBranch.getCommit().getId() : "";
 
@@ -30,7 +30,7 @@ public class CiJobBuildBuilder {
                 .applicationId(csApplication.getId())
                 .jobName(jobName)
                 .ciJobId(csCiJob.getId())
-                .username(SessionUtils.getUsername())
+                .username(username)
                 .branch(jobParamDetail.getParams().getOrDefault("branch", ""))
                 .jobEngineId(jobEngine.getId())
                 .jobBuildNumber(csCiJob.getJobBuildNumber())
@@ -38,6 +38,7 @@ public class CiJobBuildBuilder {
                 .commit(commit)
                 .versionName(versionName)
                 .versionDesc(jobParamDetail.getVersionDesc())
+                .isSilence(isSilence != null ? isSilence : false)
                 .build();
         return covert(bo);
     }

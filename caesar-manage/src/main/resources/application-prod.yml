@@ -3,23 +3,24 @@ logging:
     # swagger 警告日志忽略
     io.swagger.models.parameters.AbstractSerializableParameter: error
   file:
-    path: /logs/caesar
+    path: /logs
 
 # 白名单配置
 white:
   urls: /*.js;/*.css;/*.jpg;/swagger-resources/*;/error;/webjars/*;/swagger-ui/*;v2/*;
 
-opscloud:
-  version: 3.0
+caesar:
+  version: 0.0.1
   openTask: true
+  url: https://caesar.ops.yangege.cn
 
 spring:
   profiles:
-    include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core
+    include: common,account-prod,ldap-prod,ansible-prod,xterm-prod,kubernetes-prod,jenkins,dingtalk,aliyun-core,sonar-prod
   redis:
-    host: r-bp160u8e1bcl0ul97z.redis.rds.aliyuncs.com
+    host: r-bp11vlmf4cijpn4s1d.redis.rds.aliyuncs.com
     port: 6379
-    password: ENC(JyLASH9abGLjivZEV1mJkob63XE+h+gJ+o2mx/5ALEgFMUUMWGz8FD+BzoEOvOj4)
+    password: ENC(4R1OwE95Fqmj5TlYcEYeraEDnKzQLZTL52EAGOn675QoaSTE1DQjMg==)
     jedis:
       pool:
         max-wait: 5000
@@ -32,10 +33,10 @@ spring:
 app:
   datasource:
     caesar:
-      url: jdbc:mysql://rm-bp1x04709pb2t44p4125010.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=UTC&allowMultiQueries=true
+      url: jdbc:mysql://rm-bp14453fwr49f19cu90130.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
       username: caesar
-      password: ENC(Kenwbg5VvsTsD98jFyldY/2YbtqqWcqvqdWRnVrNREg=)
-      driver-class-name: com.mysql.jdbc.Driver
+      password: ENC(YSUGOIVnK0sShxj8Lux/D6W6nX75uXGvdDxD/KbJb4o=)
+      driver-class-name: com.mysql.cj.jdbc.Driver
       minimum-idle: 3
       maximum-pool-size: 15
       max-lifetime: 30000

@@ -1,17 +1,19 @@
 package com.baiyi.caesar.jenkins.handler;
 
+import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
-import com.offbytwo.jenkins.model.Computer;
-import com.offbytwo.jenkins.model.Job;
-import com.offbytwo.jenkins.model.JobWithDetails;
+import com.offbytwo.jenkins.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.HttpRetryException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author baiyi
@@ -22,9 +24,6 @@ import java.util.Map;
 @Component
 public class JenkinsServerHandler {
 
-//    @Resource
-//    private JenkinsServerContainer jenkinsServerContainer;
-
     public static final boolean CRUMB_FLAG = true;
 
     public JenkinsVersion getVersion(String serverName) {
@@ -34,6 +33,12 @@ public class JenkinsServerHandler {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public boolean isActive(String serverName) {
+        JenkinsVersion jenkinsVersion = getVersion(serverName);
+        if (jenkinsVersion == null) return false;
+        return !StringUtils.isEmpty(jenkinsVersion.getLiteralVersion());
     }
 
     /**
@@ -51,10 +56,34 @@ public class JenkinsServerHandler {
         }
     }
 
+    public String getBuildOutputByType(JobWithDetails job, int buildNumber, int outputType) throws IOException {
+        Build build = job.getBuildByNumber(buildNumber);
+        BuildWithDetails buildWithDetails = build.details();
+        if (outputType == BuildOutputType.HTML.getType()) {
+            return buildWithDetails.getConsoleOutputHtml();
+        } else {
+            return buildWithDetails.getConsoleOutputText();
+        }
+    }
+
+    public boolean tryJob(String serverName, String jobName) {
+        try {
+            return Objects.requireNonNull(JenkinsServerContainer.getJenkinsServer(serverName)).getJob(jobName) != null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     public Map<String, Computer> getComputerMap(String serverName) {
         try {
             JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            assert jenkinsServer != null;
             return jenkinsServer.getComputers();
+        } catch (HttpRetryException hre) {
+            log.error("Jenkins服务器API接口错误：" + hre.getMessage());
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -85,11 +114,15 @@ public class JenkinsServerHandler {
         return Maps.newHashMap();
     }
 
-
     public void createJob(String serverName, String jobName, String jobXml) throws IOException {
         JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
         assert jenkinsServer != null;
         jenkinsServer.createJob(jobName, jobXml, CRUMB_FLAG);
     }
 
+    public void deleteJob(String serverName, String jobName) throws IOException {
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
+        jenkinsServer.deleteJob(jobName, CRUMB_FLAG);
+    }
 }

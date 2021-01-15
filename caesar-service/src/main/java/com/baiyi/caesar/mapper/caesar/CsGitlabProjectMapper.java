@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CsGitlabProjectMapper extends Mapper<CsGitlabProject> {
 
-    List<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.PageQuery pageQuery);
+    List<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.GitlabProjectPageQuery pageQuery);
 }

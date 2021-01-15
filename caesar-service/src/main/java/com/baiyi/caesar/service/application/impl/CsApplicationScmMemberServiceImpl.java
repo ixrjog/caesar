@@ -38,6 +38,14 @@ public class CsApplicationScmMemberServiceImpl implements CsApplicationScmMember
     }
 
     @Override
+    public List<CsApplicationScmMember> queryCsApplicationScmMemberByScmId(int scmId) {
+        Example example = new Example(CsApplicationScmMember.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("scmId", scmId);
+        return csApplicationScmMemberMapper.selectByExample(example);
+    }
+
+    @Override
     public CsApplicationScmMember queryCsApplicationScmMemberById(int id) {
         return csApplicationScmMemberMapper.selectByPrimaryKey(id);
     }

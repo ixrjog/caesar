@@ -4,6 +4,7 @@ package com.baiyi.caesar.account.impl;
 import com.baiyi.caesar.account.IAccount;
 import com.baiyi.caesar.account.factory.AccountFactory;
 import com.baiyi.caesar.common.base.CredentialType;
+import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.domain.generator.caesar.OcAccount;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
@@ -96,19 +97,24 @@ public abstract class BaseAccount implements InitializingBean, IAccount {
      */
     private Boolean saveOcUser(OcUser ocUser) {
         try {
-            if (ocUser.getId() != null && ocUser.getId() != 0) {
+            if (!IDUtils.isEmpty(ocUser.getId())) {
                 if (!StringUtils.isEmpty(ocUser.getSource()) && ocUser.getSource().equals("ldap")) {
                     ocUserService.updateOcUser(ocUser);
                 } else {
                     return true;
                 }
             } else {
-                OcUser checkUser = ocUserService.queryOcUserByUsername(ocUser.getUsername());
-                if (checkUser == null) {
+                OcUser preUser = ocUserService.queryOcUserByUsername(ocUser.getUsername());
+                if (preUser == null) {
                     ocUserService.addOcUser(ocUser);
                 } else {
-                    ocUser.setId(checkUser.getId());
-                    return saveOcUser(ocUser);
+                    if(!StringUtils.isEmpty(ocUser.getDisplayName()))
+                        preUser.setDisplayName(ocUser.getDisplayName());
+                    if(!StringUtils.isEmpty(ocUser.getEmail()))
+                        preUser.setEmail(ocUser.getEmail());
+                    if(!StringUtils.isEmpty(ocUser.getPhone()))
+                        preUser.setPhone(ocUser.getPhone());
+                    return saveOcUser(preUser);
                 }
             }
             return true;

@@ -25,8 +25,8 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     private CsGitlabProjectMapper csGitlabProjectMapper;
 
     @Override
-    public  DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.PageQuery pageQuery){
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+    public  DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.GitlabProjectPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsGitlabProject> list = csGitlabProjectMapper.queryCsGitlabProjectByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
     }
@@ -53,6 +53,15 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     }
 
     @Override
+    public CsGitlabProject queryCsGitlabProjectByUniqueKey(int instanceId, int projectId){
+        Example example = new Example(CsGitlabProject.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("instanceId", instanceId);
+        criteria.andEqualTo("projectId", projectId);
+        return csGitlabProjectMapper.selectOneByExample(example);
+    }
+
+    @Override
     public void addCsGitlabProject(CsGitlabProject csGitlabProject) {
         csGitlabProjectMapper.insert(csGitlabProject);
     }
@@ -65,5 +74,10 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     @Override
     public void deleteCsGitlabProjectById(int id) {
         csGitlabProjectMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int countAllCsGitlabProject(){
+       return csGitlabProjectMapper.selectCount(null);
     }
 }

@@ -25,6 +25,12 @@ public class CsGitlabInstance {
     private String token;
 
     /**
+     * 仅用于判断gitlab实例
+     */
+    @Column(name = "system_hooks_token")
+    private String systemHooksToken;
+
+    /**
      * 有效
      */
     @Column(name = "is_active")
@@ -116,6 +122,24 @@ public class CsGitlabInstance {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+
+    /**
+     * 获取仅用于判断gitlab实例
+     *
+     * @return system_hooks_token - 仅用于判断gitlab实例
+     */
+    public String getSystemHooksToken() {
+        return systemHooksToken;
+    }
+
+    /**
+     * 设置仅用于判断gitlab实例
+     *
+     * @param systemHooksToken 仅用于判断gitlab实例
+     */
+    public void setSystemHooksToken(String systemHooksToken) {
+        this.systemHooksToken = systemHooksToken;
     }
 
     /**

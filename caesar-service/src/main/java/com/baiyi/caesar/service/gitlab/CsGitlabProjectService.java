@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface CsGitlabProjectService {
 
-    DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.PageQuery pageQuery);
+    DataTable<CsGitlabProject> queryCsGitlabProjectByParam(GitlabProjectParam.GitlabProjectPageQuery pageQuery);
 
     List<CsGitlabProject> queryCsGitlabProjectByInstanceId(Integer instanceId);
 
@@ -21,9 +21,13 @@ public interface CsGitlabProjectService {
 
     CsGitlabProject queryCsGitlabProjectById(int id);
 
+    CsGitlabProject queryCsGitlabProjectByUniqueKey(int instanceId, int projectId);
+
     void addCsGitlabProject(CsGitlabProject csGitlabProject);
 
     void updateCsGitlabProject(CsGitlabProject csGitlabProject);
 
     void deleteCsGitlabProjectById(int id);
+
+    int countAllCsGitlabProject();
 }

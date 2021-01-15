@@ -28,6 +28,8 @@ public class AttributeTask extends BaseTask {
      */
     @Scheduled(initialDelay = 10000, fixedRate = 60 * 1000)
     public void createAnsibleHostsConsumerTask() {
+        sleep(10);
+        if(!isHealth()) return;
         if (taskUtil.getSignalCount(TASK_SERVER_ATTRIBUTE_ANSIBLE_TOPIC) == 0) return;
         if (tryLock()) return;
         clearTopic();

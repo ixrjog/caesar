@@ -65,21 +65,35 @@ public class OcUserServiceImpl implements OcUserService {
 
     @Override
     public DataTable<OcUser> queryApplicationExcludeUserParam(UserParam.UserExcludeApplicationPageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcUser> ocUserList = ocUserMapper.queryApplicationExcludeUserParam(pageQuery);
         return new DataTable<>(ocUserList, page.getTotal());
     }
 
     @Override
     public DataTable<OcUser> queryApplicationIncludeUserParam(UserParam.UserIncludeApplicationPageQuery pageQuery){
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcUser> ocUserList = ocUserMapper.queryApplicationIncludeUserParam(pageQuery);
         return new DataTable<>(ocUserList, page.getTotal());
     }
 
     @Override
+    public DataTable<OcUser>  queryApplicationBuildJobExcludeUserParam(UserParam.UserExcludeApplicationBuildJobPageQuery pageQuery) {
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
+        List<OcUser> ocUserList = ocUserMapper.queryApplicationBuildJobExcludeUserParam(pageQuery);
+        return new DataTable<>(ocUserList, page.getTotal());
+    }
+
+    @Override
+    public  DataTable<OcUser> queryApplicationBuildJobIncludeUserParam(UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery){
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
+        List<OcUser> ocUserList = ocUserMapper.queryApplicationBuildJobIncludeUserParam(pageQuery);
+        return new DataTable<>(ocUserList, page.getTotal());
+    }
+
+    @Override
     public DataTable<OcUser> fuzzyQueryUserByParam(UserParam.UserPageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcUser> ocUserList = ocUserMapper.fuzzyQueryUserByParam(pageQuery);
         return new DataTable<>(ocUserList, page.getTotal());
     }

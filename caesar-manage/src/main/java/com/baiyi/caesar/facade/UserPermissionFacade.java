@@ -27,11 +27,25 @@ public interface UserPermissionFacade {
     boolean tryUserBusinessPermission(int userId, int businessType, int businessId);
 
     /**
+     * 清理业务授权
+     * @param businessType
+     * @param businessId
+     */
+    void cleanBusinessPermission(int businessType, int businessId);
+
+    List<OcUserPermission> queryBusinessPermission(int businessType, int businessId);
+
+    OcUserPermission queryUserPermissionByUniqueKey(int userId, int businessType, int businessId);
+
+    /**
      * 查询用户的访问级别
+     *
      * @param ocUser
      * @return
      */
     int getUserAccessLevel(OcUser ocUser);
 
-    BusinessWrapper<Boolean> checkAccessLevel(OcUser ocUser,int accessLevel);
+    BusinessWrapper<Boolean> checkAccessLevel(OcUser ocUser, int accessLevel);
+
+    List<OcUserPermission> queryUserBusinessPermissionByUserId(int userId, int businessType);
 }

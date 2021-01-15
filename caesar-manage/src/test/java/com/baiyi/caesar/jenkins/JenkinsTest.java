@@ -1,13 +1,13 @@
 package com.baiyi.caesar.jenkins;
 
+import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.facade.jenkins.JenkinsCiJobFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
 import com.baiyi.caesar.jenkins.config.JenkinsConfig;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.*;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -27,16 +27,14 @@ public class JenkinsTest extends BaseUnit {
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
 
-    @Resource
-    private JenkinsTplFacade jenkinsTplFacade;
-
-    @Resource
-    private JenkinsCiJobFacade jenkinsCiJobFacade;
 
     @Test
     void versionTest() {
-        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion("master-1");
-        System.err.println(jenkinsVersion);
+        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion("master-2");
+
+        System.err.println( StringUtils.isBlank(jenkinsVersion.getLiteralVersion()));
+
+        System.err.println(JSON.toJSON(jenkinsVersion));
     }
 
     @Test
@@ -52,18 +50,40 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void jobTest() {
-        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "opscloud3-web-prod");
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "ITEM-CATEGORY_item-category-server-deploy-prod");
         System.err.println(job);
+        job.getBuildByNumber(9);
+
         Build build = job.getLastBuild();
         try {
             BuildWithDetails buildWithDetails = build.details();
-
-
             String consoleOutputHtml = buildWithDetails.getConsoleOutputHtml();
 
+            //  System.err.println(consoleOutputHtml);
+            System.err.println(buildWithDetails.getConsoleOutputText());
+            List<BuildCause> list = buildWithDetails.getCauses();
+            String builtOn = buildWithDetails.getBuiltOn();
+            System.err.println(builtOn);
+            System.err.println(list);
+            System.err.println(buildWithDetails);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            System.err.println(consoleOutputHtml);
+    @Test
+    void testJob2() {
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "CAESAR_caesar-server-prod");
+        System.err.println(job);
+        job.getBuildByNumber(9);
 
+        Build build = job.getLastBuild();
+        try {
+            BuildWithDetails buildWithDetails = build.details();
+            String consoleOutputHtml = buildWithDetails.getConsoleOutputHtml();
+
+            //  System.err.println(consoleOutputHtml);
+            System.err.println(buildWithDetails.getConsoleOutputText());
             List<BuildCause> list = buildWithDetails.getCauses();
             String builtOn = buildWithDetails.getBuiltOn();
             System.err.println(builtOn);
@@ -94,7 +114,7 @@ public class JenkinsTest extends BaseUnit {
 
     @Test
     void testCreateJobEngine() {
-        jenkinsCiJobFacade.createJobEngine(2);
+        // jenkinsCiJobFacade.createJobEngine(2);
     }
 
     @Test

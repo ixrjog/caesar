@@ -20,6 +20,7 @@
         <module>caesar-dingtalk</module>
         <module>caesar-aliyun-oss</module>
         <module>caesar-aliyun-core</module>
+        <module>caesar-sonar</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -47,6 +48,11 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <dependency>
@@ -115,6 +121,7 @@
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>2.1.0</version>
+<!--            <version>3.0.3</version>-->
         </dependency>
 
         <dependency>
@@ -225,6 +232,12 @@
             <dependency>
                 <groupId>com.baiyi</groupId>
                 <artifactId>caesar-aliyun-oss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baiyi</groupId>
+                <artifactId>caesar-sonar</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

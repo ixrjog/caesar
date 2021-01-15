@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "cs_ci_job_build")
 public class CsCiJobBuild {
@@ -76,6 +76,18 @@ public class CsCiJobBuild {
      * 是否结束
      */
     private Boolean finalized;
+
+    /**
+     * 操作用户
+     */
+    @Column(name = "operation_username")
+    private String operationUsername;
+
+    /**
+     * 静默
+     */
+    @Column(name = "is_silence")
+    private Boolean isSilence;
 
     /**
      * 创建时间
@@ -373,6 +385,42 @@ public class CsCiJobBuild {
      */
     public void setFinalized(Boolean finalized) {
         this.finalized = finalized;
+    }
+
+    /**
+     * 获取操作用户
+     *
+     * @return operation_username - 操作用户
+     */
+    public String getOperationUsername() {
+        return operationUsername;
+    }
+
+    /**
+     * 设置操作用户
+     *
+     * @param operationUsername 操作用户
+     */
+    public void setOperationUsername(String operationUsername) {
+        this.operationUsername = operationUsername;
+    }
+
+    /**
+     * 获取静默
+     *
+     * @return is_silence - 静默
+     */
+    public Boolean getIsSilence() {
+        return isSilence;
+    }
+
+    /**
+     * 设置静默
+     *
+     * @param isSilence 静默
+     */
+    public void setIsSilence(Boolean isSilence) {
+        this.isSilence = isSilence;
     }
 
     /**

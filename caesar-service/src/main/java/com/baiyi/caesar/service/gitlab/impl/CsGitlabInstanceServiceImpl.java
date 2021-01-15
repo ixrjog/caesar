@@ -8,6 +8,7 @@ import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,6 +32,14 @@ public class CsGitlabInstanceServiceImpl implements CsGitlabInstanceService {
     @Override
     public CsGitlabInstance queryCsGitlabInstanceById(int id) {
         return csGitlabInstanceMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CsGitlabInstance queryCsGitlabInstanceByToken(String token) {
+        Example example = new Example(CsGitlabInstance.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("systemHooksToken", token);
+        return csGitlabInstanceMapper.selectOneByExample(example);
     }
 
     @Override

@@ -116,6 +116,18 @@ public class UserFacadeImpl implements UserFacade {
         return toUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
     }
 
+    @Override
+    public DataTable<UserVO.User> queryApplicationBuildJobExcludeUserPage(UserParam.UserExcludeApplicationBuildJobPageQuery pageQuery) {
+        DataTable<OcUser> table = ocUserService.queryApplicationBuildJobExcludeUserParam(pageQuery);
+        return toUserPage(table, 0);
+    }
+
+    @Override
+    public DataTable<UserVO.User> queryApplicationBuildJobIncludeUserPage(UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery){
+        DataTable<OcUser> table = ocUserService.queryApplicationBuildJobIncludeUserParam(pageQuery);
+        return toUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
+    }
+
     private DataTable<UserVO.User> toUserPermissionPage(DataTable<OcUser> table, int businessType, int businessId) {
         List<UserVO.User> page = BeanCopierUtils.copyListProperties(table.getData(), UserVO.User.class);
         return new DataTable<>(page.stream().map(e -> userPermissionDecorator.decorator(e, businessType, businessId)).collect(Collectors.toList()), table.getTotalNum());
@@ -218,16 +230,9 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateBaseUser(UserParam.UpdateUser updateUser) {
-        // 查询用户是否有效
-        OcUser checkUser = ocUserService.queryOcUserByUsername(updateUser.getUsername());
-        if (checkUser == null)
-            return new BusinessWrapper<>(ErrorEnum.USER_NOT_EXIST);
-        if (!checkUser.getIsActive())
-            return new BusinessWrapper<>(ErrorEnum.USER_IS_UNACTIVE);
-        // 公共接口需要2次鉴权
-        BusinessWrapper<Boolean> wrapper = enhancedAuthority(checkUser.getId(), URLResource.USER_UPDATE);
-        if (!wrapper.isSuccess())
-            return wrapper;
+        BusinessWrapper<Boolean> wrapper = checkUpdateUser(updateUser);
+        if (!wrapper.isSuccess()) return wrapper;
+
         OcUser preUser = BeanCopierUtils.copyProperties(updateUser, OcUser.class);
         String password = ""; // 用户密码原文
         // 用户尝试修改密码
@@ -253,9 +258,22 @@ public class UserFacadeImpl implements UserFacade {
         }
         ocUserService.updateBaseOcUser(preUser); // 更新数据库
         preUser = ocUserService.queryOcUserByUsername(preUser.getUsername());
-        if (!StringUtils.isEmpty(password))
-            preUser.setPassword(password);
+        preUser.setPassword(password);
         accountCenter.update(preUser); // 更新账户中心所有实例
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private BusinessWrapper<Boolean> checkUpdateUser(UserParam.UpdateUser updateUser) {
+        // 查询用户是否有效
+        OcUser checkUser = ocUserService.queryOcUserByUsername(updateUser.getUsername());
+        if (checkUser == null)
+            return new BusinessWrapper<>(ErrorEnum.USER_NOT_EXIST);
+        if (!checkUser.getIsActive())
+            return new BusinessWrapper<>(ErrorEnum.USER_IS_UNACTIVE);
+        // 公共接口需要2次鉴权
+        BusinessWrapper<Boolean> wrapper = enhancedAuthority(checkUser.getId(), URLResource.USER_UPDATE);
+        if (!wrapper.isSuccess())
+            return wrapper;
         return BusinessWrapper.SUCCESS;
     }
 
@@ -282,6 +300,7 @@ public class UserFacadeImpl implements UserFacade {
         List<UserGroupVO.UserGroup> page = BeanCopierUtils.copyListProperties(table.getData(), UserGroupVO.UserGroup.class);
         return new DataTable<>(page.stream().map(e -> userGroupDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
+
 
     @Override
     public BusinessWrapper<Boolean> grantUserUserGroup(UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission) {
@@ -362,7 +381,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public BusinessWrapper<Boolean> syncUserGroup() {
         List<Group> groupList = groupRepo.getGroupList();
-        groupList.forEach(g -> {
+        groupList.parallelStream().forEach(g -> {
             try {
                 UserGroupBO userGroupBO = UserGroupBO.builder()
                         .name(g.getGroupName())
@@ -384,7 +403,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public BusinessWrapper<Boolean> syncUser() {
         accountCenter.sync(AccountCenter.LDAP_ACCOUNT_KEY); // 同步Ldap用户数据
-        personRepo.getAllPersonNames().forEach(e -> {
+        personRepo.getAllPersonNames().parallelStream().forEach(e -> {
             OcUser ocUser = ocUserService.queryOcUserByUsername(e);
             if (ocUser != null)
                 syncUserPermission(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));

@@ -37,5 +37,6 @@ public class CiJobBuildBO {
     private Date updateTime;
     private String parameters;
     private String dingtalkMsg;
+    private Boolean isSilence;
     private String comment;
 }

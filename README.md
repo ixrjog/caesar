@@ -27,6 +27,8 @@ Caesar企业级全端持续集成平台(开发中未完成)
   + example.org/cs/doc.html
 
 + 平台特性
+  + 全平台高可用SLA>=99.99%（Caesar版本迭代，引擎版本迭代，插件升级都不会中断使用）
+  + 全平台可水平扩展，没有性能瓶颈
   + 基于角色的访问控制RBAC(Role-Based Access Control),LDAP完整支持
   + 配置文件加密（密码, AK），数据库敏感字段加密
   + 代码即文档，全接口API

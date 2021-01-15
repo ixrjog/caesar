@@ -22,6 +22,8 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="finalized" jdbcType="BIT" property="finalized" />
+    <result column="operation_username" jdbcType="VARCHAR" property="operationUsername" />
+    <result column="is_silence" jdbcType="BIT" property="isSilence" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="parameters" jdbcType="LONGVARCHAR" property="parameters" />
@@ -29,12 +31,44 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-  <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.jenkins.JobBuildParam$JobBuildPageQuery" resultMap="BaseResultMap">
-    select * from cs_ci_job_build
-    <where>
-      ci_job_id = #{ciJobId}
-      order by job_build_number desc
-    </where>
-  </select>
+    <resultMap id="BuildTaskGroupByHourResultMap" type="com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour">
+        <result column="hours" jdbcType="INTEGER" property="hours" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+    </resultMap>
 
+    <resultMap id="HotUserResultMap" type="com.baiyi.caesar.domain.vo.dashboard.HotUser">
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="display_name" jdbcType="VARCHAR" property="displayName" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+    </resultMap>
+
+    <resultMap id="HotApplicationResultMap" type="com.baiyi.caesar.domain.vo.dashboard.HotApplication">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+    </resultMap>
+
+    <select id="queryCiJobBuildGroupByHour" resultMap="BuildTaskGroupByHourResultMap">
+        select DATE_FORMAT(create_time, '%H') hours, count(id) count
+        from cs_ci_job_build
+        group by hours
+        order by hours;
+    </select>
+
+    <select id="queryHotUser" resultMap="HotUserResultMap">
+        select a0.username, a1.display_name, count(a0.username) as count
+        from cs_ci_job_build as a0
+                 left join oc_user as a1 on a0.username = a1.username
+        group by a0.username
+        order by count desc
+    </select>
+
+    <select id="queryHotApplication" resultMap="HotApplicationResultMap">
+        select  a1.id as id, a1.name, a1.comment, count(a1.name) as count
+        from cs_ci_job_build as a0
+                 left join cs_application as a1 on a0.application_id = a1.id
+        group by a1.name
+        order by count desc
+    </select>
 </mapper>

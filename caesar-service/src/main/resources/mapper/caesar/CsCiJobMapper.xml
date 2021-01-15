@@ -18,6 +18,7 @@
     <result column="hide" jdbcType="BIT" property="hide" />
     <result column="job_tpl_id" jdbcType="INTEGER" property="jobTplId" />
     <result column="deployment_job_id" jdbcType="INTEGER" property="deploymentJobId" />
+    <result column="enable_sonar" jdbcType="TINYINT" property="enableSonar" />
     <result column="at_all" jdbcType="BIT" property="atAll" />
     <result column="oss_bucket_id" jdbcType="INTEGER" property="ossBucketId" />
     <result column="dingtalk_id" jdbcType="INTEGER" property="dingtalkId" />
@@ -27,13 +28,41 @@
     <result column="comment" jdbcType="LONGVARCHAR" property="comment" />
   </resultMap>
 
-  <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobPageQuery" resultMap="BaseResultMap">
-    select * from cs_ci_job
-    <where>
-        application_id = #{applicationId}
-      <if test="queryName != null and queryName != ''">
-        and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
-      </if>
-    </where>
-  </select>
+    <resultMap id="JobTypeTotalResultMap" type="com.baiyi.caesar.domain.vo.dashboard.JobTypeTotal">
+        <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+        <result column="total" jdbcType="INTEGER" property="total" />
+    </resultMap>
+
+    <resultMap id="BuildTaskGoupByWeekResultMap" type="com.baiyi.caesar.domain.vo.dashboard.BuildTaskGoupByWeek">
+        <result column="weeks" jdbcType="VARCHAR" property="weeks" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+    </resultMap>
+
+    <select id="queryCsCiJobByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobPageQuery" resultMap="BaseResultMap">
+        select * from cs_ci_job
+        <where>
+            application_id = #{applicationId}
+            <if test="queryName != null and queryName != ''">
+                and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
+            </if>
+        </where>
+    </select>
+
+    <select id="queryCsCiJobTplByParam" parameterType="com.baiyi.caesar.domain.param.application.CiJobParam$CiJobTplPageQuery" resultMap="BaseResultMap">
+        select * from cs_ci_job
+        <where>
+            job_tpl_id = #{jobTplId}
+            <if test="queryName != null and queryName != ''">
+                and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
+            </if>
+        </where>
+    </select>
+
+    <select id="queryJobTypeTotal" resultMap="JobTypeTotalResultMap">
+        select job_type , count(*) total from cs_ci_job group by job_type
+    </select>
+
+    <select id="queryBuildTaskGoupByWeek" resultMap="BuildTaskGoupByWeekResultMap">
+        select DATE_FORMAT(create_time,'%Y%u') weeks,count(*) count from cs_ci_job_build group by weeks;
+    </select>
 </mapper>

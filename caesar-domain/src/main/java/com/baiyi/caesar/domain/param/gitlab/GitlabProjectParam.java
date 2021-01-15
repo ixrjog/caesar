@@ -16,7 +16,7 @@ public class GitlabProjectParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class PageQuery extends PageParam {
+    public static class GitlabProjectPageQuery extends PageParam {
 
         @ApiModelProperty(value = "实例id", example = "1")
         private Integer instanceId;

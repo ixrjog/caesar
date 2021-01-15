@@ -1,3 +1,11 @@
+host:
+  url: https://caesar.xinc818.com
+
+opscloud:
+  url: https://oc.xinc818.com
+  tokenId: kzThhJusUm6AE7LXT3ih
+  apiToken: ENC(eMFM5Ka/WeZ52vq9HHMmJ06w74AXjR/qb9sawXOB0sk=)
+
 oc-server-attributes:
   groups:
     -

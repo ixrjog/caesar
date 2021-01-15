@@ -22,4 +22,6 @@ public interface CsApplicationService {
     void updateCsApplication(CsApplication csApplication);
 
     void deleteCsApplicationById(int id);
+
+    int countAllCsApplication();
 }

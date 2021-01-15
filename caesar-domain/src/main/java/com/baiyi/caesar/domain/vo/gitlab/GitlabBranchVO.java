@@ -17,7 +17,6 @@ public class GitlabBranchVO {
     @NoArgsConstructor
     @ApiModel
     public static class Repository {
-        // private Map<String, List<GitlabBranchVO.BaseBranch>>  branchMap;
         private List<Option> options;
     }
 
@@ -58,6 +57,7 @@ public class GitlabBranchVO {
         private String message;
         private String commit;
         private String commitMessage;
+        private String commitUrl;
     }
 
 }

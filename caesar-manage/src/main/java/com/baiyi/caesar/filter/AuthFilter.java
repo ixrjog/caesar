@@ -1,6 +1,7 @@
 package com.baiyi.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.baiyi.caesar.common.util.GitlabTokenUtils;
 import com.baiyi.caesar.common.util.SessionUtils;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.HttpResult;
@@ -27,6 +28,8 @@ public class AuthFilter extends OncePerRequestFilter {
      * 前端框架 token 名称
      */
     public static final String TOKEN = "x-token";
+
+    public static final String GITLAB_TOKEN = "X-Gitlab-Token";
 
     private static final String[] AUTH_WHITELIST = {
             // -- swagger ui
@@ -70,6 +73,15 @@ public class AuthFilter extends OncePerRequestFilter {
             String token = request.getHeader(TOKEN);
             if (StringUtils.isEmpty(token))
                 token = request.getParameter(TOKEN);
+
+            // GitlabSystemHooks鉴权
+            try {
+                String gitlabToken = request.getHeader(GITLAB_TOKEN);
+                if(!StringUtils.isEmpty(gitlabToken))
+                    GitlabTokenUtils.setToken(gitlabToken);
+            }catch (Exception ignored){
+            }
+
             // 鉴权
             BusinessWrapper<Boolean> wrapper = authFacade.checkUserHasResourceAuthorize(token, resourceName);
             if (!wrapper.isSuccess()) {

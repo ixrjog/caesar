@@ -3,6 +3,9 @@ package com.baiyi.caesar.service.jenkins;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
+import com.baiyi.caesar.domain.vo.dashboard.BuildTaskGroupByHour;
+import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
+import com.baiyi.caesar.domain.vo.dashboard.HotUser;
 
 import java.util.List;
 
@@ -13,9 +16,25 @@ import java.util.List;
  */
 public interface CsCiJobBuildService {
 
-    DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.JobBuildPageQuery pageQuery);
+    List<HotApplication> queryHotApplication(int length);
+
+    List<HotUser> queryHotUser(int length);
+
+    List<BuildTaskGroupByHour> queryCiJobBuildGroupByHour();
+
+    List<CsCiJobBuild> queryLatestCsCiJobBuild(int length);
+
+    int countAllCsCiJobBuild();
+
+    DataTable<CsCiJobBuild> queryCiJobBuildPage(JobBuildParam.BuildPageQuery pageQuery);
+
+    List<CsCiJobBuild> queryCiJobBuildByCiJobId(int ciJobId);
+
+    List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
 
     CsCiJobBuild queryCiJobBuildById(int id);
+
+    List<CsCiJobBuild> queryLatestCiJobBuildByCiJobId(int ciJobId);
 
     void addCsCiJobBuild(CsCiJobBuild csCiJobBuild);
 
@@ -26,4 +45,6 @@ public interface CsCiJobBuildService {
     CsCiJobBuild queryCsCiJobBuildByUniqueKey(int ciJobId, int jobBuildNumber);
 
     List<CsCiJobBuild> queryCsCiJobBuildByLastSize(int size);
+
+    List<CsCiJobBuild> queryCsCiJobBuildByFinalized(boolean isFinalized);
 }
