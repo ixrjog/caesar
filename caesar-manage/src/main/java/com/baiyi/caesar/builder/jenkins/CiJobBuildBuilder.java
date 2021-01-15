@@ -24,8 +24,6 @@ public class CiJobBuildBuilder {
         Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
         String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", csCiJob.getJobBuildNumber()) : jobParamDetail.getVersionName();
 
-        String commit = gitlabBranch != null ? gitlabBranch.getCommit().getId() : "";
-
         CiJobBuildBO bo = CiJobBuildBO.builder()
                 .applicationId(csApplication.getId())
                 .jobName(jobName)
@@ -35,7 +33,7 @@ public class CiJobBuildBuilder {
                 .jobEngineId(jobEngine.getId())
                 .jobBuildNumber(csCiJob.getJobBuildNumber())
                 .engineBuildNumber(engineBuildNumber)
-                .commit(commit)
+                .commit(gitlabBranch != null ? gitlabBranch.getCommit().getId() : "")
                 .versionName(versionName)
                 .versionDesc(jobParamDetail.getVersionDesc())
                 .isSilence(isSilence != null ? isSilence : false)

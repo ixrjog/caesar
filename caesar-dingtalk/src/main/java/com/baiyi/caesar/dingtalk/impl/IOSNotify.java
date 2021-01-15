@@ -28,12 +28,12 @@ public class IOSNotify extends BaseDingtalkNotify implements IDingtalkNotify {
     }
 
     @Override
-    protected int getBuildType(){
+    protected int getBuildType() {
         return BuildType.BUILD.getType();
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent( int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.acqTemplateContent(noticePhase, context))
                 .paramEntryVersionName(context.getJobBuild().getVersionName())

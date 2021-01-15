@@ -18,7 +18,6 @@ public class JobBuild {
     private String jobName;
     private Integer buildNumber;
 
-
     public boolean isJobBuild(BuildJobContext context) {
         return context.getJobBuild().getJobName().equals(this.jobName) && context.getJobBuild().getEngineBuildNumber().equals(buildNumber);
     }

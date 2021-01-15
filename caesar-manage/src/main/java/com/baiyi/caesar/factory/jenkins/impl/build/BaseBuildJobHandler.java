@@ -104,6 +104,10 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     public static final boolean SEND_DINGTALK_MESSAGE = false;
 
+    protected CsCiJobBuild queryCiJobBuildById(int buildId){
+       return csCiJobBuildService.queryCiJobBuildById(buildId);
+    }
+
     protected CsApplication queryApplicationById(int applicationId) {
         return csApplicationService.queryCsApplicationById(applicationId);
     }
@@ -256,10 +260,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csCiJob);
         if (!StringUtils.isEmpty(buildParam.getBranch()))
             jobParamDetail.getParams().put(BRANCH, buildParam.getBranch());
-        if (buildParam.getIsRollback() != null && buildParam.getIsRollback())
+        // 回滚
+        if (buildParam.getIsRollback() != null && buildParam.getIsRollback()){
             jobParamDetail.setIsRollback(true);
-        jobParamDetail.setVersionName(buildParam.getVersionName());
-        jobParamDetail.setVersionDesc(buildParam.getVersionDesc());
+        }else{
+            jobParamDetail.setVersionName(buildParam.getVersionName());
+            jobParamDetail.setVersionDesc(buildParam.getVersionDesc());
+        }
         return jobParamDetail;
     }
 

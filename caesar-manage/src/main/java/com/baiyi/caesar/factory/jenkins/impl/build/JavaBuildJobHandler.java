@@ -3,6 +3,7 @@ package com.baiyi.caesar.factory.jenkins.impl.build;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.baiyi.caesar.common.base.Build.*;
-import static com.baiyi.caesar.common.base.Build.IS_ROLLBACK;
 
 /**
  * @Author baiyi
@@ -47,31 +47,34 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(IS_SONAR, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
-                 // rollback
-                .paramEntries(getRollbackParams(jobParamDetail, buildParam))
+                .paramEntryIsRollback(acqRollbackArtifact(buildParam)) // Rollback
                 .build();
         jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
-
+        if (isRollback(buildParam)) {
+            CsCiJobBuild csCiJobBuild = queryCiJobBuildById(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
+            jobParamDetail.setVersionName(csCiJobBuild.getVersionName());
+            jobParamDetail.setVersionDesc(csCiJobBuild.getVersionDesc());
+        }
         return jobParamDetail;
     }
 
-    private Map<String, String> getRollbackParams(JobParamDetail jobParamDetail, JobBuildParam.BuildParam buildParam) {
-        if (buildParam.getIsRollback() != null && buildParam.getIsRollback()) {
-            if (buildParam.getParamMap().containsKey(ROLLBACK_JOB_BUILD_ID)) {
+    private boolean isRollback(JobBuildParam.BuildParam buildParam) {
+        if (buildParam.getIsRollback() == null || !buildParam.getIsRollback()) return false;
+        return buildParam.getParamMap().containsKey(ROLLBACK_JOB_BUILD_ID);
+    }
+
+
+    private CsJobBuildArtifact acqRollbackArtifact(JobBuildParam.BuildParam buildParam) {
+        if (isRollback(buildParam)) {
+            try {
                 IDeploymentJobHandler deploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(JobType.JAVA_DEPLOYMENT.getType());
                 List<CsJobBuildArtifact> artifacts = deploymentJobHandler.acqBuildArtifacts(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
-                if (!CollectionUtils.isEmpty(artifacts)) {
-                    jobParamDetail.getParams().put(OSS_PATH, artifacts.get(0).getStoragePath());
-                    return JenkinsJobParamsBuilder.newBuilder()
-                            .paramEntry(OSS_PATH, artifacts.get(0).getStoragePath())
-                            .paramEntry(IS_ROLLBACK, "true")
-                            .build().getParams();
-                }
+                if (!CollectionUtils.isEmpty(artifacts))
+                    return artifacts.get(0);
+            } catch (Exception ignored) {
             }
         }
-        return JenkinsJobParamsBuilder.newBuilder()
-                .paramEntry(IS_ROLLBACK, "false")
-                .build().getParams();
+        return null;
     }
 
     @Override
@@ -79,11 +82,9 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
         monitorHandler.updateHostStatus(csApplication, params, status);
     }
 
-
     @Override
     protected boolean isLimitConcurrentJob() {
         return true;
     }
-
 
 }

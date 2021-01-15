@@ -156,7 +156,7 @@ public class JobFacadeImpl implements JobFacade {
         } else {
             // 鉴权到job
             if (permissions.stream().noneMatch(e -> e.getUserId().equals(operationUser.getId())))
-                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+                return new BusinessWrapper<>(ErrorEnum.APPLICATION_JOB_AUTHENTICATION_FAILUER_2);
         }
         return BusinessWrapper.SUCCESS;
     }
