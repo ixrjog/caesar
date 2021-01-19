@@ -16,10 +16,10 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class BuildJobContext implements BaseJobContext{
+public class BuildJobContext implements BaseJobContext {
 
     @Override
-    public int getBuildType(){
+    public int getBuildType() {
         return BuildType.BUILD.getType();
     }
 
@@ -29,6 +29,10 @@ public class BuildJobContext implements BaseJobContext{
     private JobEngineVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
     private JobParametersContext jobParamDetail;
+
+    // 是否回滚
+    @Builder.Default
+    private boolean isRollback = false;
 
     private CiJobBuildVO.JobBuild jobBuild;
 

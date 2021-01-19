@@ -103,7 +103,11 @@ public class DingtalkTemplateBuilder {
     }
 
     public DingtalkTemplateBuilder paramEntryCommit(String commit, int length) {
-        templateMap.putContent(COMMIT, commit.substring(0, length));
+        if (StringUtils.isEmpty(commit)){
+            templateMap.putContent(COMMIT, "-");
+        }else{
+            templateMap.putContent(COMMIT, commit.substring(0, length));
+        }
         return this;
     }
 

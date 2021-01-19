@@ -242,6 +242,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
             IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(getKey());
             dingtalkNotify.doNotify(NoticePhase.START.getType(), context);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("部署消息发送失败(配置不存在)!, cdJobId = {}, buildId = {}", context.getCsCiJob().getId(), context.getJobBuild().getId());
         }
     }
