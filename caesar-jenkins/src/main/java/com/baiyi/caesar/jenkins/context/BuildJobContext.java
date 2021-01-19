@@ -28,7 +28,7 @@ public class BuildJobContext implements BaseJobContext{
 
     private JobEngineVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
-    private JobParamDetail jobParamDetail;
+    private JobParametersContext jobParamDetail;
 
     private CiJobBuildVO.JobBuild jobBuild;
 

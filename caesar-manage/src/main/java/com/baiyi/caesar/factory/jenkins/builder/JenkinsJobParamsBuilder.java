@@ -33,10 +33,8 @@ public class JenkinsJobParamsBuilder {
         }else{
             paramsMap.putParam(IS_ROLLBACK, "false");
         }
-
         return this;
     }
-
 
     public JenkinsJobParamsBuilder paramEntry(String paramName, JobBuildParam.BuildParam buildParam) {
         if (buildParam.getParamMap().containsKey(paramName))

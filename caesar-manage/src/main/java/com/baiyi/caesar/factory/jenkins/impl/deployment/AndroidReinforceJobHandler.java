@@ -10,7 +10,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.baiyi.caesar.util.JobParamUtils;
 import com.google.common.base.Joiner;
 import com.google.gson.GsonBuilder;
@@ -40,8 +40,8 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
     }
 
     @Override
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
+    protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+        JobParametersContext jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCdJob.getJobBuildNumber()))

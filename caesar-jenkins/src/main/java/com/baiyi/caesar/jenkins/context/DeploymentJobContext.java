@@ -32,7 +32,7 @@ public class DeploymentJobContext implements BaseJobContext{
 
     private JobEngineVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
-    private JobParamDetail jobParamDetail;
+    private JobParametersContext jobParamDetail;
 
     private CdJobBuildVO.JobBuild jobBuild;
 

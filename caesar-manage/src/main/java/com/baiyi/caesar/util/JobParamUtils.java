@@ -1,6 +1,6 @@
 package com.baiyi.caesar.util;
 
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.google.common.base.Joiner;
 
 import static com.baiyi.caesar.common.base.Build.APPLICATION_NAME;
@@ -18,11 +18,11 @@ public class JobParamUtils {
      * @param jobParamDetail
      * @return
      */
-    public static String getOssJobUrl(Integer jobBuildNumber, JobParamDetail jobParamDetail) {
+    public static String getOssJobUrl(Integer jobBuildNumber, JobParametersContext jobParamDetail) {
         return getOssJobUrl(String.valueOf(jobBuildNumber), jobParamDetail);
     }
 
-    public static String getOssJobUrl(String jobBuildNumber, JobParamDetail jobParamDetail) {
+    public static String getOssJobUrl(String jobBuildNumber, JobParametersContext jobParamDetail) {
         if (jobParamDetail.getCsOssBucket() == null)
             return null;
         String domain = Joiner.on(".").join(jobParamDetail.getCsOssBucket().getName(), jobParamDetail.getCsOssBucket().getExtranetEndpoint());

@@ -12,7 +12,7 @@ import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -41,28 +41,22 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
     }
 
     @Override
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(IS_SONAR, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
                 .paramEntryIsRollback(acqRollbackArtifact(buildParam)) // Rollback
                 .build();
-        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
+        context.putParams(jenkinsJobParamsMap.getParams());
         if (isRollback(buildParam)) {
             CsCiJobBuild csCiJobBuild = queryCiJobBuildById(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
-            jobParamDetail.setVersionName(csCiJobBuild.getVersionName());
-            jobParamDetail.setVersionDesc(csCiJobBuild.getVersionDesc());
+            context.setVersionName(csCiJobBuild.getVersionName());
+            context.setVersionDesc(csCiJobBuild.getVersionDesc());
         }
-        return jobParamDetail;
+        return context;
     }
-
-    private boolean isRollback(JobBuildParam.BuildParam buildParam) {
-        if (buildParam.getIsRollback() == null || !buildParam.getIsRollback()) return false;
-        return buildParam.getParamMap().containsKey(ROLLBACK_JOB_BUILD_ID);
-    }
-
 
     private CsJobBuildArtifact acqRollbackArtifact(JobBuildParam.BuildParam buildParam) {
         if (isRollback(buildParam)) {

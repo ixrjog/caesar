@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,18 +29,18 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
     }
 
     @Override
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(POD_UPDATE, buildParam)
                 .paramEntry(PUB_GET, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
-                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), jobParamDetail))
+                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), context))
                 .build();
-        jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
+        context.putParams(jenkinsJobParamsMap.getParams());
 
-        return jobParamDetail;
+        return context;
     }
 
 }

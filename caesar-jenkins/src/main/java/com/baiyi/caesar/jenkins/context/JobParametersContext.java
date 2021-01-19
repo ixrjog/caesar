@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Data
 @Builder
-public class JobParamDetail {
+public class JobParametersContext {
 
     @Builder.Default
     private String versionName = "";
@@ -32,6 +32,10 @@ public class JobParamDetail {
     private JenkinsJobParameters jenkinsJobParameters;
 
     private Map<String, String> params;
+
+    public void putParam(String paramName, String paramValue) {
+        this.params.put(paramName, paramValue);
+    }
 
     public void putParams(Map<String, String> params) {
         this.params.putAll(params);

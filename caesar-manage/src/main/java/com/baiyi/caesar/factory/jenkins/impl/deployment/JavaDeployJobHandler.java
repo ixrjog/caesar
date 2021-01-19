@@ -16,7 +16,7 @@ import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -60,8 +60,8 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     }
 
     @Override
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        JobParamDetail jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
+    protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+        JobParametersContext jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(HOST_PATTERN, deploymentParam)
@@ -85,7 +85,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
     protected void saveDetails(DeploymentJobContext context) {
         BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> wrapper = jobFacade.queryCdJobHostPatternByJobId(context.getCsCdJob().getId());
         if (!wrapper.isSuccess()) return;
-        JobParamDetail jobParamDetail = context.getJobParamDetail();
+        JobParametersContext jobParamDetail = context.getJobParamDetail();
         String hostPattern = jobParamDetail.getParams().get(HOST_PATTERN);
         wrapper.getBody().parallelStream().forEach(e -> {
             if (e.getHostPattern().equals(hostPattern)) {

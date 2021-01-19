@@ -25,7 +25,7 @@ import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -141,7 +141,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         raiseJobBuildNumber(csJob); // buildNumber +1
-        JobParamDetail jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
+        JobParametersContext jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
 
         CsCdJobBuild csCdJobBuild = CdJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, deploymentParam.getCiBuildId());
         if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
@@ -204,7 +204,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
      * @param csCdJob
      * @return
      */
-    protected JobParamDetail acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+    protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
@@ -223,7 +223,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(deploymentParam.getCiBuildId());
 
-        return JobParamDetail.builder()
+        return JobParametersContext.builder()
                 .jenkinsJobParameters(jenkinsJobParameters)
                 .params(jenkinsJobParamsMap.getParams())
                 .csOssBucket(csOssBucket)
@@ -264,7 +264,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
         Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
 
-        JobParamDetail jobParamDetail = JobParamDetail.builder()
+        JobParametersContext jobParamDetail = JobParametersContext.builder()
                 .params(params)
                 .build();
 

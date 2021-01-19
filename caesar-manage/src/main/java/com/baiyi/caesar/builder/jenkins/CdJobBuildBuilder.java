@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.jenkins.context.JobParamDetail;
+import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.google.common.base.Joiner;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +18,7 @@ import org.springframework.util.StringUtils;
  */
 public class CdJobBuildBuilder {
 
-    public static CsCdJobBuild build(CsApplication csApplication, CsCdJob csCdJob, JobEngineVO.JobEngine jobEngine, JobParamDetail jobParamDetail, int ciBuildId) {
+    public static CsCdJobBuild build(CsApplication csApplication, CsCdJob csCdJob, JobEngineVO.JobEngine jobEngine, JobParametersContext jobParamDetail, int ciBuildId) {
         String jobName = Joiner.on("_").join(csApplication.getApplicationKey(), csCdJob.getJobKey());
         Integer engineBuildNumber = jobEngine.getNextBuildNumber() == 0 ? 1 : jobEngine.getNextBuildNumber();
         String versionName = StringUtils.isEmpty(jobParamDetail.getVersionName()) ? Joiner.on("-").join("release", csCdJob.getJobBuildNumber()) : jobParamDetail.getVersionName();
