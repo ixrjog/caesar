@@ -108,7 +108,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         T job = acqJob(jobId);
         CsApplication csApplication = acqApplication(job);
         List<ApplicationVO.Engine> engines = acqEngines(csApplication);
-        engines.forEach(e -> createJobEngine(csApplication, job, e));
+        engines.parallelStream().forEach(e -> createJobEngine(csApplication, job, e));
     }
 
     @Override
@@ -117,7 +117,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
         CsApplication csApplication = acqApplication(job);
         List<CsJobEngine> engines = csJobEngineService.queryCsJobEngineByJobId(getKey(), jobId);
         if (CollectionUtils.isEmpty(engines)) return;
-        engines.forEach(e -> updateJobEngine(csApplication, job, e));
+        engines.parallelStream().forEach(e -> updateJobEngine(csApplication, job, e));
     }
 
     abstract protected void updateJobEngine(CsApplication csApplication, T job, CsJobEngine engine);

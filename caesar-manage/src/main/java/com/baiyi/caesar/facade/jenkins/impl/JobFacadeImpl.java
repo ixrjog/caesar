@@ -121,10 +121,9 @@ public class JobFacadeImpl implements JobFacade {
         BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
         if (!tryAuthorizedUserWrapper.isSuccess())
             return tryAuthorizedUserWrapper;
-
         // 校正引擎
-        IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.BUILD.getType());
-        BusinessWrapper<Boolean> correctionWrapper = iJobEngine.correctionJobEngine(csCiJob.getId());
+        BusinessWrapper<Boolean> correctionWrapper = JobEngineFactory.getJobEngineByKey(BuildType.BUILD.getType())
+                .correctionJobEngine(csCiJob.getId());
         if (!correctionWrapper.isSuccess())
             return correctionWrapper;
 
@@ -350,16 +349,16 @@ public class JobFacadeImpl implements JobFacade {
         try {
             // executor
             csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(buildType, buildId)
-                    .forEach(e -> csJobBuildExecutorService.deleteCsJobBuildExecutorById(e.getId()));
+                    .parallelStream().forEach(e -> csJobBuildExecutorService.deleteCsJobBuildExecutorById(e.getId()));
             // server
             csJobBuildServerService.queryCsJobBuildServerByBuildId(buildType, buildId)
-                    .forEach(e -> csJobBuildServerService.deleteCsJobBuildServerById(e.getId()));
+                    .parallelStream().forEach(e -> csJobBuildServerService.deleteCsJobBuildServerById(e.getId()));
             // change
             csJobBuildChangeService.queryCsJobBuildChangeByBuildId(buildType, buildId)
-                    .forEach(e -> csJobBuildChangeService.deleteCsJobBuildChangeById(e.getId()));
+                    .parallelStream().forEach(e -> csJobBuildChangeService.deleteCsJobBuildChangeById(e.getId()));
             // artifact
             csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(buildType, buildId)
-                    .forEach(e -> csJobBuildArtifactService.deleteCsJobBuildArtifactById(e.getId()));
+                    .parallelStream().forEach(e -> csJobBuildArtifactService.deleteCsJobBuildArtifactById(e.getId()));
         } catch (Exception e) {
             return false;
         }

@@ -73,18 +73,22 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
      * @return
      */
     private String buildEngineName(CsJenkinsInstance instance, boolean isActive) {
+        return instance.getName() + acqEngineName(instance, isActive);
+    }
+
+    private String acqEngineName(CsJenkinsInstance instance, boolean isActive) {
         if (isActive) {
             JenkinsVersion version = jenkinsServerHandler.getVersion(instance.getName());
-            return Joiner.on("").join(instance.getName(), "(", version.getLiteralVersion(), ")");
+            return Joiner.on("").join("(", version.getLiteralVersion(), ")");
         } else {
-            return Joiner.on("").join(instance.getName(), INACTIVE);
+            return INACTIVE;
         }
     }
 
     private void assembleComputer(CsJenkinsInstance csJenkinsInstance, EngineVO.Children instance) {
         try {
             Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(csJenkinsInstance.getName());
-            computerMap.keySet().forEach(k -> {
+            computerMap.keySet().parallelStream().forEach(k -> {
                 if (!k.equals(MASTER)) {
                     EngineVO.Children node = EngineVO.Children.builder()
                             .name(k)
@@ -92,7 +96,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                     Computer computer = computerMap.get(k);
                     try {
                         ComputerWithDetails computerWithDetails = computer.details();
-                        computerWithDetails.getExecutors().forEach(e -> {
+                        computerWithDetails.getExecutors().parallelStream().forEach(e -> {
                             EngineVO.Children executor = EngineVO.Children.builder()
                                     .name(acqExecutorName(e))
                                     .value(1)
