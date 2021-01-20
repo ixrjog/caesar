@@ -122,7 +122,7 @@ public class CdJobDecorator extends BaseJobDecorator {
 
             assembleJobBuildView(jobBuildView,e.getFinalized() ,e.getBuildStatus());
 
-            jobBuildView.setExecutors(jobDeploymentDecorator.getBuildExecutorByBuildId(e.getId()));
+            jobBuildView.setExecutors(jobDeploymentDecorator.getExecutorsByBuildId(e.getId()));
             return jobBuildView;
         }).collect(Collectors.toList());
     }

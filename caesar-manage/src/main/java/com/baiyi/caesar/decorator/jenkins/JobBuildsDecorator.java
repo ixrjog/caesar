@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.baiyi.caesar.common.base.Global.NOT_EXTEND;
+
 /**
  * @Author baiyi
  * @Date 2021/1/14 10:21 上午
@@ -102,7 +104,7 @@ public class JobBuildsDecorator {
             JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
             if (!IDUtils.isEmpty(csCiJob.getJobTplId())) {
                 CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-                jobTpl = jobTplDecorator.decorator(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class), 0);
+                jobTpl = jobTplDecorator.decorator(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class), NOT_EXTEND);
             }
             return JobBuildContext.builder()
                     .csCiJob(csCiJob)
@@ -118,11 +120,11 @@ public class JobBuildsDecorator {
 
     private Map<Integer, JobEngineVO.JobEngine> acqJobEngineMap(List<CsCiJobBuild> jobBuilds) {
         Map<Integer, JobEngineVO.JobEngine> jobEngineMap = Maps.newHashMap();
-        jobBuilds.forEach(jobBuild -> {
+        jobBuilds.parallelStream().forEach(jobBuild -> {
             if (!jobEngineMap.containsKey(jobBuild.getJobEngineId())) {
-                CsJobEngine csCiJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
-                if (csCiJobEngine != null) {
-                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
+                CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
+                if (csJobEngine != null) {
+                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
                     jobEngineMap.put(jobBuild.getJobEngineId(), jobEngine);
                 }
             }
@@ -141,11 +143,12 @@ public class JobBuildsDecorator {
 
     public CiJobBuildVO.JobBuild decorator(CsCiJobBuild csCiJobBuild, JobBuildContext context, Integer extend) {
         CiJobBuildVO.JobBuild jobBuild = BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class);
-        if (extend == 0) return jobBuild;
+        // 操作用户
+        jobBuild.setUser(acqUser(jobBuild));
         // Ago
         jobBuild.setAgo(acqAgo(jobBuild));
-        // User
-        jobBuild.setUser(acqUser(jobBuild));
+
+        if (extend == NOT_EXTEND) return jobBuild;
         // 组装构件
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
         jobBuild.setNoArtifact(CollectionUtils.isEmpty(jobBuild.getArtifacts()));
@@ -161,6 +164,7 @@ public class JobBuildsDecorator {
         jobBuild.setCommitDetails(acqCommitDetails(jobBuild, context));
         // 支持回滚
         jobBuild.setSupportRollback(acqSupportRollback(context));
+
         return jobBuild;
     }
 
@@ -234,7 +238,6 @@ public class JobBuildsDecorator {
         JobEngineVO.JobEngine jobEngine = context.getJobEngineMap().get(jobBuild.getJobEngineId());
         return Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
     }
-
 
     private String acqAgo(CiJobBuildVO.JobBuild jobBuild) {
         return TimeAgoUtils.format(jobBuild.getStartTime());

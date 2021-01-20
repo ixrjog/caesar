@@ -6,7 +6,6 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
@@ -44,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.baiyi.caesar.common.base.Build.*;
+import static com.baiyi.caesar.common.base.Global.EXTEND;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
 
 /**
@@ -163,7 +163,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                     .csApplication(queryApplicationById(csJob.getApplicationId()))
                     .csCiJob(csCiJobService.queryCsCiJobById(csJob.getCiJobId()))
                     .csCdJob(csJob)
-                    .jobBuild(jobDeploymentDecorator.decorator(csCdJobBuild, 1))
+                    .jobBuild(jobDeploymentDecorator.decorator(csCdJobBuild, EXTEND))
                     .jobEngine(jobEngine)
                     .jobParamDetail(jobParamDetail)
                     .build();
@@ -272,7 +272,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
                 .csApplication(queryApplicationById(csCdJob.getApplicationId()))
                 .csCiJob(csCiJobService.queryCsCiJobById(csCdJob.getCiJobId()))
                 .csCdJob(csCdJob)
-                .jobBuild(jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1))
+                .jobBuild(jobDeploymentDecorator.decorator(csCdJobBuild, EXTEND))
                 .jobEngine(acqJobEngineById(csCdJobBuild.getJobEngineId()))
                 .jobParamDetail(jobParamDetail)
                 .build();

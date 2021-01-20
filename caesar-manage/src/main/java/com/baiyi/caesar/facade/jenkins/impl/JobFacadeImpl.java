@@ -7,7 +7,6 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.JenkinsUtils;
 import com.baiyi.caesar.common.util.RedisKeyUtils;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
@@ -46,8 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.baiyi.caesar.common.base.Global.HOST_PATTERN;
-import static com.baiyi.caesar.common.base.Global.SERVER_GRUOP;
+import static com.baiyi.caesar.common.base.Global.*;
 
 /**
  * @Author baiyi
@@ -195,15 +193,15 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public DataTable<CdJobBuildVO.JobBuild> queryCdJobBuildPage(JobDeploymentParam.DeploymentPageQuery pageQuery) {
         DataTable<CsCdJobBuild> table = csCdJobBuildService.queryCdJobBuildPage(pageQuery);
-        List<CdJobBuildVO.JobBuild> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobBuildVO.JobBuild.class);
-        return new DataTable<>(page.stream().map(e -> jobDeploymentDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(table.getData().stream().map(e ->
+                jobDeploymentDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
         if (query.getSize() == null)
             query.setSize(10);
-        return jobBuildsDecorator.decorator(csCiJobBuildService.queryCiJobBuildArtifact(query), 1);
+        return jobBuildsDecorator.decorator(csCiJobBuildService.queryCiJobBuildArtifact(query), EXTEND);
     }
 
     @Override
@@ -231,13 +229,13 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId) {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
-        return jobBuildsDecorator.decorator(csCiJobBuild, 1);
+        return jobBuildsDecorator.decorator(csCiJobBuild, EXTEND);
     }
 
     @Override
     public CdJobBuildVO.JobBuild queryCdJobBuildByBuildId(int buildId) {
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(buildId);
-        return jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class), 1);
+        return jobDeploymentDecorator.decorator(csCdJobBuild, EXTEND);
     }
 
     @Override

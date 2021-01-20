@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,8 +34,9 @@ public class DashboardVO {
     }
 
     @Data
-    @NoArgsConstructor
+    //@NoArgsConstructor
     @ApiModel
+    @Builder
     public static class LatestTasks implements Serializable {
         private static final long serialVersionUID = 8963769393767259751L;
         @ApiModelProperty(value = "构建任务")

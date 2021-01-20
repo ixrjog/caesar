@@ -1,12 +1,9 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.config.CachingConfig;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
-import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
-import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dashboard.DashboardVO;
 import com.baiyi.caesar.facade.DashboardFacade;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -20,8 +17,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.Global.NOT_EXTEND;
 
 /**
  * @Author baiyi
@@ -73,19 +71,15 @@ public class DashboardFacadeImpl implements DashboardFacade {
     @Override
     @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'latestTasks'")
     public DashboardVO.LatestTasks queryLatestTasks() {
-        DashboardVO.LatestTasks latestTasks = new DashboardVO.LatestTasks();
+
         final int latestTasksLength = 9;
 
-        List<CiJobBuildVO.JobBuild> latestBuildTasks = jobBuildsDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength),0);
-
-                latestTasks.setLatestBuildTasks(latestBuildTasks);
-        latestTasks.setBuildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild());
-
-        List<CdJobBuildVO.JobBuild> latestDeploymentTasks = csCdJobBuildService.queryLatestCsCdJobBuild(latestTasksLength)
-                .stream().map(e -> jobDeploymentDecorator.decorator(BeanCopierUtils.copyProperties(e, CdJobBuildVO.JobBuild.class), 0)).collect(Collectors.toList());
-        latestTasks.setLatestDeploymentTasks(latestDeploymentTasks);
-        latestTasks.setDeploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild());
-        return latestTasks;
+        return DashboardVO.LatestTasks.builder()
+                .latestBuildTasks(jobBuildsDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength), NOT_EXTEND))
+                .buildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild())
+                .latestDeploymentTasks(jobDeploymentDecorator.decorator(csCdJobBuildService.queryLatestCsCdJobBuild(latestTasksLength), NOT_EXTEND))
+                .deploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild())
+                .build();
     }
 
     @Override
@@ -119,7 +113,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
         final int top = 15;
         DashboardVO.HotTopStatistics charts = new DashboardVO.HotTopStatistics();
         charts.setHotApplications(csCiJobBuildService.queryHotApplication(top)
-                .stream().map(e->applicationDecorator.decorator(e)).collect(Collectors.toList()));
+                .stream().map(e -> applicationDecorator.decorator(e)).collect(Collectors.toList()));
         charts.setHotUsers(csCiJobBuildService.queryHotUser(top));
         return charts;
     }

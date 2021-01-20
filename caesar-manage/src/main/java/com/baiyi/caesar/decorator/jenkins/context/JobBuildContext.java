@@ -1,5 +1,6 @@
 package com.baiyi.caesar.decorator.jenkins.context;
 
+import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
@@ -23,6 +24,8 @@ public class JobBuildContext {
     private CsOssBucket csOssBucket;
 
     private CsCiJob csCiJob;
+
+    private CsCdJob csCdJob;
 
     private CsGitlabProject csGitlabProject;
 
