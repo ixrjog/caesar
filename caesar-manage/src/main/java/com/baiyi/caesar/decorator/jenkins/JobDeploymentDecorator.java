@@ -145,8 +145,7 @@ public class JobDeploymentDecorator {
         jobBuild.setExecutors(getExecutorsByBuildId(jobBuild.getId()));
         // Servers
         jobBuild.setServers(acqServers(jobBuild));
-
-
+        
         return jobBuild;
     }
 
