@@ -88,7 +88,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
     private void assembleComputer(CsJenkinsInstance csJenkinsInstance, EngineVO.Children instance) {
         try {
             Map<String, Computer> computerMap = jenkinsServerHandler.getComputerMap(csJenkinsInstance.getName());
-            computerMap.keySet().parallelStream().forEach(k -> {
+            computerMap.keySet().forEach(k -> {
                 if (!k.equals(MASTER)) {
                     EngineVO.Children node = EngineVO.Children.builder()
                             .name(k)
@@ -96,7 +96,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                     Computer computer = computerMap.get(k);
                     try {
                         ComputerWithDetails computerWithDetails = computer.details();
-                        computerWithDetails.getExecutors().parallelStream().forEach(e -> {
+                        computerWithDetails.getExecutors().forEach(e -> {
                             EngineVO.Children executor = EngineVO.Children.builder()
                                     .name(acqExecutorName(e))
                                     .value(1)
