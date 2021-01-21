@@ -114,9 +114,10 @@ cs_job_build_change
 cs_instance
 cs_gitlab_webhook
 cs_gitlab_group
+cs_announcement
        -->
 
-        <table tableName="cs_job_tpl">
+        <table tableName="cs_announcement">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
