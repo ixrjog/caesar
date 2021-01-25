@@ -1,6 +1,5 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.aliyun.oss.model.Bucket;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.builder.OssBucketBuilder;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -63,11 +62,9 @@ public class AliyunOSSFacadeImpl implements AliyunOSSFacade {
     @Override
     @Async(value = ASYNC_POOL_TASK_COMMON)
     public void syncOSSBucket() {
-        List<Bucket> buckets = aliyunOSSHandler.getBuckets();
-        buckets.forEach(e -> {
-            if (csOssBucketService.queryCsOssBucketByName(e.getName()) == null) {
+        aliyunOSSHandler.getBuckets().parallelStream().forEach(e -> {
+            if (csOssBucketService.queryCsOssBucketByName(e.getName()) == null)
                 csOssBucketService.addCsOssBucket(OssBucketBuilder.build(e));
-            }
         });
     }
 

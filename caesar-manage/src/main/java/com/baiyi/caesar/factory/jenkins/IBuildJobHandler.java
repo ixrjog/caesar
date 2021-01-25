@@ -32,7 +32,7 @@ public interface IBuildJobHandler {
 
     void trackJobBuild(CsCiJobBuild csCiJobBuild);
 
-    BuildJobContext acqBuildJobContext(CsCiJobBuild csCiJobBuild);
+    BuildJobContext buildJobContext(CsCiJobBuild csCiJobBuild);
 
     String getKey();
 

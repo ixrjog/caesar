@@ -99,8 +99,7 @@ public class AuthFacadeImpl implements AuthFacade {
         OcAuthRole ocAuthRole = ocAuthRoleService.queryOcAuthRoleById(id);
         if (ocAuthRole == null)
             return new BusinessWrapper<>(ErrorEnum.AUTH_ROLE_NOT_EXIST);
-        int count = ocAuthUserRoleService.countByRoleId(id);
-        if (count == 0) {
+        if (ocAuthUserRoleService.countByRoleId(id) == 0) {
             ocAuthRoleService.deleteOcAuthRoleById(id);
             return BusinessWrapper.SUCCESS;
         } else {
@@ -166,8 +165,7 @@ public class AuthFacadeImpl implements AuthFacade {
         if (ocAuthResource == null)
             return new BusinessWrapper<>(ErrorEnum.AUTH_RESOURCE_NOT_EXIST);
         // 判断role绑定的资源
-        int count = ocAuthRoleResourceService.countByResourceId(id);
-        if (count == 0) {
+        if (ocAuthRoleResourceService.countByResourceId(id) == 0) {
             ocAuthResourceService.deleteOcAuthResourceById(id);
             return BusinessWrapper.SUCCESS;
         } else {
@@ -200,8 +198,7 @@ public class AuthFacadeImpl implements AuthFacade {
         OcAuthGroup ocAuthGroup = ocAuthGroupService.queryOcAuthGroupById(id);
         if (ocAuthGroup == null)
             return new BusinessWrapper<>(ErrorEnum.AUTH_GROUP_NOT_EXIST);
-        int count = ocAuthResourceService.countByGroupId(id);
-        if (count == 0) {
+        if (ocAuthResourceService.countByGroupId(id) == 0) {
             ocAuthGroupService.deleteOcAuthGroupById(id);
             return BusinessWrapper.SUCCESS;
         } else {
@@ -301,17 +298,21 @@ public class AuthFacadeImpl implements AuthFacade {
     public AuthMenuVO.Menu queryRoleMenuByRoleId(int roleId) {
         OcAuthRole ocAuthRole = ocAuthRoleService.queryOcAuthRoleById(roleId);
         OcAuthMenu ocAuthMenu = ocAuthMenuService.queryOcAuthMenuByRoleId(roleId, 0);
-        if (ocAuthMenu == null) {
-            AuthMenuBO authMenuBO = AuthMenuBO.builder()
-                    .roleId(roleId)
-                    .comment(ocAuthRole.getRoleName())
-                    .build();
-            ocAuthMenu = BeanCopierUtils.copyProperties(authMenuBO, OcAuthMenu.class);
-            ocAuthMenuService.addOcAuthMenu(ocAuthMenu);
-        }
+        if (ocAuthMenu == null)
+            ocAuthMenu = addAuthMenu(roleId, ocAuthRole);
         AuthMenuVO.Menu menu = BeanCopierUtils.copyProperties(ocAuthMenu, AuthMenuVO.Menu.class);
         menu.setRoleName(ocAuthRole.getRoleName());
         return menu;
+    }
+
+    private OcAuthMenu addAuthMenu(int roleId, OcAuthRole ocAuthRole) {
+        AuthMenuBO authMenuBO = AuthMenuBO.builder()
+                .roleId(roleId)
+                .comment(ocAuthRole.getRoleName())
+                .build();
+        OcAuthMenu ocAuthMenu = BeanCopierUtils.copyProperties(authMenuBO, OcAuthMenu.class);
+        ocAuthMenuService.addOcAuthMenu(ocAuthMenu);
+        return ocAuthMenu;
     }
 
 }

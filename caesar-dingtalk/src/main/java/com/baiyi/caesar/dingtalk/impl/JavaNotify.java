@@ -31,9 +31,9 @@ public class JavaNotify extends BaseDingtalkNotify implements IDingtalkNotify {
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> buildTemplateContent(int noticePhase, BuildJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
-                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntries(super.buildTemplateContent(noticePhase, context))
                 .paramEntryVersionName(context.getJobBuild().getVersionName())
                 .build();
 

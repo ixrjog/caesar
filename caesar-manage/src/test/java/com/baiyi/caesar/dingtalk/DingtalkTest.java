@@ -73,7 +73,7 @@ public class DingtalkTest extends BaseUnit {
         String jobKey = JobType.HTML5.getType();
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(3562);
-        BuildJobContext context = iBuildJobHandler.acqBuildJobContext(csCiJobBuild);
+        BuildJobContext context = iBuildJobHandler.buildJobContext(csCiJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
@@ -92,7 +92,7 @@ public class DingtalkTest extends BaseUnit {
         String jobKey = JobType.ANDROID_REINFORCE.getType();
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(184);
-        DeploymentJobContext  context = iDeploymentJobHandler.acqDeploymentJobContext(csCdJobBuild);
+        DeploymentJobContext  context = iDeploymentJobHandler.buildJobContext(csCdJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }
@@ -102,7 +102,7 @@ public class DingtalkTest extends BaseUnit {
         String jobKey = JobType.JAVA_DEPLOYMENT.getType();
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(5);
-        DeploymentJobContext  context = iDeploymentJobHandler.acqDeploymentJobContext(csCdJobBuild);
+        DeploymentJobContext  context = iDeploymentJobHandler.buildJobContext(csCdJobBuild);
         IDingtalkNotify dingtalkNotify = DingtalkNotifyFactory.getDingtalkNotifyByKey(jobKey);
         dingtalkNotify.doNotify(NoticePhase.END.getType(), context);
     }

@@ -27,6 +27,8 @@ public class DingtalkTemplateBuilder {
     public static final String BRANCH = "branch";
     public static final String COMMIT = "commit";
 
+    public static final String COMMIT_URL = "commit_url";
+
     public static final String USERS = "users";
     public static final String BUILD_STATUS = "buildStatus";
 
@@ -103,13 +105,20 @@ public class DingtalkTemplateBuilder {
     }
 
     public DingtalkTemplateBuilder paramEntryCommit(String commit, int length) {
-        if (StringUtils.isEmpty(commit)){
+        if (StringUtils.isEmpty(commit)) {
             templateMap.putContent(COMMIT, "-");
-        }else{
+        } else {
             templateMap.putContent(COMMIT, commit.substring(0, length));
         }
         return this;
     }
+
+    public DingtalkTemplateBuilder paramEntryCommitUrl(String commitUrl) {
+        if (!StringUtils.isEmpty(commitUrl))
+            templateMap.putContent(BUILD_STATUS, commitUrl);
+        return this;
+    }
+
 
     public DingtalkTemplateBuilder paramEntryBranch(String branch) {
         templateMap.putContent(BRANCH, branch);

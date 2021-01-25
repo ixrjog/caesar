@@ -25,6 +25,7 @@ import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildChangeService;
 import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
 import com.baiyi.caesar.service.user.OcUserService;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -89,7 +90,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent(noticePhase, context);
+        Map<String, Object> contentMap = buildTemplateContent(noticePhase, context);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -124,7 +125,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             return;
         }
         // 模版变量
-        Map<String, Object> contentMap = acqTemplateContent(noticePhase, context);
+        Map<String, Object> contentMap = buildTemplateContent(noticePhase, context);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -143,7 +144,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
+    protected Map<String, Object> buildTemplateContent(int noticePhase, DeploymentJobContext context) {
 
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
@@ -169,7 +170,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @param context
      * @return
      */
-    protected Map<String, Object> acqTemplateContent(int noticePhase, BuildJobContext context) {
+    protected Map<String, Object> buildTemplateContent(int noticePhase, BuildJobContext context) {
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(context.getCsCiJob().getEnvType());
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
 
@@ -183,6 +184,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
                 .paramEntryBuildNumber(context.getJobBuild().getJobBuildNumber())
                 .paramEntryBranch(context.getJobBuild().getBranch())
                 .paramEntryCommit(context.getJobBuild().getCommit(), 7)
+                .paramEntryCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(),"-","commit",context.getJobBuild().getCommit()))
                 .paramEntryUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
                 .paramEntryChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
                 .paramEntryBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)

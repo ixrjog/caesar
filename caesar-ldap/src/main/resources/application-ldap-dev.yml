@@ -14,10 +14,17 @@ spring:
 
 
 ldap:
-  custom:  {userId: cn,
+  custom:  {
+            # 用户 RDN Key uid | cn
+            userId: cn,
             userBaseDN: ou=Users,
+            # 用户对象属性
             userObjectClass: inetOrgPerson,
+            # 用户组 RDN Key uid | cn
             groupId: cn,
             groupBaseDN: ou=Groups,
+            # 用户组对象属性
             groupObjectClass: groupOfUniqueNames,
-            groupMember: uniqueMember}
+            # 用户组成员属性
+            groupMember: uniqueMember
+  }

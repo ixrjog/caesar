@@ -23,7 +23,7 @@ public interface IDeploymentJobHandler {
 
     void trackJobDeployment(CsCdJobBuild csCdJobBuild);
 
-    DeploymentJobContext acqDeploymentJobContext(CsCdJobBuild csCdJobBuild);
+    DeploymentJobContext buildJobContext(CsCdJobBuild csCdJobBuild);
 
     String getKey();
 

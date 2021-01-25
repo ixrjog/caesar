@@ -44,6 +44,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.baiyi.caesar.common.base.Global.EXTEND;
+
 /**
  * @Author baiyi
  * @Date 2020/7/21 2:49 下午
@@ -201,11 +203,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId) {
-        CsApplicationScmMember pre = csApplicationScmMemberService.queryCsApplicationScmMemberByUniqueKey(applicationId, projectId);
-        if (pre != null)
+        if (csApplicationScmMemberService.queryCsApplicationScmMemberByUniqueKey(applicationId, projectId) != null)
             return BusinessWrapper.SUCCESS;
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(projectId);
-        pre = ApplicationScmMemberBuilder
+        CsApplicationScmMember pre = ApplicationScmMemberBuilder
                 .build(applicationId, csGitlabProject);
         csApplicationScmMemberService.addCsApplicationScmMember(pre);
         return BusinessWrapper.SUCCESS;
@@ -314,7 +315,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId) {
         List<CsApplicationEngine> list = csApplicationEngineService.queryCsApplicationEngineByApplicationId(applicationId);
         return list.stream().map(e ->
-                applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), 1)
+                applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
         ).collect(Collectors.toList());
     }
 
@@ -324,7 +325,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (csApplication.getEngineType() == 0) {
             List<CsApplicationEngine> list = csApplicationEngineService.selectAll();
             return list.stream().map(e ->
-                    applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), 1)
+                    applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
             ).collect(Collectors.toList());
         } else {
             return queryApplicationEngineByApplicationId(applicationId);
@@ -333,10 +334,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addApplicationEngine(int applicationId, int jenkinsInstanceId) {
-        CsApplicationEngine pre = csApplicationEngineService.queryCsApplicationEngineByUniqueKey(applicationId, jenkinsInstanceId);
-        if (pre != null)
+        if (csApplicationEngineService.queryCsApplicationEngineByUniqueKey(applicationId, jenkinsInstanceId) != null)
             return BusinessWrapper.SUCCESS;
-        pre = new CsApplicationEngine();
+        CsApplicationEngine pre = new CsApplicationEngine();
         pre.setApplicationId(applicationId);
         pre.setJenkinsInstanceId(jenkinsInstanceId);
         csApplicationEngineService.addCsApplicationEngine(pre);
@@ -380,7 +380,6 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         return BusinessWrapper.SUCCESS;
     }
 
-    // UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission
     private void grantUserJenkinsUser(int userId) {
         UserBusinessGroupParam.UserUserGroupPermission userUserGroupPermission = new UserBusinessGroupParam.UserUserGroupPermission();
         OcUserGroup ocUserGroup = ocUserGroupService.queryOcUserGroupByName("jenkins-users");
@@ -428,6 +427,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     /**
      * 测试总监权限控制
+     *
      * @param csCiJob
      * @return
      */
@@ -442,11 +442,11 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         String username = SessionUtils.getUsername();
 
         // 是否测试总监配置
-        if ("tonghongping".equals(username)){
+        if ("tonghongping".equals(username)) {
             return BusinessWrapper.SUCCESS;
-        }else{
+        } else {
             OcUser ocUser = ocUserService.queryOcUserByUsername("tonghongping");
-           // 非总监
+            // 非总监
             OcUserPermission ocUserPermission
                     = userPermissionFacade.queryUserPermissionByUniqueKey(ocUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId());
             if (ocUserPermission == null || "USER".equalsIgnoreCase(ocUserPermission.getRoleName()))
@@ -538,7 +538,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public void updateApplicationScmMember(CsGitlabProject csGitlabProject) {
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
         if (CollectionUtils.isEmpty(members)) return;
-        members.forEach(m -> {
+        members.parallelStream().forEach(m -> {
             if (!m.getScmSshUrl().equals(csGitlabProject.getSshUrl())) {
                 m.setScmSshUrl(csGitlabProject.getSshUrl());
                 csApplicationScmMemberService.updateCsApplicationScmMember(m);

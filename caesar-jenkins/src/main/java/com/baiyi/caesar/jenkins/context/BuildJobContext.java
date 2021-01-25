@@ -3,6 +3,7 @@ package com.baiyi.caesar.jenkins.context;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.offbytwo.jenkins.model.BuildWithDetails;
@@ -25,10 +26,12 @@ public class BuildJobContext implements BaseJobContext {
 
     private CsApplication csApplication;
     private CsCiJob csCiJob;
-
+    // SCM
+    private CsGitlabProject csGitlabProject;
     private JobEngineVO.JobEngine jobEngine;
     private BuildWithDetails buildWithDetails;
     private JobParametersContext jobParamDetail;
+
 
     // 是否回滚
     @Builder.Default

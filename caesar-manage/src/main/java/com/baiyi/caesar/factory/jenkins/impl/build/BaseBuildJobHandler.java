@@ -49,6 +49,7 @@ import java.util.Map;
 
 import static com.baiyi.caesar.common.base.Build.*;
 import static com.baiyi.caesar.common.base.Global.BRANCH;
+import static com.baiyi.caesar.common.base.Global.EXTEND;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
 
@@ -169,7 +170,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
-        GitlabBranch gitlabBranch = acqGitlabBranch(csCiJob, parametersContext.getParams().getOrDefault(BRANCH, ""));
+        CsGitlabProject csGitlabProject = acqGitlabProjectByScmMemberId(csCiJob.getScmMemberId());
+        GitlabBranch gitlabBranch = acqGitlabBranch(csGitlabProject, parametersContext.getParams().getOrDefault(BRANCH, ""));
         CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, parametersContext, gitlabBranch, username, isSilence);
         updateHostStatus(csApplication, parametersContext.getParams(), HOST_STATUS_DISABLE);
         try {
@@ -189,7 +191,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
             BuildJobContext context = BuildJobContext.builder()
                     .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                     .csCiJob(csCiJob)
-                    .jobBuild(jobBuildsDecorator.decorator(csCiJobBuild, 1))
+                    .csGitlabProject(csGitlabProject)
+                    .jobBuild(jobBuildsDecorator.decorator(csCiJobBuild, EXTEND))
                     .jobEngine(jobEngine)
                     .jobParamDetail(parametersContext)
                     .build();
@@ -209,31 +212,35 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     @Override
     public void trackJobBuild(CsCiJobBuild csCiJobBuild) {
-        BuildJobContext context = acqBuildJobContext(csCiJobBuild);
+        BuildJobContext context = buildJobContext(csCiJobBuild);
         TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()).trackJobBuild(context); // 追踪任务
     }
 
     @Override
-    public BuildJobContext acqBuildJobContext(CsCiJobBuild csCiJobBuild) {
+    public BuildJobContext buildJobContext(CsCiJobBuild csCiJobBuild) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCiJobBuild.getCiJobId());
         return BuildJobContext.builder()
                 .csApplication(queryApplicationById(csCiJob.getApplicationId()))
                 .csCiJob(csCiJob)
-                .jobBuild(jobBuildsDecorator.decorator(csCiJobBuild, 1))
+                .jobBuild(jobBuildsDecorator.decorator(csCiJobBuild, EXTEND))
                 .jobEngine(acqJobEngineById(csCiJobBuild.getJobEngineId()))
                 .build();
     }
 
-    private GitlabBranch acqGitlabBranch(CsCiJob csCiJob, String branch) {
+    private GitlabBranch acqGitlabBranch(CsGitlabProject csGitlabProject, String branch) {
         try {
-            CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
-            CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
             CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(csGitlabProject.getInstanceId());
             return gitlabBranchHandler.getBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch);
         } catch (IOException e) {
             return null;
         }
     }
+
+    private CsGitlabProject acqGitlabProjectByScmMemberId(int scmMemberId) {
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberId);
+        return csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
+    }
+
 
     private void buildStartNotify(BuildJobContext context) {
         if (context.getJobBuild().getIsSilence()) // 消息静默

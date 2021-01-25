@@ -35,14 +35,14 @@ public class AttributeFacadeImpl implements AttributeFacade {
     @Override
     public void createAnsibleHostsTask() {
         try {
-            String context = attributeAnsible.getHeadInfo();
+            StringBuilder context = new StringBuilder(attributeAnsible.getHeadInfo());
             List<OcServerGroup> serverGroupList = ocServerGroupService.queryAll();
             for (OcServerGroup serverGroup : serverGroupList) {
                 PreviewAttributeVO.PreviewAttribute previewAttribute = attributeAnsible.build(serverGroup);
                 if (!StringUtils.isEmpty(previewAttribute.getContent()))
-                    context += "\n" + previewAttribute.getContent();
+                    context.append("\n").append(previewAttribute.getContent());
             }
-            IOUtils.createFile(ansibleConfig.acqInventoryPath(), ANSIBLE_HOSTS, context);
+            IOUtils.createFile(ansibleConfig.acqInventoryPath(), ANSIBLE_HOSTS, context.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

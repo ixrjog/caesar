@@ -72,8 +72,7 @@ public class EnvFacadeImpl implements EnvFacade {
         if (ocEnv.getEnvType() == 0)
             new BusinessWrapper<>(ErrorEnum.ENV_IS_DEFAULT);
         // 判断server绑定的资源
-        int count = ocServerService.countByEnvType(ocEnv.getEnvType());
-        if (count == 0) {
+        if (ocServerService.countByEnvType(ocEnv.getEnvType()) == 0) {
             ocEnvService.deleteOcEnvById(id);
             return BusinessWrapper.SUCCESS;
         } else {

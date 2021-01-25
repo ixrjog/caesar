@@ -38,11 +38,11 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
+    protected Map<String, Object> buildTemplateContent(int noticePhase, DeploymentJobContext context) {
         CsCiJobBuild csCiJobBuild = acqCiJobBuild(context.getJobBuild().getCiBuildId());
 
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
-                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntries(super.buildTemplateContent(noticePhase, context))
                 .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束")
                 .paramEntryServerGroup(context.getJobParamDetail().getParamByKey(SERVER_GROUP))
                 .paramEntryHostPattern(context.getJobParamDetail().getParamByKey(HOST_PATTERN))

@@ -53,14 +53,14 @@ public class LdapConfig {
     }
 
     public String buildUserFullDN(String username) {
-        if(StringUtils.isEmpty(base)){
+        if (StringUtils.isEmpty(base)) {
             return buildUserDN(username);
-        }else{
+        } else {
             return Joiner.on(",").join(buildUserDN(username), base);
         }
     }
 
-    public String buildGroupDN(String groupName){
+    public String buildGroupDN(String groupName) {
         String rdn = Joiner.on("=").join(getCustomByKey(GROUP_ID), groupName);
         return Joiner.on(",").skipNulls().join(rdn, getCustomByKey(GROUP_BASE_DN));
     }

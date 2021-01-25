@@ -33,6 +33,8 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
     private CsInstanceService csInstanceService;
 
     private static final String HEALTH_OK = "OK";
+    private static final String HEALTH_ERROR = "ERROR";
+    private static final String HEALTH_INACTIVE = "INACTIVE";
 
     @Override
     public BusinessWrapper<Boolean> setCaesarInstanceActive(int id) {
@@ -54,15 +56,15 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
             InetAddress inetAddress = HostUtils.getInetAddress();
             CsInstance csInstance = csInstanceService.queryCsInstanceByHostIp(inetAddress.getHostAddress());
             if (csInstance == null)
-                return getHealth("ERROR", false);
+                return getHealth(HEALTH_ERROR, false);
             if (csInstance.getIsActive()) {
                 return getHealth(HEALTH_OK, true);
             } else {
-                return getHealth("INACTIVE", false);
+                return getHealth(HEALTH_INACTIVE, false);
             }
         } catch (UnknownHostException ignored) {
         }
-        return getHealth("ERROR", false);
+        return getHealth(HEALTH_ERROR, false);
     }
 
     @Override

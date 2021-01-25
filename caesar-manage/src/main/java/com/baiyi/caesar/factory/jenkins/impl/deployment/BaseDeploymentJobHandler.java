@@ -253,12 +253,12 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
     @Override
     public void trackJobDeployment(CsCdJobBuild csCdJobBuild) {
-        DeploymentJobContext context = acqDeploymentJobContext(csCdJobBuild);
+        DeploymentJobContext context = buildJobContext(csCdJobBuild);
         TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()).trackJobBuild(context); // 追踪任务
     }
 
     @Override
-    public DeploymentJobContext acqDeploymentJobContext(CsCdJobBuild csCdJobBuild) {
+    public DeploymentJobContext buildJobContext(CsCdJobBuild csCdJobBuild) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(csCdJobBuild.getCdJobId());
 
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());

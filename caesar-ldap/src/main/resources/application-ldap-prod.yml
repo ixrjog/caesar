@@ -12,12 +12,18 @@ spring:
     username: 'cn=Directory Manager'
     password: ENC(QXDPnj4ptUmTrjHXK9f0OAUqcMQYF53X9NnK51Q0CxfhyHQakqKZAO2VUYdIkNuj)
 
-
 ldap:
-  custom:  {userId: cn,
-            userBaseDN: ou=Users,
-            userObjectClass: inetOrgPerson,
-            groupId: cn,
-            groupBaseDN: ou=Groups,
-            groupObjectClass: groupOfUniqueNames,
-            groupMember: uniqueMember}
+  custom:  {
+    # 用户 RDN Key uid | cn
+    userId: cn,
+    userBaseDN: ou=Users,
+    # 用户对象属性
+    userObjectClass: inetOrgPerson,
+    # 用户组 RDN Key uid | cn
+    groupId: cn,
+    groupBaseDN: ou=Groups,
+    # 用户组对象属性
+    groupObjectClass: groupOfUniqueNames,
+    # 用户组成员属性
+    groupMember: uniqueMember
+  }

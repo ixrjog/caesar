@@ -34,9 +34,9 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
     }
 
     @Override
-    protected Map<String, Object> acqTemplateContent(int noticePhase, DeploymentJobContext context) {
+    protected Map<String, Object> buildTemplateContent(int noticePhase, DeploymentJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
-                .paramEntries(super.acqTemplateContent(noticePhase, context))
+                .paramEntries(super.buildTemplateContent(noticePhase, context))
                 .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束")
                 .paramEntryVersionName(noticePhase == NoticePhase.START.getType() ? acqVersionName(context) : null)
                 .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
