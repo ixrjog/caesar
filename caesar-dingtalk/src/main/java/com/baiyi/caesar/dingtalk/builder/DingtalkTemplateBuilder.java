@@ -115,7 +115,7 @@ public class DingtalkTemplateBuilder {
 
     public DingtalkTemplateBuilder paramEntryCommitUrl(String commitUrl) {
         if (!StringUtils.isEmpty(commitUrl))
-            templateMap.putContent(BUILD_STATUS, commitUrl);
+            templateMap.putContent(COMMIT_URL, commitUrl);
         return this;
     }
 
