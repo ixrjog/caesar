@@ -27,7 +27,7 @@ public class DingtalkTemplateBuilder {
     public static final String BRANCH = "branch";
     public static final String COMMIT = "commit";
 
-    public static final String COMMIT_URL = "commit_url";
+    public static final String COMMIT_URL = "commitUrl";
 
     public static final String USERS = "users";
     public static final String BUILD_STATUS = "buildStatus";
