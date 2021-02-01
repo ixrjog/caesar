@@ -137,15 +137,16 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testJobDelete() {
-        // canal-client-service-server-prod
-        // community-admin-server-gray
-        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(126);
+        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(191);
         System.err.println(wrapper.isSuccess());
 
     }
 
     @Test
     void testTryAuthorizedUser() {
+
+
+
         SessionUtils.setUsername("gechong");
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
         BusinessWrapper<Boolean> wrapper =  jobFacade.tryAuthorizedUser(csCiJob);

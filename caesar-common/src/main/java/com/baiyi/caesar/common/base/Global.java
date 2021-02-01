@@ -32,6 +32,8 @@ public class Global {
 
     public static final String ENV_PROD = "prod";
 
+    public static final String ENV_GRAY = "gray";
+
     public static final String JUMPSERVER_ADMIN_TOKEN = "jumpserverAdminToken";
 
     // Jenkins Build

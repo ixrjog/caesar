@@ -204,7 +204,13 @@ public enum ErrorEnum {
     JENKINS_LIMIT_CONCURRENT_JOB(12001, "不允许并发执行任务，请等待任务执行完毕！"),
     JENKINS_CORRECTION_JOB_ENGINE(12001,"校正任务引擎错误！"),
     JENKINS_DELETE_JOB_BUILD_DETAILS_ERROR(12001,"删除任务构建详情错误！"),
-    JENKINS_DELETE_JOB_ENGINE_ERROR(12001,"删除任务构建引擎错误！")
+    JENKINS_DELETE_JOB_ENGINE_ERROR(12001,"删除任务构建引擎错误！"),
+
+    BLOCK_RULE_P0(13001,"封网中，禁用发布平台！"),
+    BLOCK_RULE_P1(13001,"封网中，非管理员禁用发布平台！"),
+    BLOCK_RULE_P3(13001,"封网中，禁用发布平台！"),
+    BLOCK_RULE_PROHIBIT_PROD_BUILD(13001,"封网中，生产环境禁止构建/发布！"),
+    BLOCK_RULE_PROHIBIT_GRAY_BUILD(13001,"封网中，灰度环境禁止构建/发布！")
     ;
 
     private int code;

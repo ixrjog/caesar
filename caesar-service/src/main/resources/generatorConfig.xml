@@ -115,9 +115,10 @@ cs_instance
 cs_gitlab_webhook
 cs_gitlab_group
 cs_announcement
+cs_block_platform
        -->
 
-        <table tableName="cs_announcement">
+        <table tableName="cs_block_platform">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

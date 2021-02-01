@@ -236,7 +236,7 @@ public class JobBuildsDecorator {
      */
     private String acqJobBuildUrl(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         JobEngineVO.JobEngine jobEngine = context.getJobEngineMap().get(jobBuild.getJobEngineId());
-        return Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
+        return Joiner.on("/").skipNulls().join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
     }
 
     private String acqAgo(CiJobBuildVO.JobBuild jobBuild) {
