@@ -36,8 +36,8 @@ public class IOSNotify extends BaseDingtalkNotify implements IDingtalkNotify {
     protected Map<String, Object> buildTemplateContent(int noticePhase, BuildJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.buildTemplateContent(noticePhase, context))
-                .paramEntryVersionName(context.getJobBuild().getVersionName())
-                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .paramEntryByVersionName(context.getJobBuild().getVersionName())
+                .paramEntryByBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
                 .build();
         return templateMap.getTemplate();
     }

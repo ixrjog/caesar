@@ -40,10 +40,10 @@ public class AndroidNotify extends BaseDingtalkNotify implements IDingtalkNotify
     protected Map<String, Object> buildTemplateContent(int noticePhase, BuildJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.buildTemplateContent(noticePhase, context))
-                .paramEntryVersionName(context.getJobBuild().getVersionName())
-                .paramEntryBuildType(context.getJobParamDetail().getParamByKey(BUILD_TYPE))
-                .paramEntryProductFlavor(context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR))
-                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .paramEntryByVersionName(context.getJobBuild().getVersionName())
+                .paramEntryByBuildType(context.getJobParamDetail().getParamByKey(BUILD_TYPE))
+                .paramEntryByProductFlavor(context.getJobParamDetail().getParamByKey(PRODUCT_FLAVOR))
+                .paramEntryByBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
                 .build();
 
         return templateMap.getTemplate();

@@ -43,12 +43,12 @@ public class JavaDeploymentNotify extends BaseDingtalkNotify implements IDingtal
 
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.buildTemplateContent(noticePhase, context))
-                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束")
-                .paramEntryServerGroup(context.getJobParamDetail().getParamByKey(SERVER_GROUP))
-                .paramEntryHostPattern(context.getJobParamDetail().getParamByKey(HOST_PATTERN))
-                .paramEntryServers(acqBuildServers(context.getJobBuild().getId()))
-                .paramEntryVersionName(csCiJobBuild.getVersionName())
-                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .paramEntryByBuildPhase(noticePhase == NoticePhase.START.getType() ? "发布开始" : "发布结束")
+                .paramEntryByServerGroup(context.getJobParamDetail().getParamByKey(SERVER_GROUP))
+                .paramEntryByHostPattern(context.getJobParamDetail().getParamByKey(HOST_PATTERN))
+                .paramEntryByServers(acqBuildServers(context.getJobBuild().getId()))
+                .paramEntryByVersionName(csCiJobBuild.getVersionName())
+                .paramEntryByBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
                 .build();
 
         return templateMap.getTemplate();

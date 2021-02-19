@@ -37,9 +37,9 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
     protected Map<String, Object> buildTemplateContent(int noticePhase, DeploymentJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.buildTemplateContent(noticePhase, context))
-                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束")
-                .paramEntryVersionName(noticePhase == NoticePhase.START.getType() ? acqVersionName(context) : null)
-                .paramEntryBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
+                .paramEntryByBuildPhase(noticePhase == NoticePhase.START.getType() ? "加固开始" : "加固结束")
+                .paramEntryByVersionName(noticePhase == NoticePhase.START.getType() ? acqVersionName(context) : null)
+                .paramEntryByBuildDetailsUrl(noticePhase == NoticePhase.END.getType() ? acqBuildDetailsUrl(context.getJobBuild().getId()) : null)
                 .build();
 
         return templateMap.getTemplate();

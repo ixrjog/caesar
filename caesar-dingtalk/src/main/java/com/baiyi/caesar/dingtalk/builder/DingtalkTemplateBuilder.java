@@ -56,55 +56,55 @@ public class DingtalkTemplateBuilder {
         return new DingtalkTemplateBuilder();
     }
 
-    public DingtalkTemplateBuilder paramEntryServers(List<CsJobBuildServer> servers) {
+    public DingtalkTemplateBuilder paramEntryByServers(List<CsJobBuildServer> servers) {
         templateMap.putContent(SERVERS, servers);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryHostPattern(String hostPattern) {
+    public DingtalkTemplateBuilder paramEntryByHostPattern(String hostPattern) {
         templateMap.putContent(HOST_PATTERN, hostPattern);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryServerGroup(String serverGroup) {
+    public DingtalkTemplateBuilder paramEntryByServerGroup(String serverGroup) {
         templateMap.putContent(SERVER_GROUP, serverGroup);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryBuildDetailsUrl(String buildDetailsUrl) {
+    public DingtalkTemplateBuilder paramEntryByBuildDetailsUrl(String buildDetailsUrl) {
         if (!StringUtils.isEmpty(buildDetailsUrl))
             templateMap.putContent(BUILD_DETAILS_URL, buildDetailsUrl);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryProductFlavor(String productFlavor) {
+    public DingtalkTemplateBuilder paramEntryByProductFlavor(String productFlavor) {
         templateMap.putContent(PRODUCT_FLAVOR, productFlavor);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryBuildType(String buildType) {
+    public DingtalkTemplateBuilder paramEntryByBuildType(String buildType) {
         templateMap.putContent(BUILD_TYPE, buildType);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryVersionName(String versionName) {
+    public DingtalkTemplateBuilder paramEntryByVersionName(String versionName) {
         if (!StringUtils.isEmpty(versionName))
             templateMap.putContent(VERSION_NAME, versionName);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryChanges(List<CsJobBuildChange> changes) {
+    public DingtalkTemplateBuilder paramEntryByChanges(List<CsJobBuildChange> changes) {
         templateMap.putContent(CHANGES, changes);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryBuildStatus(String buildStatus) {
+    public DingtalkTemplateBuilder paramEntryByBuildStatus(String buildStatus) {
         if (!StringUtils.isEmpty(buildStatus))
             templateMap.putContent(BUILD_STATUS, buildStatus);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryCommit(String commit, int length) {
+    public DingtalkTemplateBuilder paramEntryByCommit(String commit, int length) {
         if (StringUtils.isEmpty(commit)) {
             templateMap.putContent(COMMIT, "-");
         } else {
@@ -113,54 +113,54 @@ public class DingtalkTemplateBuilder {
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryCommitUrl(String commitUrl) {
+    public DingtalkTemplateBuilder paramEntryByCommitUrl(String commitUrl) {
         if (!StringUtils.isEmpty(commitUrl))
             templateMap.putContent(COMMIT_URL, commitUrl);
         return this;
     }
 
 
-    public DingtalkTemplateBuilder paramEntryBranch(String branch) {
+    public DingtalkTemplateBuilder paramEntryByBranch(String branch) {
         templateMap.putContent(BRANCH, branch);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryUsers(List<OcUser> users) {
+    public DingtalkTemplateBuilder paramEntryByUsers(List<OcUser> users) {
         templateMap.putContent(USERS, users);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryBuildNumber(Integer buildNumber) {
+    public DingtalkTemplateBuilder paramEntryByBuildNumber(Integer buildNumber) {
         templateMap.putContent(BUILD_NUMBER, buildNumber);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryConsoleUrl(String jobBuildUrl) {
+    public DingtalkTemplateBuilder paramEntryByConsoleUrl(String jobBuildUrl) {
         templateMap.putContent(CONSOLE_URL, Joiner.on("/").join(jobBuildUrl, "console"));
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryDisplayName(String username, OcUser ocUser) {
+    public DingtalkTemplateBuilder paramEntryByDisplayName(String username, OcUser ocUser) {
         templateMap.putContent(DISPLAY_NAME, ocUser != null ? ocUser.getDisplayName() : username);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryApplicationName(String applicationName) {
+    public DingtalkTemplateBuilder paramEntryByApplicationName(String applicationName) {
         templateMap.putContent(APPLICATION_NAME, applicationName);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryJobName(String jobName) {
+    public DingtalkTemplateBuilder paramEntryByJobName(String jobName) {
         templateMap.putContent(JOB_NAME, jobName);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryBuildPhase(String noticePhase) {
+    public DingtalkTemplateBuilder paramEntryByBuildPhase(String noticePhase) {
         templateMap.putContent(BUILD_PHASE, noticePhase);
         return this;
     }
 
-    public DingtalkTemplateBuilder paramEntryEnvName(OcEnv ocEnv) {
+    public DingtalkTemplateBuilder paramEntryByEnvName(OcEnv ocEnv) {
         templateMap.putContent(ENV_NAME, ocEnv != null ? ocEnv.getEnvName() : "default");
         return this;
     }

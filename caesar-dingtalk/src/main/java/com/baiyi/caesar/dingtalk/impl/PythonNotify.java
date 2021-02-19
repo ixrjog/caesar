@@ -34,7 +34,7 @@ public class PythonNotify extends BaseDingtalkNotify implements IDingtalkNotify 
     protected Map<String, Object> buildTemplateContent(int noticePhase, BuildJobContext context) {
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
                 .paramEntries(super.buildTemplateContent(noticePhase, context))
-                .paramEntryVersionName(context.getJobBuild().getVersionName())
+                .paramEntryByVersionName(context.getJobBuild().getVersionName())
                 .build();
 
         return templateMap.getTemplate();

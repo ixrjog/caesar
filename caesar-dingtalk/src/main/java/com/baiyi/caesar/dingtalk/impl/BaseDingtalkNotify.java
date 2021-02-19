@@ -150,15 +150,15 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
 
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
-                .paramEntryApplicationName(context.getCsApplication().getApplicationKey())
-                .paramEntryJobName(context.getCsCiJob().getJobKey())
-                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
-                .paramEntryEnvName(ocEnv)
-                .paramEntryDisplayName(context.getJobBuild().getUsername(), ocUser)
-                .paramEntryConsoleUrl(context.getJobBuild().getJobBuildUrl())
-                .paramEntryBuildNumber(context.getJobBuild().getJobBuildNumber())
-                .paramEntryUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
-                .paramEntryBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
+                .paramEntryByApplicationName(context.getCsApplication().getApplicationKey())
+                .paramEntryByJobName(context.getCsCiJob().getJobKey())
+                .paramEntryByBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
+                .paramEntryByEnvName(ocEnv)
+                .paramEntryByDisplayName(context.getJobBuild().getUsername(), ocUser)
+                .paramEntryByConsoleUrl(context.getJobBuild().getJobBuildUrl())
+                .paramEntryByBuildNumber(context.getJobBuild().getJobBuildNumber())
+                .paramEntryByUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
+                .paramEntryByBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
                 .build();
         return templateMap.getTemplate();
     }
@@ -175,19 +175,19 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         OcUser ocUser = ocUserService.queryOcUserByUsername(context.getJobBuild().getUsername());
 
         DingtalkTemplateMap templateMap = DingtalkTemplateBuilder.newBuilder()
-                .paramEntryApplicationName(context.getCsApplication().getApplicationKey())
-                .paramEntryJobName(context.getCsCiJob().getJobKey())
-                .paramEntryBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
-                .paramEntryEnvName(ocEnv)
-                .paramEntryDisplayName(context.getJobBuild().getUsername(), ocUser)
-                .paramEntryConsoleUrl(context.getJobBuild().getJobBuildUrl())
-                .paramEntryBuildNumber(context.getJobBuild().getJobBuildNumber())
-                .paramEntryBranch(context.getJobBuild().getBranch())
-                .paramEntryCommit(context.getJobBuild().getCommit(), 7)
-                .paramEntryCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(),"-","commit",context.getJobBuild().getCommit()))
-                .paramEntryUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
-                .paramEntryChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
-                .paramEntryBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
+                .paramEntryByApplicationName(context.getCsApplication().getApplicationKey())
+                .paramEntryByJobName(context.getCsCiJob().getJobKey())
+                .paramEntryByBuildPhase(noticePhase == NoticePhase.START.getType() ? "构建开始" : "构建结束")
+                .paramEntryByEnvName(ocEnv)
+                .paramEntryByDisplayName(context.getJobBuild().getUsername(), ocUser)
+                .paramEntryByConsoleUrl(context.getJobBuild().getJobBuildUrl())
+                .paramEntryByBuildNumber(context.getJobBuild().getJobBuildNumber())
+                .paramEntryByBranch(context.getJobBuild().getBranch())
+                .paramEntryByCommit(context.getJobBuild().getCommit(), 7)
+                .paramEntryByCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(),"-","commit",context.getJobBuild().getCommit()))
+                .paramEntryByUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
+                .paramEntryByChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
+                .paramEntryByBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
                 .build();
         return templateMap.getTemplate();
     }

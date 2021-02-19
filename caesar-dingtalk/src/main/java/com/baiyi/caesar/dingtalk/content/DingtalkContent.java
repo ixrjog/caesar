@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 @Builder
 public class DingtalkContent implements Serializable {
+
     private static final long serialVersionUID = 2740173009928021870L;
 
     /**
