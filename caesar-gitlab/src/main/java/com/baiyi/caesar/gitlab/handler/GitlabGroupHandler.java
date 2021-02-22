@@ -1,6 +1,7 @@
 package com.baiyi.caesar.gitlab.handler;
 
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
+import org.gitlab.api.models.GitlabAccessLevel;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabNamespace;
 import org.springframework.stereotype.Component;
@@ -27,5 +28,9 @@ public class GitlabGroupHandler {
 
     public List<GitlabNamespace> getNamespace(String gitlabName) {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getNamespaces();
+    }
+
+    public void addGroupMember(String gitlabName, Integer groupId, Integer userId, GitlabAccessLevel accessLevel) throws IOException {
+        GitlabServerContainer.getGitlabAPI(gitlabName).addGroupMember(groupId, userId, accessLevel);
     }
 }

@@ -18,7 +18,6 @@ public class CaesarInstanceBuilder {
                 .hostIp(inetAddress.getHostAddress())
                 .hostName(inetAddress.getHostName())
                 .name(inetAddress.getCanonicalHostName())
-
                 .build();
         return covert(bo);
     }

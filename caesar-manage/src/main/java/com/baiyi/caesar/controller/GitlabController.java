@@ -100,4 +100,10 @@ public class GitlabController {
         gitlabFacade.syncGitlabInstanceGroup(instanceId);
         return HttpResult.SUCCESS;
     }
+
+    @ApiOperation(value = "分页查Gitlab群组")
+    @PostMapping(value = "/group/member/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addGitlabGroupMember(@RequestBody @Valid GitlabGroupParam.AddMember addMember) {
+        return new HttpResult<>(gitlabFacade.addGitlabGroupMember(addMember));
+    }
 }

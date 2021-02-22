@@ -24,8 +24,10 @@ import java.util.Map;
 @Component
 public class OpscloudServer {
 
-    public static final String QUERY_SERVER_GROUP_HOST_PATTERN_API = "/server/group/env/pattern/query";
-    public static final String QUERY_SERVER_GROUP_PAGE_API = "/server/group/page/query";
+    private interface API {
+        String QUERY_SERVER_GROUP_HOST_PATTERN_API = "/server/group/env/pattern/query";
+        String QUERY_SERVER_GROUP_PAGE_API = "/server/group/page/query";
+    }
 
     /**
      * 查询服务器分组信息
@@ -38,7 +40,7 @@ public class OpscloudServer {
         ServerGroupParam.ServerGroupEnvHostPatternQuery query = new ServerGroupParam.ServerGroupEnvHostPatternQuery();
         query.setServerGroupName(serverGroupName);
         query.setEnvType(envType);
-        JsonNode jsonNode = OpscloudHttpUtils.httpPostExecutor(QUERY_SERVER_GROUP_HOST_PATTERN_API, query);
+        JsonNode jsonNode = OpscloudHttpUtils.httpPostExecutor(API.QUERY_SERVER_GROUP_HOST_PATTERN_API, query);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<Map<String, List<OcServer>>>() {
             }.getType();
@@ -62,7 +64,7 @@ public class OpscloudServer {
         param.put("grpType", "");
         param.put("length", pageQuery.getLength().toString());
         param.put("page", pageQuery.getPage().toString());
-        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(QUERY_SERVER_GROUP_PAGE_API, param);
+        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(API.QUERY_SERVER_GROUP_PAGE_API, param);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<DataTable<ServerGroupVO.ServerGroup>>() {
             }.getType();

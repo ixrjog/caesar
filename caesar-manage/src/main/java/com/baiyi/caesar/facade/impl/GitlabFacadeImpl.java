@@ -32,6 +32,7 @@ import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
+import com.baiyi.caesar.gitlab.handler.GitlabUserHandler;
 import com.baiyi.caesar.gitlab.server.GitlabServerContainer;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -44,10 +45,7 @@ import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.gitlab.api.models.GitlabBranch;
-import org.gitlab.api.models.GitlabBranchCommit;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabProject;
+import org.gitlab.api.models.*;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -126,6 +124,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Resource
     private CsCiJobService csCiJobService;
+
+    @Resource
+    private GitlabUserHandler gitlabUserHandler;
 
     @Resource
     private EnvFacade envFacade;
@@ -374,6 +375,38 @@ public class GitlabFacadeImpl implements GitlabFacade {
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
         return queryGitlabProjectBranchCommit(csApplicationScmMember.getScmId(), query.getBranch());
     }
+
+    @Override
+    public BusinessWrapper<Boolean> addGitlabGroupMember(GitlabGroupParam.AddMember addMember) {
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(addMember.getInstanceId());
+        if (csGitlabInstance == null)
+            return new BusinessWrapper<>(ErrorEnum.GITLAB_INSTANCE_NOT_EXIST);
+        try {
+            GitlabAccessLevel accessLevel = GitlabAccessLevel.fromAccessValue(addMember.getAccessLevel());
+            GitlabUser user = queryUser(csGitlabInstance.getName(), addMember.getUsername());
+            if (user == null)
+                return new BusinessWrapper<>(ErrorEnum.GITLAB_USER_NOT_EXIST);
+            gitlabGroupHandler.addGroupMember(csGitlabInstance.getName(), addMember.getGroupId(), user.getId(), accessLevel);
+        } catch (IllegalArgumentException e) {
+            return new BusinessWrapper<>(700001, e.getMessage());
+        } catch (IOException e) {
+            return new BusinessWrapper<>(ErrorEnum.GITLAB_API_ERROR);
+        }
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private GitlabUser queryUser(String gitlabName, String usernmae) {
+        try {
+            List<GitlabUser> users = gitlabUserHandler.queryUsers(gitlabName, usernmae);
+            for (GitlabUser user : users) {
+                if (user.getUsername().equals(usernmae))
+                    return user;
+            }
+        } catch (IOException ignored) {
+        }
+        return null;
+    }
+
 
     private BusinessWrapper<GitlabBranchVO.Repository> queryGitlabProjectRepository(int id, boolean enableTag, boolean enableGitflow, String envName) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);

@@ -52,5 +52,7 @@ public interface GitlabFacade {
 
     BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
 
+    BusinessWrapper<Boolean> addGitlabGroupMember( GitlabGroupParam.AddMember addMember);
+
 
 }

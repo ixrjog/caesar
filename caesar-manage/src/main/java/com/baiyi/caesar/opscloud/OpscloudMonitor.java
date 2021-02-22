@@ -20,7 +20,10 @@ import java.lang.reflect.Type;
 @Component
 public class OpscloudMonitor {
 
-    public static final String MASS_UPDATE_MONITOR_HOST_STATUS_API = "/monitor/host/mass/update/status";
+    private interface API {
+        String MASS_UPDATE_MONITOR_HOST_STATUS_API = "/monitor/host/mass/update/status";
+    }
+
 
     @Retryable(value = IOException.class, backoff = @Backoff(delay = 2000))
     public BusinessWrapper<Boolean> massUpdateMonitorHostStatus(String serverGroupName, String hostPattern, int status) throws IOException {
@@ -28,7 +31,7 @@ public class OpscloudMonitor {
         param.setServerGroupName(serverGroupName);
         param.setHostPattern(hostPattern);
         param.setStatus(status);
-        JsonNode jsonNode = OpscloudHttpUtils.httpPutExecutor(MASS_UPDATE_MONITOR_HOST_STATUS_API, param);
+        JsonNode jsonNode = OpscloudHttpUtils.httpPutExecutor(API.MASS_UPDATE_MONITOR_HOST_STATUS_API, param);
         Type type = new TypeToken<BusinessWrapper<Boolean>>() {
         }.getType();
         return new GsonBuilder().create().fromJson(jsonNode.toString(), type);

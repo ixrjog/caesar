@@ -24,4 +24,5 @@ public class GitlabProjectHandler {
     public GitlabProject getProject(String gitlabName, Serializable projectId) throws IOException {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).getProject(projectId);
     }
+
 }

@@ -21,6 +21,10 @@ import java.util.Map;
 @Component
 public class OpscloudUserRole {
 
+    private interface API {
+        String QUERY_USER_ROLES_API = "/auth/user/role/query";
+    }
+
     /**
      * 查询用户角色详情
      *
@@ -29,10 +33,9 @@ public class OpscloudUserRole {
      * @throws IOException
      */
     public List<UserRoleVO.UserRole> queryUserRoles(String username) throws IOException {
-        String url = "/auth/user/role/query";
         Map<String, String> param = Maps.newHashMap();
-        param.put("username",username);
-        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(url, param);
+        param.put("username", username);
+        JsonNode jsonNode = OpscloudHttpUtils.httpGetExecutor(API.QUERY_USER_ROLES_API, param);
         if (jsonNode.get("success").asBoolean()) {
             Type type = new TypeToken<List<UserRoleVO.UserRole>>() {
             }.getType();
