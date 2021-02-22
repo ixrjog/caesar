@@ -1,6 +1,8 @@
 package com.baiyi.caesar.domain.vo.gitlab;
 
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +23,7 @@ public class GitlabBranchVO {
     }
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
     public static class Option {
         private String label;
@@ -39,19 +41,9 @@ public class GitlabBranchVO {
 
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
-    public static class Branch extends BaseBranch {
-    }
-
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class Tag extends BaseBranch {
-    }
-
-    @Data
-    @ApiModel
+    @AllArgsConstructor
     public static class BaseBranch {
         private String name;
         private String message;

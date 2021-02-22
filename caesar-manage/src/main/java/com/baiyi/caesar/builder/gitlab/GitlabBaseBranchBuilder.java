@@ -13,14 +13,13 @@ import org.gitlab.api.models.GitlabBranchCommit;
 public class GitlabBaseBranchBuilder {
 
     public static GitlabBranchVO.BaseBranch build(CsGitlabProject csGitlabProject, GitlabBranchCommit gitlabBranchCommit,String branch) {
-        GitlabBranchVO.BaseBranch baseBranch = new GitlabBranchVO.BaseBranch();
-        baseBranch.setCommit(gitlabBranchCommit.getId());
-        baseBranch.setCommitMessage(gitlabBranchCommit.getMessage());
         // https://gitlab.xinc818.com/android/vip8/-/commit/a0cdbc30199c1d15b16a3852e56048f4d0d71a3a
         // https://gitlab.xinc818.com/hanghaosai/xcv-cli
-
-        baseBranch.setCommitUrl(GitlabUtils.acqCommitUrl(csGitlabProject.getWebUrl(),gitlabBranchCommit.getId()));
-        baseBranch.setName(branch);
-        return baseBranch;
+        return GitlabBranchVO.BaseBranch.builder()
+                .commit(gitlabBranchCommit.getId())
+                .commitMessage(gitlabBranchCommit.getMessage())
+                .commitUrl(GitlabUtils.acqCommitUrl(csGitlabProject.getWebUrl(),gitlabBranchCommit.getId()))
+                .name(branch)
+                .build();
     }
 }

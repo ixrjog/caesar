@@ -51,8 +51,8 @@ public class JobTest extends BaseUnit {
     private CsCiJobService csCiJobService;
 
     @Test
-    void testCorrectionJobEngine(){
-        jobFacade.correctionJobEngine(BuildType.BUILD.getType(),95);
+    void testCorrectionJobEngine() {
+        jobFacade.correctionJobEngine(BuildType.BUILD.getType(), 95);
     }
 
     @Test
@@ -137,19 +137,21 @@ public class JobTest extends BaseUnit {
 
     @Test
     void testJobDelete() {
-        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(191);
+        // 删除构建任务
+//        BusinessWrapper<Boolean> wrapper = jobFacade.deleteBuildJob(191);
+//        System.err.println(wrapper.isSuccess());
+        // 删除发布任务
+        BusinessWrapper<Boolean> wrapper = jobFacade.deleteDeploymentJob(50);
         System.err.println(wrapper.isSuccess());
-
     }
 
     @Test
     void testTryAuthorizedUser() {
 
 
-
         SessionUtils.setUsername("gechong");
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
-        BusinessWrapper<Boolean> wrapper =  jobFacade.tryAuthorizedUser(csCiJob);
+        BusinessWrapper<Boolean> wrapper = jobFacade.tryAuthorizedUser(csCiJob);
         System.err.println(JSON.toJSON(wrapper));
     }
 
