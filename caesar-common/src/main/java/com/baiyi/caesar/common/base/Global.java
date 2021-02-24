@@ -7,6 +7,12 @@ package com.baiyi.caesar.common.base;
  */
 public class Global {
 
+    public interface TaskPools {
+        String EXECUTOR = "asyncExecutorTaskPool";
+        String COMMON = "asyncCommonTaskPool";
+    }
+
+
     public static final String CREATED_BY = "Created by opscloud";
 
     // extend
@@ -20,11 +26,6 @@ public class Global {
 
     public static final String SERVER_ATTRIBUTE_ANSIBLE_SUBGROUP = "ansible_subgroup";
 
-
-    public static final String ASYNC_POOL_TASK_EXECUTOR = "asyncPoolTaskExecutor";
-
-    public static final String ASYNC_POOL_TASK_COMMON = "asyncPoolTaskCommon";
-
     public static final String BASE_ROLE_NAME = "base";
 
     // 高权限账户
@@ -34,7 +35,6 @@ public class Global {
 
     public static final String ENV_GRAY = "gray";
 
-    public static final String JUMPSERVER_ADMIN_TOKEN = "jumpserverAdminToken";
 
     // Jenkins Build
     public static final String SERVER_GRUOP = "serverGroup";

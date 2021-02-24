@@ -46,7 +46,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
     public final static String IDLE = "idle";
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ENGINE_CHART_CACHE_REPO)
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.ENGINE_CHART)
     public EngineVO.Children buildEngineChart() {
         EngineVO.Children root = EngineVO.Children.builder()
                 .name(ENGINES)

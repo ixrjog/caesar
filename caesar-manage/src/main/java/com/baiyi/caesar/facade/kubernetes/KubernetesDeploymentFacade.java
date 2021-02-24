@@ -1,6 +1,7 @@
 package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesDeploymentBuilder;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesDeploymentDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesTemplateDecorator;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -107,7 +107,7 @@ public class KubernetesDeploymentFacade extends BaseKubernetesFacade {
         return new BusinessWrapper(ErrorEnum.KUBERNETES_CREATE_DEPLOYMENT_ERROR);
     }
 
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void syncKubernetesDeployment(int namespaceId) {
         OcKubernetesClusterNamespace ocKubernetesClusterNamespace = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceById(namespaceId);
         DeploymentList deploymentList = kubernetesDeploymentHandler.getDeploymentList(getOcKubernetesCluster(ocKubernetesClusterNamespace).getName(), ocKubernetesClusterNamespace.getNamespace());

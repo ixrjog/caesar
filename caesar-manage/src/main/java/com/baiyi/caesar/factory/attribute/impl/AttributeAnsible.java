@@ -50,7 +50,7 @@ public class AttributeAnsible extends AttributeBase {
     /**
      * 清空缓存
      */
-    @CacheEvict(cacheNames = CachingConfig.CACHE_NAME_ATTRIBUTE_CACHE_REPO, key = "'preview_' + #serverGroupId", beforeInvocation = true)
+    @CacheEvict(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "'preview_' + #serverGroupId", beforeInvocation = true)
     public void evictPreview(int serverGroupId) {
     }
 
@@ -60,7 +60,7 @@ public class AttributeAnsible extends AttributeBase {
      * @param serverGroupId
      * @return
      */
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ATTRIBUTE_CACHE_REPO, key = "'preview_' + #serverGroupId")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "'preview_' + #serverGroupId")
     public List<PreviewAttributeVO.PreviewAttribute> preview(int serverGroupId) {
         List<PreviewAttributeVO.PreviewAttribute> previewAttributes = Lists.newArrayList();
         OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(serverGroupId);
@@ -79,11 +79,11 @@ public class AttributeAnsible extends AttributeBase {
     /**
      * 清空缓存
      */
-    @CacheEvict(cacheNames = CachingConfig.CACHE_NAME_ATTRIBUTE_CACHE_REPO, key = "'build_' + #ocServerGroup.id", beforeInvocation = true)
+    @CacheEvict(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "'build_' + #ocServerGroup.id", beforeInvocation = true)
     public void evictBuild(OcServerGroup ocServerGroup) {
     }
 
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ATTRIBUTE_CACHE_REPO, key = "'build_' + #ocServerGroup.id")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "'build_' + #ocServerGroup.id")
     public PreviewAttributeVO.PreviewAttribute build(OcServerGroup ocServerGroup) {
         // 跳过空服务器组
         if (ocServerService.countByServerGroupId(ocServerGroup.getId()) == 0)
@@ -171,7 +171,7 @@ public class AttributeAnsible extends AttributeBase {
      *
      * @param ocServerGroup
      */
-    @CacheEvict(cacheNames = CachingConfig.CACHE_NAME_ANSIBLE_CACHE_REPO, key = "#ocServerGroup.id", beforeInvocation = true)
+    @CacheEvict(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "#ocServerGroup.id", beforeInvocation = true)
     public void evictGrouping(OcServerGroup ocServerGroup) {
     }
 
@@ -184,7 +184,7 @@ public class AttributeAnsible extends AttributeBase {
      * @param ocServerGroup
      * @return
      */
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_ANSIBLE_CACHE_REPO, key = "#ocServerGroup.id")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.ATTRIBUTE, key = "#ocServerGroup.id")
     public Map<String, List<OcServer>> grouping(OcServerGroup ocServerGroup) {
         Map<String, List<OcServer>> serverMap = groupingByEnv(ocServerGroup);
         if (serverMap.isEmpty()) return serverMap;

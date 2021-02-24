@@ -1,14 +1,12 @@
 package com.baiyi.caesar.config;
 
+import com.baiyi.caesar.common.base.Global;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.ThreadPoolExecutor;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 /**
  * @Author baiyi
@@ -21,19 +19,32 @@ public class ThreadPoolTaskConfigurer {
     // https://blog.csdn.net/CJ_66/article/details/82503665
     // https://blog.csdn.net/xie19900123/article/details/81771793
 
-    /** 核心线程数（默认线程数） */
+    /**
+     * 核心线程数（默认线程数）
+     */
     private static final int corePoolSize = 50;
-    /** 最大线程数 */
+    /**
+     * 最大线程数
+     */
     private static final int maxPoolSize = 100;
-    /** 允许线程空闲时间（单位：默认为秒） */
+    /**
+     * 允许线程空闲时间（单位：默认为秒）
+     */
     private static final int keepAliveTime = 60;
-    /** 缓冲队列大小 */
+    /**
+     * 缓冲队列大小
+     */
     private static final int queueCapacity = 200;
-    /** 线程池名前缀 */
+    /**
+     * 线程池名前缀
+     */
     private static final String threadNamePrefix = "Async-Service-";
 
-    @Bean(name = ASYNC_POOL_TASK_EXECUTOR)
-    public ThreadPoolTaskExecutor getAsyncPoolTaskExecutor() {
+
+
+
+    @Bean(name = Global.TaskPools.EXECUTOR)
+    public ThreadPoolTaskExecutor getExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         /**
          * 那么poolSize、corePoolSize、maximumPoolSize三者的关系是如何的呢？
@@ -62,8 +73,8 @@ public class ThreadPoolTaskConfigurer {
         return executor;
     }
 
-    @Bean(name = ASYNC_POOL_TASK_COMMON)
-    public ThreadPoolTaskExecutor getAsyncPoolTaskCommon() {
+    @Bean(name = Global.TaskPools.COMMON)
+    public ThreadPoolTaskExecutor getCommonExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         /**
          * 那么poolSize、corePoolSize、maximumPoolSize三者的关系是如何的呢？

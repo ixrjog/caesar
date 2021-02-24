@@ -26,7 +26,7 @@ public class SettingBaseFacadeImpl implements SettingBaseFacade {
     private OcSettingService ocSettingService;
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_SETTING_CACHE_REPO)
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.SETTING)
     public String querySetting(String name) {
         OcSetting ocSetting = ocSettingService.queryOcSettingByName(name);
         if (ocSetting == null) return null;
@@ -34,7 +34,7 @@ public class SettingBaseFacadeImpl implements SettingBaseFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_SETTING_CACHE_REPO, key = "#name")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.SETTING, key = "#name")
     public Map<String, String> querySettingMap(String name) {
         Map<String, String> settingMap = Maps.newHashMap();
         OcSetting ocSetting = ocSettingService.queryOcSettingByName(name);
@@ -60,7 +60,7 @@ public class SettingBaseFacadeImpl implements SettingBaseFacade {
     }
 
     @Override
-    @CacheEvict(cacheNames = CachingConfig.CACHE_NAME_SETTING_CACHE_REPO, key = "#name", beforeInvocation = true)
+    @CacheEvict(cacheNames = CachingConfig.CacheRepositories.SETTING, key = "#name", beforeInvocation = true)
     public void saveSetting(String name, String settingValue) {
         OcSetting ocSetting = ocSettingService.queryOcSettingByName(name);
         if (ocSetting == null) return;

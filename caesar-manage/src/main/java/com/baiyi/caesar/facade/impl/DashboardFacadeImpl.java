@@ -58,7 +58,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     private ApplicationDecorator applicationDecorator;
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'topCard'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'topCard'")
     public DashboardVO.TopCard queryTopCard() {
         DashboardVO.TopCard topCard = new DashboardVO.TopCard();
         topCard.setApplicationTotal(csApplicationService.countAllCsApplication());
@@ -69,7 +69,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'latestTasks'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'latestTasks'")
     public DashboardVO.LatestTasks queryLatestTasks() {
 
         final int latestTasksLength = 9;
@@ -83,7 +83,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'taskExecutionGroupByHour'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'taskExecutionGroupByHour'")
     public DashboardVO.TaskExecutionGroupByHour queryTaskExecutionGroupByHour() {
         DashboardVO.TaskExecutionGroupByHour charts = new DashboardVO.TaskExecutionGroupByHour();
         charts.setBuildTaskGroupByHours(csCiJobBuildService.queryCiJobBuildGroupByHour());
@@ -92,7 +92,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'jobTypeStatistics'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'jobTypeStatistics'")
     public DashboardVO.JobTypeStatistics queryJobTypeStatistics() {
         DashboardVO.JobTypeStatistics charts = new DashboardVO.JobTypeStatistics();
         charts.setBuildJobTypeStatistics(csCiJobService.queryJobTypeTotal());
@@ -100,7 +100,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'taskExecutionGroupByWeek'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'taskExecutionGroupByWeek'")
     public DashboardVO.TaskExecutionGroupByWeek queryTaskExecutionGroupByWeek() {
         DashboardVO.TaskExecutionGroupByWeek charts = new DashboardVO.TaskExecutionGroupByWeek();
         charts.setBuildTaskGoupByWeeks(csCiJobService.queryBuildTaskGoupByWeek());
@@ -108,7 +108,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     }
 
     @Override
-    @Cacheable(cacheNames = CachingConfig.CACHE_NAME_DASHBOARD_CACHE_REPO, key = "'hotTopStatistics'")
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'hotTopStatistics'")
     public DashboardVO.HotTopStatistics queryHotTopStatistics() {
         final int top = 15;
         DashboardVO.HotTopStatistics charts = new DashboardVO.HotTopStatistics();

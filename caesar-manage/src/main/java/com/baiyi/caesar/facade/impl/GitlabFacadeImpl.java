@@ -6,6 +6,7 @@ import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.GitlabUtils;
 import com.baiyi.caesar.common.util.IDUtils;
@@ -57,8 +58,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -156,7 +155,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void webhooksV1(GitlabHooksVO.Webhook webhook) {
         try {
             // 处理push事件
@@ -247,7 +246,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void syncGitlabInstanceProject(int instanceId) {
         Map<Integer, CsGitlabProject> projectMap = getGitlabProjectMap(instanceId);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
@@ -258,7 +257,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void syncGitlabInstanceGroup(int instanceId) {
         Map<Integer, CsGitlabGroup> groupMap = getGitlabGroupMap(instanceId);
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);

@@ -1,6 +1,7 @@
 package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesServiceBuilder;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesServiceDecorator;
@@ -28,8 +29,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -77,7 +76,7 @@ public class KubernetesServiceFacade extends BaseKubernetesFacade {
         return new BusinessWrapper(kubernetesServiceDecorator.decorator(BeanCopierUtils.copyProperties(ocKubernetesService, KubernetesServiceVO.Service.class), queryParam.getExtend()));
     }
 
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void syncKubernetesService(int namespaceId) {
         OcKubernetesClusterNamespace ocKubernetesClusterNamespace = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceById(namespaceId);
         ServiceList serviceList = kubernetesServiceHandler.getServiceList(getOcKubernetesCluster(ocKubernetesClusterNamespace).getName(), ocKubernetesClusterNamespace.getNamespace());

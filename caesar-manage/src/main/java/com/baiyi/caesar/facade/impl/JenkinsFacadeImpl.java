@@ -1,6 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.HashUtils;
 import com.baiyi.caesar.decorator.application.CdJobDecorator;
@@ -35,8 +36,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -225,7 +224,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void upgradeJobTplByTplId(int tplId) {
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(tplId);
         csCiJobService.queryCsCiJobByJobTplId(tplId).forEach(job ->

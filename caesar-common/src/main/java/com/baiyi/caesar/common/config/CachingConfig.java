@@ -32,28 +32,25 @@ import java.util.Set;
 @EnableCaching
 public class CachingConfig extends CachingConfigurerSupport {
 
-    public static final String CACHE_NAME_ANSIBLE_CACHE_REPO = "ansibleCacheRepo";
 
-    public static final String CACHE_NAME_ATTRIBUTE_CACHE_REPO = "attributeCacheRepo";
+    public interface CacheRepositories {
+        String ANSIBLE = "Caesar:AnsibleRepo";
+        String ATTRIBUTE = "Caesar:Attribute";
+        String SETTING = "Caesar:Setting";
+        String ENGINE_CHART = "Caesar:EngineChart";
+        String DASHBOARD = "Caesar:Dashboard";
+    }
 
-    public static final String CACHE_NAME_SETTING_CACHE_REPO = "settingCacheRepo";
-
-    public static final String CACHE_NAME_ENGINE_CHART_CACHE_REPO = "engineChartCacheRepo";
-
-    public static final String CACHE_NAME_DASHBOARD_CACHE_REPO = "dashboardCacheRepo";
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 设置一个初始化的缓存空间set集合
         Set<String> cacheNames = new HashSet<>();
-        cacheNames.add("instanceTypeContext");
-        cacheNames.add("aliyunECSDisk");
-        cacheNames.add("aliyunECSRenew");
-        cacheNames.add(CACHE_NAME_ANSIBLE_CACHE_REPO);
-        cacheNames.add(CACHE_NAME_ATTRIBUTE_CACHE_REPO);
-        cacheNames.add(CACHE_NAME_SETTING_CACHE_REPO);
-        cacheNames.add(CACHE_NAME_ENGINE_CHART_CACHE_REPO);
-        cacheNames.add(CACHE_NAME_DASHBOARD_CACHE_REPO);
+        cacheNames.add(CacheRepositories.ANSIBLE);
+        cacheNames.add(CacheRepositories.ATTRIBUTE);
+        cacheNames.add(CacheRepositories.DASHBOARD);
+        cacheNames.add(CacheRepositories.SETTING);
+        cacheNames.add(CacheRepositories.ENGINE_CHART);
         // 使用自定义的缓存配置初始化一个cacheManager
         RedisCacheManager cacheManager = RedisCacheManager.builder(factory)
                 // 注意这两句的调用顺序，一定要先调用该方法设置初始化的缓存名，
@@ -69,14 +66,11 @@ public class CachingConfig extends CachingConfigurerSupport {
         config = config.entryTtl(Duration.ofMinutes(1))
                 // 不缓存空值
                 .disableCachingNullValues();
-        configMap.put("instanceTypeContext", config.entryTtl(Duration.ofMinutes(2)));
-        configMap.put("aliyunECSDisk", config.entryTtl(Duration.ofMinutes(2)));
-        configMap.put("aliyunECSRenew", config.entryTtl(Duration.ofMinutes(2)));
-        configMap.put(CACHE_NAME_ANSIBLE_CACHE_REPO, config.entryTtl(Duration.ofDays(7)));
-        configMap.put(CACHE_NAME_ATTRIBUTE_CACHE_REPO, config.entryTtl(Duration.ofDays(7)));
-        configMap.put(CACHE_NAME_SETTING_CACHE_REPO, config.entryTtl(Duration.ofMinutes(10)));
-        configMap.put(CACHE_NAME_ENGINE_CHART_CACHE_REPO, config.entryTtl(Duration.ofSeconds(5)));
-        configMap.put(CACHE_NAME_DASHBOARD_CACHE_REPO, config.entryTtl(Duration.ofMinutes(1)));
+        configMap.put(CacheRepositories.ANSIBLE, config.entryTtl(Duration.ofDays(7)));
+        configMap.put(CacheRepositories.ATTRIBUTE, config.entryTtl(Duration.ofDays(7)));
+        configMap.put(CacheRepositories.SETTING, config.entryTtl(Duration.ofMinutes(10)));
+        configMap.put(CacheRepositories.ENGINE_CHART, config.entryTtl(Duration.ofSeconds(5)));
+        configMap.put(CacheRepositories.DASHBOARD, config.entryTtl(Duration.ofMinutes(1)));
         return configMap;
     }
 

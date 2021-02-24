@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.builder.OssBucketBuilder;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.aliyun.OssBucketDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -60,7 +59,7 @@ public class AliyunOSSFacadeImpl implements AliyunOSSFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void syncOSSBucket() {
         aliyunOSSHandler.getBuckets().parallelStream().forEach(e -> {
             if (csOssBucketService.queryCsOssBucketByName(e.getName()) == null)

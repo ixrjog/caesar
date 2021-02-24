@@ -9,6 +9,7 @@ import com.baiyi.caesar.ansible.exception.TaskStopException;
 import com.baiyi.caesar.ansible.exception.TaskTimeoutException;
 import com.baiyi.caesar.ansible.executor.ExecutorEngine;
 import com.baiyi.caesar.common.base.AnsibleResult;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.ServerTaskStatus;
 import com.baiyi.caesar.common.base.ServerTaskStopType;
 import com.baiyi.caesar.common.util.IOUtils;
@@ -25,8 +26,6 @@ import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 /**
  * @Author baiyi
@@ -95,7 +94,7 @@ public class AnsibleExecutorHandler {
         }
     }
 
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void executorTest(Long timeout) {
         if (timeout == 0)
             timeout = MAX_TIMEOUT;
@@ -132,7 +131,7 @@ public class AnsibleExecutorHandler {
      * @param timeout
      * @return
      */
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void executorRecorder(OcServerTaskMember member, CommandLine commandLine, Long timeout) {
         if (timeout == 0)
             timeout = MAX_TIMEOUT;

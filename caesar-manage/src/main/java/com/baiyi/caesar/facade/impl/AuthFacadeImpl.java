@@ -1,6 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.bo.AuthMenuBO;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.common.util.MenuUtils;
@@ -32,8 +33,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 /**
  * @Author baiyi
@@ -207,7 +206,7 @@ public class AuthFacadeImpl implements AuthFacade {
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void syncUserRole() {
         List<OcUser> users = ocUserService.queryOcUserActive();
         users.parallelStream().forEach(this::syncUserRole);

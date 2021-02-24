@@ -3,6 +3,7 @@ package com.baiyi.caesar.factory.engine.impl;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
@@ -34,7 +35,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
 
 /**
@@ -58,7 +58,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
     private CsCdJobBuildService csCdJobBuildService;
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void trackJobBuild(T buildJobContext) {
         DeploymentJobContext context = (DeploymentJobContext) buildJobContext;
         while (true) {

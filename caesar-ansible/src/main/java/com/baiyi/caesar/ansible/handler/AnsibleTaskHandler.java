@@ -3,6 +3,7 @@ package com.baiyi.caesar.ansible.handler;
 import com.baiyi.caesar.ansible.bo.TaskResult;
 import com.baiyi.caesar.ansible.builder.*;
 import com.baiyi.caesar.ansible.config.AnsibleConfig;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.ServerTaskStatus;
 import com.baiyi.caesar.common.base.ServerTaskStopType;
 import com.baiyi.caesar.common.util.PlaybookUtils;
@@ -28,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 /**
  * @Author baiyi
@@ -72,7 +71,7 @@ public class AnsibleTaskHandler {
     @Resource
     private TaskLogRecorder taskLogRecorder;
 
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void call(OcServerTask ocServerTask, ServerTaskExecutorParam.ServerTaskPlaybookExecutor serverTaskPlaybookExecutor, String playbookPath) {
         // 设置并发
         int maxConcurrent = serverTaskPlaybookExecutor.getConcurrent();
@@ -128,7 +127,7 @@ public class AnsibleTaskHandler {
         }
     }
 
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void call(OcServerTask ocServerTask, ServerTaskExecutorParam.ServerTaskCommandExecutor serverTaskCommandExecutor) {
         // 设置并发
         int maxConcurrent = serverTaskCommandExecutor.getConcurrent();
@@ -182,7 +181,7 @@ public class AnsibleTaskHandler {
         }
     }
 
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR)
     public void call(OcServerTask ocServerTask, ServerTaskExecutorParam.ServerTaskScriptExecutor serverTaskScriptExecutor, String scriptPath) {
         // 设置并发
         int maxConcurrent = serverTaskScriptExecutor.getConcurrent();

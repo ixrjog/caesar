@@ -4,6 +4,7 @@ package com.baiyi.caesar.account.impl;
 import com.baiyi.caesar.account.IAccount;
 import com.baiyi.caesar.account.factory.AccountFactory;
 import com.baiyi.caesar.common.base.CredentialType;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.IDUtils;
 import com.baiyi.caesar.domain.generator.caesar.OcAccount;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
@@ -23,8 +24,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_EXECUTOR;
 
 
 /**
@@ -173,7 +172,7 @@ public abstract class BaseAccount implements InitializingBean, IAccount {
      * @return
      */
     @Override
-    @Async(value = ASYNC_POOL_TASK_EXECUTOR)
+    @Async(value = Global.TaskPools.EXECUTOR )
     public void async() {
         sync();
     }

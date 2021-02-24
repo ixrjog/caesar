@@ -1,6 +1,7 @@
 package com.baiyi.caesar.factory.engine.impl;
 
 import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtils;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
@@ -19,8 +20,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-
-import static com.baiyi.caesar.common.base.Global.ASYNC_POOL_TASK_COMMON;
 
 /**
  * @Author baiyi
@@ -61,14 +60,14 @@ public class TaskEngineCenterImpl implements TaskEngineCenter {
 
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void trackBuildTask(BuildJobContext context) {
         ITaskEngineHandler iTaskEngineHandler = TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.BUILD.getType()); // 追踪任务
         iTaskEngineHandler.trackJobBuild(context);
     }
 
     @Override
-    @Async(value = ASYNC_POOL_TASK_COMMON)
+    @Async(value = Global.TaskPools.COMMON)
     public void trackBuildTask(DeploymentJobContext context) {
         ITaskEngineHandler iTaskEngineHandler = TaskEngineHandlerFactory.getIJobEngineHandlerByKey(BuildType.DEPLOYMENT.getType()); // 追踪任务
         iTaskEngineHandler.trackJobBuild(context);
