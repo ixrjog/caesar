@@ -1,7 +1,10 @@
 package com.baiyi.caesar;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +13,9 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * @Author baiyi
@@ -28,7 +34,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         basePackages = "com.baiyi"
 )
 public class ManageApplication {
+
+    private static final Logger log = LoggerFactory.getLogger(ManageApplication.class);
+
     public static void main(String[] args) {
+        Instant inst1 = Instant.now();
         SpringApplication.run(ManageApplication.class, args);
+        log.info("Caesar发布平台 <Spring Boot {}>", SpringBootVersion.getVersion());
+        log.info("启动成功! 耗时:{}/s", Duration.between(inst1, Instant.now()).getSeconds());
     }
 }
