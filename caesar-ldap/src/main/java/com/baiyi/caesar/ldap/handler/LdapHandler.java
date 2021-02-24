@@ -44,7 +44,7 @@ public class LdapHandler {
      * @return
      */
     public List<Person> queryPersonList() {
-        return ldapTemplate.search(query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.USER_OBJECT_CLASS)), new PersonAttributesMapper());
+        return ldapTemplate.search(query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_OBJECT_CLASS)), new PersonAttributesMapper());
     }
 
     /**
@@ -54,7 +54,8 @@ public class LdapHandler {
      */
     public List<String> queryPersonNameList() {
         return ldapTemplate.search(
-                query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.USER_OBJECT_CLASS)), (AttributesMapper<String>) attrs -> (String) attrs.get(ldapConfig.getCustomByKey(LdapConfig.USER_ID)).get());
+                query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_OBJECT_CLASS)), (AttributesMapper<String>) attrs
+                        -> (String) attrs.get(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID)).get());
     }
 
     /**
@@ -79,10 +80,9 @@ public class LdapHandler {
         String password = credential.getPassword();
         log.info("login check content username {}", username);
         AndFilter filter = new AndFilter();
-        filter.and(new EqualsFilter("objectclass", "person")).and(new EqualsFilter(ldapConfig.getCustomByKey(LdapConfig.USER_ID), username));
+        filter.and(new EqualsFilter("objectclass", "person")).and(new EqualsFilter(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID), username));
         try {
-            boolean authResult = ldapTemplate.authenticate(ldapConfig.getCustomByKey(LdapConfig.USER_BASE_DN), filter.toString(), password);
-            return authResult;
+            return ldapTemplate.authenticate(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_BASE_DN), filter.toString(), password);
         } catch (Exception e) {
             //e.printStackTrace();
             return false;
@@ -115,9 +115,9 @@ public class LdapHandler {
      * @return
      */
     public boolean bindPerson(Person person) {
-        String userId = ldapConfig.getCustomByKey(LdapConfig.USER_ID);
-        String userBaseDN = ldapConfig.getCustomByKey(LdapConfig.USER_BASE_DN);
-        String userObjectClass = ldapConfig.getCustomByKey(LdapConfig.USER_OBJECT_CLASS);
+        String userId = ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID);
+        String userBaseDN = ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_BASE_DN);
+        String userObjectClass = ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_OBJECT_CLASS);
 
         try {
             String rdn = Joiner.on("=").join(userId, person.getUsername());
@@ -147,8 +147,8 @@ public class LdapHandler {
     }
 
     public boolean updatePerson(Person person) {
-        String rdn = Joiner.on("=").join(ldapConfig.getCustomByKey(LdapConfig.USER_ID), person.getUsername());
-        String dn = Joiner.on(",").skipNulls().join(rdn, ldapConfig.getCustomByKey(LdapConfig.USER_BASE_DN));
+        String rdn = Joiner.on("=").join(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID), person.getUsername());
+        String dn = Joiner.on(",").skipNulls().join(rdn, ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_BASE_DN));
         Person checkPerson = getPersonWithDn(dn);
         if (checkPerson == null) return false;
         try {
@@ -173,7 +173,7 @@ public class LdapHandler {
      * @return
      */
     public List<Group> queryGroupList() {
-        return ldapTemplate.search(query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.GROUP_OBJECT_CLASS)), new GroupAttributesMapper());
+        return ldapTemplate.search(query().where("objectclass").is(ldapConfig.getCustomByKey(LdapConfig.Attributes.GROUP_OBJECT_CLASS)), new GroupAttributesMapper());
     }
 
     public List<String> queryGroupMember(String groupName) {
@@ -182,7 +182,7 @@ public class LdapHandler {
             DirContextAdapter adapter = (DirContextAdapter) ldapTemplate.lookup(ldapConfig.buildGroupDN(groupName));
             //"uniqueMember"
             // LdapConfig.GROUP_MEMBER
-            String[] members = adapter.getStringAttributes(ldapConfig.getCustomByKey(LdapConfig.GROUP_MEMBER));
+            String[] members = adapter.getStringAttributes(ldapConfig.getCustomByKey(LdapConfig.Attributes.GROUP_MEMBER));
             List<String> usernameList = Lists.newArrayList();
             for (String member : members) {
                 String[] m = member.split("=|,");
@@ -206,7 +206,7 @@ public class LdapHandler {
 
     private boolean modificationGroupMember(String groupName, String username, int modificationType) {
         String groupDN = ldapConfig.buildGroupDN(groupName);
-        String groupMember = ldapConfig.getCustomByKey(LdapConfig.GROUP_MEMBER);
+        String groupMember = ldapConfig.getCustomByKey(LdapConfig.Attributes.GROUP_MEMBER);
         String userDN = ldapConfig.buildUserFullDN(username);
         try {
             ldapTemplate.modifyAttributes(groupDN, new ModificationItem[]{
@@ -229,7 +229,7 @@ public class LdapHandler {
     public boolean checkPersonInLdap(String username) {
         try {
             DirContextAdapter adapter = (DirContextAdapter) ldapTemplate.lookup(ldapConfig.buildUserDN(username));
-            String cn = adapter.getStringAttribute(ldapConfig.getCustomByKey(LdapConfig.USER_ID));
+            String cn = adapter.getStringAttribute(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID));
             if (username.equalsIgnoreCase(cn)) return true;
         } catch (Exception e) {
         }
@@ -239,9 +239,9 @@ public class LdapHandler {
     public List<String> searchLdapGroup(String username) {
         List<String> groupList = Lists.newArrayList();
         try {
-            String groupBaseDN = ldapConfig.getCustomByKey(LdapConfig.GROUP_BASE_DN);
-            String groupMember = ldapConfig.getCustomByKey(LdapConfig.GROUP_MEMBER);
-            String userId = ldapConfig.getCustomByKey(LdapConfig.USER_ID);
+            String groupBaseDN = ldapConfig.getCustomByKey(LdapConfig.Attributes.GROUP_BASE_DN);
+            String groupMember = ldapConfig.getCustomByKey(LdapConfig.Attributes.GROUP_MEMBER);
+            String userId = ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID);
             String userDN = ldapConfig.buildUserFullDN(username);
             groupList = ldapTemplate.search(LdapQueryBuilder.query().base(groupBaseDN)
                             .where(groupMember).is(userDN).and(userId).like("*"),

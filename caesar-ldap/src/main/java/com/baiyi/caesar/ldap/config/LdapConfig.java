@@ -34,13 +34,15 @@ public class LdapConfig {
      * groupMember: uniqueMember}
      */
 
-    public static final String USER_ID = "userId";
-    public static final String USER_BASE_DN = "userBaseDN";
-    public static final String USER_OBJECT_CLASS = "userObjectClass";
-    public static final String GROUP_OBJECT_CLASS = "groupObjectClass";
-    public static final String GROUP_MEMBER = "groupMember";
-    public static final String GROUP_BASE_DN = "groupBaseDN";
-    public static final String GROUP_ID = "groupId";
+    public interface Attributes {
+        String USER_ID = "userId";
+        String USER_BASE_DN = "userBaseDN";
+        String USER_OBJECT_CLASS = "userObjectClass";
+        String GROUP_OBJECT_CLASS = "groupObjectClass";
+        String GROUP_MEMBER = "groupMember";
+        String GROUP_BASE_DN = "groupBaseDN";
+        String GROUP_ID = "groupId";
+    }
 
 
     public String getCustomByKey(String key) {
@@ -48,8 +50,8 @@ public class LdapConfig {
     }
 
     public String buildUserDN(String username) {
-        String rdn = Joiner.on("=").join(getCustomByKey(USER_ID), username);
-        return Joiner.on(",").skipNulls().join(rdn, getCustomByKey(USER_BASE_DN));
+        String rdn = Joiner.on("=").join(getCustomByKey(Attributes.USER_ID), username);
+        return Joiner.on(",").skipNulls().join(rdn, getCustomByKey(Attributes.USER_BASE_DN));
     }
 
     public String buildUserFullDN(String username) {
@@ -61,7 +63,7 @@ public class LdapConfig {
     }
 
     public String buildGroupDN(String groupName) {
-        String rdn = Joiner.on("=").join(getCustomByKey(GROUP_ID), groupName);
-        return Joiner.on(",").skipNulls().join(rdn, getCustomByKey(GROUP_BASE_DN));
+        String rdn = Joiner.on("=").join(getCustomByKey(Attributes.GROUP_ID), groupName);
+        return Joiner.on(",").skipNulls().join(rdn, getCustomByKey(Attributes.GROUP_BASE_DN));
     }
 }
