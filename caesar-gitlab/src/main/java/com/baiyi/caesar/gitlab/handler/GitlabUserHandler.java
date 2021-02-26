@@ -20,4 +20,8 @@ public class GitlabUserHandler {
         return Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).findUsers(username);
     }
 
+    public void deleteGroupMember(String gitlabName, Integer userId,Integer groupId) throws IOException {
+        Objects.requireNonNull(GitlabServerContainer.getGitlabAPI(gitlabName)).deleteGroupMember(groupId,  userId);
+    }
+
 }

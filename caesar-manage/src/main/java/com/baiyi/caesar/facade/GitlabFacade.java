@@ -12,6 +12,7 @@ import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
 import com.baiyi.caesar.domain.vo.gitlab.*;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
+import org.gitlab.api.models.GitlabUser;
 
 import java.util.Map;
 
@@ -52,7 +53,10 @@ public interface GitlabFacade {
 
     BusinessWrapper<GitlabBranchVO.BaseBranch> queryApplicationSCMMemberBranchCommit(ApplicationParam.ScmMemberBranchCommitQuery query);
 
-    BusinessWrapper<Boolean> addGitlabGroupMember( GitlabGroupParam.AddMember addMember);
+    BusinessWrapper<Boolean> addGitlabGroupMember(GitlabGroupParam.AddMember addMember);
 
+    GitlabUser queryUser(String gitlabName, String usernmae);
+
+    boolean isGroupMember(String gitlabName, Integer groupId, GitlabUser user);
 
 }

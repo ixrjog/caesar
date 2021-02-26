@@ -4,6 +4,7 @@ import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.GitlabTokenUtils;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.facade.GitlabFacade;
+import org.gitlab.api.models.GitlabUser;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
@@ -51,4 +52,10 @@ public class GitlabFacadeImplTest extends BaseUnit {
         System.out.println(token);
     }
 
+    @Test
+    void gitlabTest() {
+        GitlabUser gitlabUser = gitlabFacade.queryUser("gitlab-1", "baiyi");
+        boolean result = gitlabFacade.isGroupMember("gitlab-1", 109, gitlabUser);
+        System.err.println(result);
+    }
 }

@@ -385,6 +385,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
             GitlabUser user = queryUser(csGitlabInstance.getName(), addMember.getUsername());
             if (user == null)
                 return new BusinessWrapper<>(ErrorEnum.GITLAB_USER_NOT_EXIST);
+            if (isGroupMember(csGitlabInstance.getName(), addMember.getGroupId(), user)) {
+                gitlabUserHandler.deleteGroupMember(csGitlabInstance.getName(), user.getId(), addMember.getGroupId());
+            }
             gitlabGroupHandler.addGroupMember(csGitlabInstance.getName(), addMember.getGroupId(), user.getId(), accessLevel);
         } catch (IllegalArgumentException e) {
             return new BusinessWrapper<>(700001, e.getMessage());
@@ -394,7 +397,15 @@ public class GitlabFacadeImpl implements GitlabFacade {
         return BusinessWrapper.SUCCESS;
     }
 
-    private GitlabUser queryUser(String gitlabName, String usernmae) {
+    @Override
+    public boolean isGroupMember(String gitlabName, Integer groupId, GitlabUser user) {
+        List<GitlabGroupMember> members = gitlabGroupHandler.getGroupMembers(gitlabName, groupId);
+        if (CollectionUtils.isEmpty(members)) return false;
+        return members.stream().anyMatch(e -> e.getId().equals(user.getId()));
+    }
+
+    @Override
+    public GitlabUser queryUser(String gitlabName, String usernmae) {
         try {
             List<GitlabUser> users = gitlabUserHandler.queryUsers(gitlabName, usernmae);
             for (GitlabUser user : users) {
