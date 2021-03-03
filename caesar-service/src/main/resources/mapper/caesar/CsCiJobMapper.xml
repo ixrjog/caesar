@@ -42,6 +42,9 @@
         select * from cs_ci_job
         <where>
             application_id = #{applicationId}
+            <if test="!showHide">
+                and hide = false
+            </if>
             <if test="queryName != null and queryName != ''">
                 and ( name like "%" #{queryName} "%" or comment like "%" #{queryName} "%" )
             </if>

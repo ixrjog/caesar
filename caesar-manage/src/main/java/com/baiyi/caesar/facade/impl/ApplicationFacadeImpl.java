@@ -225,6 +225,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public DataTable<CiJobVO.CiJob> queryCiJobPage(CiJobParam.CiJobPageQuery pageQuery) {
+        if (pageQuery.getShowHide() == null)
+            pageQuery.setShowHide(false);
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
         List<CiJobVO.CiJob> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobVO.CiJob.class);
         return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());

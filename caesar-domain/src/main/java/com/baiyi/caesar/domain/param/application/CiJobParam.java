@@ -21,12 +21,15 @@ public class CiJobParam {
     @ApiModel
     public static class CiJobPageQuery extends PageParam {
 
-        @ApiModelProperty(value = "应用id",example = "1")
+        @ApiModelProperty(value = "应用id", example = "1")
         @NotNull(message = "必须指定应用id")
         private Integer applicationId;
 
         @ApiModelProperty(value = "关键字查询")
         private String queryName;
+
+        @ApiModelProperty(value = "显示隐藏任务")
+        private Boolean showHide;
 
         @ApiModelProperty(value = "扩展属性", example = "1")
         private Integer extend;
@@ -38,7 +41,7 @@ public class CiJobParam {
     @ApiModel
     public static class CiJobTplPageQuery extends PageParam {
 
-        @ApiModelProperty(value = "模版id",example = "1")
+        @ApiModelProperty(value = "模版id", example = "1")
         @NotNull(message = "必须模版id")
         private Integer jobTplId;
 
