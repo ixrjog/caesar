@@ -12,7 +12,7 @@ import org.yaml.snakeyaml.Yaml;
  * @Date 2020/7/3 4:29 下午
  * @Version 1.0
  */
-public class KubernetesUtils {
+public class KubernetesUtil {
 
     // TemplateVariable
     public static TemplateVariable buildVariable(String templateVariableYAML) {

@@ -1,6 +1,6 @@
 package com.baiyi.caesar.dingtalk.util;
 
-import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.google.common.base.Joiner;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +22,7 @@ public class AtUserUtils {
     }
 
     private static boolean tryAtUser(OcUser ocUser, String phone) {
-        if (!RegexUtils.isPhone(phone)) return false;
+        if (!RegexUtil.isPhone(phone)) return false;
         return !phone.equals(ocUser.getPhone());
     }
 
@@ -36,7 +36,7 @@ public class AtUserUtils {
     public static String convertAt(List<OcUser> userList) {
         if (CollectionUtils.isEmpty(userList))
             return "";
-        List<OcUser> atUserList = userList.stream().filter(e -> RegexUtils.isPhone(e.getPhone())).collect(Collectors.toList());
+        List<OcUser> atUserList = userList.stream().filter(e -> RegexUtil.isPhone(e.getPhone())).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(atUserList))
             return "";
         return Joiner.on(",").join(atUserList.stream().map(e -> "@" + e.getPhone()).collect(Collectors.toList()));
@@ -56,7 +56,7 @@ public class AtUserUtils {
     public static String convertAtMobiles(List<OcUser> userList) {
         if (CollectionUtils.isEmpty(userList))
             return "";
-        List<OcUser> atUserList = userList.stream().filter(e -> RegexUtils.isPhone(e.getPhone())).collect(Collectors.toList());
+        List<OcUser> atUserList = userList.stream().filter(e -> RegexUtil.isPhone(e.getPhone())).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(atUserList))
             return "";
         String atMobiles = Joiner.on(",").join(atUserList.stream().map(e -> Joiner.on(",").join("\"", e.getPhone(), "\"")).collect(Collectors.toList()));

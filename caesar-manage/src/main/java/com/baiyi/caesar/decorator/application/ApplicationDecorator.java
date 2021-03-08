@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationServerGroup;
@@ -55,17 +55,17 @@ public class ApplicationDecorator {
         if (extend == 0) return application;
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
         application.setTags(acqTagsByMembers(members));
-        application.setScmMembers(BeanCopierUtils.copyListProperties(members, ApplicationVO.ScmMember.class));
+        application.setScmMembers(BeanCopierUtil.copyListProperties(members, ApplicationVO.ScmMember.class));
         List<CsApplicationServerGroup> csApplicationServerGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(application.getId());
         if (!CollectionUtils.isEmpty(csApplicationServerGroups))
-            application.setServerGroups(BeanCopierUtils.copyListProperties(csApplicationServerGroups, ApplicationServerGroupVO.ApplicationServerGroup.class));
+            application.setServerGroups(BeanCopierUtil.copyListProperties(csApplicationServerGroups, ApplicationServerGroupVO.ApplicationServerGroup.class));
         return application;
     }
 
     public ApplicationVO.Application decorator(ApplicationVO.Application application, OcUser ocUser, Integer extend) {
         application = decorator(application, extend);
         OcUserPermission ocUserPermission = userPermissionFacade.queryUserPermissionByUniqueKey(ocUser.getId(), BusinessType.APPLICATION.getType(), application.getId());
-        application.setUserPermission(BeanCopierUtils.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
+        application.setUserPermission(BeanCopierUtil.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
         return application;
     }
 

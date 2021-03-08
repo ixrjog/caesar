@@ -2,9 +2,9 @@ package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
-import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.DataTable;
@@ -64,7 +64,7 @@ public class CdJobDecorator extends BaseJobDecorator {
         if (!CollectionUtils.isEmpty(csCdJobEngines)) {
             cdJob.setJobEngines(
                     csCdJobEngines.stream().map(e -> {
-                        JobEngineVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, JobEngineVO.JobEngine.class);
+                        JobEngineVO.JobEngine jobEngine = BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class);
                         jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
                         if (jobEngine.getNeedUpgrade())
                             needUpgrade.set(true);
@@ -78,7 +78,7 @@ public class CdJobDecorator extends BaseJobDecorator {
 
 
     public CdJobVO.CdJob decorator(CsCdJob csCdJob) {
-        return decorator(BeanCopierUtils.copyProperties(csCdJob, CdJobVO.CdJob.class));
+        return decorator(BeanCopierUtil.copyProperties(csCdJob, CdJobVO.CdJob.class));
     }
 
     public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob) {
@@ -86,19 +86,19 @@ public class CdJobDecorator extends BaseJobDecorator {
         // 装饰 环境信息
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(csCiJob.getEnvType());
         if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtils.copyProperties(ocEnv, EnvVO.Env.class);
+            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
             cdJob.setEnv(env);
         }
 
-        if (!IDUtils.isEmpty(cdJob.getJobTplId())) {
+        if (!IDUtil.isEmpty(cdJob.getJobTplId())) {
             CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(cdJob.getJobTplId());
             if (csJobTpl != null)
-                cdJob.setJobTpl(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
+                cdJob.setJobTpl(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
         }
 
         // 参数
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(cdJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(cdJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtil.convert(jenkinsJobParameters);
         cdJob.setParameters(params);
 
 

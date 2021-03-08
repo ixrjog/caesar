@@ -1,6 +1,6 @@
 package com.baiyi.caesar.builder.gitlab;
 
-import com.baiyi.caesar.common.util.GitlabUtils;
+import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
 import org.gitlab.api.models.GitlabBranchCommit;
@@ -18,7 +18,7 @@ public class GitlabBaseBranchBuilder {
         return GitlabBranchVO.BaseBranch.builder()
                 .commit(gitlabBranchCommit.getId())
                 .commitMessage(gitlabBranchCommit.getMessage())
-                .commitUrl(GitlabUtils.acqCommitUrl(csGitlabProject.getWebUrl(),gitlabBranchCommit.getId()))
+                .commitUrl(GitlabUtil.buildCommitUrl(csGitlabProject.getWebUrl(),gitlabBranchCommit.getId()))
                 .name(branch)
                 .build();
     }

@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.bo.UserSettingBO;
 import com.baiyi.caesar.common.base.UserSettingGroup;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserSetting;
@@ -65,7 +65,7 @@ public class UserSettingFacadeImpl implements UserSettingFacade, InitializingBea
                         .name(k)
                         .settingValue(settingValue)
                         .build();
-                ocUserSettingService.addOcUserSetting(BeanCopierUtils.copyProperties(userSettingBO, OcUserSetting.class));
+                ocUserSettingService.addOcUserSetting(BeanCopierUtil.copyProperties(userSettingBO, OcUserSetting.class));
             }
         });
         return BusinessWrapper.SUCCESS;

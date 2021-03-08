@@ -1,7 +1,7 @@
 package com.baiyi.caesar.task.util;
 
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.TimeUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -23,9 +23,9 @@ public class TaskUtil {
     public void sendMessage(String topic) {
         if (redisUtil.hasKey(topic)) {
             int count = (int) redisUtil.get(topic);
-            redisUtil.set(topic, count + 1, TimeUtils.dayTime * 30);
+            redisUtil.set(topic, count + 1, TimeUtil.dayTime * 30);
         } else {
-            redisUtil.set(topic, 1, TimeUtils.dayTime * 30);
+            redisUtil.set(topic, 1, TimeUtil.dayTime * 30);
         }
     }
 

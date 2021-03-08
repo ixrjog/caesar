@@ -12,7 +12,7 @@ import java.util.Map;
  * @Date 2020/2/28 12:17 下午
  * @Version 1.0
  */
-public class SSHKeyUtils {
+public class SSHKeyUtil {
 
     public static Map<String, String> getKeyMap(String comment) {
         Map<String, String> keys = new HashMap<>();

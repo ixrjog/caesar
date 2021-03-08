@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.CiJobBuildBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
@@ -43,6 +43,6 @@ public class CiJobBuildBuilder {
     }
 
     private static CsCiJobBuild covert(CiJobBuildBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsCiJobBuild.class);
+        return BeanCopierUtil.copyProperties(bo, CsCiJobBuild.class);
     }
 }

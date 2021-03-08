@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @Date 2020/4/23 9:59 上午
  * @Version 1.0
  */
-public class MenuUtils {
+public class MenuUtil {
 
     public static ArrayList<MenuVO> buildMenu(OcAuthMenu ocAuthMenu) {
         return new GsonBuilder().create().fromJson(ocAuthMenu.getMenu(), new TypeToken<ArrayList<MenuVO>>() {

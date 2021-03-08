@@ -1,7 +1,7 @@
 package com.baiyi.caesar.common;
 
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -14,7 +14,7 @@ public class UtilsTest extends BaseUnit {
     @Test
     void testSsJobKeyRule(){
 
-       boolean r= RegexUtils.isJobKeyRule("aaa-ddd-A");
+       boolean r= RegexUtil.isJobKeyRule("aaa-ddd-A");
        System.err.println(r);
     }
 
@@ -22,7 +22,7 @@ public class UtilsTest extends BaseUnit {
     @Test
     void test(){
 
-        boolean r= RegexUtils.isApplicationKeyRule("AAA-dd");
+        boolean r= RegexUtil.isApplicationKeyRule("AAA-dd");
         System.err.println(r);
     }
 }

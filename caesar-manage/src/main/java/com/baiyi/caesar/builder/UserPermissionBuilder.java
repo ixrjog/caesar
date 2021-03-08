@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.UserPermissionBO;
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.param.server.ServerGroupParam;
@@ -44,7 +44,7 @@ public class UserPermissionBuilder {
     }
 
     private static OcUserPermission covert(UserPermissionBO userPermissionBO) {
-        return BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class);
+        return BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class);
     }
 
 }

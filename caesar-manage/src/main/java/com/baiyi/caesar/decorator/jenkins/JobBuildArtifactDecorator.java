@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.jenkins;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.bae64.FileSizeUtils;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
@@ -26,7 +26,7 @@ public class JobBuildArtifactDecorator {
             return Lists.newArrayList();
 
         return artifacts.stream().map(e -> {
-            BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtils.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
+            BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtil.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
 
             if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
                 buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));

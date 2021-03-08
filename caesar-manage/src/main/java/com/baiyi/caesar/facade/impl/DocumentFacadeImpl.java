@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.UserDocumentBuilder;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.decorator.document.DocumentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -45,14 +45,14 @@ public class DocumentFacadeImpl implements DocumentFacade {
     @Override
     public DocumentVO.Doc queryDocByKey(String docKey) {
         OcDocument ocDocument = ocDocumentService.queryOcDocumentByKey(docKey);
-        DocumentVO.Doc doc = BeanCopierUtils.copyProperties(ocDocument, DocumentVO.Doc.class);
+        DocumentVO.Doc doc = BeanCopierUtil.copyProperties(ocDocument, DocumentVO.Doc.class);
         return documentDecorator.decorator(doc);
     }
 
     @Override
     public  DocumentVO.Doc queryDocById(int id){
         OcDocument ocDocument = ocDocumentService.queryOcDocumentById(id);
-        DocumentVO.Doc doc = BeanCopierUtils.copyProperties(ocDocument, DocumentVO.Doc.class);
+        DocumentVO.Doc doc = BeanCopierUtil.copyProperties(ocDocument, DocumentVO.Doc.class);
         return documentDecorator.decorator(doc);
     }
 
@@ -66,13 +66,13 @@ public class DocumentFacadeImpl implements DocumentFacade {
             ocUserDocument = UserDocumentBuilder.build(ocUser, ocDocument);
             ocUserDocumentService.addOcUserDocument(ocUserDocument);
         }
-        return BeanCopierUtils.copyProperties(ocUserDocument, DocumentVO.UserDoc.class);
+        return BeanCopierUtil.copyProperties(ocUserDocument, DocumentVO.UserDoc.class);
     }
 
     @Override
     public BusinessWrapper<Boolean> saveUserDoc(DocumentVO.UserDoc userDoc) {
         OcUserDocument ocUserDocument = ocUserDocumentService.queryOcUserDocumentById(userDoc.getId());
-        if (!ocUserDocument.getUsername().equals(SessionUtils.getUsername()))
+        if (!ocUserDocument.getUsername().equals(SessionUtil.getUsername()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         ocUserDocument.setDocContent(userDoc.getDocContent());
         ocUserDocumentService.updateOcUserDocument(ocUserDocument);

@@ -2,7 +2,7 @@ package com.baiyi.caesar.account;
 
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.account.factory.AccountFactory;
-import com.baiyi.caesar.common.util.PasswordUtils;
+import com.baiyi.caesar.common.util.PasswordUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.service.user.OcUserService;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class LdapAccountTest extends BaseUnit {
     @Test
     void testUpdateUser() {
         OcUser ocUser = getOcUser();
-        String password = PasswordUtils.getPW(16);
+        String password = PasswordUtil.getPW(16);
         ocUser.setPassword(password);
         System.err.println(password);
 

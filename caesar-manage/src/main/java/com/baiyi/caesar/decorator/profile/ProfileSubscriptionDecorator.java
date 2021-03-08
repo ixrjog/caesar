@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.profile;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.ansible.AnsiblePlaybookDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcAnsiblePlaybook;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
@@ -42,10 +42,10 @@ public class ProfileSubscriptionDecorator {
 
     public ProfileSubscriptionVO.ProfileSubscription decorator(ProfileSubscriptionVO.ProfileSubscription profileSubscription) {
         OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(profileSubscription.getServerGroupId());
-        profileSubscription.setServerGroup(BeanCopierUtils.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
+        profileSubscription.setServerGroup(BeanCopierUtil.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
         Map<String, List<OcServer>> serverMap = attributeAnsible.grouping(ocServerGroup, true);
         profileSubscription.setServers(getServersByHostPattern(serverMap, profileSubscription.getHostPattern()));
-        if (!IDUtils.isEmpty(profileSubscription.getScriptId())) {
+        if (!IDUtil.isEmpty(profileSubscription.getScriptId())) {
             OcAnsiblePlaybook ocAnsiblePlaybook = ocAnsiblePlaybookService.queryOcAnsiblePlaybookById(profileSubscription.getScriptId());
             profileSubscription.setAnsiblePlaybook(ansiblePlaybookDecorator.decorator(ocAnsiblePlaybook));
         }
@@ -54,12 +54,12 @@ public class ProfileSubscriptionDecorator {
 
     private List<ServerVO.Server> getServersByHostPattern(Map<String, List<OcServer>> serverMap, String hostPattern) {
         if (serverMap.containsKey(hostPattern))
-            return BeanCopierUtils.copyListProperties(serverMap.get(hostPattern), ServerVO.Server.class);
+            return BeanCopierUtil.copyListProperties(serverMap.get(hostPattern), ServerVO.Server.class);
         List<ServerVO.Server> servers = Lists.newArrayList();
         for (String key : serverMap.keySet()) {
             for (OcServer ocServer : serverMap.get(key)) {
                 if (ServerBaseFacade.acqServerName(ocServer).equals(hostPattern)) {
-                    servers.add(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                    servers.add(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
                     return servers;
                 }
             }

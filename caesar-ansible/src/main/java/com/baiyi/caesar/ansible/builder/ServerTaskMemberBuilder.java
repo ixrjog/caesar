@@ -1,7 +1,7 @@
 package com.baiyi.caesar.ansible.builder;
 
 import com.baiyi.caesar.ansible.bo.ServerTaskMemberBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTask;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTaskMember;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
@@ -25,6 +25,6 @@ public class ServerTaskMemberBuilder {
     }
 
     private static OcServerTaskMember covert(ServerTaskMemberBO serverTaskMemberBO) {
-        return BeanCopierUtils.copyProperties(serverTaskMemberBO, OcServerTaskMember.class);
+        return BeanCopierUtil.copyProperties(serverTaskMemberBO, OcServerTaskMember.class);
     }
 }

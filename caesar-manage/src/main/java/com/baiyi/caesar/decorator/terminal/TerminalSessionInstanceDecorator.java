@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.terminal;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.common.util.bae64.FileSizeUtils;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSessionInstance;
 import com.baiyi.caesar.domain.vo.term.TerminalSessionInstanceVO;
@@ -24,9 +24,9 @@ public class TerminalSessionInstanceDecorator {
 
     public TerminalSessionInstanceVO.TerminalSessionInstance decorator(OcTerminalSessionInstance ocTerminalSessionInstance, Integer extend) {
         TerminalSessionInstanceVO.TerminalSessionInstance terminalSessionInstance
-                = BeanCopierUtils.copyProperties(ocTerminalSessionInstance, TerminalSessionInstanceVO.TerminalSessionInstance.class);
+                = BeanCopierUtil.copyProperties(ocTerminalSessionInstance, TerminalSessionInstanceVO.TerminalSessionInstance.class);
         String path = xtermConfig.getAuditLogPath(ocTerminalSessionInstance.getSessionId(), terminalSessionInstance.getInstanceId());
-        String content = IOUtils.readFile(path);
+        String content = IOUtil.readFile(path);
         TerminalSessionInstanceVO.AuditLog auditLog = new TerminalSessionInstanceVO.AuditLog();
         if (StringUtils.isEmpty(content)) {
             auditLog.setIsEmpty(true);

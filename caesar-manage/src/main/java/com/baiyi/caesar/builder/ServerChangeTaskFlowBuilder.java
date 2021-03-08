@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.ServerChangeTaskFlowBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerChangeTask;
 import com.baiyi.caesar.domain.generator.caesar.OcServerChangeTaskFlow;
 
@@ -30,6 +30,6 @@ public class ServerChangeTaskFlowBuilder {
     }
 
     private static OcServerChangeTaskFlow covert(ServerChangeTaskFlowBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcServerChangeTaskFlow.class);
+        return BeanCopierUtil.copyProperties(bo, OcServerChangeTaskFlow.class);
     }
 }

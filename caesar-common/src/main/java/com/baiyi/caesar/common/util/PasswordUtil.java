@@ -10,7 +10,7 @@ import java.util.Random;
  * @Date 2020/1/7 1:52 下午
  * @Version 1.0
  */
-public class PasswordUtils {
+public class PasswordUtil {
 
     private static final String PW_STR = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUM_CHAR = "23456789"; // 8

@@ -102,9 +102,9 @@ public class JobBuildsDecorator {
             CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
             CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
             JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
-            if (!IDUtils.isEmpty(csCiJob.getJobTplId())) {
+            if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
                 CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-                jobTpl = jobTplDecorator.decorator(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class), NOT_EXTEND);
+                jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), NOT_EXTEND);
             }
             return JobBuildContext.builder()
                     .csCiJob(csCiJob)
@@ -124,7 +124,7 @@ public class JobBuildsDecorator {
             if (!jobEngineMap.containsKey(jobBuild.getJobEngineId())) {
                 CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
                 if (csJobEngine != null) {
-                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
+                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtil.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
                     jobEngineMap.put(jobBuild.getJobEngineId(), jobEngine);
                 }
             }
@@ -142,7 +142,7 @@ public class JobBuildsDecorator {
     }
 
     public CiJobBuildVO.JobBuild decorator(CsCiJobBuild csCiJobBuild, JobBuildContext context, Integer extend) {
-        CiJobBuildVO.JobBuild jobBuild = BeanCopierUtils.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class);
+        CiJobBuildVO.JobBuild jobBuild = BeanCopierUtil.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class);
         // 操作用户
         jobBuild.setUser(acqUser(jobBuild));
         // Ago
@@ -177,7 +177,7 @@ public class JobBuildsDecorator {
     private CiJobBuildVO.BaseCommit acqCommitDetails(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         CiJobBuildVO.BaseCommit baseCommit = new CiJobBuildVO.BaseCommit();
         baseCommit.setCommit(jobBuild.getCommit());
-        baseCommit.setCommitUrl(GitlabUtils.acqCommitUrl(context.getCsGitlabProject().getWebUrl(), jobBuild.getCommit()));
+        baseCommit.setCommitUrl(GitlabUtil.buildCommitUrl(context.getCsGitlabProject().getWebUrl(), jobBuild.getCommit()));
         return baseCommit;
     }
 
@@ -185,7 +185,7 @@ public class JobBuildsDecorator {
     private String acqBuildTimes(CiJobBuildVO.JobBuild jobBuild) {
         if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
             long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
-            return TimeUtils.acqBuildTime(buildTime);
+            return TimeUtil.acqBuildTime(buildTime);
         }
         return "";
     }
@@ -193,10 +193,10 @@ public class JobBuildsDecorator {
     public List<BuildExecutorVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
         List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.BUILD.getType(), buildId);
         return executors.stream().map(e -> {
-                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
+                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtil.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
                     OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
                     if (ocServer != null)
-                        buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                        buildExecutor.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
                     return buildExecutor;
                 }
         ).collect(Collectors.toList());
@@ -205,10 +205,10 @@ public class JobBuildsDecorator {
     private List<CiJobBuildVO.BuildChange> getBuildChanges(CsGitlabProject csGitlabProject, int buildId) {
         List<CsJobBuildChange> changes = csJobBuildChangeService.queryCsJobBuildChangeByBuildId(BuildType.BUILD.getType(), buildId);
         return changes.stream().map(e -> {
-            CiJobBuildVO.BuildChange buildChange = BeanCopierUtils.copyProperties(e, CiJobBuildVO.BuildChange.class);
+            CiJobBuildVO.BuildChange buildChange = BeanCopierUtil.copyProperties(e, CiJobBuildVO.BuildChange.class);
             buildChange.setShortCommitId(buildChange.getCommitId().substring(0, 7));
 
-            buildChange.setCommitUrl(GitlabUtils.acqCommitUrl(csGitlabProject.getWebUrl(), buildChange.getCommitId()));
+            buildChange.setCommitUrl(GitlabUtil.buildCommitUrl(csGitlabProject.getWebUrl(), buildChange.getCommitId()));
             return buildChange;
         }).collect(Collectors.toList());
     }
@@ -240,7 +240,7 @@ public class JobBuildsDecorator {
     }
 
     private String acqAgo(CiJobBuildVO.JobBuild jobBuild) {
-        return TimeAgoUtils.format(jobBuild.getStartTime());
+        return TimeAgoUtil.format(jobBuild.getStartTime());
     }
 
     private UserVO.User acqUser(CiJobBuildVO.JobBuild jobBuild) {
@@ -248,7 +248,7 @@ public class JobBuildsDecorator {
             OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
             if (ocUser != null) {
                 ocUser.setPassword("");
-                return BeanCopierUtils.copyProperties(ocUser, UserVO.User.class);
+                return BeanCopierUtil.copyProperties(ocUser, UserVO.User.class);
             }
         }
         return new UserVO.User();

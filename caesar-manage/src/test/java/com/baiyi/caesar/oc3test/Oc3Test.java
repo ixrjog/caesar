@@ -2,7 +2,7 @@ package com.baiyi.caesar.oc3test;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.common.util.JSONMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
@@ -125,7 +125,7 @@ public class Oc3Test extends BaseUnit {
 
     @Test
     void ioTest() {
-        IOUtils.appendFile("22222", "/Users/liangjian/Documents/workspace/opscloud-data/xterm/audit/7179ef7d-20a2-451a-91fb-bb4c62c08cc2/test.log");
+        IOUtil.appendFile("22222", "/Users/liangjian/Documents/workspace/opscloud-data/xterm/audit/7179ef7d-20a2-451a-91fb-bb4c62c08cc2/test.log");
     }
 
 }

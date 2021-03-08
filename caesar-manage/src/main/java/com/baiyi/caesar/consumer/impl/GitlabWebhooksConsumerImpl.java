@@ -2,7 +2,7 @@ package com.baiyi.caesar.consumer.impl;
 
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
-import com.baiyi.caesar.common.util.GitlabUtils;
+import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
@@ -57,7 +57,7 @@ public class GitlabWebhooksConsumerImpl implements GitlabWebhooksConsumer {
             consumedWebhooks(csGitlabWebhook);
             return;
         }
-        String branch = GitlabUtils.getBranch(csGitlabWebhook.getRef());
+        String branch = GitlabUtil.getBranch(csGitlabWebhook.getRef());
         // master不触发任务
         if (StringUtils.isEmpty(branch) || branch.equals("master")) {
             consumedWebhooks(csGitlabWebhook);

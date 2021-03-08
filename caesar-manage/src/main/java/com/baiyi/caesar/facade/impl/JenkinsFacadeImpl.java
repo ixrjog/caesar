@@ -2,8 +2,8 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.HashUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.HashUtil;
 import com.baiyi.caesar.decorator.application.CdJobDecorator;
 import com.baiyi.caesar.decorator.application.CiJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JenkinsInstanceDecorator;
@@ -87,7 +87,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     @Override
     public DataTable<JenkinsInstanceVO.Instance> queryJenkinsInstancePage(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery) {
         DataTable<CsJenkinsInstance> table = csJenkinsInstanceService.queryCsJenkinsInstanceByParam(pageQuery);
-        List<JenkinsInstanceVO.Instance> page = BeanCopierUtils.copyListProperties(table.getData(), JenkinsInstanceVO.Instance.class);
+        List<JenkinsInstanceVO.Instance> page = BeanCopierUtil.copyListProperties(table.getData(), JenkinsInstanceVO.Instance.class);
         return new DataTable<>(page.stream().map(e -> jenkinsInstanceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -101,7 +101,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
 
     @Override
     public BusinessWrapper<Boolean> addJenkinsInstance(JenkinsInstanceVO.Instance instance) {
-        CsJenkinsInstance csJenkinsInstance = BeanCopierUtils.copyProperties(instance, CsJenkinsInstance.class);
+        CsJenkinsInstance csJenkinsInstance = BeanCopierUtil.copyProperties(instance, CsJenkinsInstance.class);
         csJenkinsInstance.setToken(stringEncryptor.encrypt(instance.getToken()));
         csJenkinsInstanceService.addCsJenkinsInstance(csJenkinsInstance);
         jenkinsServerContainer.reset();
@@ -110,7 +110,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateJenkinsInstance(JenkinsInstanceVO.Instance instance) {
-        CsJenkinsInstance pre = BeanCopierUtils.copyProperties(instance, CsJenkinsInstance.class);
+        CsJenkinsInstance pre = BeanCopierUtil.copyProperties(instance, CsJenkinsInstance.class);
         if (StringUtils.isEmpty(pre.getToken())) {
             CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(instance.getId());
             pre.setToken(csJenkinsInstance.getToken());
@@ -132,17 +132,17 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     @Override
     public DataTable<JobTplVO.JobTpl> queryJobTplPage(JobTplParam.JobTplPageQuery pageQuery) {
         DataTable<CsJobTpl> table = csJobTplService.queryCsJobTplByParam(pageQuery);
-        List<JobTplVO.JobTpl> page = BeanCopierUtils.copyListProperties(table.getData(), JobTplVO.JobTpl.class);
+        List<JobTplVO.JobTpl> page = BeanCopierUtil.copyListProperties(table.getData(), JobTplVO.JobTpl.class);
         return new DataTable<>(page.stream().map(e -> jobTplDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addJobTpl(JobTplVO.JobTpl jobTpl) {
-        CsJobTpl csJobTpl = BeanCopierUtils.copyProperties(jobTpl, CsJobTpl.class);
+        CsJobTpl csJobTpl = BeanCopierUtil.copyProperties(jobTpl, CsJobTpl.class);
         try {
             String xml = jenkinsTplFacade.getJobContent(jobTpl.getJenkinsInstanceId(), jobTpl.getTplName());
             csJobTpl.setTplContent(xml);
-            csJobTpl.setTplHash(HashUtils.MD5(xml));
+            csJobTpl.setTplHash(HashUtil.MD5(xml));
         } catch (Exception ignored) {
         }
         csJobTplService.addCsJobTpl(csJobTpl);
@@ -156,7 +156,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     }
 
     private void saveJobTpl(JobTplVO.JobTpl jobTpl) {
-        CsJobTpl csJobTpl = BeanCopierUtils.copyProperties(jobTpl, CsJobTpl.class);
+        CsJobTpl csJobTpl = BeanCopierUtil.copyProperties(jobTpl, CsJobTpl.class);
         csJobTpl.setTplVersion(csJobTpl.getTplVersion() + 1); // 递增版本号
         csJobTplService.updateCsJobTpl(csJobTpl);
     }
@@ -197,7 +197,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     @Override
     public DataTable<CiJobVO.CiJob> queryCiJobTplPage(CiJobParam.CiJobTplPageQuery pageQuery) {
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
-        List<CiJobVO.CiJob> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobVO.CiJob.class);
+        List<CiJobVO.CiJob> page = BeanCopierUtil.copyListProperties(table.getData(), CiJobVO.CiJob.class);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(pageQuery.getJobTplId());
         return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, csJobTpl)).collect(Collectors.toList()), table.getTotalNum());
     }
@@ -205,7 +205,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     @Override
     public DataTable<CdJobVO.CdJob> queryCdJobTplPage(CdJobParam.CdJobTplPageQuery pageQuery) {
         DataTable<CsCdJob> table = csCdJobService.queryCsCdJobByParam(pageQuery);
-        List<CdJobVO.CdJob> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobVO.CdJob.class);
+        List<CdJobVO.CdJob> page = BeanCopierUtil.copyListProperties(table.getData(), CdJobVO.CdJob.class);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(pageQuery.getJobTplId());
         return new DataTable<>(page.stream().map(e -> cdJobDecorator.decorator(e, csJobTpl)).collect(Collectors.toList()), table.getTotalNum());
     }

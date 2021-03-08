@@ -5,7 +5,7 @@ import com.baiyi.caesar.account.IAccount;
 import com.baiyi.caesar.account.factory.AccountFactory;
 import com.baiyi.caesar.common.base.CredentialType;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcAccount;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
@@ -96,7 +96,7 @@ public abstract class BaseAccount implements InitializingBean, IAccount {
      */
     private Boolean saveOcUser(OcUser ocUser) {
         try {
-            if (!IDUtils.isEmpty(ocUser.getId())) {
+            if (!IDUtil.isEmpty(ocUser.getId())) {
                 if (!StringUtils.isEmpty(ocUser.getSource()) && ocUser.getSource().equals("ldap")) {
                     ocUserService.updateOcUser(ocUser);
                 } else {

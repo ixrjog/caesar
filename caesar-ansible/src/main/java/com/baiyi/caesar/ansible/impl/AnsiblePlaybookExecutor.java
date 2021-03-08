@@ -2,7 +2,7 @@ package com.baiyi.caesar.ansible.impl;
 
 import com.baiyi.caesar.ansible.IAnsibleExecutor;
 import com.baiyi.caesar.ansible.builder.ServerTaskBuilder;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -50,7 +50,7 @@ public class AnsiblePlaybookExecutor extends BaseExecutor implements IAnsibleExe
         // 重新写入playbook
         OcAnsiblePlaybook ocAnsiblePlaybook = ocAnsiblePlaybookService.queryOcAnsiblePlaybookById(serverTaskPlaybookExecutor.getPlaybookId());
         String playbookPath = ansibleConfig.getPlaybookPath(ocAnsiblePlaybook);
-        IOUtils.writeFile(ocAnsiblePlaybook.getPlaybook(), playbookPath);
+        IOUtil.writeFile(ocAnsiblePlaybook.getPlaybook(), playbookPath);
 
         // 异步执行
         ansibleTaskHandler.call(ocServerTask, serverTaskPlaybookExecutor, playbookPath);
@@ -75,7 +75,7 @@ public class AnsiblePlaybookExecutor extends BaseExecutor implements IAnsibleExe
         // 重新写入脚本
         OcAnsiblePlaybook ocAnsiblePlaybook = ocAnsiblePlaybookService.queryOcAnsiblePlaybookById(serverTaskPlaybookExecutor.getPlaybookId());
         String playbookPath = ansibleConfig.getPlaybookPath(ocAnsiblePlaybook);
-        IOUtils.writeFile(ocAnsiblePlaybook.getPlaybook(), playbookPath);
+        IOUtil.writeFile(ocAnsiblePlaybook.getPlaybook(), playbookPath);
         // 异步执行
         ansibleTaskHandler.call(ocServerTask, serverTaskPlaybookExecutor, playbookPath);
         return getResultWrapper(ocServerTask);

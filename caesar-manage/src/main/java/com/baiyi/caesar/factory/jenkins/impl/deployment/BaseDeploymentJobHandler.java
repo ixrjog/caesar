@@ -6,7 +6,7 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
@@ -205,7 +205,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
      * @return
      */
     protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCdJob.getParameterYaml());
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
 
@@ -213,7 +213,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         List<CsJobBuildArtifact> artifacts = acqBuildArtifacts(deploymentParam.getCiBuildId());
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
-                .paramEntries(JenkinsUtils.convert(jenkinsJobParameters))
+                .paramEntries(JenkinsUtil.convert(jenkinsJobParameters))
                 .paramEntry(APPLICATION_NAME, csApplication.getApplicationKey())
                 .paramEntry(BUCKET_NAME, csOssBucket.getName())
                 .paramEntry(ENV, envFacade.queryEnvNameByType(csCiJob.getEnvType()))
@@ -261,8 +261,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     public DeploymentJobContext buildJobContext(CsCdJobBuild csCdJobBuild) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(csCdJobBuild.getCdJobId());
 
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCdJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtil.convert(jenkinsJobParameters);
 
         JobParametersContext jobParamDetail = JobParametersContext.builder()
                 .params(params)

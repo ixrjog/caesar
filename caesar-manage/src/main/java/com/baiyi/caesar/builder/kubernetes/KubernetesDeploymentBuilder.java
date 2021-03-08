@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder.kubernetes;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.kubernetes.KubernetesDeploymentBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesClusterNamespace;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesDeployment;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -29,6 +29,6 @@ public class KubernetesDeploymentBuilder {
     }
 
     private static OcKubernetesDeployment covert(KubernetesDeploymentBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcKubernetesDeployment.class);
+        return BeanCopierUtil.copyProperties(bo, OcKubernetesDeployment.class);
     }
 }

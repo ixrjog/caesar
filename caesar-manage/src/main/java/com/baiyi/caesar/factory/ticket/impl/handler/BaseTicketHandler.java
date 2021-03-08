@@ -1,8 +1,8 @@
 package com.baiyi.caesar.factory.ticket.impl.handler;
 
 import com.baiyi.caesar.builder.WorkorderTicketBuilder;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.decorator.workorder.WorkorderTicketDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -80,7 +80,7 @@ public abstract class BaseTicketHandler<T> implements ITicketHandler, Initializi
     }
 
     private WorkorderTicketVO.Ticket getTicket(OcWorkorderTicket ocWorkorderTicket) {
-        WorkorderTicketVO.Ticket ticket = BeanCopierUtils.copyProperties(ocWorkorderTicket, WorkorderTicketVO.Ticket.class);
+        WorkorderTicketVO.Ticket ticket = BeanCopierUtil.copyProperties(ocWorkorderTicket, WorkorderTicketVO.Ticket.class);
         return workorderTicketDecorator.decorator(ticket);
     }
 
@@ -93,7 +93,7 @@ public abstract class BaseTicketHandler<T> implements ITicketHandler, Initializi
 
     @Override
     public WorkorderTicketEntryVO.Entry convertTicketEntry(OcWorkorderTicketEntry ocWorkorderTicketEntry) {
-        WorkorderTicketEntryVO.Entry entry = BeanCopierUtils.copyProperties(ocWorkorderTicketEntry, WorkorderTicketEntryVO.Entry.class);
+        WorkorderTicketEntryVO.Entry entry = BeanCopierUtil.copyProperties(ocWorkorderTicketEntry, WorkorderTicketEntryVO.Entry.class);
         entry.setTicketEntry(getTicketEntry(ocWorkorderTicketEntry));
         return entry;
     }
@@ -101,10 +101,10 @@ public abstract class BaseTicketHandler<T> implements ITicketHandler, Initializi
     @Override
     public BusinessWrapper<Boolean> addTicketEntry(OcUser ocUser, WorkorderTicketEntryVO.Entry entry) {
         OcWorkorderTicket ocWorkorderTicket = ocWorkorderTicketService.queryOcWorkorderTicketById(entry.getWorkorderTicketId());
-        if (!ocWorkorderTicket.getUsername().equals(SessionUtils.getUsername()))
+        if (!ocWorkorderTicket.getUsername().equals(SessionUtil.getUsername()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         //ITicketEntry iTicketEntry = acqITicketEntry(entry.getTicketEntry());
-        OcWorkorderTicketEntry ocWorkorderTicketEntry = BeanCopierUtils.copyProperties(entry, OcWorkorderTicketEntry.class);
+        OcWorkorderTicketEntry ocWorkorderTicketEntry = BeanCopierUtil.copyProperties(entry, OcWorkorderTicketEntry.class);
         ocWorkorderTicketEntryService.addOcWorkorderTicketEntry(ocWorkorderTicketEntry);
         return BusinessWrapper.SUCCESS;
     }
@@ -112,7 +112,7 @@ public abstract class BaseTicketHandler<T> implements ITicketHandler, Initializi
     @Override
     public BusinessWrapper<Boolean> updateTicketEntry(OcUser ocUser, WorkorderTicketEntryVO.Entry entry) {
         OcWorkorderTicket ocWorkorderTicket = ocWorkorderTicketService.queryOcWorkorderTicketById(entry.getWorkorderTicketId());
-        if (!ocWorkorderTicket.getUsername().equals(SessionUtils.getUsername()))
+        if (!ocWorkorderTicket.getUsername().equals(SessionUtil.getUsername()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         return updateTicketEntry(entry);
     }

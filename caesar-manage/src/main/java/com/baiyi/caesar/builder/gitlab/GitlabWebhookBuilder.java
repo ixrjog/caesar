@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder.gitlab;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.gitlab.GitlabWebhookBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
@@ -38,6 +38,6 @@ public class GitlabWebhookBuilder {
     }
 
     private static CsGitlabWebhook covert(GitlabWebhookBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsGitlabWebhook.class);
+        return BeanCopierUtil.copyProperties(bo, CsGitlabWebhook.class);
     }
 }

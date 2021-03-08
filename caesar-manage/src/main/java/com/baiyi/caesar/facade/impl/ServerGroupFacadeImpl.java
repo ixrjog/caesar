@@ -102,14 +102,14 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     @Override
     public DataTable<ServerGroupVO.ServerGroup> queryServerGroupPage(ServerGroupParam.PageQuery pageQuery) {
         DataTable<OcServerGroup> table = ocServerGroupService.queryOcServerGroupByParam(pageQuery);
-        List<ServerGroupVO.ServerGroup> page = BeanCopierUtils.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
+        List<ServerGroupVO.ServerGroup> page = BeanCopierUtil.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
         return new DataTable<>(page.stream().map(e -> serverGroupDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<ServerGroupVO.ServerGroup> queryServerGroupById(int id) {
         OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(id);
-        return new BusinessWrapper<>(BeanCopierUtils.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
+        return new BusinessWrapper<>(BeanCopierUtil.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
     }
 
     @Override
@@ -124,9 +124,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     private BusinessWrapper<Boolean> saveServerGroup(ServerGroupVO.ServerGroup serverGroup, boolean action) {
         OcServerGroup checkOcServerGroup = ocServerGroupService.queryOcServerGroupByName(serverGroup.getName());
-        if (!RegexUtils.isServerGroupNameRule(serverGroup.getName()))
+        if (!RegexUtil.isServerGroupNameRule(serverGroup.getName()))
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_NAME_NON_COMPLIANCE_WITH_RULES);
-        OcServerGroup ocServerGroup = BeanCopierUtils.copyProperties(serverGroup, OcServerGroup.class);
+        OcServerGroup ocServerGroup = BeanCopierUtil.copyProperties(serverGroup, OcServerGroup.class);
         // 对象存在 && 新增
         if (checkOcServerGroup != null && action) {
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_NAME_ALREADY_EXIST);
@@ -159,7 +159,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     @Override
     public DataTable<ServerGroupTypeVO.ServerGroupType> queryServerGroupTypePage(ServerGroupTypeParam.PageQuery pageQuery) {
         DataTable<OcServerGroupType> table = ocServerGroupTypeService.queryOcServerGroupTypeByParam(pageQuery);
-        List<ServerGroupTypeVO.ServerGroupType> page = BeanCopierUtils.copyListProperties(table.getData(), ServerGroupTypeVO.ServerGroupType.class);
+        List<ServerGroupTypeVO.ServerGroupType> page = BeanCopierUtil.copyListProperties(table.getData(), ServerGroupTypeVO.ServerGroupType.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -175,7 +175,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     private BusinessWrapper<Boolean> saveServerGroupType(ServerGroupTypeVO.ServerGroupType serverGroupType, boolean action) {
         OcServerGroupType checkOcServerGroupTypeName = ocServerGroupTypeService.queryOcServerGroupTypeByName(serverGroupType.getName());
-        OcServerGroupType ocServerGroupType = BeanCopierUtils.copyProperties(serverGroupType, OcServerGroupType.class);
+        OcServerGroupType ocServerGroupType = BeanCopierUtil.copyProperties(serverGroupType, OcServerGroupType.class);
         // 对象存在 && 新增
         if (checkOcServerGroupTypeName != null && action) {
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_TYPE_NAME_ALREADY_EXIST);
@@ -209,14 +209,14 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     @Override
     public DataTable<ServerGroupVO.ServerGroup> queryUserIncludeServerGroupPage(ServerGroupParam.UserServerGroupPageQuery pageQuery) {
         DataTable<OcServerGroup> table = ocServerGroupService.queryUserIncludeOcServerGroupByParam(pageQuery);
-        List<ServerGroupVO.ServerGroup> page = BeanCopierUtils.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
+        List<ServerGroupVO.ServerGroup> page = BeanCopierUtil.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
         return new DataTable<>(page.stream().map(e -> serverGroupDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public DataTable<ServerGroupVO.ServerGroup> queryUserExcludeServerGroupPage(ServerGroupParam.UserServerGroupPageQuery pageQuery) {
         DataTable<OcServerGroup> table = ocServerGroupService.queryUserExcludeOcServerGroupByParam(pageQuery);
-        List<ServerGroupVO.ServerGroup> page = BeanCopierUtils.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
+        List<ServerGroupVO.ServerGroup> page = BeanCopierUtil.copyListProperties(table.getData(), ServerGroupVO.ServerGroup.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -293,13 +293,13 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_PROPERTY_ENV_TYPE_EMPTY);
         if (StringUtils.isEmpty(serverGroupProperty.getPropertyName()) || StringUtils.isEmpty(serverGroupProperty.getPropertyValue()))
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_PROPERTY_KV_EMPTY);
-        if (IDUtils.isEmpty(serverGroupProperty.getServerGroupId())) {
+        if (IDUtil.isEmpty(serverGroupProperty.getServerGroupId())) {
             return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_ID_EMPTY);
         } else {
             if (ocServerGroupService.queryOcServerGroupById(serverGroupProperty.getServerGroupId()) == null)
                 return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_NOT_EXIST);
         }
-        OcServerGroupProperty pre = BeanCopierUtils.copyProperties(serverGroupProperty, OcServerGroupProperty.class);
+        OcServerGroupProperty pre = BeanCopierUtil.copyProperties(serverGroupProperty, OcServerGroupProperty.class);
         OcServerGroupProperty ocServerGroupProperty = ocServerGroupPropertyService.queryOcServerGroupPropertyByUniqueKey(pre);
         if (ocServerGroupProperty == null) {
             ocServerGroupPropertyService.addOcServerGroupProperty(pre);
@@ -344,12 +344,12 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
         });
         ServerTreeVO.MyServerTree myServerTree = ServerTreeVO.MyServerTree.builder()
                 .userId(ocUser.getId())
-                .uuid(UUIDUtils.getUUID())
+                .uuid(UUIDUtil.getUUID())
                 .tree(treeList)
                 .size(treeSize.get())
                 .build();
         // 缓存1小时
-        String key = RedisKeyUtils.getMyServerTreeKey(ocUser.getId(), myServerTree.getUuid());
+        String key = RedisKeyUtil.getMyServerTreeKey(ocUser.getId(), myServerTree.getUuid());
         redisUtil.set(key, serverTreeHostPatternMap, 3600);
         return myServerTree;
     }
@@ -371,7 +371,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Override
     public BusinessWrapper getServerTreeHostPatternMap(String uuid, OcUser ocUser) {
-        String key = RedisKeyUtils.getMyServerTreeKey(ocUser.getId(), uuid);
+        String key = RedisKeyUtil.getMyServerTreeKey(ocUser.getId(), uuid);
         if (!redisUtil.hasKey(key))
             return new BusinessWrapper<>(ErrorEnum.SERVER_TASK_TREE_NOT_EXIST);
         return new BusinessWrapper(redisUtil.get(key));
@@ -399,11 +399,11 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     }
 
     private List<ServerVO.Server> convert(List<OcServer> ocServers) {
-        List<ServerVO.Server> servers = BeanCopierUtils.copyListProperties(ocServers, ServerVO.Server.class);
+        List<ServerVO.Server> servers = BeanCopierUtil.copyListProperties(ocServers, ServerVO.Server.class);
         return servers.stream().peek(s -> {
             CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
             if (csJobBuildServer != null) {
-                ServerVO.DeployVersion deployVersion = BeanCopierUtils.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
+                ServerVO.DeployVersion deployVersion = BeanCopierUtil.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
                 s.setDeployVersion(deployVersion);
             }
         }).collect(Collectors.toList());

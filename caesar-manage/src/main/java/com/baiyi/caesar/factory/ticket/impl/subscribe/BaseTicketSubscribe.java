@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.ticket.impl.subscribe;
 import com.baiyi.caesar.bo.WorkorderTicketSubscribeBO;
 import com.baiyi.caesar.common.base.TicketPhase;
 import com.baiyi.caesar.common.base.TicketSubscribeType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.workorder.WorkorderTicketVO;
 import com.baiyi.caesar.factory.ticket.ITicketSubscribe;
@@ -99,7 +99,7 @@ public abstract class BaseTicketSubscribe implements ITicketSubscribe, Initializ
                 .subscribeType(subscribeType)
                 .build();
         try {
-            ocWorkorderTicketSubscribeService.addOcWorkorderTicketSubscribe(BeanCopierUtils.copyProperties(subscribeBO, OcWorkorderTicketSubscribe.class));
+            ocWorkorderTicketSubscribeService.addOcWorkorderTicketSubscribe(BeanCopierUtil.copyProperties(subscribeBO, OcWorkorderTicketSubscribe.class));
         } catch (Exception ignored) {
         }
     }

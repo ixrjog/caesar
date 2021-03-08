@@ -4,7 +4,7 @@ import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.SettingName;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.common.util.bae64.CacheKeyUtils;
 import com.baiyi.caesar.domain.bo.SSHKeyCredential;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -130,7 +130,7 @@ public abstract class BaseProcess implements IXTermProcess, InitializingBean {
             OcTerminalSessionInstance ocTerminalSessionInstance = terminalFacade.queryOcTerminalSessionInstanceByUniqueKey(ocTerminalSession.getSessionId(), instanceId);
             ocTerminalSessionInstance.setCloseTime(new Date());
             ocTerminalSessionInstance.setIsClosed(true);
-            ocTerminalSessionInstance.setOutputSize(IOUtils.fileSize(xtermConfig.getAuditLogPath(ocTerminalSession.getSessionId(), instanceId)));
+            ocTerminalSessionInstance.setOutputSize(IOUtil.fileSize(xtermConfig.getAuditLogPath(ocTerminalSession.getSessionId(), instanceId)));
             terminalFacade.updateOcTerminalSessionInstance(ocTerminalSessionInstance);
         } catch (Exception ignored) {
         }

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.SessionUtils;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.SessionUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -102,7 +102,7 @@ public class AuthBaseFacadeImpl implements AuthBaseFacade {
     private BusinessWrapper<Boolean> checkUserApiHasResourceAuthorize(String token, String resourceName, BusinessWrapper<Boolean> wrapper) {
         OcUserApiToken ocUserApiToken = ocUserApiTokenService.queryOcUserApiTokenByTokenAndValid(token);
         if (ocUserApiToken == null) return wrapper; // 校验失败返回上级错误
-        if (TimeUtils.calculateDateExpired(ocUserApiToken.getExpiredTime())) {
+        if (TimeUtil.calculateDateExpired(ocUserApiToken.getExpiredTime())) {
             // apiToken过期 设置失效
             ocUserApiToken.setValid(false);
             ocUserApiTokenService.updateOcUserApiToken(ocUserApiToken);
@@ -111,7 +111,7 @@ public class AuthBaseFacadeImpl implements AuthBaseFacade {
         if (ocUserApiTokenService.checkUserHasResourceAuthorize(token, resourceName) == 0) {
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_API_FAILUER);
         } else {
-            SessionUtils.setUsername(ocUserApiToken.getUsername());
+            SessionUtil.setUsername(ocUserApiToken.getUsername());
             return BusinessWrapper.SUCCESS;
         }
     }

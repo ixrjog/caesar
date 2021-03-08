@@ -7,9 +7,9 @@ import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.GitlabUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.GitlabUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
@@ -150,7 +150,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Override
     public DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery) {
         DataTable<CsGitlabInstance> table = csGitlabInstanceService.queryCsGitlabInstanceByParam(pageQuery);
-        List<GitlabInstanceVO.Instance> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabInstanceVO.Instance.class);
+        List<GitlabInstanceVO.Instance> page = BeanCopierUtil.copyListProperties(table.getData(), GitlabInstanceVO.Instance.class);
         return new DataTable<>(page.stream().map(e -> gitlabInstanceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -204,7 +204,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Override
     public BusinessWrapper<Boolean> addGitlabInstance(GitlabInstanceVO.Instance instance) {
-        CsGitlabInstance csGitlabInstance = BeanCopierUtils.copyProperties(instance, CsGitlabInstance.class);
+        CsGitlabInstance csGitlabInstance = BeanCopierUtil.copyProperties(instance, CsGitlabInstance.class);
         csGitlabInstance.setToken(stringEncryptor.encrypt(instance.getToken()));
         csGitlabInstanceService.addCsGitlabInstance(csGitlabInstance);
         gitlabServerContainer.reset();
@@ -213,7 +213,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateGitlabInstance(GitlabInstanceVO.Instance instance) {
-        CsGitlabInstance pre = BeanCopierUtils.copyProperties(instance, CsGitlabInstance.class);
+        CsGitlabInstance pre = BeanCopierUtil.copyProperties(instance, CsGitlabInstance.class);
         if (StringUtils.isEmpty(pre.getToken())) {
             CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(instance.getId());
             pre.setToken(csGitlabInstance.getToken());
@@ -234,14 +234,14 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Override
     public DataTable<GitlabProjectVO.Project> queryGitlabProjectPage(GitlabProjectParam.GitlabProjectPageQuery pageQuery) {
         DataTable<CsGitlabProject> table = csGitlabProjectService.queryCsGitlabProjectByParam(pageQuery);
-        List<GitlabProjectVO.Project> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabProjectVO.Project.class);
+        List<GitlabProjectVO.Project> page = BeanCopierUtil.copyListProperties(table.getData(), GitlabProjectVO.Project.class);
         return new DataTable<>(page.stream().map(e -> gitlabProjectDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public DataTable<GitlabGroupVO.Group> queryGitlabGroupPage(GitlabGroupParam.GitlabGroupPageQuery pageQuery) {
         DataTable<CsGitlabGroup> table = csGitlabGroupService.queryCsGitlabGroupByParam(pageQuery);
-        List<GitlabGroupVO.Group> page = BeanCopierUtils.copyListProperties(table.getData(), GitlabGroupVO.Group.class);
+        List<GitlabGroupVO.Group> page = BeanCopierUtil.copyListProperties(table.getData(), GitlabGroupVO.Group.class);
         return new DataTable<>(page.stream().map(e -> gitlabGroupDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -337,7 +337,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SCM_NOT_EXIST);
         CsApplication csApplication = csApplicationService.queryCsApplicationById(csApplicationScmMember.getApplicationId());
         String envName = null;
-        if (csApplication.getEnableGitflow() && !IDUtils.isEmpty(scmMemberBranchQuery.getCiJobId())) {
+        if (csApplication.getEnableGitflow() && !IDUtil.isEmpty(scmMemberBranchQuery.getCiJobId())) {
             CsCiJob csCiJob = csCiJobService.queryCsCiJobById(scmMemberBranchQuery.getCiJobId());
             envName = envFacade.queryEnvNameByType(csCiJob.getEnvType());
         }
@@ -424,7 +424,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
         List<GitlabBranchVO.BaseBranch> branches = GitlabBranchConvert.convertBranches(gitlabBranchHandler.getBranches(csGitlabInstance.getName(), csGitlabProject.getProjectId()));
         if (enableGitflow && !StringUtils.isEmpty(envName))
             branches = branches.stream().filter(e ->
-                    GitlabUtils.filterBranchByGitflow(envName, e)).collect(Collectors.toList());
+                    GitlabUtil.filterBranchByGitflow(envName, e)).collect(Collectors.toList());
         GitlabBranchVO.Repository repository = new GitlabBranchVO.Repository();
         List<GitlabBranchVO.Option> options = Lists.newArrayList();
         options.add(GitlabBranchConvert.build("Branches", branches));

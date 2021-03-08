@@ -1,6 +1,6 @@
 package com.baiyi.caesar.util;
 
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesCluster;
 import com.baiyi.caesar.kubernetes.confg.KubernetesConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class KubeconfigUtils {
         if (StringUtils.isEmpty(ocKubernetesCluster.getKubeconfig())) return;
         String path = kubernetesConfig.acqKubeconfigPath(ocKubernetesCluster.getName());
         try {
-            IOUtils.writeFile(ocKubernetesCluster.getKubeconfig(), path);
+            IOUtil.writeFile(ocKubernetesCluster.getKubeconfig(), path);
         } catch (Exception e) {
             log.error("写入kubeconfig错误，{}", path);
         }
@@ -40,7 +40,7 @@ public class KubeconfigUtils {
     public static void deleteKubeconfig(OcKubernetesCluster ocKubernetesCluster) {
         String path = kubernetesConfig.acqKubeconfigPath(ocKubernetesCluster.getName());
         try {
-            IOUtils.delFile(path);
+            IOUtil.delFile(path);
         } catch (Exception ignored) {
         }
     }

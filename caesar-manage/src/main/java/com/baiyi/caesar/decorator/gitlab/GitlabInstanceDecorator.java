@@ -1,8 +1,8 @@
 package com.baiyi.caesar.decorator.gitlab;
 
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
@@ -36,10 +36,10 @@ public class GitlabInstanceDecorator {
         if (extend == 0) return instance;
 
         instance.setToken("");
-        if (!IDUtils.isEmpty(instance.getServerId())) {
+        if (!IDUtil.isEmpty(instance.getServerId())) {
             OcServer ocServer = ocServerService.queryOcServerById(instance.getServerId());
             if (ocServer != null)
-                instance.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                instance.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
         }
         try {
             GitlabVersion gitlabVersion = gitlabHandler.getVersion(instance.getName());

@@ -18,7 +18,7 @@ import java.util.Random;
  * @Version 1.0
  */
 @Slf4j
-public class Pbkdf2Sha256Utils {
+public class Pbkdf2Sha256Util {
 
 
 

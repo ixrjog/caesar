@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.ticket.impl.subscribe;
 
 import com.baiyi.caesar.common.base.TicketPhase;
 import com.baiyi.caesar.common.base.TicketSubscribeType;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.workorder.ApprovalStepsVO;
@@ -50,7 +50,7 @@ public class TicketUserGroupApprovalSubscribe extends BaseTicketSubscribe implem
     @Override
     public void invokeFlowStep(WorkorderTicketVO.Ticket ticket, String ticketPhase) {
         OcWorkorder ocWorkorder = getOcWorkorderById(ticket.getWorkorderId());
-        if (IDUtils.isEmpty(ocWorkorder.getApprovalGroupId()))
+        if (IDUtil.isEmpty(ocWorkorder.getApprovalGroupId()))
             return;
         OcWorkorderApprovalGroup ocWorkorderApprovalGroup = ocWorkorderApprovalGroupService.queryOcWorkorderApprovalGroupById(ocWorkorder.getApprovalGroupId());
         ApprovalStepsVO.ApprovalStep approvalStep = ApprovalStepsVO.ApprovalStep.builder()

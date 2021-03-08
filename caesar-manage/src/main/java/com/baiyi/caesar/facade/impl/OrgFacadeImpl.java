@@ -2,8 +2,8 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.bo.OrgDepartmentMemberBO;
 import com.baiyi.caesar.common.base.SettingName;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.department.DepartmentDecorator;
 import com.baiyi.caesar.decorator.department.DepartmentMemberDecorator;
 import com.baiyi.caesar.decorator.department.OrgDecorator;
@@ -175,7 +175,7 @@ public class OrgFacadeImpl implements OrgFacade {
 
     @Override
     public BusinessWrapper<Boolean> addDepartment(OrgDepartmentVO.Department department) {
-        OcOrgDepartment ocOrgDepartment = BeanCopierUtils.copyProperties(department, OcOrgDepartment.class);
+        OcOrgDepartment ocOrgDepartment = BeanCopierUtil.copyProperties(department, OcOrgDepartment.class);
         ocOrgDepartment.setDeptOrder(128);
         tryRootDept(ocOrgDepartment);
         ocOrgDepartment.setDeptHiding(0);
@@ -184,7 +184,7 @@ public class OrgFacadeImpl implements OrgFacade {
     }
 
     private void tryRootDept(OcOrgDepartment ocOrgDepartment) {
-        if (IDUtils.isEmpty(ocOrgDepartment.getParentId()))
+        if (IDUtil.isEmpty(ocOrgDepartment.getParentId()))
             ocOrgDepartment.setParentId(1);
         if (CollectionUtils.isEmpty(ocOrgDepartmentService.queryOcOrgDepartmentByParentId(0)))
             ocOrgDepartment.setParentId(0);
@@ -203,7 +203,7 @@ public class OrgFacadeImpl implements OrgFacade {
     @Override
     public OrgDepartmentVO.Department queryDepartmentById(int id) {
         OcOrgDepartment ocOrgDepartment = ocOrgDepartmentService.queryOcOrgDepartmentById(id);
-        return BeanCopierUtils.copyProperties(ocOrgDepartment, OrgDepartmentVO.Department.class);
+        return BeanCopierUtil.copyProperties(ocOrgDepartment, OrgDepartmentVO.Department.class);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class OrgFacadeImpl implements OrgFacade {
     @Override
     public DataTable<OrgDepartmentVO.Department> queryDepartmentPage(DepartmentParam.PageQuery pageQuery) {
         DataTable<OcOrgDepartment> table = ocOrgDepartmentService.queryOcOrgDepartmentParam(pageQuery);
-        List<OrgDepartmentVO.Department> page = BeanCopierUtils.copyListProperties(table.getData(), OrgDepartmentVO.Department.class);
+        List<OrgDepartmentVO.Department> page = BeanCopierUtil.copyListProperties(table.getData(), OrgDepartmentVO.Department.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -279,7 +279,7 @@ public class OrgFacadeImpl implements OrgFacade {
     @Override
     public DataTable<OrgDepartmentMemberVO.DepartmentMember> queryDepartmentMemberPage(DepartmentMemberParam.PageQuery pageQuery) {
         DataTable<OcOrgDepartmentMember> table = ocOrgDepartmentMemberService.queryOcOrgDepartmentMemberParam(pageQuery);
-        List<OrgDepartmentMemberVO.DepartmentMember> page = BeanCopierUtils.copyListProperties(table.getData(), OrgDepartmentMemberVO.DepartmentMember.class);
+        List<OrgDepartmentMemberVO.DepartmentMember> page = BeanCopierUtil.copyListProperties(table.getData(), OrgDepartmentMemberVO.DepartmentMember.class);
         return new DataTable<>(page.stream().map(e -> departmentMemberDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -303,7 +303,7 @@ public class OrgFacadeImpl implements OrgFacade {
                 .build();
 
         // 添加部门成员
-        ocOrgDepartmentMemberService.addOcOrgDepartmentMember(BeanCopierUtils.copyProperties(orgDepartmentMemberBO, OcOrgDepartmentMember.class));
+        ocOrgDepartmentMemberService.addOcOrgDepartmentMember(BeanCopierUtil.copyProperties(orgDepartmentMemberBO, OcOrgDepartmentMember.class));
         return BusinessWrapper.SUCCESS;
     }
 
@@ -330,7 +330,7 @@ public class OrgFacadeImpl implements OrgFacade {
                 .userId(ocUser.getId())
                 .username(ocUser.getUsername())
                 .build();
-        ocOrgDepartmentMemberService.addOcOrgDepartmentMember(BeanCopierUtils.copyProperties(orgDepartmentMemberBO, OcOrgDepartmentMember.class));
+        ocOrgDepartmentMemberService.addOcOrgDepartmentMember(BeanCopierUtil.copyProperties(orgDepartmentMemberBO, OcOrgDepartmentMember.class));
         return BusinessWrapper.SUCCESS;
     }
 

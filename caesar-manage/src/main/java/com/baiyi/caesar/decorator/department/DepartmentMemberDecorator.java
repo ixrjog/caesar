@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.department;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.OcOrgDepartment;
 import com.baiyi.caesar.domain.generator.caesar.OcOrgDepartmentMember;
@@ -94,7 +94,7 @@ public class DepartmentMemberDecorator {
             }
             if (deptMembers.size() != 0) {
                 List<OrgDepartmentMemberVO.DepartmentMember> alternativeDeptMembers
-                        = BeanCopierUtils.copyListProperties(deptMembers, OrgDepartmentMemberVO.DepartmentMember.class).stream().map(a -> decorator(a)).collect(Collectors.toList());
+                        = BeanCopierUtil.copyListProperties(deptMembers, OrgDepartmentMemberVO.DepartmentMember.class).stream().map(a -> decorator(a)).collect(Collectors.toList());
                 OrgApprovalVO.OrgApproval orgApproval = OrgApprovalVO.OrgApproval.builder()
                         .preferenceDeptMember(getPreferenceDeptMember(alternativeDeptMembers))
                         .alternativeDeptMembers(alternativeDeptMembers)

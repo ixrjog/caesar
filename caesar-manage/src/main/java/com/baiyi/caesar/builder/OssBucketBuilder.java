@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder;
 
 import com.aliyun.oss.model.Bucket;
 import com.baiyi.caesar.bo.OssBucketBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
 
 /**
@@ -24,6 +24,6 @@ public class OssBucketBuilder {
     }
 
     private static CsOssBucket covert(OssBucketBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsOssBucket.class);
+        return BeanCopierUtil.copyProperties(bo, CsOssBucket.class);
     }
 }

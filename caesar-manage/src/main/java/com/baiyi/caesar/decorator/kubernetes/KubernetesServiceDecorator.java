@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesCluster;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesServicePort;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesClusterVO;
@@ -29,7 +29,7 @@ public class KubernetesServiceDecorator extends BaseKubernetesFacade {
         if (extend == 1) {
             service.setPorts(getPorts(service.getId()));
             OcKubernetesCluster ocKubernetesCluster = getOcKubernetesClusterByNamespaceId(service.getNamespaceId());
-            service.setCluster(BeanCopierUtils.copyProperties(ocKubernetesCluster, KubernetesClusterVO.Cluster.class));
+            service.setCluster(BeanCopierUtil.copyProperties(ocKubernetesCluster, KubernetesClusterVO.Cluster.class));
             invokeBaseProperty(service);
         }
         return service;
@@ -38,6 +38,6 @@ public class KubernetesServiceDecorator extends BaseKubernetesFacade {
     private List<KubernetesServiceVO.Port> getPorts(int serviceId) {
         List<OcKubernetesServicePort> portList = ocKubernetesServicePortService.queryOcKubernetesServicePortByServiceId(serviceId);
         if (CollectionUtils.isEmpty(portList)) return Lists.newArrayList();
-        return BeanCopierUtils.copyListProperties(portList, KubernetesServiceVO.Port.class);
+        return BeanCopierUtil.copyListProperties(portList, KubernetesServiceVO.Port.class);
     }
 }

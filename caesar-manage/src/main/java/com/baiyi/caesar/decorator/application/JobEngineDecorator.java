@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -24,7 +24,7 @@ public class JobEngineDecorator {
     public JobEngineVO.JobEngine decorator(JobEngineVO.JobEngine jobEngine) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobEngine.getJenkinsInstanceId());
         if (csJenkinsInstance != null) {
-            jobEngine.setJenkinsInstance(BeanCopierUtils.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
+            jobEngine.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
         }
 
         if (jobEngine.getLastBuildNumber() == 0) {

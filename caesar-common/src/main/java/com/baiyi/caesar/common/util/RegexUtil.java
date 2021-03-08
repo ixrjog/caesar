@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @Date 2020/1/7 1:52 下午
  * @Version 1.0
  */
-public class RegexUtils {
+public class RegexUtil {
 
     /**
      * 校验字符串是否为手机号

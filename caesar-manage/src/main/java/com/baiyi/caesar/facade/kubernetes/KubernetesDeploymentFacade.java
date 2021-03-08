@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesDeploymentBuilder;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesDeploymentDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesTemplateDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -65,13 +65,13 @@ public class KubernetesDeploymentFacade extends BaseKubernetesFacade {
 
     public DataTable<KubernetesDeploymentVO.Deployment> queryKubernetesDeploymentPage(KubernetesDeploymentParam.PageQuery pageQuery) {
         DataTable<OcKubernetesDeployment> table = ocKubernetesDeploymentService.queryOcKubernetesDeploymentByParam(pageQuery);
-        List<KubernetesDeploymentVO.Deployment> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesDeploymentVO.Deployment.class);
+        List<KubernetesDeploymentVO.Deployment> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesDeploymentVO.Deployment.class);
         return new DataTable<>(page.stream().map(e -> kubernetesDeploymentDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     public BusinessWrapper<Boolean> createKubernetesDeployment(OcKubernetesApplicationInstance ocKubernetesApplicationInstance, Integer templateId) {
         OcKubernetesTemplate ocKubernetesTemplate = ocKubernetesTemplateService.queryOcKubernetesTemplateById(templateId);
-        KubernetesTemplateVO.Template deploymentTemplate = kubernetesTemplateDecorator.decorator(BeanCopierUtils.copyProperties(ocKubernetesTemplate, KubernetesTemplateVO.Template.class), ocKubernetesApplicationInstance);
+        KubernetesTemplateVO.Template deploymentTemplate = kubernetesTemplateDecorator.decorator(BeanCopierUtil.copyProperties(ocKubernetesTemplate, KubernetesTemplateVO.Template.class), ocKubernetesApplicationInstance);
         OcKubernetesClusterNamespace ocKubernetesClusterNamespace;
         try {
             ocKubernetesClusterNamespace = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceByEnvType(ocKubernetesApplicationInstance.getEnvType()).get(0);

@@ -6,9 +6,9 @@ import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.JobType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.RegexUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.RegexUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.decorator.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -120,38 +120,38 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         DataTable<CsApplication> table = csApplicationService.queryCsApplicationByParam(pageQuery);
-        List<ApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), ApplicationVO.Application.class);
+        List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
-        ApplicationParam.MyApplicationPageQuery myApplicationPageQuery = BeanCopierUtils.copyProperties(pageQuery, ApplicationParam.MyApplicationPageQuery.class);
+        ApplicationParam.MyApplicationPageQuery myApplicationPageQuery = BeanCopierUtil.copyProperties(pageQuery, ApplicationParam.MyApplicationPageQuery.class);
         OcUser ocUser = userFacade.getOcUserBySession();
         myApplicationPageQuery.setUserId(ocUser.getId());
         DataTable<CsApplication> table = csApplicationService.queryMyCsApplicationByParam(myApplicationPageQuery);
-        List<ApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), ApplicationVO.Application.class);
+        List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public List<ApplicationVO.ScmMember> queryApplicationScmMemberByApplicationId(int applicationId) {
         return csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(applicationId)
-                .stream().map(e -> applicationScmMemberDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.ScmMember.class), 1)).collect(Collectors.toList());
+                .stream().map(e -> applicationScmMemberDecorator.decorator(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmMember.class), 1)).collect(Collectors.toList());
     }
 
     @Override
     public BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application) {
-        if (!RegexUtils.isApplicationKeyRule(application.getApplicationKey()))
+        if (!RegexUtil.isApplicationKeyRule(application.getApplicationKey()))
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_KEY_NON_COMPLIANCE_WITH_RULES);
-        CsApplication csApplication = BeanCopierUtils.copyProperties(application, CsApplication.class);
+        CsApplication csApplication = BeanCopierUtil.copyProperties(application, CsApplication.class);
         csApplicationService.addCsApplication(csApplication);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> updateApplication(ApplicationVO.Application application) {
-        CsApplication pre = BeanCopierUtils.copyProperties(application, CsApplication.class);
+        CsApplication pre = BeanCopierUtil.copyProperties(application, CsApplication.class);
         CsApplication csApplication = csApplicationService.queryCsApplicationById(pre.getId());
         pre.setApplicationKey(csApplication.getApplicationKey());
         csApplicationService.updateCsApplication(pre);
@@ -228,22 +228,22 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (pageQuery.getShowHide() == null)
             pageQuery.setShowHide(false);
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
-        List<CiJobVO.CiJob> page = BeanCopierUtils.copyListProperties(table.getData(), CiJobVO.CiJob.class);
+        List<CiJobVO.CiJob> page = BeanCopierUtil.copyListProperties(table.getData(), CiJobVO.CiJob.class);
         return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public DataTable<CdJobVO.CdJob> queryCdJobPage(CdJobParam.CdJobPageQuery pageQuery) {
         DataTable<CsCdJob> table = csCdJobService.queryCsCdJobByParam(pageQuery);
-        List<CdJobVO.CdJob> page = BeanCopierUtils.copyListProperties(table.getData(), CdJobVO.CdJob.class);
+        List<CdJobVO.CdJob> page = BeanCopierUtil.copyListProperties(table.getData(), CdJobVO.CdJob.class);
         return new DataTable<>(page.stream().map(e -> cdJobDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addCiJob(CiJobVO.CiJob ciJob) {
-        if (!RegexUtils.isJobKeyRule(ciJob.getJobKey()))
+        if (!RegexUtil.isJobKeyRule(ciJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JOB_KEY_NON_COMPLIANCE_WITH_RULES);
-        CsCiJob csCiJob = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        CsCiJob csCiJob = BeanCopierUtil.copyProperties(ciJob, CsCiJob.class);
         if (!checkJob(csCiJob.getApplicationId(), csCiJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
         if (ciJob.getJobTpl() != null)
@@ -254,9 +254,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public BusinessWrapper<Boolean> addCdJob(CdJobVO.CdJob cdJob) {
-        if (!RegexUtils.isJobKeyRule(cdJob.getJobKey()))
+        if (!RegexUtil.isJobKeyRule(cdJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JOB_KEY_NON_COMPLIANCE_WITH_RULES);
-        CsCdJob csCdJob = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        CsCdJob csCdJob = BeanCopierUtil.copyProperties(cdJob, CsCdJob.class);
         if (!checkJob(csCdJob.getApplicationId(), csCdJob.getJobKey()))
             return new BusinessWrapper<>(ErrorEnum.JENKINS_JOB_EXISTS);
         if (cdJob.getJobTpl() != null)
@@ -282,7 +282,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         OcUser ocUser = userFacade.getOcUserBySession();
         if (!isApplicationAdmin(csCiJob.getApplicationId(), ocUser.getId()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
-        CsCiJob pre = BeanCopierUtils.copyProperties(ciJob, CsCiJob.class);
+        CsCiJob pre = BeanCopierUtil.copyProperties(ciJob, CsCiJob.class);
         pre.setJobKey(csCiJob.getJobKey());
         if (ciJob.getJobTpl() != null)
             pre.setJobTplId(ciJob.getJobTpl().getId());
@@ -301,7 +301,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         OcUser ocUser = userFacade.getOcUserBySession();
         if (!isApplicationAdmin(csCdJob.getApplicationId(), ocUser.getId()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
-        CsCdJob pre = BeanCopierUtils.copyProperties(cdJob, CsCdJob.class);
+        CsCdJob pre = BeanCopierUtil.copyProperties(cdJob, CsCdJob.class);
         pre.setJobKey(csCdJob.getJobKey());
         if (cdJob.getJobTpl() != null)
             pre.setJobTplId(cdJob.getJobTpl().getId());
@@ -317,7 +317,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public List<ApplicationVO.Engine> queryApplicationEngineByApplicationId(int applicationId) {
         List<CsApplicationEngine> list = csApplicationEngineService.queryCsApplicationEngineByApplicationId(applicationId);
         return list.stream().map(e ->
-                applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
+                applicationEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
         ).collect(Collectors.toList());
     }
 
@@ -327,7 +327,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         if (csApplication.getEngineType() == 0) {
             List<CsApplicationEngine> list = csApplicationEngineService.selectAll();
             return list.stream().map(e ->
-                    applicationEngineDecorator.decorator(BeanCopierUtils.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
+                    applicationEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, ApplicationVO.Engine.class), EXTEND)
             ).collect(Collectors.toList());
         } else {
             return queryApplicationEngineByApplicationId(applicationId);
@@ -373,7 +373,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     .businessId(applicationId)
                     .roleName("USER")
                     .build();
-            userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+            userPermissionFacade.addOcUserPermission(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
             try {
                 grantUserJenkinsUser(userId);
             } catch (AttributeInUseException ignored) {
@@ -401,7 +401,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                 .businessType(BusinessType.APPLICATION.getType())
                 .businessId(applicationId)
                 .build();
-        userPermissionFacade.delOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        userPermissionFacade.delOcUserPermission(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         return BusinessWrapper.SUCCESS;
     }
 
@@ -422,7 +422,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     .businessId(ciJobId)
                     .roleName("USER")
                     .build();
-            userPermissionFacade.addOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+            userPermissionFacade.addOcUserPermission(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         }
         return BusinessWrapper.SUCCESS;
     }
@@ -441,7 +441,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             return BusinessWrapper.SUCCESS;
 
         // 应用管理员 tonghongping 童红平
-        String username = SessionUtils.getUsername();
+        String username = SessionUtil.getUsername();
 
         // 是否测试总监配置
         if ("tonghongping".equals(username)) {
@@ -467,7 +467,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                 .businessType(BusinessType.APPLICATION_BUILD_JOB.getType())
                 .businessId(ciJobId)
                 .build();
-        userPermissionFacade.delOcUserPermission(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        userPermissionFacade.delOcUserPermission(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         return BusinessWrapper.SUCCESS;
     }
 
@@ -480,7 +480,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                 .businessType(BusinessType.APPLICATION.getType())
                 .businessId(applicationId)
                 .build();
-        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         if (ocUserPermission == null)
             return false;
         return "ADMIN".equals(ocUserPermission.getRoleName());
@@ -495,7 +495,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                 .businessType(BusinessType.APPLICATION.getType())
                 .businessId(applicationId)
                 .build();
-        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         String roleName = "USER".equals(ocUserPermission.getRoleName()) ? "ADMIN" : "USER";
         ocUserPermission.setRoleName(roleName);
         ocUserPermissionService.updateOcUserPermission(ocUserPermission);
@@ -518,12 +518,12 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public List<ApplicationServerGroupVO.ApplicationServerGroup> queryApplicationServerGroupByApplicationId(int applicationId) {
         List<CsApplicationServerGroup> serverGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(applicationId);
-        return BeanCopierUtils.copyListProperties(serverGroups, ApplicationServerGroupVO.ApplicationServerGroup.class);
+        return BeanCopierUtil.copyListProperties(serverGroups, ApplicationServerGroupVO.ApplicationServerGroup.class);
     }
 
     @Override
     public BusinessWrapper<Boolean> addApplicationServerGroup(ApplicationServerGroupVO.ApplicationServerGroup applicationServerGroup) {
-        CsApplicationServerGroup pre = BeanCopierUtils.copyProperties(applicationServerGroup, CsApplicationServerGroup.class);
+        CsApplicationServerGroup pre = BeanCopierUtil.copyProperties(applicationServerGroup, CsApplicationServerGroup.class);
         if (csApplicationServerGroupService.queryCsApplicationServerGroupByUniqueKey(pre) != null)
             return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_ALREADY_EXIST);
         csApplicationServerGroupService.addCsApplicationServerGroup(pre);

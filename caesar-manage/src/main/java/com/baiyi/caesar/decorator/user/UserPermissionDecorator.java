@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.user;
 
 import com.baiyi.caesar.bo.UserPermissionBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
@@ -33,9 +33,9 @@ public class UserPermissionDecorator {
                 .businessType(businessType)
                 .businessId(businessId)
                 .build();
-        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtils.copyProperties(userPermissionBO, OcUserPermission.class));
+        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         if (ocUserPermission != null) {
-            user.setUserPermission(BeanCopierUtils.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
+            user.setUserPermission(BeanCopierUtil.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
         }
         return user;
 

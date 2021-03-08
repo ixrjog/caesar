@@ -1,8 +1,8 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
@@ -59,10 +59,10 @@ public class KubernetesApplicationDecorator {
     }
 
     private ServerGroupVO.ServerGroup getServerGroup(Integer serverGroupId) {
-        if (IDUtils.isEmpty(serverGroupId)) return null;
+        if (IDUtil.isEmpty(serverGroupId)) return null;
         OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(serverGroupId);
         if (ocServerGroup == null) return null;
-        return BeanCopierUtils.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class);
+        return BeanCopierUtil.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class);
     }
 
     private List<KubernetesApplicationVO.Instance> getInstances(int applicationId) {

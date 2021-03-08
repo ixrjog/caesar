@@ -1,8 +1,8 @@
 package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.JobBuildChangeBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildChange;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.offbytwo.jenkins.model.BuildChangeSetItem;
@@ -23,7 +23,7 @@ public class JobBuildChangeBuilder {
                 .commitId(buildChangeItem.getCommitId())
                 .commit(buildChangeItem.getComment())
                 .commitMsg(buildChangeItem.getMsg())
-                .commitDate(TimeUtils.acqJenkinsDate(buildChangeItem.getDate()))
+                .commitDate(TimeUtil.acqJenkinsDate(buildChangeItem.getDate()))
                 .authorFullName(buildChangeItem.getAuthor().getFullName())
                 .authorAbsoluteUrl(buildChangeItem.getAuthor().getAbsoluteUrl())
                 .build();
@@ -31,6 +31,6 @@ public class JobBuildChangeBuilder {
     }
 
     private static CsJobBuildChange covert(JobBuildChangeBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsJobBuildChange.class);
+        return BeanCopierUtil.copyProperties(bo, CsJobBuildChange.class);
     }
 }

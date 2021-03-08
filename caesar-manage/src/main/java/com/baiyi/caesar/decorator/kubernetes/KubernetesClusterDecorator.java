@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesClusterNamespace;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesClusterNamespaceVO;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesClusterVO;
@@ -24,7 +24,7 @@ public class KubernetesClusterDecorator {
     public KubernetesClusterVO.Cluster decorator(KubernetesClusterVO.Cluster cluster, Integer extend) {
         if (extend == 1) {
             List<OcKubernetesClusterNamespace> list = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceByClusterId(cluster.getId());
-            cluster.setNamespaces(BeanCopierUtils.copyListProperties(list, KubernetesClusterNamespaceVO.Namespace.class));
+            cluster.setNamespaces(BeanCopierUtil.copyListProperties(list, KubernetesClusterNamespaceVO.Namespace.class));
         }
         return cluster;
     }

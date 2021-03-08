@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.jenkins;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -38,15 +38,15 @@ public class JenkinsInstanceDecorator {
         if (jenkinsVersion != null) {
             instance.setVersion(jenkinsVersion.getLiteralVersion());
         }
-        if (!IDUtils.isEmpty(instance.getServerId())) {
+        if (!IDUtil.isEmpty(instance.getServerId())) {
             OcServer ocServer = ocServerService.queryOcServerById(instance.getServerId());
             if (ocServer != null)
-                instance.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                instance.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
         }
-        if (!IDUtils.isEmpty(instance.getNodeServerGroupId())) {
+        if (!IDUtil.isEmpty(instance.getNodeServerGroupId())) {
             OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(instance.getNodeServerGroupId());
             if (ocServerGroup != null)
-                instance.setNodeGroup(BeanCopierUtils.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
+                instance.setNodeGroup(BeanCopierUtil.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class));
         }
         return instance;
     }

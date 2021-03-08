@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -35,7 +35,7 @@ public class EnvFacadeImpl implements EnvFacade {
     @Override
     public DataTable<EnvVO.Env> queryEnvPage(EnvParam.PageQuery pageQuery) {
         DataTable<OcEnv> table = ocEnvService.queryOcEnvByParam(pageQuery);
-        List<EnvVO.Env> page = BeanCopierUtils.copyListProperties(table.getData(), EnvVO.Env.class);
+        List<EnvVO.Env> page = BeanCopierUtil.copyListProperties(table.getData(), EnvVO.Env.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -51,7 +51,7 @@ public class EnvFacadeImpl implements EnvFacade {
 
     private BusinessWrapper<Boolean> saveEnv(EnvVO.Env env, boolean action) {
         OcEnv checkOcEnvName = ocEnvService.queryOcEnvByName(env.getEnvName());
-        OcEnv ocEnv = BeanCopierUtils.copyProperties(env, OcEnv.class);
+        OcEnv ocEnv = BeanCopierUtil.copyProperties(env, OcEnv.class);
         // 对象存在 && 新增
         if (checkOcEnvName != null && action)
             return new BusinessWrapper<>(ErrorEnum.ENV_NAME_ALREADY_EXIST);

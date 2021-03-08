@@ -6,8 +6,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.RedisKeyUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.RedisKeyUtil;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
@@ -143,7 +143,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
         jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
         jobBuild.setEndTime(new Date());
         jobBuild.setFinalized(true);
-        csCdJobBuildService.updateCsCdJobBuild(BeanCopierUtils.copyProperties(jobBuild, CsCdJobBuild.class));
+        csCdJobBuildService.updateCsCdJobBuild(BeanCopierUtil.copyProperties(jobBuild, CsCdJobBuild.class));
         context.setJobBuild(jobBuild);
         context.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact((T) context, e));
     }
@@ -155,7 +155,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
 
     @Override
     public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobDeploymentKey(buildId), true, HEARBEAT_CACHE_SECONDS);
+        redisUtil.set(RedisKeyUtil.getJobDeploymentKey(buildId), true, HEARBEAT_CACHE_SECONDS);
     }
 
 }

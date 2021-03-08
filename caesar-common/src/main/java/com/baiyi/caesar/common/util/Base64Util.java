@@ -7,7 +7,7 @@ import com.baiyi.caesar.common.util.bae64.BASE64EncoderUtil;
  * @Date 2020/3/14 7:28 下午
  * @Version 1.0
  */
-public class Base64Utils {
+public class Base64Util {
 
     /**
      * BASE64加密 用于生成SS Qcode

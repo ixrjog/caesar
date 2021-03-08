@@ -2,7 +2,7 @@ package com.baiyi.caesar.decorator.user;
 
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.CredentialType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserApiTokenVO;
@@ -56,13 +56,13 @@ public class UserDecorator {
         if (extend != null && extend == 1) {
             // 装饰 用户组
             List<OcUserGroup> userGroupList = ocUserGroupService.queryOcUserGroupByUserId(user.getId());
-            user.setUserGroups(BeanCopierUtils.copyListProperties(userGroupList, UserGroupVO.UserGroup.class));
+            user.setUserGroups(BeanCopierUtil.copyListProperties(userGroupList, UserGroupVO.UserGroup.class));
             // 装饰 服务器组
             List<OcServerGroup> serverGroupList = ocServerGroupService.queryUserPermissionOcServerGroupByUserId(user.getId());
             user.setServerGroups(convert(user, serverGroupList));
             // 装饰 ApiToken
             List<OcUserApiToken> userApiTokens = ocUserApiTokenService.queryOcUserApiTokenByUsername(user.getUsername());
-            List<UserApiTokenVO.UserApiToken> apiTokens = BeanCopierUtils.copyListProperties(userApiTokens, UserApiTokenVO.UserApiToken.class).stream().map(e -> {
+            List<UserApiTokenVO.UserApiToken> apiTokens = BeanCopierUtil.copyListProperties(userApiTokens, UserApiTokenVO.UserApiToken.class).stream().map(e -> {
                 e.setToken("申请后不可查看");
                 return e;
             }).collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class UserDecorator {
             List<OcUserCredential> credentials = ocUserCredentialService.queryOcUserCredentialByUserId(user.getId());
             Map<String, UserCredentialVO.UserCredential> credentialMap = Maps.newHashMap();
             for (OcUserCredential credential : credentials)
-                credentialMap.put(CredentialType.getName(credential.getCredentialType()), BeanCopierUtils.copyProperties(credential, UserCredentialVO.UserCredential.class));
+                credentialMap.put(CredentialType.getName(credential.getCredentialType()), BeanCopierUtil.copyProperties(credential, UserCredentialVO.UserCredential.class));
             user.setCredentialMap(credentialMap);
             // 用户属性
             Map<String, Object> attributeMap = Maps.newHashMap();
@@ -87,7 +87,7 @@ public class UserDecorator {
             personRepo.searchUserGroupByUsername(user.getUsername()).forEach(e -> {
                 OcUserGroup ocUserGroup = ocUserGroupService.queryOcUserGroupByName(e);
                 if (ocUserGroup != null)
-                    userGroups.add(BeanCopierUtils.copyProperties(ocUserGroup, UserGroupVO.UserGroup.class));
+                    userGroups.add(BeanCopierUtil.copyProperties(ocUserGroup, UserGroupVO.UserGroup.class));
             });
             user.setUserGroups(userGroups);
         }
@@ -96,7 +96,7 @@ public class UserDecorator {
 
     private List<ServerGroupVO.ServerGroup> convert(UserVO.User user, List<OcServerGroup> serverGroupList) {
         return serverGroupList.stream().map(e -> {
-            ServerGroupVO.ServerGroup serverGroup = BeanCopierUtils.copyProperties(e, ServerGroupVO.ServerGroup.class);
+            ServerGroupVO.ServerGroup serverGroup = BeanCopierUtil.copyProperties(e, ServerGroupVO.ServerGroup.class);
             OcUserPermission permission = new OcUserPermission();
             permission.setBusinessType(BusinessType.SERVER_ADMINISTRATOR_ACCOUNT.getType());
             permission.setBusinessId(e.getId());

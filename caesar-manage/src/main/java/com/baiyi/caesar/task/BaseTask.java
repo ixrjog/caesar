@@ -1,6 +1,6 @@
 package com.baiyi.caesar.task;
 
-import com.baiyi.caesar.common.util.RandomUtils;
+import com.baiyi.caesar.common.util.RandomUtil;
 import com.baiyi.caesar.config.CaesarConfig;
 import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import com.baiyi.caesar.task.util.TaskUtil;
@@ -35,7 +35,7 @@ public abstract class BaseTask {
 
     protected void sleep(int maxSleep){
         try{
-            Thread.sleep(RandomUtils.acqRandom(maxSleep));//等进程执行一会，再终止它
+            Thread.sleep(RandomUtil.acqRandom(maxSleep));//等进程执行一会，再终止它
         }catch (InterruptedException ignored){
         }
     }

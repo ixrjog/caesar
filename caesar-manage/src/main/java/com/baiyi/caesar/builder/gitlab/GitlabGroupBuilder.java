@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.gitlab;
 
 import com.baiyi.caesar.bo.gitlab.GitlabGroupBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import org.gitlab.api.models.GitlabGroup;
@@ -34,6 +34,6 @@ public class GitlabGroupBuilder {
     }
 
     private static CsGitlabGroup covert(GitlabGroupBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsGitlabGroup.class);
+        return BeanCopierUtil.copyProperties(bo, CsGitlabGroup.class);
     }
 }

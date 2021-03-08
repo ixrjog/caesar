@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsAnnouncement;
 import com.baiyi.caesar.domain.vo.announcement.AnnouncementVO;
 import com.baiyi.caesar.facade.AnnouncementFacade;
@@ -26,7 +26,7 @@ public class AnnouncementFacadeImpl implements AnnouncementFacade {
     public AnnouncementVO.AnnouncementCarousel queryAnnouncementCarousel() {
         List<CsAnnouncement> csAnnouncements = filterAnnouncements(csAnnouncementService.queryCsAnnouncementByValid());
         return AnnouncementVO.AnnouncementCarousel.builder()
-                .announcements(BeanCopierUtils.copyListProperties(csAnnouncements, AnnouncementVO.Announcement.class))
+                .announcements(BeanCopierUtil.copyListProperties(csAnnouncements, AnnouncementVO.Announcement.class))
                 .isShow(!CollectionUtils.isEmpty(csAnnouncements))
                 .build();
     }

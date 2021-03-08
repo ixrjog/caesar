@@ -9,7 +9,10 @@ import org.springframework.util.StringUtils;
  * @Date 2020/10/22 4:57 下午
  * @Version 1.0
  */
-public class GitlabUtils {
+public class GitlabUtil {
+
+    private GitlabUtil(){
+    }
 
     // refs/heads/feature/deliver-report
     public static final String COMMIT_BASE = "-/commit";
@@ -56,7 +59,7 @@ public class GitlabUtils {
      * @param commitId
      * @return
      */
-    public static String acqCommitUrl(String webUrl, String commitId) {
+    public static String buildCommitUrl(String webUrl, String commitId) {
         return Joiner.on("/").join(webUrl, COMMIT_BASE, commitId);
     }
 }

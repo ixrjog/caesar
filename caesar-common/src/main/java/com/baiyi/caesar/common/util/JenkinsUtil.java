@@ -17,7 +17,7 @@ import java.util.Map;
  * @Date 2020/7/29 10:16 上午
  * @Version 1.0
  */
-public class JenkinsUtils {
+public class JenkinsUtil {
 
     public static JenkinsJobParameters convert(String parametersYaml) throws JsonSyntaxException {
         Yaml yaml = new Yaml();

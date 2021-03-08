@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesCluster;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesClusterVO;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesDeploymentVO;
@@ -33,7 +33,7 @@ public class KubernetesDeploymentDecorator extends BaseKubernetesFacade {
                 e.printStackTrace();
             }
             OcKubernetesCluster ocKubernetesCluster = getOcKubernetesClusterByNamespaceId(deployment.getNamespaceId());
-            deployment.setCluster(BeanCopierUtils.copyProperties(ocKubernetesCluster, KubernetesClusterVO.Cluster.class));
+            deployment.setCluster(BeanCopierUtil.copyProperties(ocKubernetesCluster, KubernetesClusterVO.Cluster.class));
             invokeBaseProperty(deployment);
         }
         return deployment;

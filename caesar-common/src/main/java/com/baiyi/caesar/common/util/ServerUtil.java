@@ -10,7 +10,7 @@ import com.google.common.base.Joiner;
  * @Date 2020/1/10 1:32 下午
  * @Version 1.0
  */
-public class ServerUtils {
+public class ServerUtil {
 
     /**
      * 带SN

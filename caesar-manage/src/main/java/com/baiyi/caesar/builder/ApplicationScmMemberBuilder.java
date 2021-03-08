@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.ApplicationScmMemberBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 
@@ -24,6 +24,6 @@ public class ApplicationScmMemberBuilder {
     }
 
     private static CsApplicationScmMember covert(ApplicationScmMemberBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsApplicationScmMember.class);
+        return BeanCopierUtil.copyProperties(bo, CsApplicationScmMember.class);
     }
 }

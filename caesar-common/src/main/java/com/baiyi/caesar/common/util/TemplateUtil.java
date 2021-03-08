@@ -9,7 +9,7 @@ import java.util.Map;
  * @Date 2020/7/3 5:32 下午
  * @Version 1.0
  */
-public class TemplateUtils {
+public class TemplateUtil {
 
     public static String getTemplate(String templateString, Map<String, String> variable) {
         try {

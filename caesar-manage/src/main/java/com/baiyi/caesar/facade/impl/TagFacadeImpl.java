@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -41,7 +41,7 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public DataTable<TagVO.Tag> queryTagPage(TagParam.PageQuery pageQuery) {
         DataTable<OcTag> table = ocTagService.queryOcTagByParam(pageQuery);
-        List<TagVO.Tag> page = BeanCopierUtils.copyListProperties(table.getData(), TagVO.Tag.class);
+        List<TagVO.Tag> page = BeanCopierUtil.copyListProperties(table.getData(), TagVO.Tag.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -57,7 +57,7 @@ public class TagFacadeImpl implements TagFacade {
 
     private BusinessWrapper<Boolean> saveTag(TagVO.Tag tag, boolean action) {
         OcTag checkOcTagKey = ocTagService.queryOcTagByKey(tag.getTagKey());
-        OcTag ocTag = BeanCopierUtils.copyProperties(tag, OcTag.class);
+        OcTag ocTag = BeanCopierUtil.copyProperties(tag, OcTag.class);
         // 对象存在 && 新增
         if (checkOcTagKey != null && action)
             return new BusinessWrapper<>(ErrorEnum.TAG_KEY_ALREADY_EXIST);
@@ -85,22 +85,22 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public List<TagVO.Tag> queryBusinessTag(TagParam.BusinessQuery businessQuery) {
         List<OcTag> ocTagList = ocTagService.queryOcTagByParam(businessQuery);
-        return BeanCopierUtils.copyListProperties(ocTagList, TagVO.Tag.class);
+        return BeanCopierUtil.copyListProperties(ocTagList, TagVO.Tag.class);
     }
 
     @Override
     public List<TagVO.Tag> queryNotInBusinessTag(TagParam.BusinessQuery businessQuery) {
         List<OcTag> ocTagList = ocTagService.queryOcTagNotInByParam(businessQuery);
-        return BeanCopierUtils.copyListProperties(ocTagList, TagVO.Tag.class);
+        return BeanCopierUtil.copyListProperties(ocTagList, TagVO.Tag.class);
     }
 
     @Transactional
     @Override
     public BusinessWrapper<Boolean> updateBusinessTag(BusinessTagVO.BusinessTag businessTag) {
-        if (!IDUtils.isEmpty(businessTag.getBusinessId()))
+        if (!IDUtil.isEmpty(businessTag.getBusinessId()))
             return updateBusinessTagById(businessTag);
         businessTag.getBusinessIds().forEach(id -> {
-            BusinessTagVO.BusinessTag pre = BeanCopierUtils.copyProperties(businessTag, BusinessTagVO.BusinessTag.class);
+            BusinessTagVO.BusinessTag pre = BeanCopierUtil.copyProperties(businessTag, BusinessTagVO.BusinessTag.class);
             pre.setBusinessId(id);
             updateBusinessTagById(pre);
         });
@@ -151,7 +151,7 @@ public class TagFacadeImpl implements TagFacade {
 
     private OcBusinessTag getOcBusinessTag(BusinessTagVO.BusinessTag businessTag, int tagId) {
         businessTag.setTagId(tagId);
-        return BeanCopierUtils.copyProperties(businessTag, OcBusinessTag.class);
+        return BeanCopierUtil.copyProperties(businessTag, OcBusinessTag.class);
     }
 
     private OcBusinessTag queryOcBusinessTag(BusinessTagVO.BusinessTag businessTag, int tagId) {

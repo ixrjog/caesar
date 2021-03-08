@@ -2,10 +2,10 @@ package com.baiyi.caesar.decorator.server;
 
 import com.baiyi.caesar.ansible.bo.MemberExecutorLogBO;
 import com.baiyi.caesar.ansible.handler.TaskLogRecorder;
-import com.baiyi.caesar.common.util.AnsibleUtils;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IOUtils;
-import com.baiyi.caesar.common.util.TimeAgoUtils;
+import com.baiyi.caesar.common.util.AnsibleUtil;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IOUtil;
+import com.baiyi.caesar.common.util.TimeAgoUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTask;
@@ -53,14 +53,14 @@ public class ServerTaskDecorator {
     private TaskLogRecorder taskLogRecorder;
 
     public ServerTaskVO.ServerTask decorator(OcServerTask ocServerTask) {
-        ServerTaskVO.ServerTask serverTask = BeanCopierUtils.copyProperties(ocServerTask, ServerTaskVO.ServerTask.class);
+        ServerTaskVO.ServerTask serverTask = BeanCopierUtil.copyProperties(ocServerTask, ServerTaskVO.ServerTask.class);
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         serverTask.setServerTarget(new GsonBuilder().create().fromJson(serverTask.getServerTargetDetail(), type));
         // user
         serverTask.setUser(new GsonBuilder().create().fromJson(serverTask.getUserDetail(), UserVO.User.class));
 
-        serverTask.setAgo(TimeAgoUtils.format(serverTask.getCreateTime()));
+        serverTask.setAgo(TimeAgoUtil.format(serverTask.getCreateTime()));
         return serverTask;
     }
 
@@ -126,19 +126,19 @@ public class ServerTaskDecorator {
     }
 
     private ServerTaskMemberVO.ServerTaskMember decorator(OcServerTaskMember member) {
-        ServerTaskMemberVO.ServerTaskMember serverTaskMember = BeanCopierUtils.copyProperties(member, ServerTaskMemberVO.ServerTaskMember.class);
+        ServerTaskMemberVO.ServerTaskMember serverTaskMember = BeanCopierUtil.copyProperties(member, ServerTaskMemberVO.ServerTaskMember.class);
         serverTaskMember.setHide(false);
         OcServer ocServer = ocServerService.queryOcServerById(serverTaskMember.getServerId());
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(member.getEnvType());
-        serverTaskMember.setEnv(BeanCopierUtils.copyProperties(ocEnv, EnvVO.Env.class));
+        serverTaskMember.setEnv(BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class));
         if (ocServer == null) return serverTaskMember;
         serverTaskMember.setSuccess(serverTaskMember.getExitValue() != null && serverTaskMember.getExitValue() == 0);
         serverTaskMember.setShowErrorLog(false); // 不显示错误日志
         if (serverTaskMember.getFinalized() == 1) {
             if (!StringUtils.isEmpty(member.getOutputMsg()))
-                serverTaskMember.setOutputMsgLog(IOUtils.readFile(member.getOutputMsg()));
+                serverTaskMember.setOutputMsgLog(IOUtil.readFile(member.getOutputMsg()));
             if (!StringUtils.isEmpty(member.getErrorMsg())) {
-                serverTaskMember.setErrorMsgLog(IOUtils.readFile(member.getErrorMsg()));
+                serverTaskMember.setErrorMsgLog(IOUtil.readFile(member.getErrorMsg()));
                 if (serverTaskMember.getExitValue() != 0)
                     serverTaskMember.setShowErrorLog(true); // 显示错误日志
             }
@@ -153,7 +153,7 @@ public class ServerTaskDecorator {
         }
         if (serverTaskMember.getSuccess()) {
             // 格式化数据
-            String resultHead = AnsibleUtils.getResultHead(serverTaskMember.getOutputMsgLog());
+            String resultHead = AnsibleUtil.getResultHead(serverTaskMember.getOutputMsgLog());
             if (!StringUtils.isEmpty(resultHead)) {
                 String resultStr = serverTaskMember.getOutputMsgLog().replace(resultHead, "");
                 try {

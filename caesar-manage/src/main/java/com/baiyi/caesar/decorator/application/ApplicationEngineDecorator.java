@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -24,7 +24,7 @@ public class ApplicationEngineDecorator {
         if (extend == 0) return engine;
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(engine.getJenkinsInstanceId());
         if (csJenkinsInstance != null) {
-            engine.setInstance(BeanCopierUtils.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
+            engine.setInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
         }
         return engine;
     }

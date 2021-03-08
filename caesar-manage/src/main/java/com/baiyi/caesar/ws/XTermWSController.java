@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baiyi.caesar.bo.ServerAddr;
 import com.baiyi.caesar.builder.TerminalSessionBuilder;
 import com.baiyi.caesar.common.base.XTermRequestStatus;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.facade.AuthBaseFacade;
 import com.baiyi.caesar.facade.TerminalBaseFacade;
@@ -106,7 +106,7 @@ public class XTermWSController implements InitializingBean {
     public void onMessage(String message, Session session) {
         if (!session.isOpen() || StringUtils.isEmpty(message)) return;
         // log.info("来自客户端的消息：{}", message);
-        SessionUtils.setUsername(ocTerminalSession.getUsername());
+        SessionUtil.setUsername(ocTerminalSession.getUsername());
         JSONObject jsonObject = JSON.parseObject(message);
         String status = jsonObject.getString("status");
         // 鉴权并更新会话信息
@@ -116,7 +116,7 @@ public class XTermWSController implements InitializingBean {
             if (StringUtils.isEmpty(ocTerminalSession.getUsername())) {
                 ocTerminalSession.setUsername(username);
                 terminalFacade.updateOcTerminalSession(ocTerminalSession);
-                SessionUtils.setUsername(ocTerminalSession.getUsername()); // 设置当前会话用户身份
+                SessionUtil.setUsername(ocTerminalSession.getUsername()); // 设置当前会话用户身份
             }
         }
         XTermProcessFactory.getIXTermProcessByKey(status).xtermProcess(message, session, ocTerminalSession);

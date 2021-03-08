@@ -1,6 +1,7 @@
 package com.baiyi.caesar.domain.param.application;
 
 import com.baiyi.caesar.domain.param.PageParam;
+import com.baiyi.caesar.domain.param.TagParam;
 import com.baiyi.caesar.domain.param.server.ServerGroupParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,7 @@ public class ApplicationParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ApplicationPageQuery extends PageParam {
+    public static class ApplicationPageQuery extends TagParam {
 
         @ApiModelProperty(value = "关键字查询")
         private String queryName;

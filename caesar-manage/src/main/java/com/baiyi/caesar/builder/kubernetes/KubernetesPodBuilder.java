@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.kubernetes;
 
 import com.baiyi.caesar.bo.kubernetes.KubernetesPodBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesPodVO;
 import io.fabric8.kubernetes.api.model.Pod;
 
@@ -29,6 +29,6 @@ public class KubernetesPodBuilder {
     }
 
     private static KubernetesPodVO.Pod covert(KubernetesPodBO bo) {
-        return BeanCopierUtils.copyProperties(bo, KubernetesPodVO.Pod.class);
+        return BeanCopierUtil.copyProperties(bo, KubernetesPodVO.Pod.class);
     }
 }

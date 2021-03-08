@@ -6,8 +6,8 @@ import com.baiyi.caesar.common.config.ServerAttributeConfig;
 import com.baiyi.caesar.common.config.serverAttribute.AttributeGroup;
 import com.baiyi.caesar.common.config.serverAttribute.ServerAttribute;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.ServerAttributeUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.ServerAttributeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerAttribute;
@@ -47,7 +47,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
 
     @Override
     public List<ServerAttributeVO.ServerAttribute> queryServerGroupAttribute(OcServerGroup ocServerGroup) {
-        return BeanCopierUtils.copyListProperties(getServerGroupAttribute(ocServerGroup), ServerAttributeVO.ServerAttribute.class);
+        return BeanCopierUtil.copyListProperties(getServerGroupAttribute(ocServerGroup), ServerAttributeVO.ServerAttribute.class);
     }
 
     public List<OcServerAttribute> getServerAttribute(OcServer ocServer) {
@@ -55,7 +55,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
         // 服务器组属性
         getServerGroupAttribute(getOcServerGroup(ocServer)).forEach(e -> {
             // serverGroup的属性配置
-            AttributeGroup ag = ServerAttributeUtils.convert(e.getAttributes());
+            AttributeGroup ag = ServerAttributeUtil.convert(e.getAttributes());
             OcServerAttribute ocServerAttribute = ServerAttributeBuilder.build(ag.getName(), BusinessType.SERVER.getType(), ocServer.getId());
             OcServerAttribute preServerAttribute = ocServerAttributeService.queryOcServerAttributeByUniqueKey(ocServerAttribute);
             if (preServerAttribute == null) {
@@ -64,7 +64,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
             } else {
                 // db中的配置项
                 try {
-                    AttributeGroup attributeGroup = ServerAttributeUtils.convert(preServerAttribute.getAttributes());
+                    AttributeGroup attributeGroup = ServerAttributeUtil.convert(preServerAttribute.getAttributes());
                     serverAttributeList.add(ServerAttributeBuilder.build(preServerAttribute.getId(), ServerAttributeDecorator.decorator(ag, attributeGroup), ocServer));
                 } catch (Exception ex) {
                     // 数据格式错误，删除数据后生成默认配置项
@@ -93,7 +93,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
             } else {
                 // db中的配置项
                 try {
-                    AttributeGroup attributeGroup = ServerAttributeUtils.convert(preServerAttribute.getAttributes());
+                    AttributeGroup attributeGroup = ServerAttributeUtil.convert(preServerAttribute.getAttributes());
                     serverAttributeList.add(ServerAttributeBuilder.build(preServerAttribute.getId(), ServerAttributeDecorator.decorator(ag, attributeGroup), ocServerGroup));
                 } catch (Exception e) {
                     // 数据格式错误，删除数据后生成默认配置项
@@ -107,7 +107,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
 
     @Override
     public List<ServerAttributeVO.ServerAttribute> queryServerAttribute(OcServer ocServer) {
-        return BeanCopierUtils.copyListProperties(getServerAttribute(ocServer), ServerAttributeVO.ServerAttribute.class);
+        return BeanCopierUtil.copyListProperties(getServerAttribute(ocServer), ServerAttributeVO.ServerAttribute.class);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
 
     @Override
     public BusinessWrapper<Boolean> saveServerAttribute(ServerAttributeVO.ServerAttribute serverAttribute) {
-        OcServerAttribute preServerAttribute = BeanCopierUtils.copyProperties(serverAttribute, OcServerAttribute.class);
+        OcServerAttribute preServerAttribute = BeanCopierUtil.copyProperties(serverAttribute, OcServerAttribute.class);
         OcServerAttribute checkServerAttribute = ocServerAttributeService.queryOcServerAttributeByUniqueKey(preServerAttribute);
         if (checkServerAttribute == null) {
             ocServerAttributeService.addOcServerAttribute(preServerAttribute);
@@ -148,7 +148,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
         serverGroupAttributeMap = Maps.newHashMap();
         List<ServerAttributeVO.ServerAttribute> list = queryServerGroupAttribute(ocServerGroup);
         for (ServerAttributeVO.ServerAttribute sa : list) {
-            AttributeGroup attributeGroup = ServerAttributeUtils.convert(sa.getAttributes());
+            AttributeGroup attributeGroup = ServerAttributeUtil.convert(sa.getAttributes());
             serverGroupAttributeMap.putAll(convertServerAttributeMap(attributeGroup.getAttributes()));
         }
         redisUtil.set(key, serverGroupAttributeMap, 60 * 60 * 24 * 7);
@@ -164,7 +164,7 @@ public class ServerAttributeFacadeImpl implements ServerAttributeFacade {
         serverAttributeMap = Maps.newHashMap();
         List<ServerAttributeVO.ServerAttribute> list = queryServerAttribute(ocServer);
         for (ServerAttributeVO.ServerAttribute sa : list) {
-            AttributeGroup attributeGroup = ServerAttributeUtils.convert(sa.getAttributes());
+            AttributeGroup attributeGroup = ServerAttributeUtil.convert(sa.getAttributes());
             serverAttributeMap.putAll(convertServerAttributeMap(attributeGroup.getAttributes()));
         }
         redisUtil.set(key, serverAttributeMap, 60 * 60 * 24 * 7);

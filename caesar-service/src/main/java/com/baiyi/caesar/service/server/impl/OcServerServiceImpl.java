@@ -68,14 +68,14 @@ public class OcServerServiceImpl implements OcServerService {
 
     @Override
     public DataTable<OcServer> queryOcServerByParam(ServerParam.PageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcServer> ocServerList = ocServerMapper.queryOcServerByParam(pageQuery);
         return new DataTable<>(ocServerList, page.getTotal());
     }
 
     @Override
     public DataTable<OcServer> fuzzyQueryOcServerByParam(ServerParam.PageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcServer> ocServerList = ocServerMapper.fuzzyQueryOcServerByParam(pageQuery);
         return new DataTable<>(ocServerList, page.getTotal());
     }

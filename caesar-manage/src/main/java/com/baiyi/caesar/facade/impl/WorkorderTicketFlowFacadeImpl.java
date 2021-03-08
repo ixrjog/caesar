@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.bo.WorkorderTicketFlowBO;
 import com.baiyi.caesar.common.base.TicketPhase;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorderTicket;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorderTicketFlow;
@@ -97,7 +97,7 @@ public class WorkorderTicketFlowFacadeImpl implements WorkorderTicketFlowFacade 
     }
 
     private OcWorkorderTicketFlow saveWorkorderTicketFlow(WorkorderTicketFlowBO workorderTicketFlowBO) {
-        OcWorkorderTicketFlow ocWorkorderTicketFlow = BeanCopierUtils.copyProperties(workorderTicketFlowBO, OcWorkorderTicketFlow.class);
+        OcWorkorderTicketFlow ocWorkorderTicketFlow = BeanCopierUtil.copyProperties(workorderTicketFlowBO, OcWorkorderTicketFlow.class);
         ocWorkorderTicketFlowService.addOcWorkorderTicketFlow(ocWorkorderTicketFlow);
         return ocWorkorderTicketFlow;
     }

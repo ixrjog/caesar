@@ -5,7 +5,7 @@ import com.baiyi.caesar.account.IAccount;
 import com.baiyi.caesar.account.builder.UserBuilder;
 import com.baiyi.caesar.account.convert.LdapPersonConvert;
 import com.baiyi.caesar.common.base.AccountType;
-import com.baiyi.caesar.common.util.PasswordUtils;
+import com.baiyi.caesar.common.util.PasswordUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcAccount;
 import com.baiyi.caesar.domain.generator.caesar.OcAuthRole;
 import com.baiyi.caesar.domain.generator.caesar.OcAuthUserRole;
@@ -77,7 +77,7 @@ public class LdapAccount extends BaseAccount implements IAccount {
         user.setIsActive(true);
         user.setSource("ldap");
         // 若密码为空生成初始密码
-        String password = (StringUtils.isEmpty(user.getPassword()) ? PasswordUtils.getPW(PASSWORD_LENGTH) : user.getPassword());
+        String password = (StringUtils.isEmpty(user.getPassword()) ? PasswordUtil.getPW(PASSWORD_LENGTH) : user.getPassword());
         user.setPassword(stringEncryptor.encrypt(password)); // 加密
         ocUserService.addOcUser(user);
         initialUserBaseRole(user); // 初始化角色
@@ -122,7 +122,7 @@ public class LdapAccount extends BaseAccount implements IAccount {
                 return true; // 用户不存在
             Person person = new Person();
             person.setUsername(user.getUsername());
-            person.setUserPassword(PasswordUtils.getPW(20));
+            person.setUserPassword(PasswordUtil.getPW(20));
             personRepo.update(person);
         }
         return true;

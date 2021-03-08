@@ -3,9 +3,9 @@ package com.baiyi.caesar.jenkins;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.base.BuildType;
-import com.baiyi.caesar.common.util.RegexUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
@@ -65,7 +65,7 @@ public class JobTest extends BaseUnit {
     @Test
     void testAcqJenkinsDate() {
         String date = "2020-08-10 16:32:26 +0800";
-        System.err.println(TimeUtils.acqJenkinsDate(date));
+        System.err.println(TimeUtil.acqJenkinsDate(date));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class JobTest extends BaseUnit {
     @Test
     void testApk() {
         String fileName = "bm_debug_[ceshi].apk";
-        System.err.println(RegexUtils.checkApk(fileName));
+        System.err.println(RegexUtil.checkApk(fileName));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class JobTest extends BaseUnit {
     void testTryAuthorizedUser() {
 
 
-        SessionUtils.setUsername("gechong");
+        SessionUtil.setUsername("gechong");
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
         BusinessWrapper<Boolean> wrapper = jobFacade.tryAuthorizedUser(csCiJob);
         System.err.println(JSON.toJSON(wrapper));

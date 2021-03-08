@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.kubernetes;
 
 import com.baiyi.caesar.bo.kubernetes.KubernetesServicePortBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesService;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesServicePort;
 import io.fabric8.kubernetes.api.model.ServicePort;
@@ -26,6 +26,6 @@ public class KubernetesServicePortBuilder {
     }
 
     private static OcKubernetesServicePort covert(KubernetesServicePortBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcKubernetesServicePort.class);
+        return BeanCopierUtil.copyProperties(bo, OcKubernetesServicePort.class);
     }
 }

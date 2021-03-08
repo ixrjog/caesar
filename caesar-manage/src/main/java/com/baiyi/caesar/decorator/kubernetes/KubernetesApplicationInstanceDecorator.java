@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.kubernetes.KubernetesApplicationVO;
@@ -35,25 +35,25 @@ public class KubernetesApplicationInstanceDecorator {
     private OcKubernetesApplicationService ocKubernetesApplicationService;
 
     public KubernetesApplicationVO.Instance decorator(OcKubernetesApplicationInstance ocKubernetesApplicationInstance, Integer extend) {
-        KubernetesApplicationVO.Instance instance = BeanCopierUtils.copyProperties(ocKubernetesApplicationInstance, KubernetesApplicationVO.Instance.class);
+        KubernetesApplicationVO.Instance instance = BeanCopierUtil.copyProperties(ocKubernetesApplicationInstance, KubernetesApplicationVO.Instance.class);
         // 装饰 环境信息
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(ocKubernetesApplicationInstance.getEnvType());
         if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtils.copyProperties(ocEnv, EnvVO.Env.class);
+            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
             instance.setEnv(env);
         }
 
         OcKubernetesDeployment ocKubernetesDeployment = ocKubernetesDeploymentService.queryOcKubernetesDeploymentByInstanceId(instance.getId());
         if (ocKubernetesDeployment != null)
-            instance.setDeployment(BeanCopierUtils.copyProperties(ocKubernetesDeployment, KubernetesDeploymentVO.Deployment.class));
+            instance.setDeployment(BeanCopierUtil.copyProperties(ocKubernetesDeployment, KubernetesDeploymentVO.Deployment.class));
 
         OcKubernetesService ocKubernetesService = ocKubernetesServiceService.queryOcKubernetesServiceByInstanceId(instance.getId());
         if (ocKubernetesService != null)
-            instance.setService(BeanCopierUtils.copyProperties(ocKubernetesService, KubernetesServiceVO.Service.class));
+            instance.setService(BeanCopierUtil.copyProperties(ocKubernetesService, KubernetesServiceVO.Service.class));
 
         if (extend == 1) {
             OcKubernetesApplication ocKubernetesApplication = ocKubernetesApplicationService.queryOcKubernetesApplicationById(instance.getApplicationId());
-            instance.setApplication(BeanCopierUtils.copyProperties(ocKubernetesApplication, KubernetesApplicationVO.Application.class));
+            instance.setApplication(BeanCopierUtil.copyProperties(ocKubernetesApplication, KubernetesApplicationVO.Application.class));
         }
 
         return instance;

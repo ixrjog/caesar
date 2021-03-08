@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.ansible.config.AnsibleConfig;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.vo.server.PreviewAttributeVO;
 import com.baiyi.caesar.facade.AttributeFacade;
@@ -42,7 +42,7 @@ public class AttributeFacadeImpl implements AttributeFacade {
                 if (!StringUtils.isEmpty(previewAttribute.getContent()))
                     context.append("\n").append(previewAttribute.getContent());
             }
-            IOUtils.createFile(ansibleConfig.acqInventoryPath(), ANSIBLE_HOSTS, context.toString());
+            IOUtil.createFile(ansibleConfig.acqInventoryPath(), ANSIBLE_HOSTS, context.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

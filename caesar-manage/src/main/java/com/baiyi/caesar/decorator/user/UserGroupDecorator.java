@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.user;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
@@ -30,7 +30,7 @@ public class UserGroupDecorator {
     public UserGroupVO.UserGroup decorator(UserGroupVO.UserGroup userGroup, Integer extend) {
         if (extend != null && extend == 1) {
             List<OcUser> userList = ocUserService.queryOcUserByUserGroupId(userGroup.getId());
-            userGroup.setUsers(BeanCopierUtils.copyListProperties(userList, UserVO.User.class));
+            userGroup.setUsers(BeanCopierUtil.copyListProperties(userList, UserVO.User.class));
         }
         return userGroup;
     }
@@ -43,7 +43,7 @@ public class UserGroupDecorator {
             for (String username : usernameList) {
                 OcUser ocUser = ocUserService.queryOcUserByUsername(username);
                 if (ocUser != null)
-                    users.add(BeanCopierUtils.copyProperties(ocUser, UserVO.User.class));
+                    users.add(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
             }
             userGroup.setUsers(users);
         }

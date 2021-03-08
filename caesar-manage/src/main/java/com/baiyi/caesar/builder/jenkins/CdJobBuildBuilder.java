@@ -1,8 +1,8 @@
 package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.CdJobBuildBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
@@ -28,7 +28,7 @@ public class CdJobBuildBuilder {
                 .jobName(jobName)
                 .ciBuildId(ciBuildId)
                 .cdJobId(csCdJob.getId())
-                .username(SessionUtils.getUsername())
+                .username(SessionUtil.getUsername())
                 .jobEngineId(jobEngine.getId())
                 .jobBuildNumber(csCdJob.getJobBuildNumber())
                 .engineBuildNumber(engineBuildNumber)
@@ -39,6 +39,6 @@ public class CdJobBuildBuilder {
     }
 
     private static CsCdJobBuild covert(CdJobBuildBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsCdJobBuild.class);
+        return BeanCopierUtil.copyProperties(bo, CsCdJobBuild.class);
     }
 }

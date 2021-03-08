@@ -1,8 +1,8 @@
 package com.baiyi.caesar.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.baiyi.caesar.common.util.GitlabTokenUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.GitlabTokenUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.HttpResult;
 import com.baiyi.caesar.facade.AuthBaseFacade;
@@ -78,7 +78,7 @@ public class AuthFilter extends OncePerRequestFilter {
             try {
                 String gitlabToken = request.getHeader(GITLAB_TOKEN);
                 if(!StringUtils.isEmpty(gitlabToken))
-                    GitlabTokenUtils.setToken(gitlabToken);
+                    GitlabTokenUtil.setToken(gitlabToken);
             }catch (Exception ignored){
             }
 
@@ -92,8 +92,8 @@ public class AuthFilter extends OncePerRequestFilter {
             } else {
                 String username = authFacade.getUserByToken(token);
                 if (!StringUtils.isEmpty(username)) {
-                    SessionUtils.setUsername(username);
-                    SessionUtils.setToken(token);
+                    SessionUtil.setUsername(username);
+                    SessionUtil.setToken(token);
                 }
                 filterChain.doFilter(request, response);
             }

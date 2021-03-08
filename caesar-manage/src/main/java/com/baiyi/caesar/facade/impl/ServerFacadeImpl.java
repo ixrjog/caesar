@@ -2,9 +2,9 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.ServerBuilder;
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
-import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -74,7 +74,7 @@ public class ServerFacadeImpl implements ServerFacade {
     }
 
     private ServerVO.Server getServerVO(OcServer ocServer) {
-        return serverDecorator.decorator(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+        return serverDecorator.decorator(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ServerFacadeImpl implements ServerFacade {
         queryByServerByIds.getIds().forEach(e -> {
             OcServer ocServer = ocServerService.queryOcServerById(e);
             if (ocServer != null)
-                result.add(serverDecorator.decorator(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class)));
+                result.add(serverDecorator.decorator(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class)));
         });
         return new BusinessWrapper(result);
     }
@@ -97,7 +97,7 @@ public class ServerFacadeImpl implements ServerFacade {
     @Override
     public BusinessWrapper<List<ServerVO.Server>> queryServerByServerGroup(ServerParam.QueryByServerGroup queryByServerGroup) {
         Integer serverGroupId = queryByServerGroup.getServerGroupId();
-        if (IDUtils.isEmpty(serverGroupId)) {
+        if (IDUtil.isEmpty(serverGroupId)) {
             if (!StringUtils.isEmpty(queryByServerGroup.getServerGroupName())) {
                 OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupByName(queryByServerGroup.getServerGroupName());
                 if (ocServerGroup != null)
@@ -106,7 +106,7 @@ public class ServerFacadeImpl implements ServerFacade {
         }
         if (serverGroupId == null) return new BusinessWrapper<>(ErrorEnum.SERVERGROUP_NOT_EXIST);
         List<ServerVO.Server> servers = ocServerService.queryOcServerByServerGroupId(serverGroupId).stream().map(e ->
-                serverDecorator.decorator(BeanCopierUtils.copyProperties(e, ServerVO.Server.class))
+                serverDecorator.decorator(BeanCopierUtil.copyProperties(e, ServerVO.Server.class))
         ).collect(Collectors.toList());
         return new BusinessWrapper(servers);
     }
@@ -123,7 +123,7 @@ public class ServerFacadeImpl implements ServerFacade {
     }
 
     private DataTable<ServerVO.Server> toServerDataTable(DataTable<OcServer> table) {
-        List<ServerVO.Server> page = BeanCopierUtils.copyListProperties(table.getData(), ServerVO.Server.class);
+        List<ServerVO.Server> page = BeanCopierUtil.copyListProperties(table.getData(), ServerVO.Server.class);
         return new DataTable<>(page.stream().map(e -> serverDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -133,7 +133,7 @@ public class ServerFacadeImpl implements ServerFacade {
             return new BusinessWrapper<>(ErrorEnum.SERVER_PRIVATE_IP_IS_NAME);
         if (ocServerService.queryOcServerByPrivateIp(server.getPrivateIp()) != null)
             return new BusinessWrapper<>(ErrorEnum.SERVER_PRIVATE_IP_CONFLICT);
-        if (StringUtils.isEmpty(server.getName()) || !RegexUtils.isServerNameRule(server.getName()))
+        if (StringUtils.isEmpty(server.getName()) || !RegexUtil.isServerNameRule(server.getName()))
             return new BusinessWrapper<>(ErrorEnum.SERVER_NAME_NON_COMPLIANCE_WITH_RULES);
         if (server.getServerGroupId() == null)
             return new BusinessWrapper<>(ErrorEnum.SERVER_GROUP_NOT_SELECTED);
@@ -155,7 +155,7 @@ public class ServerFacadeImpl implements ServerFacade {
     @Override
     public BusinessWrapper<Boolean> updateServer(ServerVO.Server server) {
         // 校验服务器名称
-        if (!RegexUtils.isServerNameRule(server.getName()))
+        if (!RegexUtil.isServerNameRule(server.getName()))
             return new BusinessWrapper<>(ErrorEnum.SERVER_NAME_NON_COMPLIANCE_WITH_RULES);
         // 校验服务器组是否配置
         if (server.getServerGroupId() == null
@@ -163,7 +163,7 @@ public class ServerFacadeImpl implements ServerFacade {
                 || ocServerGroupService.queryOcServerGroupById(server.getServerGroupId()) == null) {
             return new BusinessWrapper<>(ErrorEnum.SERVER_GROUP_NOT_SELECTED);
         }
-        OcServer ocServer = BeanCopierUtils.copyProperties(server, OcServer.class);
+        OcServer ocServer = BeanCopierUtil.copyProperties(server, OcServer.class);
         ocServerService.updateOcServer(ocServer);
         // 清理缓存
         serverCacheFacade.evictServerCache(ocServer);

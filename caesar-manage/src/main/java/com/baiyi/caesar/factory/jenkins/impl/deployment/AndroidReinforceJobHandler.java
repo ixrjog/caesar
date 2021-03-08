@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.baiyi.caesar.common.base.AndroidReinforceChannelType;
 import com.baiyi.caesar.common.base.JobType;
-import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
@@ -55,7 +55,7 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
 
     @Override
     protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
-        return artifacts.stream().filter(e -> RegexUtils.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
+        return artifacts.stream().filter(e -> RegexUtil.checkApk(e.getArtifactFileName())).collect(Collectors.toList());
     }
 
     private String acqChannelGroup(JobDeploymentParam.DeploymentParam deploymentParam) {

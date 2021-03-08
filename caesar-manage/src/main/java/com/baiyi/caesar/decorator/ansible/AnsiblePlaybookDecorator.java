@@ -1,8 +1,8 @@
 package com.baiyi.caesar.decorator.ansible;
 
 import com.baiyi.caesar.ansible.config.AnsibleConfig;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.PlaybookUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.PlaybookUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcAnsiblePlaybook;
 import com.baiyi.caesar.domain.vo.ansible.AnsiblePlaybookVO;
 import com.baiyi.caesar.domain.vo.ansible.playbook.PlaybookTags;
@@ -27,9 +27,9 @@ public class AnsiblePlaybookDecorator {
     private AnsibleConfig ansibleConfig;
 
     public AnsiblePlaybookVO.AnsiblePlaybook decorator(OcAnsiblePlaybook ocAnsiblePlaybook) {
-        AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook = BeanCopierUtils.copyProperties(ocAnsiblePlaybook, AnsiblePlaybookVO.AnsiblePlaybook.class);
+        AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook = BeanCopierUtil.copyProperties(ocAnsiblePlaybook, AnsiblePlaybookVO.AnsiblePlaybook.class);
         try {
-            PlaybookTags tags = PlaybookUtils.buildTags(ansiblePlaybook.getTags());
+            PlaybookTags tags = PlaybookUtil.buildTags(ansiblePlaybook.getTags());
             assembleTags(ansiblePlaybook, tags);
             ansiblePlaybook.setTasks(tags.getTasks());
             ansiblePlaybook.setFormatError(false);

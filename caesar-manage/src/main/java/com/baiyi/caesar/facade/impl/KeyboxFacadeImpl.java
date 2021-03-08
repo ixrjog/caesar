@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SSHUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.SSHUtil;
 import com.baiyi.caesar.decorator.keybox.KeyboxDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -53,13 +53,13 @@ public class KeyboxFacadeImpl implements KeyboxFacade {
     @Override
     public DataTable<KeyboxVO.Keybox> queryKeyboxPage(KeyboxParam.PageQuery pageQuery) {
         DataTable<OcKeybox> table = ocKeyboxService.queryOcKeyboxByParam(pageQuery);
-        List<KeyboxVO.Keybox> page = BeanCopierUtils.copyListProperties(table.getData(), KeyboxVO.Keybox.class);
+        List<KeyboxVO.Keybox> page = BeanCopierUtil.copyListProperties(table.getData(), KeyboxVO.Keybox.class);
         return new DataTable<>(page.stream().map(e -> keyboxDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addKeybox(KeyboxVO.Keybox keybox) {
-        OcKeybox ocKeybox = BeanCopierUtils.copyProperties(keybox, OcKeybox.class);
+        OcKeybox ocKeybox = BeanCopierUtil.copyProperties(keybox, OcKeybox.class);
         if (ocKeybox.getKeyType() == 0) { // sshKey
             if (StringUtils.isEmpty(ocKeybox.getPublicKey()))
                 return new BusinessWrapper<>(ErrorEnum.KEYBOX_PUBLIC_KEY_IS_EMPTY);
@@ -68,7 +68,7 @@ public class KeyboxFacadeImpl implements KeyboxFacade {
             ocKeybox.setPrivateKey(stringEncryptor.encrypt(keybox.getPrivateKey()));
             if (!StringUtils.isEmpty(ocKeybox.getPassphrase()))
                 ocKeybox.setPassphrase(stringEncryptor.encrypt(keybox.getPassphrase()));
-            ocKeybox.setFingerprint(SSHUtils.getFingerprint(ocKeybox.getPublicKey()));
+            ocKeybox.setFingerprint(SSHUtil.getFingerprint(ocKeybox.getPublicKey()));
         } else { // user/password
             if (StringUtils.isEmpty(ocKeybox.getPassphrase()))
                 return new BusinessWrapper<>(ErrorEnum.KEYBOX_PASSPHRASE_IS_EMPTY);

@@ -11,7 +11,7 @@ import org.yaml.snakeyaml.Yaml;
  * @Date 2020/3/7 10:42 上午
  * @Version 1.0
  */
-public class ServerAttributeUtils {
+public class ServerAttributeUtil {
 
     public static AttributeGroup convert(String attributeValue) {
         Yaml yaml = new Yaml();

@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.baiyi.caesar.builder.jenkins.JobBuildServerBuilder;
 import com.baiyi.caesar.common.base.JobType;
-import com.baiyi.caesar.common.util.RegexUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
@@ -78,7 +78,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
 
     @Override
     protected List<CsJobBuildArtifact> filterBuildArtifacts(List<CsJobBuildArtifact> artifacts) {
-        return artifacts.stream().filter(e -> RegexUtils.checkJar(e.getArtifactFileName())).collect(Collectors.toList());
+        return artifacts.stream().filter(e -> RegexUtil.checkJar(e.getArtifactFileName())).collect(Collectors.toList());
     }
 
     @Override

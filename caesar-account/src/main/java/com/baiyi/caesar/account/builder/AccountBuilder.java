@@ -2,7 +2,7 @@ package com.baiyi.caesar.account.builder;
 
 import com.baiyi.caesar.account.bo.AccountBO;
 import com.baiyi.caesar.common.base.AccountType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcAccount;
 import org.gitlab.api.models.GitlabUser;
 
@@ -27,7 +27,7 @@ public class AccountBuilder {
     }
 
     private static OcAccount convert(AccountBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcAccount.class);
+        return BeanCopierUtil.copyProperties(bo, OcAccount.class);
     }
 
 }

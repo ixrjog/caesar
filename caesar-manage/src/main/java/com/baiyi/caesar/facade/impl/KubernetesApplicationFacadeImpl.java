@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesApplicationDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesApplicationInstanceDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -74,7 +74,7 @@ public class KubernetesApplicationFacadeImpl implements KubernetesApplicationFac
     public DataTable<KubernetesApplicationVO.Application> queryMyKubernetesApplicationPage(KubernetesApplicationParam.PageQuery pageQuery) {
         OcUser ocUser = userFacade.getOcUserBySession();
         DataTable<OcKubernetesApplication> table = ocKubernetesApplicationService.queryOcKubernetesApplicationByParam(pageQuery);
-        List<KubernetesApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesApplicationVO.Application.class);
+        List<KubernetesApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> kubernetesApplicationDecorator.decorator(e, ocUser)).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -82,7 +82,7 @@ public class KubernetesApplicationFacadeImpl implements KubernetesApplicationFac
     @Override
     public DataTable<KubernetesApplicationVO.Application> queryKubernetesApplicationPage(KubernetesApplicationParam.PageQuery pageQuery) {
         DataTable<OcKubernetesApplication> table = ocKubernetesApplicationService.queryOcKubernetesApplicationByParam(pageQuery);
-        List<KubernetesApplicationVO.Application> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesApplicationVO.Application.class);
+        List<KubernetesApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> kubernetesApplicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
@@ -107,14 +107,14 @@ public class KubernetesApplicationFacadeImpl implements KubernetesApplicationFac
 
     @Override
     public BusinessWrapper<Boolean> addKubernetesApplication(KubernetesApplicationVO.Application application) {
-        OcKubernetesApplication ocKubernetesApplication = BeanCopierUtils.copyProperties(application, OcKubernetesApplication.class);
+        OcKubernetesApplication ocKubernetesApplication = BeanCopierUtil.copyProperties(application, OcKubernetesApplication.class);
         ocKubernetesApplicationService.addOcKubernetesApplication(ocKubernetesApplication);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> addKubernetesApplicationInstance(KubernetesApplicationVO.Instance instance) {
-        OcKubernetesApplicationInstance ocKubernetesApplicationInstance = BeanCopierUtils.copyProperties(instance, OcKubernetesApplicationInstance.class);
+        OcKubernetesApplicationInstance ocKubernetesApplicationInstance = BeanCopierUtil.copyProperties(instance, OcKubernetesApplicationInstance.class);
         invokeInstanceName(ocKubernetesApplicationInstance);
         ocKubernetesApplicationInstanceService.addOcKubernetesApplicationInstance(ocKubernetesApplicationInstance);
         return BusinessWrapper.SUCCESS;
@@ -160,7 +160,7 @@ public class KubernetesApplicationFacadeImpl implements KubernetesApplicationFac
 
     @Override
     public BusinessWrapper<Boolean> updateKubernetesApplication(KubernetesApplicationVO.Application application) {
-        OcKubernetesApplication pre = BeanCopierUtils.copyProperties(application, OcKubernetesApplication.class);
+        OcKubernetesApplication pre = BeanCopierUtil.copyProperties(application, OcKubernetesApplication.class);
         OcKubernetesApplication ocKubernetesApplication = ocKubernetesApplicationService.queryOcKubernetesApplicationById(application.getId());
         pre.setName(ocKubernetesApplication.getName()); // 名称不能修改
         ocKubernetesApplicationService.updateOcKubernetesApplication(pre);
@@ -176,7 +176,7 @@ public class KubernetesApplicationFacadeImpl implements KubernetesApplicationFac
 
     @Override
     public BusinessWrapper<Boolean> updateKubernetesApplicationInstance(KubernetesApplicationVO.Instance instance) {
-        OcKubernetesApplicationInstance ocKubernetesApplicationInstance = BeanCopierUtils.copyProperties(instance, OcKubernetesApplicationInstance.class);
+        OcKubernetesApplicationInstance ocKubernetesApplicationInstance = BeanCopierUtil.copyProperties(instance, OcKubernetesApplicationInstance.class);
         invokeInstanceName(ocKubernetesApplicationInstance);
         ocKubernetesApplicationInstanceService.updateOcKubernetesApplicationInstance(ocKubernetesApplicationInstance);
         return BusinessWrapper.SUCCESS;

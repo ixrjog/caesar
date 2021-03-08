@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @Date 2020/1/2 10:32 上午
  * @Version 1.0
  */
-public class JSONUtils {
+public class JSONUtil {
 
     private JSONMapper mapper = new JSONMapper();
 

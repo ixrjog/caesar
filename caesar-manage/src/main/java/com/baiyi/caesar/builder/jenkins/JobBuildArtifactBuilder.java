@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.JobBuildArtifactBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
@@ -42,6 +42,6 @@ public class JobBuildArtifactBuilder {
     }
 
     private static CsJobBuildArtifact covert(JobBuildArtifactBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsJobBuildArtifact.class);
+        return BeanCopierUtil.copyProperties(bo, CsJobBuildArtifact.class);
     }
 }

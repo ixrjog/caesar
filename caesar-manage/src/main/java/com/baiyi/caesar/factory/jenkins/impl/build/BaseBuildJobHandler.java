@@ -5,8 +5,8 @@ import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.util.JenkinsUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.JenkinsUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
@@ -152,7 +152,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParametersContext context = buildJobParametersContext(csApplication, csCiJob, buildParam);
-        return build(csCiJob, csApplication, context, SessionUtils.getUsername(), buildParam.getIsSilence());
+        return build(csCiJob, csApplication, context, SessionUtil.getUsername(), buildParam.getIsSilence());
     }
 
     /**
@@ -286,10 +286,10 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob) {
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCiJob.getParameterYaml());
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCiJob.getParameterYaml());
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
-                .paramEntries(JenkinsUtils.convert(jenkinsJobParameters))
+                .paramEntries(JenkinsUtil.convert(jenkinsJobParameters))
                 .paramEntry(SSH_URL, csApplicationScmMember != null ? csApplicationScmMember.getScmSshUrl() : null)
                 .paramEntry(BRANCH, csCiJob.getBranch())
                 .paramEntry(APPLICATION_NAME, csApplication.getApplicationKey())

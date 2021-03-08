@@ -4,9 +4,9 @@ import com.baiyi.caesar.bo.SonarParamsBO;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
-import com.baiyi.caesar.common.util.JenkinsUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
@@ -104,7 +104,7 @@ public class CiJobDecorator extends BaseJobDecorator {
         if (!CollectionUtils.isEmpty(csCiJobEngines)) {
             ciJob.setJobEngines(
                     csCiJobEngines.stream().map(e -> {
-                        JobEngineVO.JobEngine jobEngine = BeanCopierUtils.copyProperties(e, JobEngineVO.JobEngine.class);
+                        JobEngineVO.JobEngine jobEngine = BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class);
                         jobEngine.setNeedUpgrade(csJobTpl.getTplVersion() > jobEngine.getTplVersion());
                         if (jobEngine.getNeedUpgrade())
                             needUpgrade.set(true);
@@ -121,40 +121,40 @@ public class CiJobDecorator extends BaseJobDecorator {
         // 装饰 环境信息
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(ciJob.getEnvType());
         if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtils.copyProperties(ocEnv, EnvVO.Env.class);
+            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
             ciJob.setEnv(env);
         }
         // 钉钉
-        if (!IDUtils.isEmpty(ciJob.getDingtalkId())) {
+        if (!IDUtil.isEmpty(ciJob.getDingtalkId())) {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(ciJob.getDingtalkId());
             if (csDingtalk != null)
-                ciJob.setDingtalk(BeanCopierUtils.copyProperties(csDingtalk, DingtalkVO.Dingtalk.class));
+                ciJob.setDingtalk(BeanCopierUtil.copyProperties(csDingtalk, DingtalkVO.Dingtalk.class));
         }
         // 任务模版
-        if (!IDUtils.isEmpty(ciJob.getJobTplId())) {
+        if (!IDUtil.isEmpty(ciJob.getJobTplId())) {
             CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(ciJob.getJobTplId());
             if (csJobTpl != null)
-                ciJob.setJobTpl(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
+                ciJob.setJobTpl(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
         }
         // SCM
-        if (!IDUtils.isEmpty(ciJob.getScmMemberId())) {
+        if (!IDUtil.isEmpty(ciJob.getScmMemberId())) {
             CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(ciJob.getScmMemberId());
             if (csApplicationScmMember != null) {
                 ciJob.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), csApplicationScmMember.getScmId()));
-                ciJob.setScmMember(BeanCopierUtils.copyProperties(csApplicationScmMember, ApplicationVO.ScmMember.class));
+                ciJob.setScmMember(BeanCopierUtil.copyProperties(csApplicationScmMember, ApplicationVO.ScmMember.class));
             }
         }
         // Bucket
-        if (!IDUtils.isEmpty(ciJob.getOssBucketId())) {
+        if (!IDUtil.isEmpty(ciJob.getOssBucketId())) {
             CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(ciJob.getOssBucketId());
             if (csOssBucket != null) {
-                ciJob.setBucket(BeanCopierUtils.copyProperties(csOssBucket, OssBucketVO.Bucket.class));
+                ciJob.setBucket(BeanCopierUtil.copyProperties(csOssBucket, OssBucketVO.Bucket.class));
             }
         }
 
         // 参数
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(ciJob.getParameterYaml());
-        Map<String, String> params = JenkinsUtils.convert(jenkinsJobParameters);
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(ciJob.getParameterYaml());
+        Map<String, String> params = JenkinsUtil.convert(jenkinsJobParameters);
         ciJob.setParameters(params);
 
         JobBuildParam.BuildPageQuery query = new JobBuildParam.BuildPageQuery();
@@ -163,7 +163,7 @@ public class CiJobDecorator extends BaseJobDecorator {
         ciJob.setBuildViews(acqCiJobBuildView(query));
 
         // cdJob
-        if (!IDUtils.isEmpty(ciJob.getDeploymentJobId())) {
+        if (!IDUtil.isEmpty(ciJob.getDeploymentJobId())) {
             CsCdJob csCdJob = csCdJobService.queryCsCdJobById(ciJob.getDeploymentJobId());
             if (csCdJob != null) {
                 ciJob.setCdJob(cdJobDecorator.decorator(csCdJob));

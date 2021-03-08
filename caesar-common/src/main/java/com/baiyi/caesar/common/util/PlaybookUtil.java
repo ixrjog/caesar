@@ -13,7 +13,7 @@ import org.yaml.snakeyaml.Yaml;
  * @Date 2020/4/14 6:55 下午
  * @Version 1.0
  */
-public class PlaybookUtils {
+public class PlaybookUtil {
 
     public static PlaybookVars buildVars(String varsYAML) {
         if(StringUtils.isEmpty(varsYAML))

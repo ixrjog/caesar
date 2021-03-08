@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.gitlab;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
@@ -28,7 +28,7 @@ public class GitlabProjectDecorator {
     public GitlabProjectVO.Project decorator(GitlabProjectVO.Project project, Integer extend) {
         if (extend == 0) return project;
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(project.getInstanceId());
-        project.setInstance(BeanCopierUtils.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
+        project.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
 
         // 装饰 标签
         project.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), project.getId()));

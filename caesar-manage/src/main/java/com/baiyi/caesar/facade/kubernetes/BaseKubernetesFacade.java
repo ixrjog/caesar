@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesApplicationInstanceDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplication;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
@@ -52,7 +52,7 @@ public class BaseKubernetesFacade {
     protected void invokeBaseProperty(BaseKubernetesApplicationVO.BaseProperty baseProperty) {
         if (baseProperty.getApplicationId() != 0) {
             OcKubernetesApplication ocKubernetesApplication = ocKubernetesApplicationService.queryOcKubernetesApplicationById(baseProperty.getApplicationId());
-            baseProperty.setApplication(BeanCopierUtils.copyProperties(ocKubernetesApplication, KubernetesApplicationVO.Application.class));
+            baseProperty.setApplication(BeanCopierUtil.copyProperties(ocKubernetesApplication, KubernetesApplicationVO.Application.class));
         }
         if (baseProperty.getInstanceId() != 0) {
             OcKubernetesApplicationInstance ocKubernetesApplicationInstance = ocKubernetesApplicationInstanceService.queryOcKubernetesApplicationInstanceById(baseProperty.getInstanceId());

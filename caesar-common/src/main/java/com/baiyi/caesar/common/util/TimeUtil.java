@@ -13,7 +13,7 @@ import java.util.TimeZone;
  * @Version 1.0
  */
 @Slf4j
-public class TimeUtils {
+public class TimeUtil {
 
     /**
      * 天时间戳
@@ -128,7 +128,7 @@ public class TimeUtils {
      */
     public static Long calculateDateDiff4Day(String startTime, String endTime) {
         try {
-            long time = TimeUtils.dateToStamp2(endTime) - TimeUtils.dateToStamp2(startTime);
+            long time = TimeUtil.dateToStamp2(endTime) - TimeUtil.dateToStamp2(startTime);
             if (time < 0) {
                 throw new RuntimeException("开始时间不能大于结束时间");
             }
@@ -213,7 +213,7 @@ public class TimeUtils {
         long time = new Date().getTime();
         SimpleDateFormat formatter;
         formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = formatter.format(time - TimeUtils.hourTime * 8);
+        String now = formatter.format(time - TimeUtil.hourTime * 8);
         return now;
     }
 
@@ -239,7 +239,7 @@ public class TimeUtils {
      * @throws ParseException
      */
     public static boolean timeLapse(String d, long stamp) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(TimeUtils.timeFormat);
+        SimpleDateFormat sdf = new SimpleDateFormat(TimeUtil.timeFormat);
         Date date = sdf.parse(d);
         long subTime = new Date().getTime() - date.getTime();
         if (subTime >= stamp) {
@@ -296,7 +296,7 @@ public class TimeUtils {
         try {
             long et = dateToStamp(expiredTime);
             Date d = new Date();
-            return (et - d.getTime()) / TimeUtils.dayTime;
+            return (et - d.getTime()) / TimeUtil.dayTime;
         } catch (Exception e) {
             return -1;
         }

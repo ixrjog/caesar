@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.server;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroupType;
 import com.baiyi.caesar.domain.vo.server.ServerGroupTypeVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
@@ -22,7 +22,7 @@ public class ServerGroupDecorator {
 
     public ServerGroupVO.ServerGroup decorator(ServerGroupVO.ServerGroup serverGroup) {
         OcServerGroupType ocServerGroupType = ocServerGroupTypeService.queryOcServerGroupTypeByGrpType(serverGroup.getGrpType());
-        ServerGroupTypeVO.ServerGroupType serverGroupType = BeanCopierUtils.copyProperties(ocServerGroupType, ServerGroupTypeVO.ServerGroupType.class);
+        ServerGroupTypeVO.ServerGroupType serverGroupType = BeanCopierUtil.copyProperties(ocServerGroupType, ServerGroupTypeVO.ServerGroupType.class);
         serverGroup.setServerGroupType(serverGroupType);
         return serverGroup;
     }

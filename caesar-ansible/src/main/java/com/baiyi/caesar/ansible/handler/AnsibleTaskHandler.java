@@ -6,7 +6,7 @@ import com.baiyi.caesar.ansible.config.AnsibleConfig;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.ServerTaskStatus;
 import com.baiyi.caesar.common.base.ServerTaskStopType;
-import com.baiyi.caesar.common.util.PlaybookUtils;
+import com.baiyi.caesar.common.util.PlaybookUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTask;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTaskMember;
@@ -78,7 +78,7 @@ public class AnsibleTaskHandler {
         if (serverTaskPlaybookExecutor.getConcurrent() > TASK_MAX_CONCURRENT)
             maxConcurrent = TASK_MAX_CONCURRENT;
 
-        PlaybookVars vars = PlaybookUtils.buildVars(serverTaskPlaybookExecutor.getVars());
+        PlaybookVars vars = PlaybookUtil.buildVars(serverTaskPlaybookExecutor.getVars());
         AnsiblePlaybookArgsBO args = AnsiblePlaybookArgsBO.builder()
                 .playbook(playbookPath)
                 .tags(serverTaskPlaybookExecutor.getTags())

@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.CaesarInstanceBuilder;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.HostUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.HostUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsInstance;
@@ -53,7 +53,7 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
     @Override
     public HealthVO.Health checkHealth() {
         try {
-            InetAddress inetAddress = HostUtils.getInetAddress();
+            InetAddress inetAddress = HostUtil.getInetAddress();
             CsInstance csInstance = csInstanceService.queryCsInstanceByHostIp(inetAddress.getHostAddress());
             if (csInstance == null)
                 return getHealth(HEALTH_ERROR, false);
@@ -70,7 +70,7 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
     @Override
     public DataTable<CaesarVO.Instance> queryCaesarInstancePage(CaesarInstanceParam.CaesarInstancePageQuery pageQuery) {
         DataTable<CsInstance> table = csInstanceService.queryCsInstanceByParam(pageQuery);
-        List<CaesarVO.Instance> page = BeanCopierUtils.copyListProperties(table.getData(), CaesarVO.Instance.class);
+        List<CaesarVO.Instance> page = BeanCopierUtil.copyListProperties(table.getData(), CaesarVO.Instance.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
@@ -83,7 +83,7 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
 
     private void register() {
         try {
-            InetAddress inetAddress = HostUtils.getInetAddress();
+            InetAddress inetAddress = HostUtil.getInetAddress();
             if (csInstanceService.queryCsInstanceByHostIp(inetAddress.getHostAddress()) != null) return;
             CsInstance csInstance = CaesarInstanceBuilder.build(inetAddress);
             csInstanceService.addCsInstance(csInstance);

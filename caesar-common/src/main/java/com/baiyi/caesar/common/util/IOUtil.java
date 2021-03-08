@@ -9,7 +9,10 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 @Slf4j
-public class IOUtils {
+public class IOUtil {
+
+    private IOUtil() {
+    }
 
     /**
      * 在指定目录下生成文件，并写入内容
@@ -19,7 +22,7 @@ public class IOUtils {
      * @param context：文件待写入的内容，覆盖旧内容。
      * @return 写入成功时，返回true，否则返回false
      */
-    public static final boolean createFile(String dir, String fileName, String context) {
+    public static boolean createFile(String dir, String fileName, String context) {
         boolean result = false;
         try {
             if (StringUtils.isBlank(fileName)) {
@@ -75,7 +78,7 @@ public class IOUtils {
      * @param path
      */
     public static void writeFile(String body, String path) {
-        log.info(SessionUtils.getUsername() + " write file " + path);
+        log.info(SessionUtil.getUsername() + " write file " + path);
 
         if (StringUtils.isEmpty(path)) {
             log.error("WriteFile path is null !");
@@ -91,7 +94,7 @@ public class IOUtils {
         }
     }
 
-    public static Long fileSize(String path){
+    public static Long fileSize(String path) {
         if (StringUtils.isEmpty(path)) {
             return 0L;
         }
@@ -137,7 +140,7 @@ public class IOUtils {
             }
             return buffer.toString();
         } catch (Exception e) {
-          //  throw new RuntimeException(e);
+            //  throw new RuntimeException(e);
             return null;
         }
     }
@@ -156,7 +159,7 @@ public class IOUtils {
      * @return
      */
     public static boolean delFile(String path) {
-        log.info(SessionUtils.getUsername() + " del file " + path);
+        log.info(SessionUtil.getUsername() + " del file " + path);
 
         File file = new File(path);
         if (file.exists() && file.isFile()) {

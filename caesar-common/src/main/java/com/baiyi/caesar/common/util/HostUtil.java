@@ -8,9 +8,9 @@ import java.net.UnknownHostException;
  * @Date 2020/9/7 9:25 上午
  * @Version 1.0
  */
-public class HostUtils {
+public class HostUtil {
 
-    private HostUtils(){}
+    private HostUtil(){}
 
     public static String getHostAddress() throws UnknownHostException {
         return InetAddress.getLocalHost().getHostAddress();

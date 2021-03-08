@@ -1,8 +1,8 @@
 package com.baiyi.caesar.decorator.kubernetes;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.KubernetesUtils;
-import com.baiyi.caesar.common.util.TemplateUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.KubernetesUtil;
+import com.baiyi.caesar.common.util.TemplateUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplication;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
@@ -35,14 +35,14 @@ public class KubernetesTemplateDecorator {
         template = decorator(template);
         if (ocKubernetesApplicationInstance != null) {
             Map<String, String> variable = Maps.newHashMap();
-            TemplateVariable templateVariable = KubernetesUtils.buildVariable(ocKubernetesApplicationInstance.getTemplateVariable());
+            TemplateVariable templateVariable = KubernetesUtil.buildVariable(ocKubernetesApplicationInstance.getTemplateVariable());
             if (templateVariable != null)
                 variable.putAll(templateVariable.getVariable());
             variable.put("envLabel", ocKubernetesApplicationInstance.getEnvLabel());
             OcKubernetesApplication ocKubernetesApplication = ocKubernetesApplicationService.queryOcKubernetesApplicationById(ocKubernetesApplicationInstance.getApplicationId());
             variable.put("appName", ocKubernetesApplication.getName());
 
-            template.setTemplateYaml(TemplateUtils.getTemplate(template.getTemplateYaml(), variable));
+            template.setTemplateYaml(TemplateUtil.getTemplate(template.getTemplateYaml(), variable));
         }
         return template;
     }
@@ -51,7 +51,7 @@ public class KubernetesTemplateDecorator {
         // 装饰 环境信息
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(template.getEnvType());
         if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtils.copyProperties(ocEnv, EnvVO.Env.class);
+            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
             template.setEnv(env);
         }
         return template;

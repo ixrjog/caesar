@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.WorkorderTicketBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorderTicket;
@@ -25,6 +25,6 @@ public class WorkorderTicketBuilder {
     }
 
     private static OcWorkorderTicket covert(WorkorderTicketBO workorderTicketBO) {
-        return BeanCopierUtils.copyProperties(workorderTicketBO, OcWorkorderTicket.class);
+        return BeanCopierUtil.copyProperties(workorderTicketBO, OcWorkorderTicket.class);
     }
 }

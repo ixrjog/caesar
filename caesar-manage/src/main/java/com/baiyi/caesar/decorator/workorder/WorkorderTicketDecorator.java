@@ -2,8 +2,8 @@ package com.baiyi.caesar.decorator.workorder;
 
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.TicketPhase;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.TimeAgoUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.TimeAgoUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;
@@ -53,11 +53,11 @@ public class WorkorderTicketDecorator {
     public WorkorderTicketVO.Ticket decorator(WorkorderTicketVO.Ticket ticket) {
         // 工单
         OcWorkorder ocWorkorder = ocWorkorderService.queryOcWorkorderById(ticket.getWorkorderId());
-        ticket.setWorkorder(BeanCopierUtils.copyProperties(ocWorkorder, WorkorderVO.Workorder.class));
+        ticket.setWorkorder(BeanCopierUtil.copyProperties(ocWorkorder, WorkorderVO.Workorder.class));
         // 发起人
         ticket.setUser(new GsonBuilder().create().fromJson(ticket.getUserDetail(), UserVO.User.class));
         if (ticket.getStartTime() != null)
-            ticket.setAgo(TimeAgoUtils.format(ticket.getStartTime()));
+            ticket.setAgo(TimeAgoUtil.format(ticket.getStartTime()));
         ticket.setIsInApproval(isInApproval(ticket));  // 审批流程中（给前端按钮使用）
         if (ticket.getIsInApproval()) { // 允许审批
             ITicketSubscribe iTicketSubscribe = WorkorderTicketSubscribeFactory.getTicketSubscribeByKey(ticket.getTicketPhase());

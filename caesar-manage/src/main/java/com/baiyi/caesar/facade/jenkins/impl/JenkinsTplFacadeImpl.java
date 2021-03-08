@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
@@ -66,7 +66,7 @@ public class JenkinsTplFacadeImpl implements JenkinsTplFacade {
         Set<String> jobNameSet = acqCsJobTplByInstanceId(instanceId);
         jobMap.keySet().forEach(k -> {
             if (k.indexOf(jenkinsConfig.getTemplate().getPrefix()) == 0 && !jobNameSet.contains(k))
-                jobs.add(BeanCopierUtils.copyProperties(jobMap.get(k), JenkinsJobVO.Job.class));
+                jobs.add(BeanCopierUtil.copyProperties(jobMap.get(k), JenkinsJobVO.Job.class));
         });
         return jobs;
     }

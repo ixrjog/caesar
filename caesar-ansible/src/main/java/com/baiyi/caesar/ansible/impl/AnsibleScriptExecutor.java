@@ -2,7 +2,7 @@ package com.baiyi.caesar.ansible.impl;
 
 import com.baiyi.caesar.ansible.IAnsibleExecutor;
 import com.baiyi.caesar.ansible.builder.ServerTaskBuilder;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.OcAnsibleScript;
@@ -70,7 +70,7 @@ public class AnsibleScriptExecutor extends BaseExecutor implements IAnsibleExecu
         // 重新写入脚本
         OcAnsibleScript ocAnsibleScript = ocAnsibleScriptService.queryOcAnsibleScriptById(serverTaskScriptExecutor.getScriptId());
         String scriptPath = ansibleConfig.getScriptPath(ocAnsibleScript);
-        IOUtils.writeFile(ocAnsibleScript.getScriptContent(), scriptPath);
+        IOUtil.writeFile(ocAnsibleScript.getScriptContent(), scriptPath);
 
         // 异步执行
         ansibleTaskHandler.call(ocServerTask, serverTaskScriptExecutor, scriptPath);

@@ -1,10 +1,10 @@
 package com.baiyi.caesar.decorator.jenkins;
 
 import com.baiyi.caesar.common.base.BuildType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
-import com.baiyi.caesar.common.util.TimeAgoUtils;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.common.util.TimeAgoUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -96,9 +96,9 @@ public class JobDeploymentDecorator {
             CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
 
             JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
-            if (!IDUtils.isEmpty(csCiJob.getJobTplId())) {
+            if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
                 CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-                jobTpl = jobTplDecorator.decorator(BeanCopierUtils.copyProperties(csJobTpl, JobTplVO.JobTpl.class), 0);
+                jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), 0);
             }
             return JobBuildContext.builder()
                     .csCiJob(csCiJob)
@@ -117,7 +117,7 @@ public class JobDeploymentDecorator {
             if (!jobEngineMap.containsKey(jobBuild.getJobEngineId())) {
                 CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobBuild.getJobEngineId());
                 if (csJobEngine != null) {
-                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
+                    JobEngineVO.JobEngine jobEngine = jobEngineDecorator.decorator(BeanCopierUtil.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
                     jobEngineMap.put(jobBuild.getJobEngineId(), jobEngine);
                 }
             }
@@ -126,7 +126,7 @@ public class JobDeploymentDecorator {
     }
 
     private CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild, JobBuildContext context, Integer extend) {
-        CdJobBuildVO.JobBuild jobBuild = BeanCopierUtils.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class);
+        CdJobBuildVO.JobBuild jobBuild = BeanCopierUtil.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class);
         // Ago
         jobBuild.setAgo(acqAgo(jobBuild));
         // User
@@ -182,20 +182,20 @@ public class JobDeploymentDecorator {
 
     private List<DeploymentServerVO.BuildServer> acqServers(CdJobBuildVO.JobBuild jobBuild) {
         List<CsJobBuildServer> csJobBuildServers = csJobBuildServerService.queryCsJobBuildServerByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
-        return BeanCopierUtils.copyListProperties(csJobBuildServers, DeploymentServerVO.BuildServer.class);
+        return BeanCopierUtil.copyListProperties(csJobBuildServers, DeploymentServerVO.BuildServer.class);
     }
 
 
     private String acqBuildTimes(CdJobBuildVO.JobBuild jobBuild) {
         if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
             long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
-            return TimeUtils.acqBuildTime(buildTime);
+            return TimeUtil.acqBuildTime(buildTime);
         }
         return "";
     }
 
     private String acqAgo(CdJobBuildVO.JobBuild jobBuild) {
-        return TimeAgoUtils.format(jobBuild.getStartTime());
+        return TimeAgoUtil.format(jobBuild.getStartTime());
     }
 
     private UserVO.User acqUser(CdJobBuildVO.JobBuild jobBuild) {
@@ -203,7 +203,7 @@ public class JobDeploymentDecorator {
             OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
             if (ocUser != null) {
                 ocUser.setPassword("");
-                return BeanCopierUtils.copyProperties(ocUser, UserVO.User.class);
+                return BeanCopierUtil.copyProperties(ocUser, UserVO.User.class);
             }
         }
         return new UserVO.User();
@@ -212,10 +212,10 @@ public class JobDeploymentDecorator {
     public List<BuildExecutorVO.BuildExecutor> getExecutorsByBuildId(int buildId) {
         List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.DEPLOYMENT.getType(), buildId);
         return executors.stream().map(e -> {
-                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtils.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
+                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtil.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
                     OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
                     if (ocServer != null)
-                        buildExecutor.setServer(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class));
+                        buildExecutor.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
                     return buildExecutor;
                 }
         ).collect(Collectors.toList());

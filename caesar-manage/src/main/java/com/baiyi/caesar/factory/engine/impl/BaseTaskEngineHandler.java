@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.engine.impl;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -110,7 +110,7 @@ public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements
         Random random = new Random();
         int n = random.nextInt(activeEngines.size());
         CsJobEngine csCiJobEngine = activeEngines.get(n);
-        return jobEngineDecorator.decorator(BeanCopierUtils.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
+        return jobEngineDecorator.decorator(BeanCopierUtil.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
     }
 
     public boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {
@@ -134,7 +134,7 @@ public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements
         if (job.getNextBuildNumber() == jobEngine.getNextBuildNumber()) return;
         jobEngine.setNextBuildNumber(job.getNextBuildNumber());
         jobEngine.setLastBuildNumber(job.getNextBuildNumber() - 1);
-        csJobEngineService.updateCsJobEngine(BeanCopierUtils.copyProperties(jobEngine, CsJobEngine.class));
+        csJobEngineService.updateCsJobEngine(BeanCopierUtil.copyProperties(jobEngine, CsJobEngine.class));
     }
 
     protected void recordJobBuildComputer(JobEngineVO.JobEngine jobEngine, CsJobBuildExecutor pre) {

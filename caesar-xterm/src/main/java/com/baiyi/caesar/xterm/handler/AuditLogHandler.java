@@ -1,7 +1,7 @@
 package com.baiyi.caesar.xterm.handler;
 
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.IOUtils;
+import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.common.util.bae64.CacheKeyUtils;
 import com.baiyi.caesar.xterm.config.XTermConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class AuditLogHandler {
             if (redisUtil.hasKey(cacheKey)) {
                 // 追加内容
                 String log = (String) redisUtil.get(cacheKey);
-                IOUtils.appendFile(log, xtermConfig.getAuditLogPath(sessionId, instanceId));
+                IOUtil.appendFile(log, xtermConfig.getAuditLogPath(sessionId, instanceId));
                 redisUtil.del(cacheKey); // 清空缓存
             }
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class AuditLogHandler {
             while (log.contains("\b")) {
                 log = log.replaceFirst(".\b", ""); // 退格处理
             }
-            IOUtils.appendFile(log, xtermConfig.getCommanderLogPath(sessionId, instanceId));
+            IOUtil.appendFile(log, xtermConfig.getCommanderLogPath(sessionId, instanceId));
         } catch (Exception e) {
             log.error("Web终端命令日志写入失败! sessionId = {}, instanceId = {}", sessionId, instanceId);
         }

@@ -8,7 +8,9 @@ import java.util.Date;
  * @Date 2020/5/7 2:19 下午
  * @Version 1.0
  */
-public class TimeAgoUtils {
+public class TimeAgoUtil {
+
+    private TimeAgoUtil(){}
 
     private static final long ONE_MINUTE = 60000L;
     private static final long ONE_HOUR = 3600000L;

@@ -2,7 +2,7 @@ package com.baiyi.caesar.account.builder;
 
 import com.baiyi.caesar.account.bo.UserBO;
 import com.baiyi.caesar.account.config.AuthConfig;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.ldap.entry.Person;
 import org.gitlab.api.models.GitlabUser;
@@ -46,7 +46,7 @@ public class UserBuilder {
     }
 
     private static OcUser convert(UserBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcUser.class);
+        return BeanCopierUtil.copyProperties(bo, OcUser.class);
     }
 
 }

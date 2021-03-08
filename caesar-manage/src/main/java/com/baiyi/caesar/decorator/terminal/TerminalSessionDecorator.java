@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.terminal;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSessionInstance;
 import com.baiyi.caesar.domain.vo.term.TerminalSessionVO;
@@ -26,7 +26,7 @@ public class TerminalSessionDecorator {
     private TerminalSessionInstanceDecorator terminalSessionInstanceDecorator;
 
     public TerminalSessionVO.TerminalSession decorator(OcTerminalSession ocTerminalSession, Integer extend) {
-        TerminalSessionVO.TerminalSession terminalSession = BeanCopierUtils.copyProperties(ocTerminalSession, TerminalSessionVO.TerminalSession.class);
+        TerminalSessionVO.TerminalSession terminalSession = BeanCopierUtil.copyProperties(ocTerminalSession, TerminalSessionVO.TerminalSession.class);
         if (extend == 1) {
             List<OcTerminalSessionInstance> instanceList = ocTerminalSessionInstanceService.queryOcTerminalSessionInstanceBySessionId(ocTerminalSession.getSessionId());
             terminalSession.setSessionInstances(

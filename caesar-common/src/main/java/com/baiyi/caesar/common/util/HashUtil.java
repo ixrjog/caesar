@@ -22,7 +22,10 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Utility to encrypt, decrypt, and hash
  */
-public class HashUtils {
+public class HashUtil {
+
+    private HashUtil() {
+    }
 
     public static String MD5(String input) {
         if (input == null || input.length() == 0) {

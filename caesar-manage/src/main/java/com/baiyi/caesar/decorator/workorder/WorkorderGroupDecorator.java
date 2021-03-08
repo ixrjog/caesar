@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.workorder;
 
 import com.baiyi.caesar.common.base.AccessLevel;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;
 import com.baiyi.caesar.domain.vo.workorder.WorkorderGroupVO;
 import com.baiyi.caesar.domain.vo.workorder.WorkorderVO;
@@ -42,7 +42,7 @@ public class WorkorderGroupDecorator {
     private List<WorkorderVO.Workorder> decorator(List<OcWorkorder> workorderList) {
        if(workorderList == null) return Lists.newArrayList();
        return workorderList.stream().map(e -> {
-           WorkorderVO.Workorder workorder = BeanCopierUtils.copyProperties(e, WorkorderVO.Workorder.class);
+           WorkorderVO.Workorder workorder = BeanCopierUtil.copyProperties(e, WorkorderVO.Workorder.class);
            workorder.setReadme("// TODO");
            return workorder;
        } ).collect(Collectors.toList());

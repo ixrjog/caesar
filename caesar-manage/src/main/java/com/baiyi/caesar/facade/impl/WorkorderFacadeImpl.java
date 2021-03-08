@@ -3,8 +3,8 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.builder.WorkorderTicketEntryBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.TicketPhase;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.decorator.department.DepartmentMemberDecorator;
 import com.baiyi.caesar.decorator.workorder.WorkorderGroupDecorator;
 import com.baiyi.caesar.decorator.workorder.WorkorderTicketDecorator;
@@ -99,13 +99,13 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
     @Override
     public DataTable<WorkorderGroupVO.WorkorderGroup> queryWorkorderGroupPage(WorkorderGroupParam.PageQuery pageQuery) {
         DataTable<OcWorkorderGroup> table = ocWorkorderGroupService.queryOcWorkorderGroupByParam(pageQuery);
-        List<WorkorderGroupVO.WorkorderGroup> page = BeanCopierUtils.copyListProperties(table.getData(), WorkorderGroupVO.WorkorderGroup.class);
+        List<WorkorderGroupVO.WorkorderGroup> page = BeanCopierUtil.copyListProperties(table.getData(), WorkorderGroupVO.WorkorderGroup.class);
         return new DataTable<>(page, table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> saveWorkorderGroup(WorkorderGroupVO.WorkorderGroup workorderGroup) {
-        OcWorkorderGroup ocWorkorderGroup = BeanCopierUtils.copyProperties(workorderGroup, OcWorkorderGroup.class);
+        OcWorkorderGroup ocWorkorderGroup = BeanCopierUtil.copyProperties(workorderGroup, OcWorkorderGroup.class);
         if (workorderGroup.getId() == null || workorderGroup.getId() == 0) {
             ocWorkorderGroupService.addOcWorkorderGroup(ocWorkorderGroup);
         } else {
@@ -116,7 +116,7 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
 
     @Override
     public List<WorkorderGroupVO.WorkorderGroup> queryWorkbenchWorkorderGroup() {
-        List<WorkorderGroupVO.WorkorderGroup> list = BeanCopierUtils.copyListProperties(ocWorkorderGroupService.queryOcWorkorderGroupAll(), WorkorderGroupVO.WorkorderGroup.class);
+        List<WorkorderGroupVO.WorkorderGroup> list = BeanCopierUtil.copyListProperties(ocWorkorderGroupService.queryOcWorkorderGroupAll(), WorkorderGroupVO.WorkorderGroup.class);
         return list.stream().map(e -> workorderGroupDecorator.decorator(e)).collect(Collectors.toList());
     }
 
@@ -129,7 +129,7 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
     @Override
     public WorkorderTicketVO.Ticket queryWorkorderTicket(WorkorderTicketParam.QueryTicket queryTicket) {
         OcWorkorderTicket ocWorkorderTicket = ocWorkorderTicketService.queryOcWorkorderTicketById(queryTicket.getId());
-        WorkorderTicketVO.Ticket ticket = BeanCopierUtils.copyProperties(ocWorkorderTicket, WorkorderTicketVO.Ticket.class);
+        WorkorderTicketVO.Ticket ticket = BeanCopierUtil.copyProperties(ocWorkorderTicket, WorkorderTicketVO.Ticket.class);
         return workorderTicketDecorator.decorator(ticket);
     }
 
@@ -137,7 +137,7 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
     public BusinessWrapper<Boolean> submitWorkorderTicket(WorkorderTicketVO.Ticket ticket) {
         OcWorkorderTicket ocWorkorderTicket = ocWorkorderTicketService.queryOcWorkorderTicketById(ticket.getId());
         // 校验用户
-        if (!SessionUtils.getUsername().equals(ocWorkorderTicket.getUsername()))
+        if (!SessionUtil.getUsername().equals(ocWorkorderTicket.getUsername()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         // 校验状态
         if (!ocWorkorderTicket.getTicketPhase().equals(TicketPhase.CREATED.getPhase()))
@@ -249,7 +249,7 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
         // 需要鉴权
         OcWorkorderTicket ocWorkorderTicket = ocWorkorderTicketService.queryOcWorkorderTicketById(ticketId);
         // 校验用户
-        if (!SessionUtils.getUsername().equals(ocWorkorderTicket.getUsername()))
+        if (!SessionUtil.getUsername().equals(ocWorkorderTicket.getUsername()))
             return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         // 校验状态
         if (!ocWorkorderTicket.getTicketPhase().equals(TicketPhase.CREATED.getPhase()))
@@ -338,7 +338,7 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
     }
 
     private DataTable<WorkorderTicketVO.Ticket> getTicketDataTable(DataTable<OcWorkorderTicket> table) {
-        List<WorkorderTicketVO.Ticket> page = BeanCopierUtils.copyListProperties(table.getData(), WorkorderTicketVO.Ticket.class);
+        List<WorkorderTicketVO.Ticket> page = BeanCopierUtil.copyListProperties(table.getData(), WorkorderTicketVO.Ticket.class);
         return new DataTable<>(page.stream().map(e -> workorderTicketDecorator.decorator(e)
         ).collect(Collectors.toList()), table.getTotalNum());
     }

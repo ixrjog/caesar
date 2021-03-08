@@ -8,10 +8,12 @@ import java.util.regex.Pattern;
  * @Date 2020/4/16 8:20 下午
  * @Version 1.0
  */
-public class AnsibleUtils {
+public class AnsibleUtil {
+
+    private AnsibleUtil() {
+    }
 
     /**
-     *
      * @param ansibleResult
      * @return '10.200.1.40 | CHANGED => '
      */

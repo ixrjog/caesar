@@ -11,9 +11,9 @@ import com.baiyi.caesar.ansible.impl.AnsiblePlaybookExecutor;
 import com.baiyi.caesar.ansible.impl.AnsibleScriptExecutor;
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.ServerTaskStopType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IOUtils;
-import com.baiyi.caesar.common.util.UUIDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IOUtil;
+import com.baiyi.caesar.common.util.UUIDUtil;
 import com.baiyi.caesar.decorator.ansible.AnsiblePlaybookDecorator;
 import com.baiyi.caesar.decorator.ansible.AnsibleScriptDecorator;
 import com.baiyi.caesar.decorator.server.ServerTaskDecorator;
@@ -113,8 +113,8 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
 
     @Override
     public BusinessWrapper<Boolean> addScript(AnsibleScriptVO.AnsibleScript ansibleScript) {
-        OcAnsibleScript ocAnsibleScript = BeanCopierUtils.copyProperties(ansibleScript, OcAnsibleScript.class);
-        ocAnsibleScript.setScriptUuid(UUIDUtils.getUUID());
+        OcAnsibleScript ocAnsibleScript = BeanCopierUtil.copyProperties(ansibleScript, OcAnsibleScript.class);
+        ocAnsibleScript.setScriptUuid(UUIDUtil.getUUID());
         OcUser ocUser = userFacade.getOcUserBySession();
         ocUser.setPassword("");
         ocAnsibleScript.setUserId(ocUser.getId());
@@ -163,8 +163,8 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
 
     @Override
     public BusinessWrapper<Boolean> addPlaybook(AnsiblePlaybookVO.AnsiblePlaybook ansiblePlaybook) {
-        OcAnsiblePlaybook ocAnsiblePlaybook = BeanCopierUtils.copyProperties(ansiblePlaybook, OcAnsiblePlaybook.class);
-        ocAnsiblePlaybook.setPlaybookUuid(UUIDUtils.getUUID());
+        OcAnsiblePlaybook ocAnsiblePlaybook = BeanCopierUtil.copyProperties(ansiblePlaybook, OcAnsiblePlaybook.class);
+        ocAnsiblePlaybook.setPlaybookUuid(UUIDUtil.getUUID());
         OcUser ocUser = userFacade.getOcUserBySession();
         ocUser.setPassword("");
         ocAnsiblePlaybook.setUserId(ocUser.getId());
@@ -211,7 +211,7 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
     @Override
     public ServerTaskVO.ServerTask queryServerTaskByTaskId(int taskId) {
         OcServerTask ocServerTask = ocServerTaskService.queryOcServerTaskById(taskId);
-        ServerTaskVO.ServerTask serverTask = BeanCopierUtils.copyProperties(ocServerTask, ServerTaskVO.ServerTask.class);
+        ServerTaskVO.ServerTask serverTask = BeanCopierUtil.copyProperties(ocServerTask, ServerTaskVO.ServerTask.class);
         return serverTaskDecorator.decorator(serverTask);
     }
 
@@ -271,7 +271,7 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
     @Override
     public BusinessWrapper<PreviewFileVO> previewAnsibleHosts() {
         String path = Joiner.on("/").join(ansibleConfig.acqInventoryPath(), AnsibleConfig.ANSIBLE_HOSTS);
-        String ansibleHosts = IOUtils.readFile(path);
+        String ansibleHosts = IOUtil.readFile(path);
         PreviewFileVO previewFile = PreviewFileVO.builder()
                 .name(AnsibleConfig.ANSIBLE_HOSTS)
                 .path(path)

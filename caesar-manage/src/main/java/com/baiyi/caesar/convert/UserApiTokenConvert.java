@@ -1,7 +1,7 @@
 package com.baiyi.caesar.convert;
 
-import com.baiyi.caesar.common.util.PasswordUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.PasswordUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUserApiToken;
 import com.baiyi.caesar.domain.vo.user.UserApiTokenVO;
 
@@ -16,9 +16,9 @@ public class UserApiTokenConvert {
         OcUserApiToken ocUserApiToken = new OcUserApiToken();
         ocUserApiToken.setValid(true);
         ocUserApiToken.setComment(userApiToken.getComment());
-        ocUserApiToken.setUsername(SessionUtils.getUsername());
-        ocUserApiToken.setTokenId(PasswordUtils.getRandomPW(20)); // 不含特殊字符
-        ocUserApiToken.setToken(PasswordUtils.getPW(20)); //高强度
+        ocUserApiToken.setUsername(SessionUtil.getUsername());
+        ocUserApiToken.setTokenId(PasswordUtil.getRandomPW(20)); // 不含特殊字符
+        ocUserApiToken.setToken(PasswordUtil.getPW(20)); //高强度
         ocUserApiToken.setExpiredTime(userApiToken.getExpiredTime());
         return ocUserApiToken;
     }

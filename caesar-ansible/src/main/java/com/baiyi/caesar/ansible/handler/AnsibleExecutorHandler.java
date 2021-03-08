@@ -12,8 +12,8 @@ import com.baiyi.caesar.common.base.AnsibleResult;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.ServerTaskStatus;
 import com.baiyi.caesar.common.base.ServerTaskStopType;
-import com.baiyi.caesar.common.util.IOUtils;
-import com.baiyi.caesar.common.util.TimeUtils;
+import com.baiyi.caesar.common.util.IOUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTaskMember;
 import com.baiyi.caesar.service.server.OcServerTaskMemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -175,7 +175,7 @@ public class AnsibleExecutorHandler {
                     return;
                 } else {
                     // 判断任务是否需要终止或超时
-                    if (TimeUtils.checkTimeout(startTaskTime, timeout)) {
+                    if (TimeUtil.checkTimeout(startTaskTime, timeout)) {
                         executorEngine.killedProcess();
                         taskLogRecorder.recorderLog(member.getId(), executorEngine);
                         throw new TaskTimeoutException();
@@ -236,7 +236,7 @@ public class AnsibleExecutorHandler {
             try {
                 if (!StringUtils.isEmpty(memberExecutorLogBO.getOutputMsg())) {
                     String outputLogPath = taskLogRecorder.getOutputLogPath(member);   //Joiner.on("/").join(playbookLogPath,member.getId() + "_output.log" );
-                    IOUtils.writeFile(memberExecutorLogBO.getOutputMsg(), outputLogPath);
+                    IOUtil.writeFile(memberExecutorLogBO.getOutputMsg(), outputLogPath);
                     member.setOutputMsg(outputLogPath);
                 }
             } catch (Exception e) {
@@ -245,7 +245,7 @@ public class AnsibleExecutorHandler {
             try {
                 if (!StringUtils.isEmpty(memberExecutorLogBO.getErrorMsg())) {
                     String errorLogPath = taskLogRecorder.getErrorLogPath(member); //Joiner.on("/").join(playbookLogPath,member.getId() + "_error.log" );
-                    IOUtils.writeFile(memberExecutorLogBO.getErrorMsg(), errorLogPath);
+                    IOUtil.writeFile(memberExecutorLogBO.getErrorMsg(), errorLogPath);
                     member.setErrorMsg(errorLogPath);
                 }
             } catch (Exception e) {

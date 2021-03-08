@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesClusterDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesClusterNamespaceDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesTemplateDecorator;
@@ -86,13 +86,13 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
     @Override
     public DataTable<KubernetesClusterVO.Cluster> queryKubernetesClusterPage(KubernetesClusterParam.PageQuery pageQuery) {
         DataTable<OcKubernetesCluster> table = ocKubernetesClusterService.queryOcKubernetesClusterByParam(pageQuery);
-        List<KubernetesClusterVO.Cluster> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesClusterVO.Cluster.class);
+        List<KubernetesClusterVO.Cluster> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesClusterVO.Cluster.class);
         return new DataTable<>(page.stream().map(e -> kubernetesClusterDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addKubernetesCluster(KubernetesClusterVO.Cluster cluster) {
-        OcKubernetesCluster ocKubernetesCluster = BeanCopierUtils.copyProperties(cluster, OcKubernetesCluster.class);
+        OcKubernetesCluster ocKubernetesCluster = BeanCopierUtil.copyProperties(cluster, OcKubernetesCluster.class);
         ocKubernetesClusterService.addOcKubernetesCluster(ocKubernetesCluster);
         KubeconfigUtils.writeKubeconfig(ocKubernetesCluster);
         kubernetesClientContainer.reset();
@@ -101,7 +101,7 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateKubernetesCluster(KubernetesClusterVO.Cluster cluster) {
-        OcKubernetesCluster ocKubernetesCluster = BeanCopierUtils.copyProperties(cluster, OcKubernetesCluster.class);
+        OcKubernetesCluster ocKubernetesCluster = BeanCopierUtil.copyProperties(cluster, OcKubernetesCluster.class);
         ocKubernetesClusterService.updateOcKubernetesCluster(ocKubernetesCluster);
         KubeconfigUtils.writeKubeconfig(ocKubernetesCluster);
         kubernetesClientContainer.reset();
@@ -120,13 +120,13 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
     @Override
     public DataTable<KubernetesClusterNamespaceVO.Namespace> queryKubernetesClusterNamespacePage(KubernetesClusterNamespaceParam.PageQuery pageQuery) {
         DataTable<OcKubernetesClusterNamespace> table = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceByParam(pageQuery);
-        List<KubernetesClusterNamespaceVO.Namespace> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesClusterNamespaceVO.Namespace.class);
+        List<KubernetesClusterNamespaceVO.Namespace> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesClusterNamespaceVO.Namespace.class);
         return new DataTable<>(page.stream().map(e -> kubernetesClusterNamespaceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addKubernetesClusterNamespace(KubernetesClusterNamespaceVO.Namespace namespace) {
-        OcKubernetesClusterNamespace ocKubernetesClusterNamespace = BeanCopierUtils.copyProperties(namespace, OcKubernetesClusterNamespace.class);
+        OcKubernetesClusterNamespace ocKubernetesClusterNamespace = BeanCopierUtil.copyProperties(namespace, OcKubernetesClusterNamespace.class);
         try {
             ocKubernetesClusterNamespaceService.addOcKubernetesClusterNamespace(ocKubernetesClusterNamespace);
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateKubernetesClusterNamespace(KubernetesClusterNamespaceVO.Namespace namespace) {
-        OcKubernetesClusterNamespace ocKubernetesClusterNamespace = BeanCopierUtils.copyProperties(namespace, OcKubernetesClusterNamespace.class);
+        OcKubernetesClusterNamespace ocKubernetesClusterNamespace = BeanCopierUtil.copyProperties(namespace, OcKubernetesClusterNamespace.class);
         try {
             ocKubernetesClusterNamespaceService.updateOcKubernetesClusterNamespace(ocKubernetesClusterNamespace);
         } catch (Exception e) {
@@ -186,14 +186,14 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
     @Override
     public DataTable<KubernetesTemplateVO.Template> queryKubernetesTemplatePage(KubernetesTemplateParam.PageQuery pageQuery) {
         DataTable<OcKubernetesTemplate> table = getKubernetesTemplateDataTable(pageQuery);
-        List<KubernetesTemplateVO.Template> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesTemplateVO.Template.class);
+        List<KubernetesTemplateVO.Template> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesTemplateVO.Template.class);
         return new DataTable<>(page.stream().map(e -> kubernetesTemplateDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public DataTable<KubernetesTemplateVO.Template> queryKubernetesTemplatePage(KubernetesApplicationInstanceParam.TemplatePageQuery pageQuery) {
         DataTable<OcKubernetesTemplate> table = getKubernetesTemplateDataTable(pageQuery);
-        List<KubernetesTemplateVO.Template> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesTemplateVO.Template.class);
+        List<KubernetesTemplateVO.Template> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesTemplateVO.Template.class);
         OcKubernetesApplicationInstance ocKubernetesApplicationInstance = ocKubernetesApplicationInstanceService.queryOcKubernetesApplicationInstanceById(pageQuery.getInstanceId());
         return new DataTable<>(page.stream().map(e -> kubernetesTemplateDecorator.decorator(e, ocKubernetesApplicationInstance)).collect(Collectors.toList()), table.getTotalNum());
     }
@@ -204,14 +204,14 @@ public class KubernetesFacadeImpl implements KubernetesFacade {
 
     @Override
     public BusinessWrapper<Boolean> addKubernetesTemplate(KubernetesTemplateVO.Template template) {
-        OcKubernetesTemplate ocKubernetesTemplate = BeanCopierUtils.copyProperties(template, OcKubernetesTemplate.class);
+        OcKubernetesTemplate ocKubernetesTemplate = BeanCopierUtil.copyProperties(template, OcKubernetesTemplate.class);
         ocKubernetesTemplateService.addOcKubernetesTemplate(ocKubernetesTemplate);
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> updateKubernetesTemplate(KubernetesTemplateVO.Template template) {
-        OcKubernetesTemplate ocKubernetesTemplate = BeanCopierUtils.copyProperties(template, OcKubernetesTemplate.class);
+        OcKubernetesTemplate ocKubernetesTemplate = BeanCopierUtil.copyProperties(template, OcKubernetesTemplate.class);
         ocKubernetesTemplateService.updateOcKubernetesTemplate(ocKubernetesTemplate);
         return BusinessWrapper.SUCCESS;
     }

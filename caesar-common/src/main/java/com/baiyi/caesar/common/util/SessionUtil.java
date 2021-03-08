@@ -2,12 +2,22 @@ package com.baiyi.caesar.common.util;
 
 /**
  * @Author baiyi
- * @Date 2020/12/21 4:51 下午
+ * @Date 2020/1/7 1:52 下午
  * @Version 1.0
  */
-public class GitlabTokenUtils {
+public class SessionUtil {
+
+    private static ThreadLocal<String> username = new ThreadLocal<>();
 
     private static ThreadLocal<String> token = new ThreadLocal<>();
+
+    public static String getUsername() {
+        return username.get();
+    }
+
+    public static void setUsername(String param) {
+        username.set(param);
+    }
 
     public static String getToken() {
         return token.get();

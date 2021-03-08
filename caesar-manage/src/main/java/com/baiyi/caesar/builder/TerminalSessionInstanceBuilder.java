@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.TerminalSessionInstanceBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSessionInstance;
 import com.baiyi.caesar.xterm.model.HostSystem;
@@ -30,6 +30,6 @@ public class TerminalSessionInstanceBuilder {
     }
 
     private static OcTerminalSessionInstance covert(TerminalSessionInstanceBO terminalSessionInstanceBO) {
-        return BeanCopierUtils.copyProperties(terminalSessionInstanceBO, OcTerminalSessionInstance.class);
+        return BeanCopierUtil.copyProperties(terminalSessionInstanceBO, OcTerminalSessionInstance.class);
     }
 }

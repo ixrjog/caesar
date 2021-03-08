@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.UserDocumentBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcDocument;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserDocument;
@@ -25,6 +25,6 @@ public class UserDocumentBuilder {
     }
 
     private static OcUserDocument covert(UserDocumentBO userDocumentBO) {
-        return BeanCopierUtils.copyProperties(userDocumentBO, OcUserDocument.class);
+        return BeanCopierUtil.copyProperties(userDocumentBO, OcUserDocument.class);
     }
 }

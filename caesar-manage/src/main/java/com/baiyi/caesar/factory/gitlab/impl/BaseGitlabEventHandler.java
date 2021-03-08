@@ -1,7 +1,7 @@
 package com.baiyi.caesar.factory.gitlab.impl;
 
 import com.baiyi.caesar.builder.gitlab.GitlabSystemHookBuilder;
-import com.baiyi.caesar.common.util.GitlabTokenUtils;
+import com.baiyi.caesar.common.util.GitlabTokenUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
@@ -134,7 +134,7 @@ public abstract class BaseGitlabEventHandler implements IGitlabEventHandler, Ini
     }
 
     protected CsGitlabInstance getGitlabInstance() {
-        String token = GitlabTokenUtils.getToken();
+        String token = GitlabTokenUtil.getToken();
         if (StringUtils.isEmpty(token))
             return null;
         return csGitlabInstanceService.queryCsGitlabInstanceByToken(token);

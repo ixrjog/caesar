@@ -7,8 +7,8 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.JenkinsUtils;
-import com.baiyi.caesar.common.util.RedisKeyUtils;
+import com.baiyi.caesar.common.util.JenkinsUtil;
+import com.baiyi.caesar.common.util.RedisKeyUtil;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -166,7 +166,7 @@ public class JobFacadeImpl implements JobFacade {
             if (!applicationFacade.isApplicationAdmin(csCiJobBuild.getApplicationId(), operationUser.getId()))
                 return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
         }
-        redisUtil.set(RedisKeyUtils.getJobBuildAbortKey(ciBuildId), operationUser.getUsername(), 600);
+        redisUtil.set(RedisKeyUtil.getJobBuildAbortKey(ciBuildId), operationUser.getUsername(), 600);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -242,8 +242,8 @@ public class JobFacadeImpl implements JobFacade {
     public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryCdJobHostPatternByJobId(int cdJobId) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(cdJobId);
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
-        JenkinsJobParameters jenkinsJobParameters = JenkinsUtils.convert(csCdJob.getParameterYaml());
-        Map<String, String> paramMap = JenkinsUtils.convert(jenkinsJobParameters);
+        JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCdJob.getParameterYaml());
+        Map<String, String> paramMap = JenkinsUtil.convert(jenkinsJobParameters);
         if (!paramMap.containsKey(SERVER_GRUOP))
             return new BusinessWrapper(ErrorEnum.JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED);
         String serverGroupName = paramMap.get(SERVER_GRUOP);
@@ -295,7 +295,7 @@ public class JobFacadeImpl implements JobFacade {
         List<CsCiJobBuild> csCiJobBuilds = csCiJobBuildService.queryCsCiJobBuildByFinalized(false);
         if (CollectionUtils.isEmpty(csCiJobBuilds)) return;
         csCiJobBuilds.forEach(e -> {
-            String key = RedisKeyUtils.getJobBuildKey(e.getId());
+            String key = RedisKeyUtil.getJobBuildKey(e.getId());
             if (!redisUtil.hasKey(key)) {
                 CsCiJob csCiJob = csCiJobService.queryCsCiJobById((e.getCiJobId()));
                 IBuildJobHandler jenkinsJobHandler = BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType());

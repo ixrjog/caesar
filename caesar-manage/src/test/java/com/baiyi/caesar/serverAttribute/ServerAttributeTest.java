@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.config.ServerAttributeConfig;
 import com.baiyi.caesar.common.config.serverAttribute.AttributeGroup;
-import com.baiyi.caesar.common.util.ServerAttributeUtils;
+import com.baiyi.caesar.common.util.ServerAttributeUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.vo.server.ServerAttributeVO;
@@ -62,7 +62,7 @@ public class ServerAttributeTest extends BaseUnit {
                 "  value: 'false'\n" +
                 "comment: 全局通用配置\n" +
                 "name: global";
-        AttributeGroup ag = ServerAttributeUtils.convert(s);
+        AttributeGroup ag = ServerAttributeUtil.convert(s);
         System.err.println(JSON.toJSONString(ag));
 
     }

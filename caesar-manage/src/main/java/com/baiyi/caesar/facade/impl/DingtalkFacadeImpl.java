@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.dingtalk.DingtalkDecorator;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
@@ -49,13 +49,13 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
     @Override
     public DataTable<DingtalkVO.Dingtalk> queryDingtalkPage(DingtalkParam.DingtalkPageQuery pageQuery) {
         DataTable<CsDingtalk> table = csDingtalkService.queryCsDingtalkByParam(pageQuery);
-        List<DingtalkVO.Dingtalk> page = BeanCopierUtils.copyListProperties(table.getData(), DingtalkVO.Dingtalk.class);
+        List<DingtalkVO.Dingtalk> page = BeanCopierUtil.copyListProperties(table.getData(), DingtalkVO.Dingtalk.class);
         return new DataTable<>(page.stream().map(e -> dingtalkDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
     public BusinessWrapper<Boolean> addDingtalk(DingtalkVO.Dingtalk dingtalk) {
-        CsDingtalk csDingtalk = BeanCopierUtils.copyProperties(dingtalk, CsDingtalk.class);
+        CsDingtalk csDingtalk = BeanCopierUtil.copyProperties(dingtalk, CsDingtalk.class);
         csDingtalk.setDingtalkToken(stringEncryptor.encrypt(dingtalk.getDingtalkToken()));
         csDingtalkService.addCsDingtalk(csDingtalk);
         return BusinessWrapper.SUCCESS;
@@ -69,7 +69,7 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
 
     @Override
     public BusinessWrapper<Boolean> updateDingtalk(DingtalkVO.Dingtalk dingtalk) {
-        CsDingtalk pre = BeanCopierUtils.copyProperties(dingtalk, CsDingtalk.class);
+        CsDingtalk pre = BeanCopierUtil.copyProperties(dingtalk, CsDingtalk.class);
         if (StringUtils.isEmpty(pre.getDingtalkToken())) {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(dingtalk.getId());
             pre.setDingtalkToken(csDingtalk.getDingtalkToken());

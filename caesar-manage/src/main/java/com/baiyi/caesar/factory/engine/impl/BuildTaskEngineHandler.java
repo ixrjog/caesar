@@ -6,8 +6,8 @@ import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.RedisKeyUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.RedisKeyUtil;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -59,7 +59,7 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
 
     @Override
     public void trackJobBuildHeartbeat(int buildId) {
-        redisUtil.set(RedisKeyUtils.getJobBuildKey(buildId), true, HEARBEAT_CACHE_SECONDS);
+        redisUtil.set(RedisKeyUtil.getJobBuildKey(buildId), true, HEARBEAT_CACHE_SECONDS);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
     }
 
     private boolean isAbortJobBuild(BuildJobContext context) {
-        String username = (String) redisUtil.get(RedisKeyUtils.getJobBuildAbortKey(context.getJobBuild().getId()));
+        String username = (String) redisUtil.get(RedisKeyUtil.getJobBuildAbortKey(context.getJobBuild().getId()));
         if (StringUtils.isEmpty(username)) return false;
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(context.getJobBuild().getId());
         csCiJobBuild.setOperationUsername(username);
@@ -144,7 +144,7 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
         jobBuild.setBuildStatus(context.getBuildWithDetails().getResult().name());
         jobBuild.setEndTime(new Date());
         jobBuild.setFinalized(true);
-        csCiJobBuildService.updateCsCiJobBuild(BeanCopierUtils.copyProperties(jobBuild, CsCiJobBuild.class));
+        csCiJobBuildService.updateCsCiJobBuild(BeanCopierUtil.copyProperties(jobBuild, CsCiJobBuild.class));
         context.setJobBuild(jobBuild);
         context.getBuildWithDetails().getArtifacts().forEach(e -> saveJobBuildArtifact((T) context, e));
         recordJobBuildChanges(context);

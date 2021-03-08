@@ -5,7 +5,7 @@ package com.baiyi.caesar.common.util;
  * @Date 2020/3/25 10:16 上午
  * @Version 1.0
  */
-public class IDUtils {
+public class IDUtil {
 
     /**
      * 判断id是否为空

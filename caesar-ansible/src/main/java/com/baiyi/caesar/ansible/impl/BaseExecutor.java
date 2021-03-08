@@ -5,8 +5,8 @@ import com.baiyi.caesar.ansible.config.AnsibleConfig;
 import com.baiyi.caesar.ansible.factory.ExecutorFactory;
 import com.baiyi.caesar.ansible.handler.AnsibleTaskHandler;
 import com.baiyi.caesar.common.redis.RedisUtil;
-import com.baiyi.caesar.common.util.RedisKeyUtils;
-import com.baiyi.caesar.common.util.SessionUtils;
+import com.baiyi.caesar.common.util.RedisKeyUtil;
+import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
@@ -47,7 +47,7 @@ public abstract class BaseExecutor implements InitializingBean, IAnsibleExecutor
     protected AnsibleTaskHandler ansibleTaskHandler;
 
     protected OcUser getOcUser() {
-        return ocUserService.queryOcUserByUsername(SessionUtils.getUsername());
+        return ocUserService.queryOcUserByUsername(SessionUtil.getUsername());
     }
 
     protected void addOcServerTask(OcServerTask ocServerTask) {
@@ -59,7 +59,7 @@ public abstract class BaseExecutor implements InitializingBean, IAnsibleExecutor
     }
 
     protected BusinessWrapper<Map<String, String>> getServerTreeHostPatternMap(String uuid, OcUser ocUser) {
-        String key = RedisKeyUtils.getMyServerTreeKey(ocUser.getId(), uuid);
+        String key = RedisKeyUtil.getMyServerTreeKey(ocUser.getId(), uuid);
         if (!redisUtil.hasKey(key))
             return new BusinessWrapper<>(ErrorEnum.SERVER_TASK_TREE_NOT_EXIST);
         Map<String, String> serverTreeHostPatternMap = (Map<String, String>) redisUtil.get(key);

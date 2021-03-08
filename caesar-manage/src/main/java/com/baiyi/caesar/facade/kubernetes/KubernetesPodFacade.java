@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesPodBuilder;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
@@ -72,7 +72,7 @@ public class KubernetesPodFacade extends BaseKubernetesFacade {
         if (!StringUtils.isEmpty(podVO.getHostIP())) {
             OcServer ocServer = ocServerService.queryOcServerByIp(podVO.getHostIP());
             if (ocServer == null) return podVO;
-            podVO.setServer(serverDecorator.decorator(BeanCopierUtils.copyProperties(ocServer, ServerVO.Server.class)));
+            podVO.setServer(serverDecorator.decorator(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class)));
         }
         return podVO;
     }

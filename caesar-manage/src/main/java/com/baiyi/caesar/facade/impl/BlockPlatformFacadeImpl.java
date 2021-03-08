@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsBlockPlatform;
 import com.baiyi.caesar.domain.vo.platform.BlockPlatformVO;
 import com.baiyi.caesar.facade.BlockPlatformFacade;
@@ -27,7 +27,7 @@ public class BlockPlatformFacadeImpl implements BlockPlatformFacade {
         List<CsBlockPlatform> csBlockPlatforms = blockRuleHandler.queryBlockPlatformByValid();
         if (!CollectionUtils.isEmpty(csBlockPlatforms)) {
             return BlockPlatformVO.BlockPlatformStatus.builder()
-                    .blockPlatforms(BeanCopierUtils.copyListProperties(csBlockPlatforms, BlockPlatformVO.BlockPlatform.class))
+                    .blockPlatforms(BeanCopierUtil.copyListProperties(csBlockPlatforms, BlockPlatformVO.BlockPlatform.class))
                     .isShow(true)
                     .build();
         } else {

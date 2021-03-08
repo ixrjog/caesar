@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.builder;
 
-import com.baiyi.caesar.common.util.JSONUtils;
+import com.baiyi.caesar.common.util.JSONUtil;
 import com.google.common.collect.Maps;
 import lombok.Data;
 
@@ -26,6 +26,6 @@ public class JenkinsJobParamsMap {
 
     @Override
     public String toString() {
-        return JSONUtils.writeValueAsString(this);
+        return JSONUtil.writeValueAsString(this);
     }
 }

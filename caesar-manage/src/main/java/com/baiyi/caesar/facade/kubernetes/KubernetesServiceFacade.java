@@ -2,8 +2,8 @@ package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesServiceBuilder;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesServiceDecorator;
 import com.baiyi.caesar.decorator.kubernetes.KubernetesTemplateDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -67,13 +67,13 @@ public class KubernetesServiceFacade extends BaseKubernetesFacade {
 
     public DataTable<KubernetesServiceVO.Service> queryKubernetesServicePage(KubernetesServiceParam.PageQuery pageQuery) {
         DataTable<OcKubernetesService> table = ocKubernetesServiceService.queryOcKubernetesServiceByParam(pageQuery);
-        List<KubernetesServiceVO.Service> page = BeanCopierUtils.copyListProperties(table.getData(), KubernetesServiceVO.Service.class);
+        List<KubernetesServiceVO.Service> page = BeanCopierUtil.copyListProperties(table.getData(), KubernetesServiceVO.Service.class);
         return new DataTable<>(page.stream().map(e -> kubernetesServiceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     public BusinessWrapper<KubernetesServiceVO.Service> queryKubernetesServiceByParam(KubernetesServiceParam.QueryParam queryParam) {
         OcKubernetesService ocKubernetesService = ocKubernetesServiceService.queryOcKubernetesServiceByInstanceId(queryParam.getInstanceId());
-        return new BusinessWrapper(kubernetesServiceDecorator.decorator(BeanCopierUtils.copyProperties(ocKubernetesService, KubernetesServiceVO.Service.class), queryParam.getExtend()));
+        return new BusinessWrapper(kubernetesServiceDecorator.decorator(BeanCopierUtil.copyProperties(ocKubernetesService, KubernetesServiceVO.Service.class), queryParam.getExtend()));
     }
 
     @Async(value = Global.TaskPools.COMMON)
@@ -103,7 +103,7 @@ public class KubernetesServiceFacade extends BaseKubernetesFacade {
         if (ocKubernetesService != null)
             pre = ocKubernetesService;
         invokeKubernetesService(pre, service);
-        if (IDUtils.isEmpty(pre.getId())) {
+        if (IDUtil.isEmpty(pre.getId())) {
             ocKubernetesServiceService.addOcKubernetesService(pre);
         } else {
             ocKubernetesServiceService.updateOcKubernetesService(pre);
@@ -113,7 +113,7 @@ public class KubernetesServiceFacade extends BaseKubernetesFacade {
     }
 
     private void invokeKubernetesService(OcKubernetesService ocKubernetesService, io.fabric8.kubernetes.api.model.Service service) {
-        if (!IDUtils.isEmpty(ocKubernetesService.getInstanceId())) return;
+        if (!IDUtil.isEmpty(ocKubernetesService.getInstanceId())) return;
         OcKubernetesApplicationInstance ocKubernetesApplicationInstance = getApplicationInstanceByService(service);
         if (ocKubernetesApplicationInstance != null) {
             ocKubernetesService.setApplicationId(ocKubernetesApplicationInstance.getApplicationId());
@@ -133,7 +133,7 @@ public class KubernetesServiceFacade extends BaseKubernetesFacade {
 
     public BusinessWrapper<Boolean> createKubernetesService(OcKubernetesApplicationInstance ocKubernetesApplicationInstance, Integer templateId) {
         OcKubernetesTemplate ocKubernetesTemplate = ocKubernetesTemplateService.queryOcKubernetesTemplateById(templateId);
-        KubernetesTemplateVO.Template serviceTemplate = kubernetesTemplateDecorator.decorator(BeanCopierUtils.copyProperties(ocKubernetesTemplate, KubernetesTemplateVO.Template.class), ocKubernetesApplicationInstance);
+        KubernetesTemplateVO.Template serviceTemplate = kubernetesTemplateDecorator.decorator(BeanCopierUtil.copyProperties(ocKubernetesTemplate, KubernetesTemplateVO.Template.class), ocKubernetesApplicationInstance);
         OcKubernetesClusterNamespace ocKubernetesClusterNamespace;
         try {
             ocKubernetesClusterNamespace = ocKubernetesClusterNamespaceService.queryOcKubernetesClusterNamespaceByEnvType(ocKubernetesApplicationInstance.getEnvType()).get(0);

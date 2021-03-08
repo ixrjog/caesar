@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder.kubernetes;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.kubernetes.KubernetesServiceBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesClusterNamespace;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesService;
 import io.fabric8.kubernetes.api.model.Service;
@@ -27,6 +27,6 @@ public class KubernetesServiceBuilder {
     }
 
     private static OcKubernetesService covert(KubernetesServiceBO bo) {
-        return BeanCopierUtils.copyProperties(bo, OcKubernetesService.class);
+        return BeanCopierUtil.copyProperties(bo, OcKubernetesService.class);
     }
 }

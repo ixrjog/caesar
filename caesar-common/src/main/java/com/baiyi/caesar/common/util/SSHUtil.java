@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  * @Date 2020/3/5 8:19 下午
  * @Version 1.0
  */
-public class SSHUtils {
+public class SSHUtil {
 
     /**
      * https://github.com/bastillion-io/Bastillion/blob/master/src/main/java/io/bastillion/manage/util/SSHUtil.java

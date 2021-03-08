@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.JobEngineBO;
 import com.baiyi.caesar.common.base.BuildType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
@@ -47,6 +47,6 @@ public class JobEngineBuilder {
 
 
     private static CsJobEngine covert(JobEngineBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsJobEngine.class);
+        return BeanCopierUtil.copyProperties(bo, CsJobEngine.class);
     }
 }

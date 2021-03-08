@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.CaesarInstanceBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsInstance;
 
 import java.net.InetAddress;
@@ -23,6 +23,6 @@ public class CaesarInstanceBuilder {
     }
 
     private static CsInstance covert(CaesarInstanceBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsInstance.class);
+        return BeanCopierUtil.copyProperties(bo, CsInstance.class);
     }
 }

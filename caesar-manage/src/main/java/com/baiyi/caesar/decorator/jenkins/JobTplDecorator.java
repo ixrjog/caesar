@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.jenkins;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -30,7 +30,7 @@ public class JobTplDecorator {
 
         CsJenkinsInstance csJenkinsInstance = jenkinsInstanceService.queryCsJenkinsInstanceById(jobTpl.getJenkinsInstanceId());
         if (csJenkinsInstance != null) {
-            jobTpl.setJenkinsInstance(BeanCopierUtils.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
+            jobTpl.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
         }
         // 装饰 标签
         jobTpl.setTags(tagDecorator.decorator(BusinessType.JENKINS_TPL.getType(), jobTpl.getId()));

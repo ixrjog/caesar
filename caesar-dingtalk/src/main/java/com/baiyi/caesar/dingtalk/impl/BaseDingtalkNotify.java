@@ -4,7 +4,7 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.config.HostConfig;
-import com.baiyi.caesar.common.util.BeetlUtils;
+import com.baiyi.caesar.common.util.BeetlUtil;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateBuilder;
@@ -235,7 +235,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
      * @throws IOException
      */
     private String renderTemplate(CsDingtalkTemplate csDingtalkTemplate, Map<String, Object> contentMap) throws IOException {
-        return BeetlUtils.renderTemplate(csDingtalkTemplate.getNoticeTemplate(), contentMap);
+        return BeetlUtil.renderTemplate(csDingtalkTemplate.getNoticeTemplate(), contentMap);
     }
 
     private CsDingtalkTemplate acqDingtalkTemplateByNoticeType(int noticeType, int noticePhase) {

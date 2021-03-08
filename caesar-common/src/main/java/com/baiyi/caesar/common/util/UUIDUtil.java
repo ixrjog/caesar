@@ -9,7 +9,7 @@ import java.util.UUID;
  * @Date 2020/2/13 10:20 上午
  * @Version 1.0
  */
-public class UUIDUtils {
+public class UUIDUtil {
 
 
     /**

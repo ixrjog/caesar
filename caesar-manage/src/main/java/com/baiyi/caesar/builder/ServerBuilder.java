@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder;
 
 import com.baiyi.caesar.bo.ServerBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 
@@ -30,6 +30,6 @@ public class ServerBuilder {
     }
 
     private static OcServer covert( ServerBO serverBO) {
-        return BeanCopierUtils.copyProperties(serverBO, OcServer.class);
+        return BeanCopierUtil.copyProperties(serverBO, OcServer.class);
     }
 }

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.keybox;
 
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.util.SSHUtils;
+import com.baiyi.caesar.common.util.SSHUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcKeybox;
 import com.baiyi.caesar.service.keybox.OcKeyboxService;
 import org.jasypt.encryption.StringEncryptor;
@@ -49,7 +49,7 @@ public class KeyboxTest extends BaseUnit {
     @Test
     void ocKeyboxGetFingerprintTest() {
         OcKeybox ocKeybox = ocKeyboxService.queryOcKeyboxById(2);
-        String fingerprint = SSHUtils.getFingerprint(ocKeybox.getPublicKey());
+        String fingerprint = SSHUtil.getFingerprint(ocKeybox.getPublicKey());
         System.err.println(fingerprint);
     }
 

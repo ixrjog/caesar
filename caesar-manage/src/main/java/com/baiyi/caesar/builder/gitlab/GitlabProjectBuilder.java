@@ -1,7 +1,7 @@
 package com.baiyi.caesar.builder.gitlab;
 
 import com.baiyi.caesar.bo.GitlabProjectBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import org.gitlab.api.models.GitlabNamespace;
@@ -44,6 +44,6 @@ public class GitlabProjectBuilder {
     }
 
     private static CsGitlabProject covert(GitlabProjectBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsGitlabProject.class);
+        return BeanCopierUtil.copyProperties(bo, CsGitlabProject.class);
     }
 }

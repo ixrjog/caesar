@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.auth;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcAuthGroup;
 import com.baiyi.caesar.domain.vo.auth.GroupVO;
 import com.baiyi.caesar.domain.vo.auth.ResourceVO;
@@ -26,7 +26,7 @@ public class ResourceDecorator {
             return resource;
         OcAuthGroup ocAuthGroup = ocAuthGroupService.queryOcAuthGroupById(resource.getGroupId());
         resource.setGroupCode(ocAuthGroup.getGroupCode());
-        resource.setGroup( BeanCopierUtils.copyProperties(ocAuthGroup, GroupVO.Group.class));
+        resource.setGroup( BeanCopierUtil.copyProperties(ocAuthGroup, GroupVO.Group.class));
         return resource;
     }
 }

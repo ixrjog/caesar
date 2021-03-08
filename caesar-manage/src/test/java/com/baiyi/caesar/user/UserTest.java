@@ -2,8 +2,8 @@ package com.baiyi.caesar.user;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.util.RegexUtils;
-import com.baiyi.caesar.common.util.UUIDUtils;
+import com.baiyi.caesar.common.util.RegexUtil;
+import com.baiyi.caesar.common.util.UUIDUtil;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.param.user.UserParam;
@@ -38,7 +38,7 @@ public class UserTest extends BaseUnit {
         DataTable<OcUser> table = ocUserService.queryOcUserByParam(pageQuery);
         System.err.println(JSON.toJSONString(table));
         for (OcUser ocUser : table.getData()) {
-            ocUser.setUuid(UUIDUtils.getUUID());
+            ocUser.setUuid(UUIDUtil.getUUID());
             ocUserService.updateOcUser(ocUser);
         }
 
@@ -77,7 +77,7 @@ public class UserTest extends BaseUnit {
     void b() {
         OcUser ocUser =
                 ocUserService.queryOcUserByUsername("ouyanggw");
-        boolean r = RegexUtils.isPhone(ocUser.getPhone());
+        boolean r = RegexUtil.isPhone(ocUser.getPhone());
         System.err.println(r);
     }
 

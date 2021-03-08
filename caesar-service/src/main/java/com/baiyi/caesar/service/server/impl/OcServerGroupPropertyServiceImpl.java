@@ -1,6 +1,6 @@
 package com.baiyi.caesar.service.server.impl;
 
-import com.baiyi.caesar.common.util.IDUtils;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroupProperty;
 import com.baiyi.caesar.mapper.caesar.OcServerGroupPropertyMapper;
 import com.baiyi.caesar.service.server.OcServerGroupPropertyService;
@@ -53,7 +53,7 @@ public class OcServerGroupPropertyServiceImpl implements OcServerGroupPropertySe
         Example example = new Example(OcServerGroupProperty.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("serverGroupId", serverGroupId);
-        if (!IDUtils.isEmpty(envType))
+        if (!IDUtil.isEmpty(envType))
             criteria.andEqualTo("envType", envType);
         criteria.andEqualTo("propertyName", propertyName);
         return ocServerGroupPropertyMapper.selectByExample(example);

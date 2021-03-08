@@ -13,7 +13,10 @@ import java.util.Map;
  * @Date 2020/1/7 1:52 下午
  * @Version 1.0
  */
-public class BeanCopierUtils {
+public class BeanCopierUtil {
+
+    private BeanCopierUtil() {
+    }
 
     private static Map<String, BeanCopier> beanCopierMap = new MapMaker().initialCapacity(32).concurrencyLevel(32).makeMap();
 
@@ -23,8 +26,8 @@ public class BeanCopierUtils {
      * @param source
      * @param targetClass
      */
-    public static  <T> T copyProperties(Object source, Class<T> targetClass) {
-        if(source == null){
+    public static <T> T copyProperties(Object source, Class<T> targetClass) {
+        if (source == null) {
             return null;
         }
 
@@ -85,7 +88,7 @@ public class BeanCopierUtils {
      * @param target
      */
     public static void copyProperties(Object source, Object target) {
-        if(source == null){
+        if (source == null) {
             return;
         }
         String beanKey = generateKey(source.getClass(), target.getClass());

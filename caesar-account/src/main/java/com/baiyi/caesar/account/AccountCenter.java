@@ -3,7 +3,7 @@ package com.baiyi.caesar.account;
 import com.baiyi.caesar.account.builder.UserBuilder;
 import com.baiyi.caesar.account.config.AuthConfig;
 import com.baiyi.caesar.account.factory.AccountFactory;
-import com.baiyi.caesar.common.util.UUIDUtils;
+import com.baiyi.caesar.common.util.UUIDUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
@@ -62,7 +62,7 @@ public class AccountCenter implements InitializingBean {
         OcUser ocUser = wrapper.getBody();
         // 验证通过
         if (tryCredential(ocUser, credential)) {
-            String token = UUIDUtils.getUUID();
+            String token = UUIDUtil.getUUID();
             authBaseFacade.setUserToken(loginParam.getUsername(), token);
             LogVO.LoginVO loginVO = new LogVO.LoginVO();
             loginVO.setName(ocUser.getDisplayName());

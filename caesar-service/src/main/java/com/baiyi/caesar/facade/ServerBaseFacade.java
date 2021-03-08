@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade;
 
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
@@ -32,9 +32,9 @@ public class ServerBaseFacade {
      */
     public static String acqServerName(ServerVO.Server server) {
         if(server.getEnv() == null){
-            return acqServerName(BeanCopierUtils.copyProperties(server, OcServer.class));
+            return acqServerName(BeanCopierUtil.copyProperties(server, OcServer.class));
         }else{
-            return acqServerName(BeanCopierUtils.copyProperties(server, OcServer.class),BeanCopierUtils.copyProperties(server.getEnv(),OcEnv.class));
+            return acqServerName(BeanCopierUtil.copyProperties(server, OcServer.class), BeanCopierUtil.copyProperties(server.getEnv(),OcEnv.class));
         }
     }
 

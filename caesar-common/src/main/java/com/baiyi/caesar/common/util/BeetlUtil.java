@@ -13,9 +13,9 @@ import java.util.Map;
  * @Date 2020/8/14 6:34 下午
  * @Version 1.0
  */
-public class BeetlUtils {
+public class BeetlUtil {
 
-    private BeetlUtils(){}
+    private BeetlUtil(){}
 
     /**
      * 渲染模版

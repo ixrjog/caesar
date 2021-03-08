@@ -3,7 +3,7 @@ package com.baiyi.caesar.ansible.builder;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.ansible.bo.ServerTaskBO;
 import com.baiyi.caesar.common.base.ServerTaskType;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerTask;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.param.server.ServerTaskExecutorParam;
@@ -58,6 +58,6 @@ public class ServerTaskBuilder {
     }
 
     private static OcServerTask covert(ServerTaskBO serverTaskBO) {
-        return BeanCopierUtils.copyProperties(serverTaskBO, OcServerTask.class);
+        return BeanCopierUtil.copyProperties(serverTaskBO, OcServerTask.class);
     }
 }

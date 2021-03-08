@@ -1,6 +1,6 @@
 package com.baiyi.caesar.domain.param.server;
 
-import com.baiyi.caesar.domain.param.PageParam;
+import com.baiyi.caesar.domain.param.TagParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class ServerParam {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class PageQuery extends PageParam {
+    public static class PageQuery extends TagParam {
 
         @ApiModelProperty(value = "模糊查询专用")
         private String queryName;

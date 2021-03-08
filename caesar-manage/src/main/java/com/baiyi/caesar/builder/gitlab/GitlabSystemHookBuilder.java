@@ -2,7 +2,7 @@ package com.baiyi.caesar.builder.gitlab;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.bo.gitlab.GitlabSystemHookBO;
-import com.baiyi.caesar.common.util.BeanCopierUtils;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabSystemHook;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
@@ -27,6 +27,6 @@ public class GitlabSystemHookBuilder {
     }
 
     private static CsGitlabSystemHook covert(GitlabSystemHookBO bo) {
-        return BeanCopierUtils.copyProperties(bo, CsGitlabSystemHook.class);
+        return BeanCopierUtil.copyProperties(bo, CsGitlabSystemHook.class);
     }
 }
