@@ -30,7 +30,7 @@ public class TagController {
 
     @ApiOperation(value = "分页查询tag列表")
     @GetMapping(value = "/page/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<DataTable<TagVO.Tag>> queryTagPage(@Valid TagParam.PageQuery pageQuery) {
+    public HttpResult<DataTable<TagVO.Tag>> queryTagPage(@Valid TagParam.TagPageQuery pageQuery) {
         return new HttpResult<>(tagFacade.queryTagPage(pageQuery));
     }
 

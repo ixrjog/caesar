@@ -3,6 +3,7 @@ package com.baiyi.caesar.domain.param.server;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ public class ServerTaskExecutorParam {
 
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class ServerTaskCommandExecutor extends TaskExecutor {
@@ -26,6 +28,7 @@ public class ServerTaskExecutorParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class ServerTaskScriptExecutor extends TaskExecutor {
@@ -40,6 +43,7 @@ public class ServerTaskExecutorParam {
 
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class ServerTaskPlaybookExecutor extends TaskExecutor {

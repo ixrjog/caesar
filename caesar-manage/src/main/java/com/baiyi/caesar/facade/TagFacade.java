@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface TagFacade {
 
-    DataTable<TagVO.Tag> queryTagPage(TagParam.PageQuery pageQuery);
+    DataTable<TagVO.Tag> queryTagPage(TagParam.TagPageQuery pageQuery);
 
     BusinessWrapper<Boolean> addTag(TagVO.Tag tag);
 

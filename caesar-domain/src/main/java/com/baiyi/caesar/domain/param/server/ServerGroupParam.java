@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -15,6 +16,7 @@ public class ServerGroupParam {
 
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class PageQuery extends PageParam {
@@ -49,6 +51,7 @@ public class ServerGroupParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserTicketOcServerGroupQuery extends PageParam {
@@ -62,6 +65,7 @@ public class ServerGroupParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class LogMemberServerGroupQuery extends PageParam {

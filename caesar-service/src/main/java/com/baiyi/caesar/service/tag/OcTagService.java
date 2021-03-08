@@ -17,7 +17,7 @@ public interface OcTagService {
 
     OcTag queryOcTagByKey(String tagKey);
 
-    DataTable<OcTag> queryOcTagByParam(TagParam.PageQuery pageQuery);
+    DataTable<OcTag> queryOcTagByParam(TagParam.TagPageQuery pageQuery);
 
     void addOcTag(OcTag ocTag);
 

@@ -39,7 +39,7 @@ public class TagFacadeImpl implements TagFacade {
     public static final boolean ACTION_UPDATE = false;
 
     @Override
-    public DataTable<TagVO.Tag> queryTagPage(TagParam.PageQuery pageQuery) {
+    public DataTable<TagVO.Tag> queryTagPage(TagParam.TagPageQuery pageQuery) {
         DataTable<OcTag> table = ocTagService.queryOcTagByParam(pageQuery);
         List<TagVO.Tag> page = BeanCopierUtil.copyListProperties(table.getData(), TagVO.Tag.class);
         return new DataTable<>(page, table.getTotalNum());

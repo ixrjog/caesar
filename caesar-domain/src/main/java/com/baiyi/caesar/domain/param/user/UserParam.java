@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
@@ -20,6 +21,7 @@ import java.util.Date;
 public class UserParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserPageQuery extends PageParam {
@@ -39,6 +41,7 @@ public class UserParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserExcludeApplicationPageQuery extends PageParam {
@@ -51,6 +54,7 @@ public class UserParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserIncludeApplicationPageQuery extends PageParam {
@@ -60,6 +64,7 @@ public class UserParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserExcludeApplicationBuildJobPageQuery extends PageParam {
@@ -75,6 +80,7 @@ public class UserParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class UserIncludeApplicationBuildJobPageQuery extends PageParam {

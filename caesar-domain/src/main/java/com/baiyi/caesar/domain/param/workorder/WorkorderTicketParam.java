@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class WorkorderTicketParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class QueryMyTicketPage extends PageParam {
@@ -23,6 +25,7 @@ public class WorkorderTicketParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class QueryTicketPage extends PageParam {
@@ -37,7 +40,6 @@ public class WorkorderTicketParam {
         private Integer ticketStatus;
 
     }
-
 
     @Data
     @NoArgsConstructor

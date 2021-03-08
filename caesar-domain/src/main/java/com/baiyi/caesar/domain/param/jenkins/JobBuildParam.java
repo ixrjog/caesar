@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class JobBuildParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class BuildPageQuery extends PageParam {
@@ -100,10 +102,6 @@ public class JobBuildParam {
         @ApiModelProperty(value = "构建id")
         @NotNull(message = "构建id不能为空")
         private Integer buildId;
-
-//        @ApiModelProperty(value = "构建编号")
-//        @NotNull(message = "构建编号不能为空")
-//        private Integer buildNumber;
 
     }
 }

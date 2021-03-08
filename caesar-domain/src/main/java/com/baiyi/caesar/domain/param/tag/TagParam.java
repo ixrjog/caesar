@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
  */
 public class TagParam {
 
+
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class PageQuery extends PageParam {
+    public static class TagPageQuery extends PageParam {
 
         @ApiModelProperty(value = "标签Key")
         private String tagKey;

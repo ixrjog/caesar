@@ -38,8 +38,8 @@ public class OcTagServiceImpl implements OcTagService {
     }
 
     @Override
-    public DataTable<OcTag> queryOcTagByParam(TagParam.PageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+    public DataTable<OcTag> queryOcTagByParam(TagParam.TagPageQuery pageQuery) {
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<OcTag> ocTagList = ocTagMapper.queryOcTagByParam(pageQuery);
         return new DataTable<>(ocTagList, page.getTotal());
     }

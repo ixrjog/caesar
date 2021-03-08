@@ -1,9 +1,10 @@
 package com.baiyi.caesar.domain.param.server;
 
-import com.baiyi.caesar.domain.param.TagParam;
+import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
@@ -16,9 +17,10 @@ import java.util.Set;
 public class ServerParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
-    public static class PageQuery extends TagParam {
+    public static class PageQuery extends PageParam {
 
         @ApiModelProperty(value = "模糊查询专用")
         private String queryName;
@@ -43,6 +45,7 @@ public class ServerParam {
 
         @ApiModelProperty(value = "标签id")
         private Integer tagId;
+
     }
 
     @Data

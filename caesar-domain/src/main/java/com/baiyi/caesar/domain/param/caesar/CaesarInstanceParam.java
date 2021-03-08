@@ -3,6 +3,7 @@ package com.baiyi.caesar.domain.param.caesar;
 import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,9 +14,11 @@ import lombok.NoArgsConstructor;
 public class CaesarInstanceParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class CaesarInstancePageQuery extends PageParam {
 
     }
+
 }

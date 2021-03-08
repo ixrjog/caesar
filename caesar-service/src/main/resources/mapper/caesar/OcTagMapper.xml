@@ -14,7 +14,7 @@
     </resultMap>
 
     <select id="queryOcTagByParam"
-            parameterType="com.baiyi.caesar.domain.param.tag.TagParam$PageQuery"
+            parameterType="com.baiyi.caesar.domain.param.tag.TagParam$TagPageQuery"
             resultMap="BaseResultMap">
         select * from oc_tag
         <where>

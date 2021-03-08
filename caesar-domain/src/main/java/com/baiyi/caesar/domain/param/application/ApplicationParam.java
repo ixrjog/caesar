@@ -1,11 +1,11 @@
 package com.baiyi.caesar.domain.param.application;
 
 import com.baiyi.caesar.domain.param.PageParam;
-import com.baiyi.caesar.domain.param.TagParam;
 import com.baiyi.caesar.domain.param.server.ServerGroupParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
@@ -19,9 +19,10 @@ import javax.validation.constraints.NotNull;
 public class ApplicationParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
-    public static class ApplicationPageQuery extends TagParam {
+    public static class ApplicationPageQuery extends PageParam{
 
         @ApiModelProperty(value = "关键字查询")
         private String queryName;
@@ -29,9 +30,13 @@ public class ApplicationParam {
         @ApiModelProperty(value = "扩展属性", example = "1")
         private Integer extend;
 
+        @ApiModelProperty(value = "标签id")
+        private Integer tagId;
+
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class MyApplicationPageQuery extends PageParam {
@@ -75,8 +80,6 @@ public class ApplicationParam {
 
     }
 
-
-
     @Data
     @NoArgsConstructor
     @ApiModel
@@ -92,7 +95,7 @@ public class ApplicationParam {
 
     }
 
-
+    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @ApiModel

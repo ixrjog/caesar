@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OcTagMapper extends Mapper<OcTag> {
 
-    List<OcTag> queryOcTagByParam(TagParam.PageQuery pageQuery);
+    List<OcTag> queryOcTagByParam(TagParam.TagPageQuery pageQuery);
 
     /**
      * 查询业务相关标签

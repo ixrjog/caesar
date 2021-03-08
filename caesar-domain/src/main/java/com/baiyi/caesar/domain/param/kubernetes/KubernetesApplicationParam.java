@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class KubernetesApplicationParam {
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class PageQuery extends PageParam {

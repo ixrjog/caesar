@@ -4,6 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ public class CiJobParam {
 
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class CiJobPageQuery extends PageParam {
@@ -37,6 +39,7 @@ public class CiJobParam {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
     public static class CiJobTplPageQuery extends PageParam {
