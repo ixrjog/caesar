@@ -36,7 +36,7 @@ public class DuplicateSessionByIpProcess extends BaseProcess implements IXTermPr
     }
 
     @Override
-    public void xtermProcess(String message, Session session , OcTerminalSession ocTerminalSession) {
+    public void process(String message, Session session , OcTerminalSession ocTerminalSession) {
         DuplicateSessionMessage baseMessage = (DuplicateSessionMessage) getMessage(message);
         baseMessage.setLoginUserType(1);
 

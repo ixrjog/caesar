@@ -29,8 +29,11 @@ public class EnvFacadeImpl implements EnvFacade {
     @Resource
     private OcServerService ocServerService;
 
-    public static final boolean ACTION_ADD = true;
-    public static final boolean ACTION_UPDATE = false;
+    public interface action {
+        boolean ADD = true;
+        boolean UPDATE = false;
+    }
+
 
     @Override
     public DataTable<EnvVO.Env> queryEnvPage(EnvParam.PageQuery pageQuery) {
@@ -41,12 +44,12 @@ public class EnvFacadeImpl implements EnvFacade {
 
     @Override
     public BusinessWrapper<Boolean> addEnv(EnvVO.Env env) {
-        return saveEnv(env, ACTION_ADD);
+        return saveEnv(env, action.ADD);
     }
 
     @Override
     public BusinessWrapper<Boolean> updateEnv(EnvVO.Env env) {
-        return saveEnv(env, ACTION_UPDATE);
+        return saveEnv(env, action.UPDATE);
     }
 
     private BusinessWrapper<Boolean> saveEnv(EnvVO.Env env, boolean action) {

@@ -32,7 +32,7 @@ public class BatchCommandProcess extends BaseProcess implements IXTermProcess {
     }
 
     @Override
-    public void xtermProcess(String message, Session session, OcTerminalSession ocTerminalSession) {
+    public void process(String message, Session session, OcTerminalSession ocTerminalSession) {
         BatchCommandMessage xtermMessage = (BatchCommandMessage) getMessage(message);
         JSchSessionMap.setBatch(ocTerminalSession.getSessionId(), xtermMessage.getIsBatch());
     }

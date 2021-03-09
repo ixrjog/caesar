@@ -35,8 +35,11 @@ public class TagFacadeImpl implements TagFacade {
     @Resource
     private OcBusinessTagService ocBusinessTagService;
 
-    public static final boolean ACTION_ADD = true;
-    public static final boolean ACTION_UPDATE = false;
+    public interface action {
+        boolean ADD = true;
+        boolean UPDATE = false;
+    }
+
 
     @Override
     public DataTable<TagVO.Tag> queryTagPage(TagParam.TagPageQuery pageQuery) {
@@ -47,12 +50,12 @@ public class TagFacadeImpl implements TagFacade {
 
     @Override
     public BusinessWrapper<Boolean> addTag(TagVO.Tag tag) {
-        return saveTag(tag, ACTION_ADD);
+        return saveTag(tag, action.ADD);
     }
 
     @Override
     public BusinessWrapper<Boolean> updateTag(TagVO.Tag tag) {
-        return saveTag(tag, ACTION_UPDATE);
+        return saveTag(tag, action.UPDATE);
     }
 
     private BusinessWrapper<Boolean> saveTag(TagVO.Tag tag, boolean action) {

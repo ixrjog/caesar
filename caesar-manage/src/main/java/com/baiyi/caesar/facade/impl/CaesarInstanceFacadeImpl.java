@@ -27,14 +27,16 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, InitializingBean {
+public final class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, InitializingBean {
 
     @Resource
     private CsInstanceService csInstanceService;
 
-    private static final String HEALTH_OK = "OK";
-    private static final String HEALTH_ERROR = "ERROR";
-    private static final String HEALTH_INACTIVE = "INACTIVE";
+    public interface healthStatus {
+        String OK = "OK";
+        String ERROR = "ERROR";
+        String INACTIVE = "INACTIVE";
+    }
 
     @Override
     public BusinessWrapper<Boolean> setCaesarInstanceActive(int id) {
@@ -47,7 +49,7 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
     @Override
     public boolean isHealth() {
         HealthVO.Health health = checkHealth();
-        return HEALTH_OK.equals(health.getStatus());
+        return healthStatus.OK.equals(health.getStatus());
     }
 
     @Override
@@ -56,15 +58,15 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
             InetAddress inetAddress = HostUtil.getInetAddress();
             CsInstance csInstance = csInstanceService.queryCsInstanceByHostIp(inetAddress.getHostAddress());
             if (csInstance == null)
-                return getHealth(HEALTH_ERROR, false);
+                return getHealth(healthStatus.ERROR, false);
             if (csInstance.getIsActive()) {
-                return getHealth(HEALTH_OK, true);
+                return getHealth(healthStatus.OK, true);
             } else {
-                return getHealth(HEALTH_INACTIVE, false);
+                return getHealth(healthStatus.INACTIVE, false);
             }
         } catch (UnknownHostException ignored) {
         }
-        return getHealth(HEALTH_ERROR, false);
+        return getHealth(healthStatus.ERROR, false);
     }
 
     @Override
@@ -81,6 +83,9 @@ public class CaesarInstanceFacadeImpl implements CaesarInstanceFacade, Initializ
         return health;
     }
 
+    /**
+     * 注册实例
+     */
     private void register() {
         try {
             InetAddress inetAddress = HostUtil.getInetAddress();

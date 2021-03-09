@@ -32,7 +32,7 @@ public class LogoutProcess extends BaseProcess implements IXTermProcess {
     }
 
     @Override
-    public void xtermProcess(String message, Session session, OcTerminalSession ocTerminalSession) {
+    public void process(String message, Session session, OcTerminalSession ocTerminalSession) {
         LogoutMessage baseMessage = (LogoutMessage) getMessage(message);
         writeAuditLog(ocTerminalSession, baseMessage.getInstanceId()); // 写审计日志
         closeSessionInstance(ocTerminalSession, baseMessage.getInstanceId()); // 设置关闭会话

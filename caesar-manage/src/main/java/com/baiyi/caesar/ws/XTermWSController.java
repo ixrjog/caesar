@@ -90,7 +90,7 @@ public class XTermWSController implements InitializingBean {
      */
     @OnClose
     public void onClose() {
-        XTermProcessFactory.getIXTermProcessByKey(XTermRequestStatus.CLOSE.getCode()).xtermProcess("", session, ocTerminalSession);
+        XTermProcessFactory.getIXTermProcessByKey(XTermRequestStatus.CLOSE.getCode()).process("", session, ocTerminalSession);
         sessionSet.remove(session);
         int cnt = onlineCount.decrementAndGet();
         log.info("有连接关闭，当前连接数为：{}", cnt);
@@ -119,7 +119,7 @@ public class XTermWSController implements InitializingBean {
                 SessionUtil.setUsername(ocTerminalSession.getUsername()); // 设置当前会话用户身份
             }
         }
-        XTermProcessFactory.getIXTermProcessByKey(status).xtermProcess(message, session, ocTerminalSession);
+        XTermProcessFactory.getIXTermProcessByKey(status).process(message, session, ocTerminalSession);
     }
 
     /**
@@ -194,7 +194,7 @@ public class XTermWSController implements InitializingBean {
                     .hostAddress(addr.getHostAddress())
                     .hostname(hostname)
                     .build();
-        } catch (UnknownHostException e) {
+        } catch (UnknownHostException ignored) {
         }
     }
 

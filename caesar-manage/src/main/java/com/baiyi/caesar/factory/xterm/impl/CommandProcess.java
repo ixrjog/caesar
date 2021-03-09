@@ -36,7 +36,7 @@ public class CommandProcess extends BaseProcess implements IXTermProcess {
     }
 
     @Override
-    public void xtermProcess(String message, Session session, OcTerminalSession ocTerminalSession) {
+    public void process(String message, Session session, OcTerminalSession ocTerminalSession) {
         CommandMessage xtermMessage = (CommandMessage) getMessage(message);
         if (StringUtils.isEmpty(xtermMessage.getData()))
             return;

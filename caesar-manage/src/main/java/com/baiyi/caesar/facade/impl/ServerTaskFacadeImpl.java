@@ -243,12 +243,7 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
         OcServerTaskMember ocServerTaskMember = ocServerTaskMemberService.queryOcServerTaskMemberById(memberId);
         if (ocServerTaskMember == null)
             return new BusinessWrapper<>(ErrorEnum.SERVER_TASK_MEMBER_NOT_EXIST);
-//        if (ocServerTaskMember.getFinalized() == 1)
-//            return new BusinessWrapper<>(ErrorEnum.SERVER_TASK_HAS_FINALIIZED_AND_CANNOT_BE_MODIFIED);
         taskLogRecorder.abortTaskMember(memberId, ServerTaskStopType.MEMBER_TASK_STOP.getType());
-//        ocServerTaskMember.setStopType(ServerTaskStopType.MEMBER_TASK_STOP.getType());
-//        ocServerTaskMember.setFinalized(1);
-//        ocServerTaskMemberService.updateOcServerTaskMember(ocServerTaskMember);
         return BusinessWrapper.SUCCESS;
     }
 

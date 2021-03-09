@@ -37,7 +37,7 @@ public class InitialByIpProcess extends BaseProcess implements IXTermProcess {
     }
 
     @Override
-    public void xtermProcess(String message, Session session, OcTerminalSession ocTerminalSession) {
+    public void process(String message, Session session, OcTerminalSession ocTerminalSession) {
         InitialIpMessage xtermMessage = (InitialIpMessage) getMessage(message);
         xtermMessage.setLoginUserType(1);
         OcUser ocUser = userFacade.getOcUserBySession();
