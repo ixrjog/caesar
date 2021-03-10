@@ -39,7 +39,7 @@ public class XTermWSController implements InitializingBean {
     private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
 
     // 当前会话 uuid
-    private String sessionId = null;
+    private final String sessionId = UUID.randomUUID().toString();
 
     private Session session = null;
 
@@ -70,7 +70,8 @@ public class XTermWSController implements InitializingBean {
      */
     @OnOpen
     public void onOpen(Session session) {
-        this.sessionId = UUID.randomUUID().toString();
+        // this.sessionId = UUID.randomUUID().toString();
+        log.info("终端会话尝试链接，sessionId = {}", sessionId);
         OcTerminalSession ocTerminalSession = TerminalSessionBuilder.build(sessionId, serverAddr);
         terminalFacade.addOcTerminalSession(ocTerminalSession);
         this.ocTerminalSession = ocTerminalSession;
