@@ -19,7 +19,7 @@
     <select id="queryCsApplicationByParam"
             parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$ApplicationPageQuery"
             resultMap="BaseResultMap">
-        select * from cs_application a0
+        select a0.* from cs_application a0
         <if test="tagId != null and tagId > 0">
             join cs_application_scm_member a1 on a0.id = a1.application_id
             join oc_business_tag a2 on a1.scm_id = a2.business_id
@@ -29,9 +29,10 @@
                 ( a2.business_type = 9 and a2.tag_id = #{tagId} )
             </if>
             <if test="queryName != null and queryName != ''">
-                and ( name like "%" #{queryName} "%" or application_key like "%" #{queryName} "%" )
+                and ( a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%" )
             </if>
         </where>
+        group by a0.id
     </select>
 
     <select id="queryMyCsApplicationByParam"
