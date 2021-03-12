@@ -9,8 +9,8 @@ import com.baiyi.caesar.common.util.bae64.CacheKeyUtils;
 import com.baiyi.caesar.domain.bo.SSHKeyCredential;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.facade.*;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
-import com.baiyi.caesar.factory.xterm.XTermProcessFactory;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
+import com.baiyi.caesar.factory.xterm.TerminalProcessFactory;
 import com.baiyi.caesar.server.facade.ServerAttributeFacade;
 import com.baiyi.caesar.service.server.OcServerService;
 import com.baiyi.caesar.service.user.OcUserPermissionService;
@@ -34,7 +34,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Slf4j
-public abstract class BaseProcess implements IXTermProcess, InitializingBean {
+public abstract class BaseProcess implements ITerminalProcess, InitializingBean {
 
     @Resource
     protected UserFacade userFacade;
@@ -153,7 +153,7 @@ public abstract class BaseProcess implements IXTermProcess, InitializingBean {
      */
     @Override
     public void afterPropertiesSet() {
-        XTermProcessFactory.register(this);
+        TerminalProcessFactory.register(this);
     }
 
 }

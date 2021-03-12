@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.xterm.impl;
 
 import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import javax.websocket.Session;
  */
 @Slf4j
 @Component
-public class HeartbeatProcess extends BaseProcess implements IXTermProcess {
+public class HeartbeatProcess extends BaseProcess implements ITerminalProcess {
 
     /**
      * XTerm心跳

@@ -5,7 +5,7 @@ import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.handler.RemoteInvokeHandler;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.message.InitialMessage;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Component
-public class InitialProcess extends BaseProcess implements IXTermProcess {
+public class InitialProcess extends BaseProcess implements ITerminalProcess {
 
 
     /**

@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.xterm.impl;
 
 import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.message.LogoutMessage;
 import com.baiyi.caesar.xterm.model.JSchSession;
@@ -18,7 +18,7 @@ import javax.websocket.Session;
  * @Version 1.0
  */
 @Component
-public class LogoutProcess extends BaseProcess implements IXTermProcess {
+public class LogoutProcess extends BaseProcess implements ITerminalProcess {
 
     /**
      * 初始化XTerm 单个关闭

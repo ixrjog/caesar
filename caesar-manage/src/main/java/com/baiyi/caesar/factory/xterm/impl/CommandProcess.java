@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.xterm.impl;
 
 import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.message.CommandMessage;
 import com.baiyi.caesar.xterm.model.JSchSession;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class CommandProcess extends BaseProcess implements IXTermProcess {
+public class CommandProcess extends BaseProcess implements ITerminalProcess {
 
     /**
      * XTerm发送指令

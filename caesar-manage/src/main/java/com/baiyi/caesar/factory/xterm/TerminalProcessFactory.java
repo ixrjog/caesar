@@ -8,15 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/5/11 10:50 上午
  * @Version 1.0
  */
-public class XTermProcessFactory {
+public class TerminalProcessFactory {
 
-    static Map<String, IXTermProcess> context = new ConcurrentHashMap<>();
+    static Map<String, ITerminalProcess> context = new ConcurrentHashMap<>();
 
-    public static IXTermProcess getIXTermProcessByKey(String key) {
+    public static ITerminalProcess getIXTermProcessByKey(String key) {
         return context.get(key);
     }
 
-    public static void register(IXTermProcess bean) {
+    public static void register(ITerminalProcess bean) {
         context.put(bean.getKey(), bean);
     }
 }

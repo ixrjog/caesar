@@ -7,7 +7,7 @@ import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.handler.RemoteInvokeHandler;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.message.InitialIpMessage;
@@ -23,7 +23,7 @@ import javax.websocket.Session;
  * @Version 1.0
  */
 @Component
-public class InitialByIpProcess extends BaseProcess implements IXTermProcess {
+public class InitialByIpProcess extends BaseProcess implements ITerminalProcess {
 
 
     /**

@@ -4,7 +4,7 @@ import com.baiyi.caesar.builder.TerminalSessionInstanceBuilder;
 import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
-import com.baiyi.caesar.factory.xterm.IXTermProcess;
+import com.baiyi.caesar.factory.xterm.ITerminalProcess;
 import com.baiyi.caesar.xterm.handler.RemoteInvokeHandler;
 import com.baiyi.caesar.xterm.message.BaseMessage;
 import com.baiyi.caesar.xterm.message.DuplicateSessionMessage;
@@ -22,7 +22,7 @@ import javax.websocket.Session;
  * @Version 1.0
  */
 @Component
-public class DuplicateSessionByIpProcess extends BaseProcess implements IXTermProcess {
+public class DuplicateSessionByIpProcess extends BaseProcess implements ITerminalProcess {
 
     /**
      * XTerm复制会话

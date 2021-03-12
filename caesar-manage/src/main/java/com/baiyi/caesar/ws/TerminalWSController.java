@@ -10,7 +10,7 @@ import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.facade.AuthBaseFacade;
 import com.baiyi.caesar.facade.TerminalBaseFacade;
-import com.baiyi.caesar.factory.xterm.XTermProcessFactory;
+import com.baiyi.caesar.factory.xterm.TerminalProcessFactory;
 import com.baiyi.caesar.xterm.message.InitialMessage;
 import com.baiyi.caesar.xterm.task.SentOutputTask;
 import com.google.gson.GsonBuilder;
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @ServerEndpoint(value = "/ws/xterm")
 @Component
-public class XTermWSController implements InitializingBean {
+public class TerminalWSController implements InitializingBean {
 
     private static final AtomicInteger onlineCount = new AtomicInteger(0);
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
@@ -57,12 +57,12 @@ public class XTermWSController implements InitializingBean {
     // 注入的时候，给类的 service 注入
     @Autowired
     public void setTerminalFacade(TerminalBaseFacade terminalFacade) {
-        XTermWSController.terminalFacade = terminalFacade;
+        TerminalWSController.terminalFacade = terminalFacade;
     }
 
     @Autowired
     public void setAuthBaseFacade(AuthBaseFacade authBaseFacade) {
-        XTermWSController.authBaseFacade = authBaseFacade;
+        TerminalWSController.authBaseFacade = authBaseFacade;
     }
 
     /**
@@ -91,7 +91,7 @@ public class XTermWSController implements InitializingBean {
      */
     @OnClose
     public void onClose() {
-        XTermProcessFactory.getIXTermProcessByKey(XTermRequestStatus.CLOSE.getCode()).process("", session, ocTerminalSession);
+        TerminalProcessFactory.getIXTermProcessByKey(XTermRequestStatus.CLOSE.getCode()).process("", session, ocTerminalSession);
         sessionSet.remove(session);
         int cnt = onlineCount.decrementAndGet();
         log.info("有连接关闭，当前连接数为：{}", cnt);
@@ -120,7 +120,7 @@ public class XTermWSController implements InitializingBean {
                 SessionUtil.setUsername(ocTerminalSession.getUsername()); // 设置当前会话用户身份
             }
         }
-        XTermProcessFactory.getIXTermProcessByKey(status).process(message, session, ocTerminalSession);
+        TerminalProcessFactory.getIXTermProcessByKey(status).process(message, session, ocTerminalSession);
     }
 
     /**
