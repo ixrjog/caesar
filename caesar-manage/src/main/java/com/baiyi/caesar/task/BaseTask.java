@@ -16,6 +16,10 @@ public abstract class BaseTask {
     @Resource
     private CaesarInstanceFacade caesarInstanceFacade;
 
+    /**
+     * 实例存活检查
+     * @return
+     */
     protected boolean isHealth() {
         return caesarInstanceFacade.isHealth();
     }
