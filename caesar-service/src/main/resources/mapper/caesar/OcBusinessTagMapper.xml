@@ -13,8 +13,6 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
 
-
-
     <delete id="deleteOcBusinessTagByUniqueKey"
             parameterType="com.baiyi.caesar.domain.vo.tag.BusinessTagVO$BusinessTag">
        delete from oc_business_tag

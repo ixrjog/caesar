@@ -22,14 +22,11 @@
         select a0.* from cs_application a0
         <if test="tagId != null and tagId > 0">
             join cs_application_scm_member a1 on a0.id = a1.application_id
-            join oc_business_tag a2 on a1.scm_id = a2.business_id
+            join oc_business_tag a2 on a1.scm_id = a2.business_id and a2.business_type = 9 and a2.tag_id = #{tagId}
         </if>
         <where>
-            <if test="tagId != null and tagId > 0">
-                ( a2.business_type = 9 and a2.tag_id = #{tagId} )
-            </if>
             <if test="queryName != null and queryName != ''">
-                and ( a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%" )
+                a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%"
             </if>
         </where>
         group by a0.id
@@ -38,8 +35,8 @@
     <select id="queryMyCsApplicationByParam"
             parameterType="com.baiyi.caesar.domain.param.application.ApplicationParam$MyApplicationPageQuery"
             resultMap="BaseResultMap">
-        select a0.* from oc_user_permission as a1 inner join cs_application as a0 on
-        a0.id = a1.business_id and a1.business_type = 8 and a1.user_id = #{userId}
+        select a0.* from oc_user_permission a1
+            inner join cs_application a0 on  a0.id = a1.business_id and a1.business_type = 8 and a1.user_id = #{userId}
         <where>
             <if test="queryName != null and queryName != ''">
                 a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%"
