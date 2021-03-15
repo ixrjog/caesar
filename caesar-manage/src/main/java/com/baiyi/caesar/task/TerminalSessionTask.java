@@ -2,6 +2,7 @@ package com.baiyi.caesar.task;
 
 import com.baiyi.caesar.facade.TerminalFacade;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,41 +15,28 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class TerminalSessionTask extends BaseTask {
+public class TerminalSessionTask extends BaseTask{
 
     @Resource
     private TerminalFacade terminalFacade;
-
-    // Terminal
-    public static final String TASK_TERMINAL_SESSION_KEY = "TASK_TERMINAL_SESSION_KEY";
-
-    private static final int LOCK_MINUTE = 2;
 
     /**
      * 关闭无效会话
      */
     @Scheduled(initialDelay = 5000, fixedRate = 60 * 1000)
+    /**
+     * By setting lockAtMostFor we make sure that the lock is released even if the node dies and by setting
+     * `lockAtLeastFor` we make sure it's not executed more than once in fifteen minutes. Please note that
+     * `lockAtMostFor` is just a safety net in case that the node executing the task dies, so set it to a time
+     * that is significantly larger than maximum estimated execution time. If the task takes longer than lockAtMostFor,
+     * it may be executed again and the results will be unpredictable (more processes will hold the lock).
+     */
+    @SchedulerLock(name = "closeInvalidSessionTask", lockAtMostFor = "2m", lockAtLeastFor = "2m")
     public void closeInvalidSessionTask() {
-        sleep(10);
         if (!isHealth()) return;
-        if (tryLock()) return;
+        log.info("任务启动: 关闭无效的终端会话！");
         terminalFacade.closeInvalidSessionTask();
-        unlock();
     }
 
-    @Override
-    protected String getLock() {
-        return TASK_TERMINAL_SESSION_KEY;
-    }
-
-    @Override
-    protected String getTaskName() {
-        return "WebXTerm会话关闭任务";
-    }
-
-    @Override
-    protected int getLockMinute() {
-        return LOCK_MINUTE;
-    }
 
 }

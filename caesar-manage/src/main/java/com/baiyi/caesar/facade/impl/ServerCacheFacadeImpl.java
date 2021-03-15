@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.baiyi.caesar.task.AttributeTask.TASK_SERVER_ATTRIBUTE_ANSIBLE_TOPIC;
-
 /**
  * @Author baiyi
  * @Date 2020/4/10 10:19 上午
@@ -28,6 +26,8 @@ public class ServerCacheFacadeImpl implements ServerCacheFacade {
 
     @Resource
     private TaskUtil taskUtil;
+
+    public static final String TASK_SERVER_ATTRIBUTE_ANSIBLE_TOPIC = "TASK_SERVER_ATTRIBUTE_ANSIBLE_TOPIC";
 
     @Override
     public void evictServerCache(OcServer ocServer) {

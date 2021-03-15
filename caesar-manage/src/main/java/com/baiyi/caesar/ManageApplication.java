@@ -1,6 +1,7 @@
 package com.baiyi.caesar;
 
 
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +28,7 @@ import java.time.Instant;
 @SpringBootApplication
 @EnableAspectJAutoProxy(exposeProxy = true)
 @EnableScheduling
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
 @EnableCaching
 @EnableAsync
 @EnableRetry
