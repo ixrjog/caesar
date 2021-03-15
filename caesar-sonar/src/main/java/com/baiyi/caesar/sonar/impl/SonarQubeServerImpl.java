@@ -4,9 +4,9 @@ import com.baiyi.caesar.domain.vo.sonar.SonarMeasures;
 import com.baiyi.caesar.sonar.SonarQubeServer;
 import com.baiyi.caesar.sonar.handler.SonarQubeHandler;
 import com.baiyi.caesar.sonar.mapper.SonarMeasuresMapper;
+import com.baiyi.caesar.sonar.param.SonarQubeRequestBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -42,10 +42,10 @@ public class SonarQubeServerImpl implements SonarQubeServer {
     }
 
     private Map<String, String> buildMeasuresComponentParam(String projectKey) {
-        Map<String, String> paramMap = Maps.newHashMap();
-        paramMap.put("additionalFields", "metrics,periods");
-        paramMap.put("component", projectKey);
-        paramMap.put("metricKeys", Joiner.on(",").join(METRIC_KEYS));
-        return paramMap;
+        return SonarQubeRequestBuilder.newBuilder()
+                .paramEntry("additionalFields", "metrics,periods")
+                .paramEntry("component", projectKey)
+                .paramEntry("metricKeys", Joiner.on(",").join(METRIC_KEYS))
+                .build().getParams();
     }
 }

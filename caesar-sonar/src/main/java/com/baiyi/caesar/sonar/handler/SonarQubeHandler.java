@@ -11,7 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -63,8 +62,7 @@ public class SonarQubeHandler {
     }
 
     public static JsonNode httpGetExecutor(String api, Map<String, String> param) throws IOException {
-        HttpGet httpGet = new HttpGet(buildUrl(api) + buildGetParam(param));
-        invokeRequest(httpGet);
+        HttpGet httpGet = buildHttpGet(api, param);
         HttpClient httpClient = HttpClients.createDefault();
         HttpResponse response = httpClient.execute(httpGet, new HttpClientContext());
         HttpEntity entity = response.getEntity();
@@ -72,10 +70,12 @@ public class SonarQubeHandler {
         return readTree(data);
     }
 
-    private static void invokeRequest(HttpRequestBase httpRequestBase) {
-        httpRequestBase.setConfig(buildRequestConfig());
-        httpRequestBase.setHeader("Content-Type", "application/json;charset=utf-8");
-        httpRequestBase.setHeader(X_API_KEY, sonarConfig.getToken());
+    private static HttpGet buildHttpGet(String api, Map<String, String> param) {
+        HttpGet httpGet = new HttpGet(Joiner.on("").join(buildUrl(api) , buildGetParam(param)));
+        httpGet.setConfig(buildRequestConfig());
+        httpGet.setHeader("Content-Type", "application/json;charset=utf-8");
+        httpGet.setHeader(X_API_KEY, sonarConfig.getToken());
+        return httpGet;
     }
 
     private static String buildGetParam(Map<String, String> param) {
