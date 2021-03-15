@@ -12,7 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @SpringBootTest(classes = ManageApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+// 单元测试读取dev配置文件
 @ActiveProfiles(profiles = "dev")
 @Retryable
 public class BaseUnit {
+
 }
