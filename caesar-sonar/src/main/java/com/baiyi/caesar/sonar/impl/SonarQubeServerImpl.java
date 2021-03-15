@@ -22,14 +22,14 @@ public class SonarQubeServerImpl implements SonarQubeServer {
 
     public static final String API = "api/measures/component";
 
-    public static final String[] METRIC_KEYS = { "alert_status",
-            "quality_gate_details", "bugs","new_bugs","reliability_rating",
-            "new_reliability_rating","vulnerabilities", "new_vulnerabilities","security_rating",
-            "new_security_rating","security_hotspots", "new_security_hotspots","code_smells",
-            "new_code_smells","sqale_rating", "new_maintainability_rating",
-            "sqale_index","new_technical_debt", "coverage","new_coverage","new_lines_to_cover",
-            "tests","duplicated_lines_density","new_duplicated_lines_density",
-            "duplicated_blocks","ncloc","ncloc_language_distribution","projects","new_lines"};
+    public static final String[] METRIC_KEYS = {"alert_status",
+            "quality_gate_details", "bugs", "new_bugs", "reliability_rating",
+            "new_reliability_rating", "vulnerabilities", "new_vulnerabilities", "security_rating",
+            "new_security_rating", "security_hotspots", "new_security_hotspots", "code_smells",
+            "new_code_smells", "sqale_rating", "new_maintainability_rating",
+            "sqale_index", "new_technical_debt", "coverage", "new_coverage", "new_lines_to_cover",
+            "tests", "duplicated_lines_density", "new_duplicated_lines_density",
+            "duplicated_blocks", "ncloc", "ncloc_language_distribution", "projects", "new_lines"};
 
     @Override
     public SonarMeasures queryMeasuresComponent(String projectKey) {
@@ -45,7 +45,11 @@ public class SonarQubeServerImpl implements SonarQubeServer {
         return SonarQubeRequestBuilder.newBuilder()
                 .paramEntry("additionalFields", "metrics,periods")
                 .paramEntry("component", projectKey)
-                .paramEntry("metricKeys", Joiner.on(",").join(METRIC_KEYS))
+                .paramEntry("metricKeys", convertMetricKeys())
                 .build().getParams();
+    }
+
+    private String convertMetricKeys() {
+        return Joiner.on(",").join(METRIC_KEYS);
     }
 }
