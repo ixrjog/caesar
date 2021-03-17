@@ -48,35 +48,36 @@ public class UserDecorator {
     private OcUserPermissionService ocUserPermissionService;
 
     @Resource
+    private UserGroupDecorator userGroupDecorator;
+
+    @Resource
     private PersonRepo personRepo;
 
     // from mysql
     public UserVO.User decorator(UserVO.User user, Integer extend) {
         user.setPassword("");
-        if (extend != null && extend == 1) {
-            // 装饰 用户组
-            List<OcUserGroup> userGroupList = ocUserGroupService.queryOcUserGroupByUserId(user.getId());
-            user.setUserGroups(BeanCopierUtil.copyListProperties(userGroupList, UserGroupVO.UserGroup.class));
-            // 装饰 服务器组
-            List<OcServerGroup> serverGroupList = ocServerGroupService.queryUserPermissionOcServerGroupByUserId(user.getId());
-            user.setServerGroups(convert(user, serverGroupList));
-            // 装饰 ApiToken
-            List<OcUserApiToken> userApiTokens = ocUserApiTokenService.queryOcUserApiTokenByUsername(user.getUsername());
-            List<UserApiTokenVO.UserApiToken> apiTokens = BeanCopierUtil.copyListProperties(userApiTokens, UserApiTokenVO.UserApiToken.class).stream().map(e -> {
-                e.setToken("申请后不可查看");
-                return e;
-            }).collect(Collectors.toList());
-            user.setApiTokens(apiTokens);
-            // 装饰 凭据
-            List<OcUserCredential> credentials = ocUserCredentialService.queryOcUserCredentialByUserId(user.getId());
-            Map<String, UserCredentialVO.UserCredential> credentialMap = Maps.newHashMap();
-            for (OcUserCredential credential : credentials)
-                credentialMap.put(CredentialType.getName(credential.getCredentialType()), BeanCopierUtil.copyProperties(credential, UserCredentialVO.UserCredential.class));
-            user.setCredentialMap(credentialMap);
-            // 用户属性
-            Map<String, Object> attributeMap = Maps.newHashMap();
-            user.setAttributeMap(attributeMap);
-        }
+        if (extend == null || extend == 0) return user;
+        // 装饰 用户组
+        userGroupDecorator.decorator(user);
+
+        // 装饰 服务器组
+        List<OcServerGroup> serverGroupList = ocServerGroupService.queryUserPermissionOcServerGroupByUserId(user.getId());
+        user.setServerGroups(convert(user, serverGroupList));
+        // 装饰 ApiToken
+        List<OcUserApiToken> userApiTokens = ocUserApiTokenService.queryOcUserApiTokenByUsername(user.getUsername());
+        List<UserApiTokenVO.UserApiToken> apiTokens = BeanCopierUtil.copyListProperties(userApiTokens, UserApiTokenVO.UserApiToken.class)
+                .stream().peek(e -> e.setToken("申请后不可查看")).collect(Collectors.toList());
+        user.setApiTokens(apiTokens);
+        // 装饰 凭据
+        List<OcUserCredential> credentials = ocUserCredentialService.queryOcUserCredentialByUserId(user.getId());
+        Map<String, UserCredentialVO.UserCredential> credentialMap = Maps.newHashMap();
+        for (OcUserCredential credential : credentials)
+            credentialMap.put(CredentialType.getName(credential.getCredentialType()), BeanCopierUtil.copyProperties(credential, UserCredentialVO.UserCredential.class));
+        user.setCredentialMap(credentialMap);
+        // 用户属性
+        Map<String, Object> attributeMap = Maps.newHashMap();
+        user.setAttributeMap(attributeMap);
+
         return user;
     }
 

@@ -81,7 +81,7 @@ public class ServerTaskDecorator {
                     break;
                 default:
             }
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException ignored) {
         }
         return serverTask;
     }
@@ -159,7 +159,7 @@ public class ServerTaskDecorator {
                 try {
                     ServerTaskMemberVO.AnsibleResult ansibleResult = new Gson().fromJson(resultStr, ServerTaskMemberVO.AnsibleResult.class);
                     serverTaskMember.setResult(ansibleResult);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }

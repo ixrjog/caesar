@@ -27,7 +27,7 @@ public class CiJobVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CiJob implements TagVO.ITags{
+    public static class CiJob implements EnvVO.IEnv, TagVO.ITags {
 
         private int businessType;
 

@@ -23,7 +23,6 @@ public class EnvDecorator {
         // 装饰 环境信息
         OcEnv ocEnv = ocEnvService.queryOcEnvByType(iEnv.getEnvType());
         if (ocEnv == null) return;
-        EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
-        iEnv.setEnv(env);
+        iEnv.setEnv(BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class));
     }
 }

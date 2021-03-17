@@ -19,25 +19,19 @@ import javax.annotation.Resource;
 public class UserPermissionDecorator {
 
     @Resource
-    private UserDecorator userDecorator;
-
-    @Resource
     private OcUserPermissionService ocUserPermissionService;
 
     // from mysql
-    public UserVO.User decorator(UserVO.User user, int businessType, int businessId) {
-        user = userDecorator.decorator(user, 0);
-
+    public void decorator(UserVO.IUserPermission iUserPermission){
         UserPermissionBO userPermissionBO = UserPermissionBO.builder()
-                .userId(user.getId())
-                .businessType(businessType)
-                .businessId(businessId)
+                .userId(iUserPermission.getUserId())
+                .businessType(iUserPermission.getBusinessType())
+                .businessId(iUserPermission.getBusinessId())
                 .build();
         OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         if (ocUserPermission != null) {
-            user.setUserPermission(BeanCopierUtil.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
+            iUserPermission.setUserPermission(BeanCopierUtil.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
         }
-        return user;
-
     }
+
 }

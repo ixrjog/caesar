@@ -8,6 +8,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
+import com.baiyi.caesar.decorator.env.EnvDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.DataTable;
@@ -19,7 +20,6 @@ import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
-import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.sonar.SonarEntry;
 import com.baiyi.caesar.domain.vo.sonar.SonarMeasures;
@@ -27,7 +27,6 @@ import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
-import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsJobEngineService;
@@ -54,7 +53,7 @@ import java.util.stream.Collectors;
 public class CiJobDecorator extends BaseJobDecorator {
 
     @Resource
-    private OcEnvService ocEnvService;
+    private EnvDecorator envDecorator;
 
     @Resource
     private CsDingtalkService csDingtalkService;
@@ -119,11 +118,8 @@ public class CiJobDecorator extends BaseJobDecorator {
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, Integer extend) {
         if (extend == 0) return ciJob;
         // 装饰 环境信息
-        OcEnv ocEnv = ocEnvService.queryOcEnvByType(ciJob.getEnvType());
-        if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
-            ciJob.setEnv(env);
-        }
+        envDecorator.decorator(ciJob);
+
         // 钉钉
         if (!IDUtil.isEmpty(ciJob.getDingtalkId())) {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(ciJob.getDingtalkId());

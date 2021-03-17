@@ -2,9 +2,11 @@ package com.baiyi.caesar.decorator.user;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.domain.generator.caesar.OcUserGroup;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.ldap.repo.GroupRepo;
+import com.baiyi.caesar.service.user.OcUserGroupService;
 import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,16 @@ public class UserGroupDecorator {
     private OcUserService ocUserService;
 
     @Resource
+    private OcUserGroupService ocUserGroupService;
+
+    @Resource
     private GroupRepo groupRepo;
+
+    public void decorator(UserGroupVO.IUserGroups iUserGroups) {
+        List<OcUserGroup> userGroupList = ocUserGroupService.queryOcUserGroupByUserId(iUserGroups.getUserId());
+        iUserGroups.setUserGroups(BeanCopierUtil.copyListProperties(userGroupList, UserGroupVO.UserGroup.class));
+    }
+
 
     // from mysql
     public UserGroupVO.UserGroup decorator(UserGroupVO.UserGroup userGroup, Integer extend) {

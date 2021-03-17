@@ -23,7 +23,7 @@ public class CdJobVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CdJob {
+    public static class CdJob implements EnvVO.IEnv {
 
         @ApiModelProperty(value = "环境详情")
         private EnvVO.Env env;

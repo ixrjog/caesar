@@ -11,15 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class KeyboxDecorator {
 
-//    @Resource
-//    private StringEncryptor stringEncryptor;
-
     public KeyboxVO.Keybox decorator(KeyboxVO.Keybox keybox) {
         keybox.setPassphrase(null);
         keybox.setPublicKey(null);
         keybox.setPrivateKey(null);
         return keybox;
     }
-
 
 }

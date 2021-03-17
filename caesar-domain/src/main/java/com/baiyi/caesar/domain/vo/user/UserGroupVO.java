@@ -15,6 +15,15 @@ import java.util.List;
  */
 public class UserGroupVO {
 
+
+    public interface IUserGroups {
+
+        Integer getUserId();
+
+        void setUserGroups(List<UserGroupVO.UserGroup> userGroups);
+
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel

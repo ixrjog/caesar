@@ -20,12 +20,35 @@ import java.util.Map;
  */
 public class UserVO {
 
+
+    public interface IUserPermission {
+
+        void setUserPermission(UserPermissionVO.UserPermission userPermission);
+
+        int getBusinessType();
+
+        int getBusinessId();
+
+        Integer getUserId();
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class User implements Serializable {
+    public static class User implements UserGroupVO.IUserGroups, IUserPermission, Serializable {
 
         private static final long serialVersionUID = -4936990694008673929L;
+
+        private int businessType;
+        private int businessId;
+
+        @Override
+        public Integer getUserId() {
+            return this.id;
+        }
+
+
         private Map<String, UserCredentialVO.UserCredential> credentialMap;
 
         private List<UserGroupVO.UserGroup> userGroups;
@@ -36,7 +59,7 @@ public class UserVO {
 
         private Map<String, Object> attributeMap;
 
-        private UserPermissionVO.UserPermission  userPermission;
+        private UserPermissionVO.UserPermission userPermission;
 
         @ApiModelProperty(value = "主键")
         private Integer id;

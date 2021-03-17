@@ -21,7 +21,17 @@ public class JenkinsInstanceVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Instance {
+    public static class Instance implements ServerVO.IServer, ServerGroupVO.IServerGroup {
+
+        @Override
+        public Integer getServerGroupId() {
+            return nodeServerGroupId;
+        }
+
+        @Override
+        public void setServerGroup(ServerGroupVO.ServerGroup serverGroup) {
+            this.nodeGroup = serverGroup;
+        }
 
         @ApiModelProperty(value = "jenkins服务器")
         private ServerVO.Server server;

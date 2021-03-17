@@ -113,7 +113,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public DataTable<UserVO.User> queryApplicationIncludeUserPage(UserParam.UserIncludeApplicationPageQuery pageQuery) {
         DataTable<OcUser> table = ocUserService.queryApplicationIncludeUserParam(pageQuery);
-        return toUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
+        return convertUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
     }
 
     @Override
@@ -125,12 +125,19 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public DataTable<UserVO.User> queryApplicationBuildJobIncludeUserPage(UserParam.UserIncludeApplicationBuildJobPageQuery pageQuery){
         DataTable<OcUser> table = ocUserService.queryApplicationBuildJobIncludeUserParam(pageQuery);
-        return toUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
+        return convertUserPermissionPage(table, BusinessType.APPLICATION.getType(), pageQuery.getApplicationId());
     }
 
-    private DataTable<UserVO.User> toUserPermissionPage(DataTable<OcUser> table, int businessType, int businessId) {
+    private DataTable<UserVO.User> convertUserPermissionPage(DataTable<OcUser> table, int businessType, int businessId) {
         List<UserVO.User> page = BeanCopierUtil.copyListProperties(table.getData(), UserVO.User.class);
-        return new DataTable<>(page.stream().map(e -> userPermissionDecorator.decorator(e, businessType, businessId)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> {
+                    UserVO.User user = userDecorator.decorator(e,0);
+                    user.setBusinessId(businessId);
+                    user.setBusinessType(businessType);
+                    userPermissionDecorator.decorator(user);
+                    return user;
+                }
+             ).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

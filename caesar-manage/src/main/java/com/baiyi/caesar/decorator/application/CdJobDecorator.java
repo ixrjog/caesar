@@ -6,6 +6,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
+import com.baiyi.caesar.decorator.env.EnvDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -13,9 +14,7 @@ import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
-import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
-import com.baiyi.caesar.service.env.OcEnvService;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.jenkins.CsJobEngineService;
@@ -44,7 +43,7 @@ public class CdJobDecorator extends BaseJobDecorator {
     private CsCiJobService csCiJobService;
 
     @Resource
-    private OcEnvService ocEnvService;
+    private EnvDecorator envDecorator;
 
     @Resource
     private CsCdJobBuildService csCdJobBuildService;
@@ -83,12 +82,9 @@ public class CdJobDecorator extends BaseJobDecorator {
 
     public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(cdJob.getCiJobId());
+        cdJob.setEnvType(csCiJob.getEnvType());
         // 装饰 环境信息
-        OcEnv ocEnv = ocEnvService.queryOcEnvByType(csCiJob.getEnvType());
-        if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
-            cdJob.setEnv(env);
-        }
+        envDecorator.decorator(cdJob);
 
         if (!IDUtil.isEmpty(cdJob.getJobTplId())) {
             CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(cdJob.getJobTplId());
@@ -120,7 +116,7 @@ public class CdJobDecorator extends BaseJobDecorator {
             jobBuildView.setBuildNumber(e.getJobBuildNumber());
             jobBuildView.setBuilding(!e.getFinalized());
 
-            assembleJobBuildView(jobBuildView,e.getFinalized() ,e.getBuildStatus());
+            assembleJobBuildView(jobBuildView, e.getFinalized(), e.getBuildStatus());
 
             jobBuildView.setExecutors(jobDeploymentDecorator.getExecutorsByBuildId(e.getId()));
             return jobBuildView;
