@@ -18,7 +18,14 @@ public class OssBucketVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Bucket {
+    public static class Bucket implements TagVO.ITags {
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
 
         private List<TagVO.Tag> tags;
 

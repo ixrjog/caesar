@@ -19,11 +19,16 @@ public class TagDecorator {
     @Resource
     private TagFacade tagFacade;
 
-    public List<TagVO.Tag> decorator(Integer businessType, Integer businessId) {
+    public List<TagVO.Tag> acqTags(Integer businessType, Integer businessId) {
         // 装饰 标签
         TagParam.BusinessQuery businessQuery = new TagParam.BusinessQuery();
         businessQuery.setBusinessType(businessType);
         businessQuery.setBusinessId(businessId);
         return tagFacade.queryBusinessTag(businessQuery);
     }
+
+    public void decorator(TagVO.ITags iTags) {
+        iTags.setTags(acqTags(iTags.getBusinessType(), iTags.getBusinessId()));
+    }
+
 }

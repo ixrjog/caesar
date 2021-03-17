@@ -27,7 +27,14 @@ public class CiJobVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CiJob {
+    public static class CiJob implements TagVO.ITags{
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return scmMember.getScmId();
+        }
 
         @ApiModelProperty(value = "环境详情")
         private EnvVO.Env env;

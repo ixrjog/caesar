@@ -20,9 +20,12 @@ public class DingtalkDecorator {
 
     public DingtalkVO.Dingtalk decorator(DingtalkVO.Dingtalk dingtalk, Integer extend) {
         dingtalk.setDingtalkToken("");
-        if(extend == 0 ) return dingtalk;
+        if (extend == 0) return dingtalk;
         // 装饰 标签
-        dingtalk.setTags(tagDecorator.decorator(BusinessType.DINGTALK.getType(), dingtalk.getId()));
+
+        dingtalk.setBusinessType(BusinessType.DINGTALK.getType());
+        tagDecorator.decorator(dingtalk);
+
         return dingtalk;
     }
 }

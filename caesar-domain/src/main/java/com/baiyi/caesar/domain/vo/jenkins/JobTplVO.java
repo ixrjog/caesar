@@ -18,7 +18,14 @@ public class JobTplVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobTpl {
+    public static class JobTpl implements TagVO.ITags {
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
 
         private List<TagVO.Tag> tags;
         private JenkinsInstanceVO.Instance jenkinsInstance;

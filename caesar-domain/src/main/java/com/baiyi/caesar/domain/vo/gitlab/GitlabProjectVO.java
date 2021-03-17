@@ -18,7 +18,14 @@ public class GitlabProjectVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Project {
+    public static class Project implements TagVO.ITags {
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
 
         private List<TagVO.Tag> tags;
 

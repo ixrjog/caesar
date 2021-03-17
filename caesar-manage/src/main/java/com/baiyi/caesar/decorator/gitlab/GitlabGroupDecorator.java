@@ -31,7 +31,11 @@ public class GitlabGroupDecorator {
         group.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
 
         // 装饰 标签
-        group.setTags(tagDecorator.decorator(BusinessType.GITLAB_GROUP.getType(), group.getId()));
+        group.setBusinessType(BusinessType.GITLAB_GROUP.getType());
+        tagDecorator.decorator(group);
+
+        // 装饰 标签
+        // group.setTags(tagDecorator.decorator(BusinessType.GITLAB_GROUP.getType(), group.getId()));
 
         return group;
     }

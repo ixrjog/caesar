@@ -21,7 +21,7 @@ public class ServerVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Server {
+    public static class Server implements EnvVO.IEnv, TagVO.ITags, ServerGroupVO.IServerGroup {
 
         private List<TagVO.Tag> tags;
 
@@ -29,22 +29,29 @@ public class ServerVO {
 
         private ServerGroupVO.ServerGroup serverGroup;
 
-        @ApiModelProperty(value = "主键",example="1")
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
+
+        @ApiModelProperty(value = "主键", example = "1")
         private Integer id;
 
         @ApiModelProperty(value = "服务器名称")
         private String name;
 
-        @ApiModelProperty(value = "服务器组id",example="1")
+        @ApiModelProperty(value = "服务器组id", example = "1")
         private Integer serverGroupId;
 
-        @ApiModelProperty(value = "登录类型",example="1")
+        @ApiModelProperty(value = "登录类型", example = "1")
         private Integer loginType;
 
         @ApiModelProperty(value = "登录账户")
         private String loginUser;
 
-        @ApiModelProperty(value = "环境类型",example="1")
+        @ApiModelProperty(value = "环境类型", example = "1")
         private Integer envType;
 
         @ApiModelProperty(value = "公网ip")
@@ -53,22 +60,22 @@ public class ServerVO {
         @ApiModelProperty(value = "私网ip")
         private String privateIp;
 
-        @ApiModelProperty(value = "服务器类型",example="1")
+        @ApiModelProperty(value = "服务器类型", example = "1")
         private Integer serverType;
 
         @ApiModelProperty(value = "地区")
         private String area;
 
-        @ApiModelProperty(value = "序号",example="1")
+        @ApiModelProperty(value = "序号", example = "1")
         private Integer serialNumber;
 
-        @ApiModelProperty(value = "监控状态",example="1")
+        @ApiModelProperty(value = "监控状态", example = "1")
         private Integer monitorStatus;
 
         @ApiModelProperty(value = "资源描述")
         private String comment;
 
-        @ApiModelProperty(value = "服务器状态",example="1")
+        @ApiModelProperty(value = "服务器状态", example = "1")
         private Integer serverStatus;
 
         @ApiModelProperty(value = "有效")

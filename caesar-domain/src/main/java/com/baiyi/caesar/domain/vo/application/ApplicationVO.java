@@ -41,7 +41,14 @@ public class ApplicationVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ScmMember {
+    public static class ScmMember implements TagVO.ITags{
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
 
         private List<TagVO.Tag> tags;
 

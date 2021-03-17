@@ -19,7 +19,10 @@ public class OssBucketDecorator {
     private TagDecorator tagDecorator;
 
     public OssBucketVO.Bucket decorator(OssBucketVO.Bucket bucket, Integer extend) {
-        bucket.setTags(tagDecorator.decorator(BusinessType.ALIYUN_OSS_BUCKET.getType(), bucket.getId()));
+        bucket.setBusinessType(BusinessType.ALIYUN_OSS_BUCKET.getType());
+        tagDecorator.decorator(bucket);
         return bucket;
     }
+
+
 }

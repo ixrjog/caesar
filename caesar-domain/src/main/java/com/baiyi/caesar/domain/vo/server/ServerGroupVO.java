@@ -12,6 +12,14 @@ import lombok.NoArgsConstructor;
  */
 public class ServerGroupVO {
 
+    public interface IServerGroup {
+
+        Integer getServerGroupId();
+
+        void setServerGroup(ServerGroup serverGroup);
+
+    }
+
 
     @Data
     @NoArgsConstructor
@@ -20,13 +28,13 @@ public class ServerGroupVO {
 
         private ServerGroupTypeVO.ServerGroupType serverGroupType;
 
-        @ApiModelProperty(value = "主键",example="1")
+        @ApiModelProperty(value = "主键", example = "1")
         private Integer id;
 
         @ApiModelProperty(value = "组名称")
         private String name;
 
-        @ApiModelProperty(value = "组类型",example="1")
+        @ApiModelProperty(value = "组类型", example = "1")
         private Integer grpType;
 
         @ApiModelProperty(value = "是否支持工单", example = "1")

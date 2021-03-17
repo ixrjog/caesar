@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -23,7 +24,7 @@ public class TagVO {
 
         private static final long serialVersionUID = 1445359231777384339L;
 
-        @ApiModelProperty(value = "主键",example="1")
+        @ApiModelProperty(value = "主键", example = "1")
         private Integer id;
 
         @ApiModelProperty(value = "标签key")
@@ -42,6 +43,16 @@ public class TagVO {
         @ApiModelProperty(value = "更新时间")
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
         private Date updateTime;
+    }
+
+    public interface ITags {
+
+        void setTags(List<Tag> tags);
+
+        int getBusinessType();
+
+        int getBusinessId();
+
     }
 
 }

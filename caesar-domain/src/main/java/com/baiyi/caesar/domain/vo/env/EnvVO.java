@@ -20,7 +20,7 @@ public class EnvVO {
     @ApiModel
     public static class Env {
 
-        @ApiModelProperty(value = "主键",example="1")
+        @ApiModelProperty(value = "主键", example = "1")
         private Integer id;
 
         @ApiModelProperty(value = "环境名称")
@@ -29,7 +29,7 @@ public class EnvVO {
         @ApiModelProperty(value = "颜色值")
         private String color;
 
-        @ApiModelProperty(value = "环境值",example="1")
+        @ApiModelProperty(value = "环境值", example = "1")
         private Integer envType;
 
         @ApiModelProperty(value = "描述")
@@ -42,5 +42,11 @@ public class EnvVO {
         @ApiModelProperty(value = "更新时间")
         @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
         private Date updateTime;
+    }
+
+    public interface IEnv {
+
+        void setEnv(Env env);
+        Integer getEnvType();
     }
 }

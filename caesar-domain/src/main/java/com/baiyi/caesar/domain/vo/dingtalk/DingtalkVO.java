@@ -18,7 +18,14 @@ public class DingtalkVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Dingtalk {
+    public static class Dingtalk implements TagVO.ITags {
+
+        private int businessType;
+
+        @Override
+        public int getBusinessId() {
+            return id;
+        }
 
         private List<TagVO.Tag> tags;
 

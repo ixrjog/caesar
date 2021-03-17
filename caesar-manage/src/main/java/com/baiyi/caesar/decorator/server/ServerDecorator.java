@@ -1,15 +1,9 @@
 package com.baiyi.caesar.decorator.server;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.decorator.env.EnvDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
-import com.baiyi.caesar.domain.generator.caesar.OcEnv;
-import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
-import com.baiyi.caesar.domain.vo.env.EnvVO;
-import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
-import com.baiyi.caesar.service.env.OcEnvService;
-import com.baiyi.caesar.service.server.OcServerGroupService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -23,10 +17,7 @@ import javax.annotation.Resource;
 public class ServerDecorator {
 
     @Resource
-    private OcEnvService ocEnvService;
-
-    @Resource
-    private OcServerGroupService ocServerGroupService;
+    private EnvDecorator envDecorator;
 
     @Resource
     private TagDecorator tagDecorator;
@@ -35,20 +26,14 @@ public class ServerDecorator {
     private ServerGroupDecorator serverGroupDecorator;
 
     public ServerVO.Server decorator(ServerVO.Server server) {
-        // 装饰 环境信息
-        OcEnv ocEnv = ocEnvService.queryOcEnvByType(server.getEnvType());
-        if (ocEnv != null) {
-            EnvVO.Env env = BeanCopierUtil.copyProperties(ocEnv, EnvVO.Env.class);
-            server.setEnv(env);
-        }
-        // 装饰 服务器组信息
-        OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(server.getServerGroupId());
-        if (ocServerGroup != null) {
-            ServerGroupVO.ServerGroup serverGroup = BeanCopierUtil.copyProperties(ocServerGroup, ServerGroupVO.ServerGroup.class);
-            server.setServerGroup(serverGroupDecorator.decorator(serverGroup));
-        }
-        // 装饰 标签
-        server.setTags(tagDecorator.decorator(BusinessType.SERVER.getType(), server.getId()));
+        // 环境
+        envDecorator.decorator(server);
+        // 标签
+        server.setBusinessType(BusinessType.SERVER.getType());
+        tagDecorator.decorator(server);
+        // 服务器组
+        serverGroupDecorator.decorator(server);
+
         return server;
     }
 

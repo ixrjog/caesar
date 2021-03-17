@@ -30,8 +30,11 @@ public class GitlabProjectDecorator {
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(project.getInstanceId());
         project.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
 
+        project.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
+        tagDecorator.decorator(project);
+
         // 装饰 标签
-        project.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), project.getId()));
+        // project.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), project.getId()));
 
         return project;
     }

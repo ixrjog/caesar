@@ -140,8 +140,10 @@ public class CiJobDecorator extends BaseJobDecorator {
         if (!IDUtil.isEmpty(ciJob.getScmMemberId())) {
             CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(ciJob.getScmMemberId());
             if (csApplicationScmMember != null) {
-                ciJob.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), csApplicationScmMember.getScmId()));
                 ciJob.setScmMember(BeanCopierUtil.copyProperties(csApplicationScmMember, ApplicationVO.ScmMember.class));
+                ciJob.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
+                tagDecorator.decorator(ciJob);
+                // ciJob.setTags(tagDecorator.acqTags(BusinessType.GITLAB_PROJECT.getType(), csApplicationScmMember.getScmId()));
             }
         }
         // Bucket

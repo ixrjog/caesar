@@ -32,8 +32,11 @@ public class JobTplDecorator {
         if (csJenkinsInstance != null) {
             jobTpl.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
         }
+
         // 装饰 标签
-        jobTpl.setTags(tagDecorator.decorator(BusinessType.JENKINS_TPL.getType(), jobTpl.getId()));
+        jobTpl.setBusinessType(BusinessType.JENKINS_TPL.getType());
+        tagDecorator.decorator(jobTpl);
+        // jobTpl.setTags(tagDecorator.decorator(BusinessType.JENKINS_TPL.getType(), jobTpl.getId()));
         return jobTpl;
     }
 

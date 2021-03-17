@@ -20,7 +20,8 @@ public class ApplicationScmMemberDecorator {
 
     public ApplicationVO.ScmMember decorator(ApplicationVO.ScmMember scmMember, Integer extend) {
         // 装饰 标签
-        scmMember.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), scmMember.getScmId()));
+        scmMember.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
+        tagDecorator.decorator(scmMember);
         return scmMember;
     }
 }

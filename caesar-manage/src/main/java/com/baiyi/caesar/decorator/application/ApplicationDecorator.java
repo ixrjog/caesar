@@ -74,7 +74,7 @@ public class ApplicationDecorator {
         if (CollectionUtils.isEmpty(members)) return tags;
         Map<String, TagVO.Tag> tagMap = Maps.newHashMap();
         members.forEach(e ->
-                tagMap.putAll(getTagMap(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), e.getScmId())))
+                tagMap.putAll(getTagMap(tagDecorator.acqTags(BusinessType.GITLAB_PROJECT.getType(), e.getScmId())))
         );
         tagMap.keySet().forEach(k -> tags.add(tagMap.get(k)));
         return tags;
