@@ -1,12 +1,8 @@
 package com.baiyi.caesar.decorator.gitlab;
 
 import com.baiyi.caesar.common.base.BusinessType;
-import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
-import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
-import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,21 +16,18 @@ import javax.annotation.Resource;
 public class GitlabProjectDecorator {
 
     @Resource
-    private CsGitlabInstanceService csGitlabInstanceService;
+    private GitlabInstanceDecorator gitlabInstanceDecorator;
 
     @Resource
     private TagDecorator tagDecorator;
 
     public GitlabProjectVO.Project decorator(GitlabProjectVO.Project project, Integer extend) {
         if (extend == 0) return project;
-        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(project.getInstanceId());
-        project.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
+        
+        gitlabInstanceDecorator.decorator(project);
 
         project.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
-        tagDecorator.decorator(project);
-
-        // 装饰 标签
-        // project.setTags(tagDecorator.decorator(BusinessType.GITLAB_PROJECT.getType(), project.getId()));
+        tagDecorator.decorator(project);       // 装饰 标签
 
         return project;
     }

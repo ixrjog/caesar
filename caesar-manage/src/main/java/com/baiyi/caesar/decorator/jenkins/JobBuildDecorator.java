@@ -39,7 +39,7 @@ import static com.baiyi.caesar.common.base.Global.NOT_EXTEND;
  * @Version 1.0
  */
 @Component
-public class JobBuildsDecorator {
+public class JobBuildDecorator {
 
     @Resource
     private CsJobEngineService csJobEngineService;

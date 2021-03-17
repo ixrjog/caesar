@@ -15,6 +15,13 @@ import java.util.List;
  */
 public class DingtalkVO {
 
+    public interface IDingtalk {
+        void setDingtalk(Dingtalk dingtalk);
+
+        Integer getDingtalkId();
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel

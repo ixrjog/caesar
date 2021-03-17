@@ -41,7 +41,7 @@ public class ApplicationVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ScmMember implements TagVO.ITags{
+    public static class ScmMember implements TagVO.ITags {
 
         private int businessType;
 
@@ -65,9 +65,13 @@ public class ApplicationVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Engine {
+    public static class Engine implements JenkinsInstanceVO.IInstance {
 
         private JenkinsInstanceVO.Instance instance;
+
+        public Integer getInstanceId() {
+            return this.jenkinsInstanceId;
+        }
 
         private Integer id;
         private Integer applicationId;

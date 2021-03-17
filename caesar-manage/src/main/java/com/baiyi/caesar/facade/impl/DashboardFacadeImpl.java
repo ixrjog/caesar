@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.config.CachingConfig;
 import com.baiyi.caesar.decorator.application.ApplicationDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.vo.dashboard.DashboardVO;
 import com.baiyi.caesar.facade.DashboardFacade;
@@ -46,7 +46,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     private CsGitlabProjectService csGitlabProjectService;
 
     @Resource
-    private JobBuildsDecorator jobBuildsDecorator;
+    private JobBuildDecorator jobBuildsDecorator;
 
     @Resource
     private JobDeploymentDecorator jobDeploymentDecorator;

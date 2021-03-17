@@ -20,6 +20,13 @@ import java.util.List;
  */
 public class CiJobBuildVO {
 
+    public interface IBuildView {
+        Integer getCiJobId();
+
+        void setBuildViews(List<CiJobBuildVO.JobBuildView> buildViews);
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel
@@ -101,7 +108,7 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildChange extends BaseCommit{
+    public static class BuildChange extends BaseCommit {
         @ApiModelProperty(value = "7位commitId")
         private String shortCommitId;
 

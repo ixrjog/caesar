@@ -94,12 +94,11 @@ public class DepartmentMemberDecorator {
             }
             if (deptMembers.size() != 0) {
                 List<OrgDepartmentMemberVO.DepartmentMember> alternativeDeptMembers
-                        = BeanCopierUtil.copyListProperties(deptMembers, OrgDepartmentMemberVO.DepartmentMember.class).stream().map(a -> decorator(a)).collect(Collectors.toList());
-                OrgApprovalVO.OrgApproval orgApproval = OrgApprovalVO.OrgApproval.builder()
+                        = BeanCopierUtil.copyListProperties(deptMembers, OrgDepartmentMemberVO.DepartmentMember.class).stream().map(this::decorator).collect(Collectors.toList());
+                return OrgApprovalVO.OrgApproval.builder()
                         .preferenceDeptMember(getPreferenceDeptMember(alternativeDeptMembers))
                         .alternativeDeptMembers(alternativeDeptMembers)
                         .build();
-                return orgApproval;
             }
         }
         return OrgApprovalVO.OrgApproval.builder()

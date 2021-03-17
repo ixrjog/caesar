@@ -11,18 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class BaseJobDecorator {
 
-    public static final String SUCCESS_COLOR="#17BA14";
-    public static final String FAILURE_COLOR="#DD3E03";
-    public static final String RUNNING_COLOR="#E07D06";
+    public interface colors {
+        String SUCCESS = "#17BA14";
+        String FAILURE = "#DD3E03";
+        String RUNNING = "#E07D06";
+    }
 
-    protected void assembleJobBuildView(CiJobBuildVO.JobBuildView jobBuildView,Boolean finalized ,String buildStatus){
+    protected void assembleJobBuildView(CiJobBuildVO.JobBuildView jobBuildView, Boolean finalized, String buildStatus) {
         if (!finalized) {
-            jobBuildView.setColor(RUNNING_COLOR);
+            jobBuildView.setColor(colors.RUNNING);
         } else {
-            if ("SUCCESS".equals(buildStatus) ) {
-                jobBuildView.setColor(SUCCESS_COLOR);
+            if ("SUCCESS".equals(buildStatus)) {
+                jobBuildView.setColor(colors.SUCCESS);
             } else {
-                jobBuildView.setColor(FAILURE_COLOR);
+                jobBuildView.setColor(colors.FAILURE);
             }
         }
     }

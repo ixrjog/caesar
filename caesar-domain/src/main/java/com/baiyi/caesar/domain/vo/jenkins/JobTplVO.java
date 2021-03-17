@@ -15,6 +15,14 @@ import java.util.List;
  */
 public class JobTplVO {
 
+    public interface IJobTpl {
+
+        void setJobTpl(JobTpl jobTpl);
+
+        Integer getJobTplId();
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel

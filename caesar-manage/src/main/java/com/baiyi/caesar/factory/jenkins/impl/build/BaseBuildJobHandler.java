@@ -7,7 +7,7 @@ import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
-import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;
@@ -83,7 +83,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private CsOssBucketService csOssBucketService;
 
     @Resource
-    private JobBuildsDecorator jobBuildsDecorator;
+    private JobBuildDecorator jobBuildsDecorator;
 
     @Resource
     private CsApplicationScmMemberService csApplicationScmMemberService;

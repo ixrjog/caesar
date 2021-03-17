@@ -3,10 +3,12 @@ package com.baiyi.caesar.decorator.gitlab;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.gitlab.handler.GitlabHandler;
+import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.server.OcServerService;
 import org.gitlab.api.models.GitlabVersion;
@@ -31,6 +33,14 @@ public class GitlabInstanceDecorator {
 
     @Resource
     private CsGitlabProjectService csGitlabProjectService;
+
+    @Resource
+    private CsGitlabInstanceService csGitlabInstanceService;
+
+    public void decorator(GitlabInstanceVO.IInstance iInstance){
+        CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(iInstance.getInstanceId());
+        iInstance.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
+    }
 
     public GitlabInstanceVO.Instance decorator(GitlabInstanceVO.Instance instance, Integer extend) {
         if (extend == 0) return instance;

@@ -9,7 +9,7 @@ import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.common.util.RedisKeyUtil;
-import com.baiyi.caesar.decorator.jenkins.JobBuildsDecorator;
+import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
@@ -71,7 +71,7 @@ public class JobFacadeImpl implements JobFacade {
     private CsJobEngineService csJobEngineService;
 
     @Resource
-    private JobBuildsDecorator jobBuildsDecorator;
+    private JobBuildDecorator jobBuildsDecorator;
 
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;

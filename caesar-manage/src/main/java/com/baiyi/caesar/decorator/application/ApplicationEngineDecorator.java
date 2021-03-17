@@ -1,10 +1,7 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
+import com.baiyi.caesar.decorator.jenkins.JenkinsInstanceDecorator;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
-import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
-import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -18,14 +15,11 @@ import javax.annotation.Resource;
 public class ApplicationEngineDecorator {
 
     @Resource
-    private CsJenkinsInstanceService csJenkinsInstanceService;
+    private JenkinsInstanceDecorator jenkinsInstanceDecorator;
 
     public ApplicationVO.Engine decorator(ApplicationVO.Engine engine, Integer extend) {
         if (extend == 0) return engine;
-        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(engine.getJenkinsInstanceId());
-        if (csJenkinsInstance != null) {
-            engine.setInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
-        }
+        jenkinsInstanceDecorator.decorator(engine);
         return engine;
     }
 }

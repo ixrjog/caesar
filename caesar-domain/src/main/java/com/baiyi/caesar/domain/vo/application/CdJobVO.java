@@ -2,6 +2,7 @@ package com.baiyi.caesar.domain.vo.application;
 
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
+import com.baiyi.caesar.domain.vo.jenkins.JenkinsVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,10 +21,21 @@ import java.util.Map;
  */
 public class CdJobVO {
 
+    public interface IDeploymentJob {
+        Integer getDeploymentJobId();
+
+        void setCdJob(CdJobVO.CdJob cdJob);
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class CdJob implements EnvVO.IEnv {
+    public static class CdJob implements EnvVO.IEnv, JobTplVO.IJobTpl, CdJobBuildVO.IBuildView, JenkinsVO.IJenkinsParameter {
+
+        @Override
+        public Integer getCdJobId() {
+            return this.id;
+        }
 
         @ApiModelProperty(value = "环境详情")
         private EnvVO.Env env;

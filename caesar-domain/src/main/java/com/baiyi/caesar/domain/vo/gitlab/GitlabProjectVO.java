@@ -18,7 +18,7 @@ public class GitlabProjectVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Project implements TagVO.ITags {
+    public static class Project implements TagVO.ITags,GitlabInstanceVO.IInstance {
 
         private int businessType;
 

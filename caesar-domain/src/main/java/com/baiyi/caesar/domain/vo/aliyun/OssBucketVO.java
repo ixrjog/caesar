@@ -15,6 +15,12 @@ import java.util.List;
  */
 public class OssBucketVO {
 
+    public interface IBucket {
+        void setBucket(OssBucketVO.Bucket bucket);
+
+        Integer getOssBucketId();
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel

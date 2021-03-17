@@ -17,7 +17,7 @@ public class GitlabGroupVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Group implements TagVO.ITags{
+    public static class Group implements TagVO.ITags, GitlabInstanceVO.IInstance {
 
         private int businessType;
 

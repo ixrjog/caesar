@@ -15,6 +15,14 @@ import java.util.Date;
  */
 public class GitlabInstanceVO {
 
+    public interface IInstance {
+
+        void setInstance(GitlabInstanceVO.Instance instance);
+
+        Integer getInstanceId();
+    }
+
+
     @Data
     @NoArgsConstructor
     @ApiModel

@@ -20,6 +20,13 @@ import java.util.List;
  */
 public class CdJobBuildVO {
 
+    public interface IBuildView {
+
+        Integer getCdJobId();
+
+        void setBuildViews(List<CdJobBuildVO.JobBuildView> buildViews);
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel

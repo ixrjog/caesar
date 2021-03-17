@@ -18,10 +18,27 @@ import java.util.List;
  */
 public class JenkinsInstanceVO {
 
+    public interface IInstance {
+        void setInstance(JenkinsInstanceVO.Instance instance);
+
+        Integer getInstanceId();
+    }
+
+    public interface IJenkinsVersion {
+
+        void setVersion(String version);
+
+        /**
+         * 实例名称
+         * @return
+         */
+        String getName();
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Instance implements ServerVO.IServer, ServerGroupVO.IServerGroup {
+    public static class Instance implements ServerVO.IServer,IJenkinsVersion, ServerGroupVO.IServerGroup {
 
         @Override
         public Integer getServerGroupId() {

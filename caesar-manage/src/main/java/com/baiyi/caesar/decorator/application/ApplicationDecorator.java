@@ -47,14 +47,15 @@ public class ApplicationDecorator {
 
     public HotApplication decorator(HotApplication hotApplication) {
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(hotApplication.getId());
-        hotApplication.setTags(acqTagsByMembers(members));
+        hotApplication.setTags(acqTags(members));
         return hotApplication;
     }
 
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
         if (extend == 0) return application;
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
-        application.setTags(acqTagsByMembers(members));
+        application.setTags(acqTags(members));
+
         application.setScmMembers(BeanCopierUtil.copyListProperties(members, ApplicationVO.ScmMember.class));
         List<CsApplicationServerGroup> csApplicationServerGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(application.getId());
         if (!CollectionUtils.isEmpty(csApplicationServerGroups))
@@ -69,7 +70,7 @@ public class ApplicationDecorator {
         return application;
     }
 
-    private List<TagVO.Tag> acqTagsByMembers(List<CsApplicationScmMember> members) {
+    private List<TagVO.Tag> acqTags(List<CsApplicationScmMember> members) {
         List<TagVO.Tag> tags = Lists.newArrayList();
         if (CollectionUtils.isEmpty(members)) return tags;
         Map<String, TagVO.Tag> tagMap = Maps.newHashMap();
