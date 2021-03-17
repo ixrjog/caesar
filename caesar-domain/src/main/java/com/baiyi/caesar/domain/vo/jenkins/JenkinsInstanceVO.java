@@ -30,19 +30,25 @@ public class JenkinsInstanceVO {
 
         /**
          * 实例名称
+         *
          * @return
          */
-        String getName();
+        String getInstanceName();
     }
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Instance implements ServerVO.IServer,IJenkinsVersion, ServerGroupVO.IServerGroup {
+    public static class Instance implements ServerVO.IServer, IJenkinsVersion, ServerGroupVO.IServerGroup {
 
         @Override
         public Integer getServerGroupId() {
             return nodeServerGroupId;
+        }
+
+        @Override
+        public String getInstanceName() {
+            return this.name;
         }
 
         @Override

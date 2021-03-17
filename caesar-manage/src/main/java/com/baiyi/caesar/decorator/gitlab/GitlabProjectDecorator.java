@@ -23,7 +23,7 @@ public class GitlabProjectDecorator {
 
     public GitlabProjectVO.Project decorator(GitlabProjectVO.Project project, Integer extend) {
         if (extend == 0) return project;
-        
+
         gitlabInstanceDecorator.decorator(project);
 
         project.setBusinessType(BusinessType.GITLAB_PROJECT.getType());

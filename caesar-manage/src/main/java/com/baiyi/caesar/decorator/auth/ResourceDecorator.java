@@ -26,7 +26,7 @@ public class ResourceDecorator {
             return resource;
         OcAuthGroup ocAuthGroup = ocAuthGroupService.queryOcAuthGroupById(resource.getGroupId());
         resource.setGroupCode(ocAuthGroup.getGroupCode());
-        resource.setGroup( BeanCopierUtil.copyProperties(ocAuthGroup, GroupVO.Group.class));
+        resource.setGroup(BeanCopierUtil.copyProperties(ocAuthGroup, GroupVO.Group.class));
         return resource;
     }
 }

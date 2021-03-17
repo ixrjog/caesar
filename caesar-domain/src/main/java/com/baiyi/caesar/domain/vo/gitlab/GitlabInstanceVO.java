@@ -26,7 +26,12 @@ public class GitlabInstanceVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class Instance {
+    public static class Instance implements ServerVO.IServer,IVersion  {
+
+        @Override
+        public String getInstanceName(){
+            return this.name;
+        }
 
         @ApiModelProperty(value = "jenkins服务器")
         private ServerVO.Server server;
@@ -54,6 +59,18 @@ public class GitlabInstanceVO {
         private Date updateTime;
 
         private String comment;
+
+    }
+
+    public interface IVersion {
+
+        void setVersion(Version version);
+
+        /**
+         * 实例名称
+         * @return
+         */
+        String getInstanceName();
 
     }
 

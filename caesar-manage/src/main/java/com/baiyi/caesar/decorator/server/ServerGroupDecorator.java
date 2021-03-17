@@ -1,6 +1,7 @@
 package com.baiyi.caesar.decorator.server;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroupType;
 import com.baiyi.caesar.domain.vo.server.ServerGroupTypeVO;
@@ -34,6 +35,7 @@ public class ServerGroupDecorator {
 
 
     public void decorator(ServerGroupVO.IServerGroup iServerGroup) {
+        if (IDUtil.isEmpty(iServerGroup.getServerGroupId())) return;
         // 装饰 服务器组信息
         OcServerGroup ocServerGroup = ocServerGroupService.queryOcServerGroupById(iServerGroup.getServerGroupId());
         if (ocServerGroup == null) return;

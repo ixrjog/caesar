@@ -32,7 +32,6 @@ public class UserVO {
         Integer getUserId();
     }
 
-
     @Data
     @NoArgsConstructor
     @ApiModel

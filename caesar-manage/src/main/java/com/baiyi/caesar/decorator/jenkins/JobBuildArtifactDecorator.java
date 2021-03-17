@@ -27,17 +27,16 @@ public class JobBuildArtifactDecorator {
 
         return artifacts.stream().map(e -> {
             BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtil.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
-
             if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
                 buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));
             if (csOssBucket != null) {
-                buildArtifact.setOssUrl(Joiner.on("/").join(acqOssBucketUrl(csOssBucket), buildArtifact.getStoragePath()));
+                buildArtifact.setOssUrl(Joiner.on("/").join(buildOssBucketUrl(csOssBucket), buildArtifact.getStoragePath()));
             }
             return buildArtifact;
         }).collect(Collectors.toList());
     }
 
-    private String acqOssBucketUrl(CsOssBucket csOssBucket) {
+    private String buildOssBucketUrl(CsOssBucket csOssBucket) {
         return "https://" + Joiner.on(".").join(csOssBucket.getName(), csOssBucket.getExtranetEndpoint());
 
     }

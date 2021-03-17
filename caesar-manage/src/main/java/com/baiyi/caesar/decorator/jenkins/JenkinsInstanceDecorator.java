@@ -1,7 +1,6 @@
 package com.baiyi.caesar.decorator.jenkins;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
@@ -35,7 +34,7 @@ public class JenkinsInstanceDecorator {
     @Resource
     private JenkinsVersionDecorator jenkinsVersionDecorator;
 
-    public void decorator(JenkinsInstanceVO.IInstance iInstance){
+    public void decorator(JenkinsInstanceVO.IInstance iInstance) {
         CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(iInstance.getInstanceId());
         if (csJenkinsInstance != null) {
             iInstance.setInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
@@ -44,14 +43,9 @@ public class JenkinsInstanceDecorator {
 
     public JenkinsInstanceVO.Instance decorator(JenkinsInstanceVO.Instance instance, Integer extend) {
         instance.setToken("");
-
         jenkinsVersionDecorator.decorator(instance);
-
-        if (!IDUtil.isEmpty(instance.getServerId()))
-            serverDecorator.decorator(instance);
-
-        if (!IDUtil.isEmpty(instance.getNodeServerGroupId()))
-            serverGroupDecorator.decorator(instance);
+        serverDecorator.decorator(instance);
+        serverGroupDecorator.decorator(instance);
 
         return instance;
     }

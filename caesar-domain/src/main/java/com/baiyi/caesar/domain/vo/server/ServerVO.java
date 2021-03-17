@@ -19,6 +19,7 @@ import java.util.List;
 public class ServerVO {
 
     public interface IServer {
+
         void setServer(Server server);
 
         Integer getServerId();

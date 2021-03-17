@@ -2,6 +2,7 @@ package com.baiyi.caesar.decorator.server;
 
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.env.EnvDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
@@ -42,7 +43,8 @@ public class ServerDecorator {
         return server;
     }
 
-    public void decorator(ServerVO.IServer iServer){
+    public void decorator(ServerVO.IServer iServer) {
+        if (IDUtil.isEmpty(iServer.getServerId())) return;
         OcServer ocServer = ocServerService.queryOcServerById(iServer.getServerId());
         if (ocServer != null)
             iServer.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));

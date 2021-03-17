@@ -19,10 +19,8 @@ public class JenkinsVersionDecorator {
     private JenkinsServerHandler jenkinsServerHandler;
 
     public void decorator(JenkinsInstanceVO.IJenkinsVersion iJenkinsVersion) {
-        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion(iJenkinsVersion.getName());
-        if (jenkinsVersion != null) {
+        JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion(iJenkinsVersion.getInstanceName());
+        if (jenkinsVersion != null)
             iJenkinsVersion.setVersion(jenkinsVersion.getLiteralVersion());
-        }
-
     }
 }
