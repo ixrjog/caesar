@@ -23,6 +23,7 @@ import java.util.Map;
 public class CdJobVO {
 
     public interface IDeploymentJob {
+
         Integer getDeploymentJobId();
 
         void setCdJob(CdJobVO.CdJob cdJob);

@@ -85,9 +85,8 @@ public class CdJobDecorator extends BaseJobDecorator {
     public void decorator(CdJobVO.IDeploymentJob iDeploymentJob) {
         if (IDUtil.isEmpty(iDeploymentJob.getDeploymentJobId())) return;
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById(iDeploymentJob.getDeploymentJobId());
-        if (csCdJob != null) {
-            iDeploymentJob.setCdJob(BeanCopierUtil.copyProperties(csCdJob, CdJobVO.CdJob.class));
-        }
+        if (csCdJob != null)
+            iDeploymentJob.setCdJob(decorator(csCdJob));
     }
 
     public CdJobVO.CdJob decorator(CsCdJob csCdJob) {
