@@ -21,10 +21,8 @@ import java.util.List;
 public class CdJobBuildVO {
 
     public interface IBuildView {
-
         Integer getCdJobId();
-
-        void setBuildViews(List<CdJobBuildVO.JobBuildView> buildViews);
+        void setBuildViews(List<BuildViewVO.JobBuildView> buildViews);
     }
 
     @Data
@@ -89,11 +87,5 @@ public class CdJobBuildVO {
 
     }
 
-
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class JobBuildView extends CiJobBuildVO.JobBuildView {
-    }
 
 }

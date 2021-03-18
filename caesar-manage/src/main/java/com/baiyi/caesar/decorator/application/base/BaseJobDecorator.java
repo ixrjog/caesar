@@ -1,6 +1,5 @@
 package com.baiyi.caesar.decorator.application.base;
 
-import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,14 +16,14 @@ public class BaseJobDecorator {
         String RUNNING = "#E07D06";
     }
 
-    protected void assembleJobBuildView(CiJobBuildVO.JobBuildView jobBuildView, Boolean finalized, String buildStatus) {
+    protected String acqBuildViewColor(Boolean finalized, String buildStatus) {
         if (!finalized) {
-            jobBuildView.setColor(colors.RUNNING);
+            return colors.RUNNING;
         } else {
             if ("SUCCESS".equals(buildStatus)) {
-                jobBuildView.setColor(colors.SUCCESS);
+                return colors.SUCCESS;
             } else {
-                jobBuildView.setColor(colors.FAILURE);
+                return colors.FAILURE;
             }
         }
     }

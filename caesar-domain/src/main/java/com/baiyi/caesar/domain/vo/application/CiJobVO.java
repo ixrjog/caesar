@@ -1,6 +1,7 @@
 package com.baiyi.caesar.domain.vo.application;
 
 import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
+import com.baiyi.caesar.domain.vo.build.BuildViewVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
@@ -67,7 +68,7 @@ public class CiJobVO {
         private OssBucketVO.Bucket bucket;
 
         @ApiModelProperty(value = "构建视图")
-        private List<CiJobBuildVO.JobBuildView> buildViews;
+        private List<BuildViewVO.JobBuildView> buildViews;
 
         @ApiModelProperty(value = "任务参数Map")
         private Map<String, String> parameters;

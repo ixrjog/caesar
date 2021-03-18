@@ -36,28 +36,26 @@ public class UserGroupDecorator {
         iUserGroups.setUserGroups(BeanCopierUtil.copyListProperties(userGroupList, UserGroupVO.UserGroup.class));
     }
 
-
     // from mysql
     public UserGroupVO.UserGroup decorator(UserGroupVO.UserGroup userGroup, Integer extend) {
-        if (extend != null && extend == 1) {
-            List<OcUser> userList = ocUserService.queryOcUserByUserGroupId(userGroup.getId());
-            userGroup.setUsers(BeanCopierUtil.copyListProperties(userList, UserVO.User.class));
-        }
+        if (extend == null || extend == 0) return userGroup;
+        List<OcUser> userList = ocUserService.queryOcUserByUserGroupId(userGroup.getId());
+        userGroup.setUsers(BeanCopierUtil.copyListProperties(userList, UserVO.User.class));
         return userGroup;
     }
 
     public UserGroupVO.UserGroup decoratorFromLdapRepo(UserGroupVO.UserGroup userGroup, Integer extend) {
-        if (extend != null && extend == 1) {
-            List<String> usernameList = groupRepo.queryGroupMember(userGroup.getName());
-            //Map<String, OcUserVO.User> userMap = Maps.newHashMap();
-            List<UserVO.User> users = Lists.newArrayList();
-            for (String username : usernameList) {
-                OcUser ocUser = ocUserService.queryOcUserByUsername(username);
-                if (ocUser != null)
-                    users.add(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
-            }
-            userGroup.setUsers(users);
+        if (extend == null || extend == 0) return userGroup;
+        List<String> usernameList = groupRepo.queryGroupMember(userGroup.getName());
+        //Map<String, OcUserVO.User> userMap = Maps.newHashMap();
+        List<UserVO.User> users = Lists.newArrayList();
+        for (String username : usernameList) {
+            OcUser ocUser = ocUserService.queryOcUserByUsername(username);
+            if (ocUser != null)
+                users.add(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
         }
+        userGroup.setUsers(users);
+
         return userGroup;
     }
 }

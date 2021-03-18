@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.application;
 
+import com.baiyi.caesar.domain.vo.build.BuildViewVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsVO;
@@ -44,7 +45,7 @@ public class CdJobVO {
         private JobTplVO.JobTpl jobTpl;
 
         @ApiModelProperty(value = "构建视图")
-        private List<CdJobBuildVO.JobBuildView> buildViews;
+        private List<BuildViewVO.JobBuildView> buildViews;
 
         @ApiModelProperty(value = "任务参数Map")
         private Map<String, String> parameters;

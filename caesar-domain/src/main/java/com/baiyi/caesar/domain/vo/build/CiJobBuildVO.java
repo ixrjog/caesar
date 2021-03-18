@@ -22,8 +22,7 @@ public class CiJobBuildVO {
 
     public interface IBuildView {
         Integer getCiJobId();
-
-        void setBuildViews(List<CiJobBuildVO.JobBuildView> buildViews);
+        void setBuildViews(List<BuildViewVO.JobBuildView> buildViews);
     }
 
 
@@ -127,18 +126,6 @@ public class CiJobBuildVO {
         // private String commit;
         private String commitMsg;
         // private String commitUrl;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @ApiModel
-    public static class JobBuildView {
-
-        private List<BuildExecutorVO.BuildExecutor> executors;
-
-        private String color;
-        private Integer buildNumber;
-        private Boolean building;
     }
 
 }

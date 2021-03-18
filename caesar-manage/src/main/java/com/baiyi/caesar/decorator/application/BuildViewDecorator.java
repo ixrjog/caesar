@@ -8,6 +8,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
+import com.baiyi.caesar.domain.vo.build.BuildViewVO;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
@@ -42,43 +43,41 @@ public class BuildViewDecorator extends BaseJobDecorator {
         JobBuildParam.BuildPageQuery query = new JobBuildParam.BuildPageQuery();
         query.setCiJobId(iBuildView.getCiJobId());
         query.setExtend(1);
-        iBuildView.setBuildViews(acqCiJobBuildView(query));
+        query.setPage(1);
+        query.setLength(3);
+        DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(query);
+        iBuildView.setBuildViews(convertCiBuildViews(table.getData()));
     }
 
     public void decorator(CdJobBuildVO.IBuildView iBuildView) {
         JobDeploymentParam.DeploymentPageQuery query = new JobDeploymentParam.DeploymentPageQuery();
         query.setCdJobId(iBuildView.getCdJobId());
         query.setExtend(1);
-        iBuildView.setBuildViews(acqCdJobBuildView(query));
+        query.setPage(1);
+        query.setLength(3);
+        DataTable<CsCdJobBuild> table = csCdJobBuildService.queryCdJobBuildPage(query);
+        iBuildView.setBuildViews(convertCdBuildViews(table.getData()));
     }
 
-    private List<CiJobBuildVO.JobBuildView> acqCiJobBuildView(JobBuildParam.BuildPageQuery pageQuery) {
-        pageQuery.setPage(1);
-        pageQuery.setLength(3);
-        DataTable<CsCiJobBuild> table = csCiJobBuildService.queryCiJobBuildPage(pageQuery);
-        List<CsCiJobBuild> builds = table.getData();
-        return builds.stream().map(e -> {
-            CiJobBuildVO.JobBuildView jobBuildView = new CiJobBuildVO.JobBuildView();
-            jobBuildView.setBuildNumber(e.getJobBuildNumber());
-            jobBuildView.setBuilding(!e.getFinalized());
-            assembleJobBuildView(jobBuildView, e.getFinalized(), e.getBuildStatus());
-            jobBuildView.setExecutors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()));
-            return jobBuildView;
-        }).collect(Collectors.toList());
+    private List<BuildViewVO.JobBuildView> convertCiBuildViews(List<CsCiJobBuild> builds) {
+        return builds.stream().map(e ->
+                BuildViewVO.JobBuildView.builder()
+                        .buildNumber(e.getJobBuildNumber())
+                        .building(!e.getFinalized())
+                        .executors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()))
+                        .color(acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
+                        .build()
+        ).collect(Collectors.toList());
     }
 
-    private List<CdJobBuildVO.JobBuildView> acqCdJobBuildView(JobDeploymentParam.DeploymentPageQuery pageQuery) {
-        pageQuery.setPage(1);
-        pageQuery.setLength(3);
-        DataTable<CsCdJobBuild> table = csCdJobBuildService.queryCdJobBuildPage(pageQuery);
-        List<CsCdJobBuild> builds = table.getData();
-        return builds.stream().map(e -> {
-            CdJobBuildVO.JobBuildView jobBuildView = new CdJobBuildVO.JobBuildView();
-            jobBuildView.setBuildNumber(e.getJobBuildNumber());
-            jobBuildView.setBuilding(!e.getFinalized());
-            assembleJobBuildView(jobBuildView, e.getFinalized(), e.getBuildStatus());
-            jobBuildView.setExecutors(jobDeploymentDecorator.getExecutorsByBuildId(e.getId()));
-            return jobBuildView;
-        }).collect(Collectors.toList());
+    private List<BuildViewVO.JobBuildView> convertCdBuildViews(List<CsCdJobBuild> builds) {
+        return builds.stream().map(e ->
+                BuildViewVO.JobBuildView.builder()
+                        .buildNumber(e.getJobBuildNumber())
+                        .building(!e.getFinalized())
+                        .executors(jobDeploymentDecorator.getExecutorsByBuildId(e.getId()))
+                        .color(acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
+                        .build()
+        ).collect(Collectors.toList());
     }
 }
