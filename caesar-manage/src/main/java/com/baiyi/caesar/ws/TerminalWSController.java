@@ -32,19 +32,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @ServerEndpoint(value = "/ws/xterm")
 @Component
-public class TerminalWSController implements InitializingBean {
+public final class TerminalWSController implements InitializingBean {
 
     private static final AtomicInteger onlineCount = new AtomicInteger(0);
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
     private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
-
     // 当前会话 uuid
     private final String sessionId = UUID.randomUUID().toString();
 
     private Session session = null;
 
     private static ServerAddr serverAddr = ServerAddr.builder().build();
-
     // 超时时间1H
     public static final Long WEBSOCKET_TIMEOUT = 60 * 60 * 1000L;
 
@@ -54,7 +52,6 @@ public class TerminalWSController implements InitializingBean {
 
     private static AuthBaseFacade authBaseFacade;
 
-    // 注入的时候，给类的 service 注入
     @Autowired
     public void setTerminalFacade(TerminalBaseFacade terminalFacade) {
         TerminalWSController.terminalFacade = terminalFacade;

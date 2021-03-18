@@ -45,10 +45,12 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
 
     public final static String IDLE = "idle";
 
+    public static EngineVO.Children chart;
+
     @Override
     @Cacheable(cacheNames = CachingConfig.CacheRepositories.ENGINE_CHART)
     public EngineVO.Children buildEngineChart() {
-        EngineVO.Children root = EngineVO.Children.builder()
+        EngineVO.Children chart = EngineVO.Children.builder()
                 .name(ENGINES)
                 .build();
         csJenkinsInstanceService.queryAll().forEach(e -> {
@@ -59,10 +61,11 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                 assembleComputer(e, instance);
                 instance.setValue(instance.getChildren().size());
             }
-            root.addChildren(instance);
+            chart.addChildren(instance);
         });
-        root.setValue(root.getChildren().size());
-        return root;
+        chart.setValue(chart.getChildren().size());
+        JenkinsEngineFacadeImpl.chart = chart;
+        return chart;
     }
 
     /**
