@@ -10,8 +10,6 @@ import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
-import com.baiyi.caesar.domain.vo.tree.EngineVO;
-import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
@@ -43,9 +41,6 @@ public class JobTest extends BaseUnit {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
-
-    @Resource
-    private JenkinsEngineFacade jenkinsEngineFacade;
 
     @Resource
     private CsCiJobService csCiJobService;
@@ -128,11 +123,6 @@ public class JobTest extends BaseUnit {
         System.err.println(RegexUtil.checkApk(fileName));
     }
 
-    @Test
-    void testBuildEngineChart() {
-        EngineVO.Children chart = jenkinsEngineFacade.buildEngineChart();
-        System.err.println(JSON.toJSONString(chart));
-    }
 
 
     @Test

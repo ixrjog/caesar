@@ -37,7 +37,9 @@ public class CiJobVO {
 
         @Override
         public int getBusinessId() {
-            return scmMember.getScmId();
+            if (scmMember != null)
+                return scmMember.getScmId();
+            return 0;
         }
 
         @Override

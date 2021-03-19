@@ -4,6 +4,7 @@ import com.baiyi.caesar.common.base.BuildOutputType;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.helper.BuildConsoleStreamListener;
 import com.offbytwo.jenkins.helper.JenkinsVersion;
 import com.offbytwo.jenkins.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,24 @@ public class JenkinsServerHandler {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void streamConsoleOutput( BuildWithDetails buildWithDetails)
+            throws IOException, InterruptedException {
+        buildWithDetails.streamConsoleOutput(new BuildConsoleStreamListener() {
+            int seq = 0;
+            @Override
+            public void onData(String newLogChunk) {
+                seq++;
+                System.out.println("seq = " + seq + ":" + newLogChunk);
+            }
+
+            @Override
+            public void finished() {
+                System.out.println("finished");
+                buildWithDetails.getClient().close();
+            }
+        }, 1, 600);
     }
 
     public String getBuildOutputByType(JobWithDetails job, int buildNumber, int outputType) throws IOException {

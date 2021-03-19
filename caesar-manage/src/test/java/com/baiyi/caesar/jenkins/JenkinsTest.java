@@ -32,7 +32,7 @@ public class JenkinsTest extends BaseUnit {
     void versionTest() {
         JenkinsVersion jenkinsVersion = jenkinsServerHandler.getVersion("master-2");
 
-        System.err.println( StringUtils.isBlank(jenkinsVersion.getLiteralVersion()));
+        System.err.println(StringUtils.isBlank(jenkinsVersion.getLiteralVersion()));
 
         System.err.println(JSON.toJSON(jenkinsVersion));
     }
@@ -121,4 +121,20 @@ public class JenkinsTest extends BaseUnit {
     void queryJenkinsInstanceTplTest() {
     }
 
+
+    @Test
+    void jobLogTest() {
+        JobWithDetails job = jenkinsServerHandler.getJob("master-1", "USERCENTER-BACKEND_usercenter-backend-server-deploy-daily");
+        job.getBuildByNumber(12);
+
+        Build build = job.getLastBuild();
+        try {
+            BuildWithDetails buildWithDetails = build.details();
+
+            jenkinsServerHandler.streamConsoleOutput(buildWithDetails);
+        } catch (IOException ioe) {
+        } catch (InterruptedException ie) {
+
+        }
+    }
 }
