@@ -96,26 +96,25 @@ public class JobBuildDecorator {
     }
 
     private JobBuildContext buildJobBuildContext(List<CsCiJobBuild> jobBuilds) {
-        if (!CollectionUtils.isEmpty(jobBuilds)) {
-            CsCiJobBuild jobBuild = jobBuilds.get(0);
-            CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
-            CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
-            CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
-            JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
-            if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
-                CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-                jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), NOT_EXTEND);
-            }
-            return JobBuildContext.builder()
-                    .csCiJob(csCiJob)
-                    .csOssBucket(ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId()))
-                    .jobEngineMap(acqJobEngineMap(jobBuilds))
-                    .csGitlabProject(csGitlabProject)
-                    .jobTpl(jobTpl)
-                    .build();
-        } else {
-            return JobBuildContext.builder().build();
+        if (CollectionUtils.isEmpty(jobBuilds)) return JobBuildContext.builder().build();
+
+        CsCiJobBuild jobBuild = jobBuilds.get(0);
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(jobBuild.getCiJobId());
+        CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(csCiJob.getScmMemberId());
+        CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
+        JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
+        if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
+            CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
+            jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), NOT_EXTEND);
         }
+        return JobBuildContext.builder()
+                .csCiJob(csCiJob)
+                .csOssBucket(ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId()))
+                .jobEngineMap(acqJobEngineMap(jobBuilds))
+                .csGitlabProject(csGitlabProject)
+                .jobTpl(jobTpl)
+                .build();
+
     }
 
     private Map<Integer, JobEngineVO.JobEngine> acqJobEngineMap(List<CsCiJobBuild> jobBuilds) {
@@ -147,7 +146,6 @@ public class JobBuildDecorator {
         jobBuild.setUser(acqUser(jobBuild));
         // Ago
         jobBuild.setAgo(acqAgo(jobBuild));
-
         if (extend == NOT_EXTEND) return jobBuild;
         // 组装构件
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));

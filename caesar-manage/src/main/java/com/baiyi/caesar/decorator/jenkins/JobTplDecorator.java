@@ -38,19 +38,17 @@ public class JobTplDecorator {
             iJobTpl.setJobTpl(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class));
     }
 
-
     public JobTplVO.JobTpl decorator(JobTplVO.JobTpl jobTpl, Integer extend) {
         if (extend == 0) return jobTpl;
 
         CsJenkinsInstance csJenkinsInstance = jenkinsInstanceService.queryCsJenkinsInstanceById(jobTpl.getJenkinsInstanceId());
-        if (csJenkinsInstance != null) {
+        if (csJenkinsInstance != null)
             jobTpl.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
-        }
 
         // 装饰 标签
         jobTpl.setBusinessType(BusinessType.JENKINS_TPL.getType());
         tagDecorator.decorator(jobTpl);
-        // jobTpl.setTags(tagDecorator.decorator(BusinessType.JENKINS_TPL.getType(), jobTpl.getId()));
+
         return jobTpl;
     }
 

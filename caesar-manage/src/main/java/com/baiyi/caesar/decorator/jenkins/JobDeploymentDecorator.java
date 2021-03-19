@@ -90,25 +90,22 @@ public class JobDeploymentDecorator {
     }
 
     private JobBuildContext buildJobBuildContext(List<CsCdJobBuild> jobBuilds) {
-        if (!CollectionUtils.isEmpty(jobBuilds)) {
-            CsCdJobBuild jobBuild = jobBuilds.get(0);
-            CsCdJob csCdJob = csCdJobService.queryCsCdJobById(jobBuild.getCdJobId());
-            CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
+        if (CollectionUtils.isEmpty(jobBuilds)) return JobBuildContext.builder().build();
+        CsCdJobBuild jobBuild = jobBuilds.get(0);
+        CsCdJob csCdJob = csCdJobService.queryCsCdJobById(jobBuild.getCdJobId());
+        CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
 
-            JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
-            if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
-                CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
-                jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), 0);
-            }
-            return JobBuildContext.builder()
-                    .csCiJob(csCiJob)
-                    .csOssBucket(ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId()))
-                    .jobTpl(jobTpl)
-                    .jobEngineMap(acqJobEngineMap(jobBuilds))
-                    .build();
-        } else {
-            return JobBuildContext.builder().build();
+        JobTplVO.JobTpl jobTpl = new JobTplVO.JobTpl();
+        if (!IDUtil.isEmpty(csCiJob.getJobTplId())) {
+            CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(csCiJob.getJobTplId());
+            jobTpl = jobTplDecorator.decorator(BeanCopierUtil.copyProperties(csJobTpl, JobTplVO.JobTpl.class), 0);
         }
+        return JobBuildContext.builder()
+                .csCiJob(csCiJob)
+                .csOssBucket(ossBucketService.queryCsOssBucketById(csCiJob.getOssBucketId()))
+                .jobTpl(jobTpl)
+                .jobEngineMap(acqJobEngineMap(jobBuilds))
+                .build();
     }
 
     private Map<Integer, JobEngineVO.JobEngine> acqJobEngineMap(List<CsCdJobBuild> jobBuilds) {

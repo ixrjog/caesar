@@ -20,7 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @ServerEndpoint(value = "/ws/engine")
 @Component
-public class EngineController {
+public final class EngineController {
+
+    /**
+     * 引擎视图
+     */
 
     private static final AtomicInteger onlineCount = new AtomicInteger(0);
 

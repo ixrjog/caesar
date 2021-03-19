@@ -28,7 +28,8 @@ public class UserPermissionDecorator {
                 .businessType(iUserPermission.getBusinessType())
                 .businessId(iUserPermission.getBusinessId())
                 .build();
-        OcUserPermission ocUserPermission = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
+        OcUserPermission ocUserPermission
+                = ocUserPermissionService.queryOcUserPermissionByUniqueKey(BeanCopierUtil.copyProperties(userPermissionBO, OcUserPermission.class));
         if (ocUserPermission != null)
             iUserPermission.setUserPermission(BeanCopierUtil.copyProperties(ocUserPermission, UserPermissionVO.UserPermission.class));
     }

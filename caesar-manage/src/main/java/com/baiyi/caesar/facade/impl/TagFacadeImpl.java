@@ -111,9 +111,10 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     private BusinessWrapper<Boolean> updateBusinessTagById(BusinessTagVO.BusinessTag businessTag) {
-        TagParam.BusinessQuery businessQuery = new TagParam.BusinessQuery();
-        businessQuery.setBusinessType(businessTag.getBusinessType());
-        businessQuery.setBusinessId(businessTag.getBusinessId());
+        TagParam.BusinessQuery businessQuery =  TagParam.BusinessQuery.builder()
+                .businessType(businessTag.getBusinessType())
+                .businessId(businessTag.getBusinessId())
+                .build();
         // 业务对象所有的标签
         List<OcTag> tagList = ocTagService.queryOcTagByParam(businessQuery);
         Map<Integer, OcTag> tagMap = getTagMap(tagList);

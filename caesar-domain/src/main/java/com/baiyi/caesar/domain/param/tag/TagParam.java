@@ -3,6 +3,7 @@ package com.baiyi.caesar.domain.param.tag;
 import com.baiyi.caesar.domain.param.PageParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +29,7 @@ public class TagParam {
     }
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
     public static class BusinessQuery {
 

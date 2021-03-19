@@ -80,9 +80,7 @@ public class WorkorderTicketDecorator {
             return false;
         if (ticket.getTicketPhase().equals(TicketPhase.FINALIZED.getPhase()))
             return false;
-        if (ticket.getTicketPhase().equals(TicketPhase.CONFIGURATION.getPhase()))
-            return false;
-        return true;
+        return !ticket.getTicketPhase().equals(TicketPhase.CONFIGURATION.getPhase());
     }
 
     /**

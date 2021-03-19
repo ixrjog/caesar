@@ -21,9 +21,10 @@ public class TagDecorator {
 
     public List<TagVO.Tag> acqTags(Integer businessType, Integer businessId) {
         // 装饰 标签
-        TagParam.BusinessQuery businessQuery = new TagParam.BusinessQuery();
-        businessQuery.setBusinessType(businessType);
-        businessQuery.setBusinessId(businessId);
+        TagParam.BusinessQuery businessQuery = TagParam.BusinessQuery.builder()
+                .businessType(businessType)
+                .businessId(businessId)
+                .build();
         return tagFacade.queryBusinessTag(businessQuery);
     }
 

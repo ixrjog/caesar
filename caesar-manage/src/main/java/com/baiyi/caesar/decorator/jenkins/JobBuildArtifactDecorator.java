@@ -25,15 +25,18 @@ public class JobBuildArtifactDecorator {
         if (CollectionUtils.isEmpty(artifacts))
             return Lists.newArrayList();
 
-        return artifacts.stream().map(e -> {
-            BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtil.copyProperties(e, BuildArtifactVO.BuildArtifact.class);
-            if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
-                buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));
-            if (csOssBucket != null) {
-                buildArtifact.setOssUrl(Joiner.on("/").join(buildOssBucketUrl(csOssBucket), buildArtifact.getStoragePath()));
-            }
-            return buildArtifact;
-        }).collect(Collectors.toList());
+        return artifacts.stream().map(e ->
+                convert(e, csOssBucket)
+        ).collect(Collectors.toList());
+    }
+
+    private BuildArtifactVO.BuildArtifact convert(CsJobBuildArtifact csJobBuildArtifact, CsOssBucket csOssBucket) {
+        BuildArtifactVO.BuildArtifact buildArtifact = BeanCopierUtil.copyProperties(csJobBuildArtifact, BuildArtifactVO.BuildArtifact.class);
+        if (buildArtifact.getArtifactSize() != null && buildArtifact.getArtifactSize() >= 0)
+            buildArtifact.setArtifactFileSize(FileSizeUtils.formetFileSize(buildArtifact.getArtifactSize()));
+        if (csOssBucket != null)
+            buildArtifact.setOssUrl(Joiner.on("/").join(buildOssBucketUrl(csOssBucket), buildArtifact.getStoragePath()));
+        return buildArtifact;
     }
 
     private String buildOssBucketUrl(CsOssBucket csOssBucket) {

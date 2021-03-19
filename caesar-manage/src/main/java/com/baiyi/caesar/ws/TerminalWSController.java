@@ -153,7 +153,7 @@ public final class TerminalWSController implements InitializingBean {
      * @param message
      * @throws IOException
      */
-    public static void BroadCastInfo(String message) throws IOException {
+    public static void broadCastInfo(String message) throws IOException {
         for (Session session : sessionSet) {
             if (session.isOpen()) {
                 sendMessage(session, message);

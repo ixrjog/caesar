@@ -44,7 +44,6 @@ public class UserDecorator {
     public UserVO.User decorator(UserVO.User user, Integer extend) {
         user.setPassword("");
         if (extend == null || extend == 0) return user;
-
         userGroupDecorator.decorator(user);  // 装饰 用户组
         userPermissionServerGroupDecorator.decorator(user); // 装饰 服务器组
         userApiTokenDecorator.decorator(user);  // 装饰 ApiToken
