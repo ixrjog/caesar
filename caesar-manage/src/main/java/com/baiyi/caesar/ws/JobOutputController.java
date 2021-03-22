@@ -2,6 +2,7 @@ package com.baiyi.caesar.ws;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baiyi.caesar.common.base.XTermRequestStatus;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import lombok.extern.slf4j.Slf4j;
@@ -65,10 +66,13 @@ public final class JobOutputController {
     public void onMessage(String message, Session session) {
         if (!session.isOpen() || StringUtils.isEmpty(message)) return;
         JSONObject jsonObject = JSON.parseObject(message);
-        Integer buildId = jsonObject.getInteger("buildId");
-        Integer buildType = jsonObject.getInteger("buildType");
-        if (IDUtil.isEmpty(buildId)) return;
-        jobFacade.buildOutput(buildType, buildId, session);
+        String status = jsonObject.getString("status");
+        if (XTermRequestStatus.INITIAL.getCode().equals(status)) {
+            Integer buildId = jsonObject.getInteger("buildId");
+            Integer buildType = jsonObject.getInteger("buildType");
+            if (IDUtil.isEmpty(buildId)) return;
+            jobFacade.buildOutput(buildType, buildId, session);
+        }
     }
 
 
