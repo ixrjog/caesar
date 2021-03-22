@@ -7,7 +7,7 @@ Welcome to the caesar wiki!
 <img src="https://img.shields.io/badge/mysql-8-brightgreen.svg"></img> 
 
 <br>
-Caesar企业级全端持续集成平台(开发中未完成)
+Caesar企业级全端持续集成平台
 
 
 开源协议：<a style="color:#2b669a" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html" target="_blank">GNU General Public License v2</a>
@@ -15,12 +15,15 @@ Caesar企业级全端持续集成平台(开发中未完成)
 ### 帮助文档
 
 <a style="color:#2b669a" href="https://www.kancloud.cn/ixrjog/caesar/1871720" target="_blank">传送门 https://www.kancloud.cn/ixrjog/caesar/1871720</a>
++ 前端代码
+  + https://github.com/ixrjog/caesar-web
 
 + 主要功能
   + Jenkins多实例负载均衡
   + Gitlab多实例管理
   + 任务模版管理
   + 主动式堡垒机，快速登录Jenkins-Node排查故障
+  + 任务日志实时订阅查看
   + 任务钉钉通知
 
 + API接口文档
