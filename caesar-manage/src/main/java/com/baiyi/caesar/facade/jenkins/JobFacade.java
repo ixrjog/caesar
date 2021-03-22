@@ -9,6 +9,7 @@ import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupHostPatternVO;
 
+import javax.websocket.Session;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public interface JobFacade {
     List<CiJobBuildVO.JobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
 
     BusinessWrapper<String> viewJobBuildOutput(JobBuildParam.ViewJobBuildOutputQuery query);
+
+    void buildOutput(int buildType, int buildId, Session session);
 
     CiJobBuildVO.JobBuild queryCiJobBuildByBuildId(int buildId);
 

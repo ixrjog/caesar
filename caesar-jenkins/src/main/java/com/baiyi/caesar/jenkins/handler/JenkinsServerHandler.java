@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.websocket.Session;
 import java.io.IOException;
 import java.net.HttpRetryException;
 import java.util.Map;
@@ -57,20 +58,37 @@ public class JenkinsServerHandler {
         }
     }
 
-    public void streamConsoleOutput( BuildWithDetails buildWithDetails)
+    /**
+     * 输出日志到会话
+     * @param buildWithDetails
+     * @param session
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void streamConsoleOutput(BuildWithDetails buildWithDetails, Session session)
             throws IOException, InterruptedException {
         buildWithDetails.streamConsoleOutput(new BuildConsoleStreamListener() {
-            int seq = 0;
             @Override
             public void onData(String newLogChunk) {
-                seq++;
-                System.out.println("seq = " + seq + ":" + newLogChunk);
+                try {
+                    if (session.isOpen()) {
+                        session.getBasicRemote().sendText(newLogChunk);
+                    } else {
+                        finished();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void finished() {
-                System.out.println("finished");
-                buildWithDetails.getClient().close();
+                log.info("任务日志会话关闭！");
+                try {
+                    session.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }, 1, 600);
     }

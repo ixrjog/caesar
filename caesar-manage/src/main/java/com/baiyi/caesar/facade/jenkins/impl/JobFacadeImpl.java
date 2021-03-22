@@ -35,11 +35,15 @@ import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
+import com.offbytwo.jenkins.model.Build;
+import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +56,7 @@ import static com.baiyi.caesar.common.base.Global.*;
  * @Date 2020/8/6 3:51 下午
  * @Version 1.0
  */
+@Slf4j
 @Component
 public class JobFacadeImpl implements JobFacade {
 
@@ -214,6 +219,35 @@ public class JobFacadeImpl implements JobFacade {
             return viewJobBuildOutput(csCdJobBuild.getJobEngineId(), csCdJobBuild.getJobName(), csCdJobBuild.getEngineBuildNumber());
         }
     }
+
+    @Override
+    public void buildOutput(int buildType, int buildId, Session session) {
+        if (buildType == BuildType.BUILD.getType()) {
+            CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(buildId);
+            jobBuildOutputTask(csCiJobBuild.getJobEngineId(), csCiJobBuild.getJobName(), csCiJobBuild.getEngineBuildNumber(), session);
+        } else {
+            CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(buildId);
+            jobBuildOutputTask(csCdJobBuild.getJobEngineId(), csCdJobBuild.getJobName(), csCdJobBuild.getEngineBuildNumber(), session);
+        }
+    }
+
+    private void jobBuildOutputTask(int jobEngineId, String jobName, int buildNumber, Session session) {
+        CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
+        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+        JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), jobName);
+        Build build = job.getBuildByNumber(buildNumber);
+        try {
+            BuildWithDetails buildWithDetails = build.details();
+            jenkinsServerHandler.streamConsoleOutput(buildWithDetails, session);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (InterruptedException ie) {
+            log.error("error {}",ie.getMessage());
+            ie.printStackTrace();
+        }
+
+    }
+
 
     private BusinessWrapper<String> viewJobBuildOutput(int jobEngineId, String jobName, int buildNumber) {
         CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);

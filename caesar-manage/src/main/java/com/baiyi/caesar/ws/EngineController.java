@@ -1,6 +1,6 @@
 package com.baiyi.caesar.ws;
 
-import com.baiyi.caesar.facade.jenkins.task.SentEngineChartTask;
+import com.baiyi.caesar.facade.jenkins.task.JobOutputTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public final class EngineController {
     private Session session = null;
 
     // 当前会话 uuid
-    private final String sessionId = UUID.randomUUID().toString();
+     private final String sessionId = UUID.randomUUID().toString();
 
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
     private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
@@ -42,7 +42,7 @@ public final class EngineController {
         sessionSet.add(session);
         log.info("连接成功！");
         // 线程启动
-        Runnable run = new SentEngineChartTask(sessionId, session);
+        Runnable run = new JobOutputTask(sessionId, session);
         Thread thread = new Thread(run);
         thread.start();
     }

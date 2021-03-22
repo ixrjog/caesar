@@ -38,7 +38,8 @@ public class AuthFilter extends OncePerRequestFilter {
             "/v2/api-docs",
             "/webjars",
             "/ws/xterm",
-            "/ws/engine"
+            "/ws/engine",
+            "/ws/job/output"
     };
 
     @Override
@@ -78,9 +79,9 @@ public class AuthFilter extends OncePerRequestFilter {
             // GitlabSystemHooks鉴权
             try {
                 String gitlabToken = request.getHeader(GITLAB_TOKEN);
-                if(!StringUtils.isEmpty(gitlabToken))
+                if (!StringUtils.isEmpty(gitlabToken))
                     GitlabTokenUtil.setToken(gitlabToken);
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
             }
 
             // 鉴权

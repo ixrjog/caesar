@@ -128,13 +128,13 @@ public class JenkinsTest extends BaseUnit {
         job.getBuildByNumber(12);
 
         Build build = job.getLastBuild();
-        try {
-            BuildWithDetails buildWithDetails = build.details();
-
-            jenkinsServerHandler.streamConsoleOutput(buildWithDetails);
-        } catch (IOException ioe) {
-        } catch (InterruptedException ie) {
-
-        }
+//        try {
+//            BuildWithDetails buildWithDetails = build.details();
+//
+//             jenkinsServerHandler.streamConsoleOutput(buildWithDetails);
+//        } catch (IOException ioe) {
+//        } catch (InterruptedException ie) {
+//
+//        }
     }
 }
