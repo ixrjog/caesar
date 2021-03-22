@@ -40,12 +40,6 @@ public final class JobOutputController {
         JobOutputController.jobFacade = jobFacade;
     }
 
-//    @OnOpen
-//    public void onOpen(Session session) {
-//        // this.session = session;
-//        log.info("连接成功！");
-//    }
-
     /**
      * 收到客户端消息后调用的方法
      * Session session
