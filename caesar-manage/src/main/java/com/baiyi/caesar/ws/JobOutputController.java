@@ -12,11 +12,9 @@ import org.springframework.util.StringUtils;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 /**
  * @Author baiyi
@@ -31,16 +29,9 @@ public final class JobOutputController {
     /**
      * 引擎视图
      */
+    private final String sessionId = UUID.randomUUID().toString();
 
-    private static final AtomicInteger onlineCount = new AtomicInteger(0);
-
-    private Session session = null;
-
-    // 当前会话 uuid
-    //private final String sessionId = UUID.randomUUID().toString();
-
-    // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
-    private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
+    // private Session session = null;
 
     private static JobFacade jobFacade;
 
@@ -49,12 +40,11 @@ public final class JobOutputController {
         JobOutputController.jobFacade = jobFacade;
     }
 
-    @OnOpen
-    public void onOpen(Session session) {
-        this.session = session;
-        sessionSet.add(session);
-        log.info("连接成功！");
-    }
+//    @OnOpen
+//    public void onOpen(Session session) {
+//        // this.session = session;
+//        log.info("连接成功！");
+//    }
 
     /**
      * 收到客户端消息后调用的方法
@@ -71,6 +61,7 @@ public final class JobOutputController {
             Integer buildId = jsonObject.getInteger("buildId");
             Integer buildType = jsonObject.getInteger("buildType");
             if (IDUtil.isEmpty(buildId)) return;
+            log.info("任务日志订阅启动: sessionId ={} , buildType = {} , buildId = {}", sessionId, buildType, buildId);
             jobFacade.buildOutput(buildType, buildId, session);
         }
     }
@@ -81,9 +72,7 @@ public final class JobOutputController {
      */
     @OnClose
     public void onClose() {
-        sessionSet.remove(session);
-        int cnt = onlineCount.decrementAndGet();
-        log.info("有连接关闭，当前连接数为：{}", cnt);
+        log.info("任务日志订阅关闭: sessionId ={} ", sessionId);
     }
 
 }
