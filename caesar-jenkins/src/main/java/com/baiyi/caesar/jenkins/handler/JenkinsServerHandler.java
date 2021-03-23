@@ -26,6 +26,9 @@ import java.util.Objects;
 @Component
 public class JenkinsServerHandler {
 
+    public static final int POOLING_INTERVAL = 1;
+    public static final int POOLING_TIMEOUT = 600;
+
     public static final boolean CRUMB_FLAG = true;
 
     public JenkinsVersion getVersion(String serverName) {
@@ -58,8 +61,10 @@ public class JenkinsServerHandler {
         }
     }
 
+
     /**
      * 输出日志到会话
+     *
      * @param buildWithDetails
      * @param session
      * @throws IOException
@@ -68,6 +73,7 @@ public class JenkinsServerHandler {
     public void streamConsoleOutput(BuildWithDetails buildWithDetails, Session session)
             throws IOException, InterruptedException {
         buildWithDetails.streamConsoleOutput(new BuildConsoleStreamListener() {
+
             @Override
             public void onData(String newLogChunk) {
                 try {
@@ -90,8 +96,9 @@ public class JenkinsServerHandler {
                     e.printStackTrace();
                 }
             }
-        }, 1, 600);
+        }, POOLING_INTERVAL, POOLING_TIMEOUT);
     }
+
 
     public String getBuildOutputByType(JobWithDetails job, int buildNumber, int outputType) throws IOException {
         Build build = job.getBuildByNumber(buildNumber);
@@ -162,4 +169,5 @@ public class JenkinsServerHandler {
         assert jenkinsServer != null;
         jenkinsServer.deleteJob(jobName, CRUMB_FLAG);
     }
+
 }

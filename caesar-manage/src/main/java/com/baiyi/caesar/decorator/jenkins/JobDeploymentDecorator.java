@@ -133,7 +133,8 @@ public class JobDeploymentDecorator {
 
         // 组装工作引擎
         jobBuild.setJobEngine(acqJobEngine(jobBuild, context));
-        jobBuild.setJobBuildUrl(acqJobBuildUrl(jobBuild, context));
+        
+        jobBuild.setJobBuildUrl(buildJobDetailUrl(jobBuild));
 
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
         // BuildTimes
@@ -159,14 +160,21 @@ public class JobDeploymentDecorator {
 
     /**
      * 装饰工作引擎
+     * e.g:
+     * https://cc2.xinc818.com/blue/organizations/jenkins/CAESAR_caesar-server-build-prod/detail/CAESAR_caesar-server-build-prod/47/pipeline/
      *
      * @param jobBuild
-     * @param context
      */
-    private String acqJobBuildUrl(CdJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        JobEngineVO.JobEngine jobEngine = context.getJobEngineMap().get(jobBuild.getJobEngineId());
-        return Joiner.on("/").join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
+    private String buildJobDetailUrl(CdJobBuildVO.JobBuild jobBuild) {
+        return Joiner.on("/").skipNulls().join(jobBuild.getJobEngine().getJenkinsInstance().getUrl(),
+                "blue/organizations/jenkins",
+                jobBuild.getJobName(),
+                "detail",
+                jobBuild.getJobName(),
+                jobBuild.getEngineBuildNumber(),
+                "pipeline");
     }
+
 
     private List<BuildArtifactVO.BuildArtifact> acqArtifacts(CdJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());

@@ -152,7 +152,7 @@ public class JobBuildDecorator {
         jobBuild.setNoArtifact(CollectionUtils.isEmpty(jobBuild.getArtifacts()));
         // 组装工作引擎
         jobBuild.setJobEngine(acqJobEngine(jobBuild, context));
-        jobBuild.setJobBuildUrl(acqJobBuildUrl(jobBuild, context));
+        jobBuild.setJobBuildUrl(buildJobDetailUrl(jobBuild));
         // 组装变更记录
         jobBuild.setChanges(getChanges(jobBuild, context));
         // 组装构建时间
@@ -228,13 +228,18 @@ public class JobBuildDecorator {
 
     /**
      * 装饰工作引擎
-     *
+     * e.g:
+     *  https://cc2.xinc818.com/blue/organizations/jenkins/CAESAR_caesar-server-build-prod/detail/CAESAR_caesar-server-build-prod/47/pipeline/
      * @param jobBuild
-     * @param context
      */
-    private String acqJobBuildUrl(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        JobEngineVO.JobEngine jobEngine = context.getJobEngineMap().get(jobBuild.getJobEngineId());
-        return Joiner.on("/").skipNulls().join(jobEngine.getJobUrl(), jobBuild.getEngineBuildNumber());
+    private String buildJobDetailUrl(CiJobBuildVO.JobBuild jobBuild) {
+        return Joiner.on("/").skipNulls().join(jobBuild.getJobEngine().getJenkinsInstance().getUrl(),
+                "blue/organizations/jenkins",
+                jobBuild.getJobName(),
+                "detail",
+                jobBuild.getJobName(),
+                jobBuild.getEngineBuildNumber(),
+                "pipeline");
     }
 
     private String acqAgo(CiJobBuildVO.JobBuild jobBuild) {
