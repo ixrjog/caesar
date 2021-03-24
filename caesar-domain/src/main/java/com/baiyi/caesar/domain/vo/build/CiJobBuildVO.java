@@ -106,7 +106,9 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BaseCommit {
+    public static class BaseCommit implements Serializable {
+        private static final long serialVersionUID = 3224781859151394365L;
+
         private String commit;
         private String commitUrl;
     }
@@ -115,7 +117,9 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class BuildChange extends BaseCommit {
+    public static class BuildChange extends BaseCommit implements Serializable {
+
+        private static final long serialVersionUID = -1754370102467447652L;
         @ApiModelProperty(value = "7位commitId")
         private String shortCommitId;
 
