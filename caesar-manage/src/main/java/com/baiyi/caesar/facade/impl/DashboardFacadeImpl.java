@@ -74,12 +74,14 @@ public class DashboardFacadeImpl implements DashboardFacade {
 
         final int latestTasksLength = 9;
 
-        return DashboardVO.LatestTasks.builder()
+        DashboardVO.LatestTasks vo = DashboardVO.LatestTasks.builder()
                 .latestBuildTasks(jobBuildsDecorator.decorator(csCiJobBuildService.queryLatestCsCiJobBuild(latestTasksLength), NOT_EXTEND))
                 .buildTaskTotal(csCiJobBuildService.countAllCsCiJobBuild())
                 .latestDeploymentTasks(jobDeploymentDecorator.decorator(csCdJobBuildService.queryLatestCsCdJobBuild(latestTasksLength), NOT_EXTEND))
                 .deploymentTaskTotal(csCdJobBuildService.countAllCsCdJobBuild())
                 .build();
+
+        return vo;
     }
 
     @Override

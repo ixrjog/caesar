@@ -145,6 +145,8 @@ public class JobBuildDecorator extends BaseDecorator {
 
         decoratorJobBuild(jobBuild,extend);
 
+        if (NOT_EXTEND == extend) return jobBuild;
+
         // 组装构件
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
         jobBuild.setNoArtifact(CollectionUtils.isEmpty(jobBuild.getArtifacts()));
