@@ -1,11 +1,13 @@
 package com.baiyi.caesar.decorator.user;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserGroup;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.ldap.repo.PersonRepo;
 import com.baiyi.caesar.service.user.OcUserGroupService;
+import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,9 @@ import java.util.Map;
  */
 @Component("UserDecorator")
 public class UserDecorator {
+
+    @Resource
+    private OcUserService ocUserService;
 
     @Resource
     private OcUserGroupService ocUserGroupService;
@@ -39,6 +44,12 @@ public class UserDecorator {
 
     @Resource
     private UserPermissionServerGroupDecorator userPermissionServerGroupDecorator;
+
+    public void decorator(UserVO.IUser iUser) {
+        OcUser ocUser =   ocUserService.queryOcUserByUsername(iUser.getUsername());
+        if(ocUser != null)
+            iUser.setUser(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
+    }
 
     // from mysql
     public UserVO.User decorator(UserVO.User user, Integer extend) {

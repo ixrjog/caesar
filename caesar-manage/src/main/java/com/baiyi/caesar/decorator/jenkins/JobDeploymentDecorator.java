@@ -3,26 +3,27 @@ package com.baiyi.caesar.decorator.jenkins;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
-import com.baiyi.caesar.common.util.TimeAgoUtil;
 import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.decorator.user.UserDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.domain.vo.build.*;
+import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
+import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
+import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
+import com.baiyi.caesar.domain.vo.build.DeploymentServerVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
-import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.jenkins.*;
 import com.baiyi.caesar.service.server.OcServerService;
-import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class JobDeploymentDecorator {
+public class JobDeploymentDecorator extends BaseDecorator {
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -60,9 +61,6 @@ public class JobDeploymentDecorator {
     private CsOssBucketService ossBucketService;
 
     @Resource
-    private OcUserService ocUserService;
-
-    @Resource
     private CsJobBuildExecutorService csJobBuildExecutorService;
 
     @Resource
@@ -76,6 +74,9 @@ public class JobDeploymentDecorator {
 
     @Resource
     private JobTplDecorator jobTplDecorator;
+
+    @Resource
+    private UserDecorator userDecorator;
 
     public CdJobBuildVO.JobBuild decorator(CsCdJobBuild jobBuild, Integer extend) {
         JobBuildContext context = buildJobBuildContext(Lists.newArrayList(jobBuild));
@@ -124,21 +125,19 @@ public class JobDeploymentDecorator {
 
     private CdJobBuildVO.JobBuild decorator(CsCdJobBuild csCdJobBuild, JobBuildContext context, Integer extend) {
         CdJobBuildVO.JobBuild jobBuild = BeanCopierUtil.copyProperties(csCdJobBuild, CdJobBuildVO.JobBuild.class);
-        // Ago
-        jobBuild.setAgo(acqAgo(jobBuild));
-        // User
-        jobBuild.setUser(acqUser(jobBuild));
+
+        decoratorJobBuild(jobBuild, extend);
+
 
         if (extend == 0) return jobBuild;
 
         // 组装工作引擎
         jobBuild.setJobEngine(acqJobEngine(jobBuild, context));
-        
+
         jobBuild.setJobBuildUrl(buildJobDetailUrl(jobBuild));
 
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
-        // BuildTimes
-        jobBuild.setBuildTime(acqBuildTimes(jobBuild));
+
         // Executors
         jobBuild.setExecutors(getExecutorsByBuildId(jobBuild.getId()));
         // Servers
@@ -197,21 +196,6 @@ public class JobDeploymentDecorator {
             return TimeUtil.acqBuildTime(buildTime);
         }
         return "";
-    }
-
-    private String acqAgo(CdJobBuildVO.JobBuild jobBuild) {
-        return TimeAgoUtil.format(jobBuild.getStartTime());
-    }
-
-    private UserVO.User acqUser(CdJobBuildVO.JobBuild jobBuild) {
-        if (!StringUtils.isEmpty(jobBuild.getUsername())) {
-            OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
-            if (ocUser != null) {
-                ocUser.setPassword("");
-                return BeanCopierUtil.copyProperties(ocUser, UserVO.User.class);
-            }
-        }
-        return new UserVO.User();
     }
 
     public List<BuildExecutorVO.BuildExecutor> getExecutorsByBuildId(int buildId) {

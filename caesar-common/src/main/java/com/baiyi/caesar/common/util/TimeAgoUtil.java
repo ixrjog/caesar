@@ -1,5 +1,7 @@
 package com.baiyi.caesar.common.util;
 
+import com.baiyi.caesar.domain.vo.base.AgoVO;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,6 +37,11 @@ public class TimeAgoUtil {
         }
 
     }
+
+    public static void decorator(AgoVO.IAgo iAgo){
+        iAgo.setAgo(format(iAgo.getAgoTime()));
+    }
+
 
     public static String format(Date date) {
         long delta = new Date().getTime() - date.getTime();

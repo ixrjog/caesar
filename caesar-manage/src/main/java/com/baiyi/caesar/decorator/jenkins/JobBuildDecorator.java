@@ -1,9 +1,14 @@
 package com.baiyi.caesar.decorator.jenkins;
 
 import com.baiyi.caesar.common.base.BuildType;
-import com.baiyi.caesar.common.util.*;
+import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.GitlabUtil;
+import com.baiyi.caesar.common.util.IDUtil;
+import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
+import com.baiyi.caesar.decorator.user.UserDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
@@ -11,19 +16,16 @@ import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
-import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.*;
 import com.baiyi.caesar.service.server.OcServerService;
-import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -31,15 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.baiyi.caesar.common.base.Global.NOT_EXTEND;
-
 /**
  * @Author baiyi
  * @Date 2021/1/14 10:21 上午
  * @Version 1.0
  */
 @Component
-public class JobBuildDecorator {
+public class JobBuildDecorator extends BaseDecorator {
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -69,9 +69,6 @@ public class JobBuildDecorator {
     private OcServerService ocServerService;
 
     @Resource
-    private OcUserService ocUserService;
-
-    @Resource
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Resource
@@ -82,6 +79,9 @@ public class JobBuildDecorator {
 
     @Resource
     private JobTplDecorator jobTplDecorator;
+
+    @Resource
+    private UserDecorator userDecorator;
 
     public List<CiJobBuildVO.JobBuild> decorator(List<CsCiJobBuild> jobBuilds, Integer extend) {
         JobBuildContext context = buildJobBuildContext(jobBuilds);
@@ -142,11 +142,9 @@ public class JobBuildDecorator {
 
     public CiJobBuildVO.JobBuild decorator(CsCiJobBuild csCiJobBuild, JobBuildContext context, Integer extend) {
         CiJobBuildVO.JobBuild jobBuild = BeanCopierUtil.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class);
-        // 操作用户
-        jobBuild.setUser(acqUser(jobBuild));
-        // Ago
-        jobBuild.setAgo(acqAgo(jobBuild));
-        if (extend == NOT_EXTEND) return jobBuild;
+
+        decoratorJobBuild(jobBuild,extend);
+
         // 组装构件
         jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
         jobBuild.setNoArtifact(CollectionUtils.isEmpty(jobBuild.getArtifacts()));
@@ -155,8 +153,7 @@ public class JobBuildDecorator {
         jobBuild.setJobBuildUrl(buildJobDetailUrl(jobBuild));
         // 组装变更记录
         jobBuild.setChanges(getChanges(jobBuild, context));
-        // 组装构建时间
-        jobBuild.setBuildTime(acqBuildTimes(jobBuild));
+
         jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
         // 组装Commit详情
         jobBuild.setCommitDetails(acqCommitDetails(jobBuild, context));
@@ -241,21 +238,5 @@ public class JobBuildDecorator {
                 jobBuild.getEngineBuildNumber(),
                 "pipeline");
     }
-
-    private String acqAgo(CiJobBuildVO.JobBuild jobBuild) {
-        return TimeAgoUtil.format(jobBuild.getStartTime());
-    }
-
-    private UserVO.User acqUser(CiJobBuildVO.JobBuild jobBuild) {
-        if (!StringUtils.isEmpty(jobBuild.getUsername())) {
-            OcUser ocUser = ocUserService.queryOcUserByUsername(jobBuild.getUsername());
-            if (ocUser != null) {
-                ocUser.setPassword("");
-                return BeanCopierUtil.copyProperties(ocUser, UserVO.User.class);
-            }
-        }
-        return new UserVO.User();
-    }
-
 
 }

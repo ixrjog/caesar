@@ -5,7 +5,6 @@ import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
-import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +17,6 @@ import javax.annotation.Resource;
  */
 @Component
 public class JenkinsInstanceDecorator {
-
-    @Resource
-    private JenkinsServerHandler jenkinsServerHandler;
 
     @Resource
     private ServerDecorator serverDecorator;

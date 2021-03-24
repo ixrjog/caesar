@@ -1,6 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.DataTable;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class BuildViewDecorator extends BaseJobDecorator {
+public class BuildViewDecorator {
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -65,7 +65,7 @@ public class BuildViewDecorator extends BaseJobDecorator {
                         .buildNumber(e.getJobBuildNumber())
                         .building(!e.getFinalized())
                         .executors(jobBuildDecorator.getBuildExecutorByBuildId(e.getId()))
-                        .color(acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
+                        .color(BaseDecorator.acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
                         .build()
         ).collect(Collectors.toList());
     }
@@ -76,7 +76,7 @@ public class BuildViewDecorator extends BaseJobDecorator {
                         .buildNumber(e.getJobBuildNumber())
                         .building(!e.getFinalized())
                         .executors(jobDeploymentDecorator.getExecutorsByBuildId(e.getId()))
-                        .color(acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
+                        .color(BaseDecorator.acqBuildViewColor(e.getFinalized(), e.getBuildStatus()))
                         .build()
         ).collect(Collectors.toList());
     }

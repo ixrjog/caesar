@@ -4,12 +4,7 @@ import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
-import com.baiyi.caesar.decorator.aliyun.OssBucketDecorator;
-import com.baiyi.caesar.decorator.dingtalk.DingtalkDecorator;
-import com.baiyi.caesar.decorator.env.EnvDecorator;
-import com.baiyi.caesar.decorator.jenkins.JenkinsParameterDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
-import com.baiyi.caesar.decorator.sonar.SonarQubeDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
@@ -33,16 +28,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class CiJobDecorator {
-
-    @Resource
-    private EnvDecorator envDecorator;
-
-    @Resource
-    private JobTplDecorator jobTplDecorator;
-
-    @Resource
-    private OssBucketDecorator ossBucketDecorator;
+public class CiJobDecorator extends BaseDecorator {
 
     @Resource
     private TagDecorator tagDecorator;
@@ -58,18 +44,6 @@ public class CiJobDecorator {
 
     @Resource
     private CdJobDecorator cdJobDecorator;
-
-    @Resource
-    private SonarQubeDecorator sonarQubeDecorator;
-
-    @Resource
-    private DingtalkDecorator dingtalkDecorator;
-
-    @Resource
-    private BuildViewDecorator buildViewDecorator;
-
-    @Resource
-    private JenkinsParameterDecorator jenkinsParameterDecorator;
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, CsJobTpl csJobTpl) {
         List<CsJobEngine> csCiJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.BUILD.getType(), ciJob.getId());
@@ -91,13 +65,7 @@ public class CiJobDecorator {
 
     public CiJobVO.CiJob decorator(CiJobVO.CiJob ciJob, Integer extend) {
         if (extend == 0) return ciJob;
-        envDecorator.decorator(ciJob);  // 装饰 环境信息
-        dingtalkDecorator.decorator(ciJob);   // 钉钉
-        jobTplDecorator.decorator(ciJob);  // 任务模版
-        ossBucketDecorator.decorator(ciJob); // Bucket
-        buildViewDecorator.decorator(ciJob);    // buildViews
-        sonarQubeDecorator.decorator(ciJob);    // SonarQube
-        jenkinsParameterDecorator.decorator(ciJob);   // 参数
+        decoratorJob(ciJob);
         cdJobDecorator.decorator(ciJob); // Deployment Job
 
         // SCM

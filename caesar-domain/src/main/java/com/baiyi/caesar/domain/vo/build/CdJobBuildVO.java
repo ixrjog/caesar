@@ -1,6 +1,8 @@
 package com.baiyi.caesar.domain.vo.build;
 
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
+import com.baiyi.caesar.domain.vo.base.AgoVO;
+import com.baiyi.caesar.domain.vo.base.BuildTimeVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -22,15 +24,22 @@ public class CdJobBuildVO {
 
     public interface IBuildView {
         Integer getCdJobId();
+
         void setBuildViews(List<BuildViewVO.JobBuildView> buildViews);
     }
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild implements Serializable {
+    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, Serializable {
 
         private static final long serialVersionUID = 1322824272757498254L;
+
+        @Override
+        public Date getAgoTime() {
+            return this.startTime;
+        }
+
         private JobEngineVO.JobEngine jobEngine;
         @ApiModelProperty(value = "产出物")
         private List<BuildArtifactVO.BuildArtifact> artifacts;

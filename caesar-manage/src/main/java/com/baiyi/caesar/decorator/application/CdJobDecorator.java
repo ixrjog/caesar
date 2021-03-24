@@ -3,18 +3,16 @@ package com.baiyi.caesar.decorator.application;
 import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
-import com.baiyi.caesar.decorator.application.base.BaseJobDecorator;
-import com.baiyi.caesar.decorator.env.EnvDecorator;
-import com.baiyi.caesar.decorator.jenkins.JenkinsParameterDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.service.jenkins.*;
+import com.baiyi.caesar.service.jenkins.CsCdJobService;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -29,22 +27,10 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class CdJobDecorator extends BaseJobDecorator {
-
-    @Resource
-    private CsJobTplService csJobTplService;
+public class CdJobDecorator extends BaseDecorator {
 
     @Resource
     private CsCiJobService csCiJobService;
-
-    @Resource
-    private EnvDecorator envDecorator;
-
-    @Resource
-    private CsCdJobBuildService csCdJobBuildService;
-
-    @Resource
-    private JobDeploymentDecorator jobDeploymentDecorator;
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -54,15 +40,6 @@ public class CdJobDecorator extends BaseJobDecorator {
 
     @Resource
     private CsCdJobService csCdJobService;
-
-    @Resource
-    private JobTplDecorator jobTplDecorator;
-
-    @Resource
-    private JenkinsParameterDecorator jenkinsParameterDecorator;
-
-    @Resource
-    private BuildViewDecorator buildViewDecorator;
 
     public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob, CsJobTpl csJobTpl) {
         List<CsJobEngine> csCdJobEngines = csJobEngineService.queryCsJobEngineByJobId(BuildType.DEPLOYMENT.getType(), cdJob.getId());
@@ -96,12 +73,7 @@ public class CdJobDecorator extends BaseJobDecorator {
     public CdJobVO.CdJob decorator(CdJobVO.CdJob cdJob) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(cdJob.getCiJobId());
         cdJob.setEnvType(csCiJob.getEnvType());
-        // 装饰 环境信息
-        envDecorator.decorator(cdJob);
-        jobTplDecorator.decorator(cdJob);  // 任务模版
-        jenkinsParameterDecorator.decorator(cdJob);   // 参数
-        buildViewDecorator.decorator(cdJob);    // buildViews
-
+        decoratorJob(cdJob);
         return cdJob;
     }
 

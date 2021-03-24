@@ -20,9 +20,15 @@ import java.util.Map;
  */
 public class UserVO {
 
+    public interface IUser {
+
+        String getUsername();
+
+        void setUser(UserVO.User user);
+    }
+
 
     public interface IUserPermission {
-
         void setUserPermission(UserPermissionVO.UserPermission userPermission);
 
         int getBusinessType();
