@@ -2,7 +2,7 @@ package com.baiyi.caesar.decorator.gitlab;
 
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.server.ServerDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @Component
-public class GitlabInstanceDecorator {
+public class GitlabInstanceDecorator extends BaseDecorator {
 
     @Resource
     private CsGitlabProjectService csGitlabProjectService;
@@ -25,13 +25,7 @@ public class GitlabInstanceDecorator {
     @Resource
     private CsGitlabInstanceService csGitlabInstanceService;
 
-    @Resource
-    private ServerDecorator serverDecorator;
-
-    @Resource
-    private  GitlabVersionDecorator gitlabVersionDecorator;
-
-    public void decorator(GitlabInstanceVO.IInstance iInstance){
+    public void decorator(GitlabInstanceVO.IInstance iInstance) {
         CsGitlabInstance csGitlabInstance = csGitlabInstanceService.queryCsGitlabInstanceById(iInstance.getInstanceId());
         iInstance.setInstance(BeanCopierUtil.copyProperties(csGitlabInstance, GitlabInstanceVO.Instance.class));
     }
@@ -39,8 +33,7 @@ public class GitlabInstanceDecorator {
     public GitlabInstanceVO.Instance decorator(GitlabInstanceVO.Instance instance, Integer extend) {
         instance.setToken("");
         if (extend == 0) return instance;
-        serverDecorator.decorator(instance);
-        gitlabVersionDecorator.decorator(instance); // 版本
+        decoratorGitlabInstance(instance);
         // 项目数量
         instance.setProjectSize(csGitlabProjectService.countCsGitlabProjectByInstanceId(instance.getId()));
         return instance;

@@ -7,7 +7,7 @@ import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
-import com.baiyi.caesar.decorator.user.UserDecorator;
+import com.baiyi.caesar.decorator.jenkins.util.JenkinsUtil;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
@@ -49,9 +49,6 @@ public class JobDeploymentDecorator extends BaseDecorator {
     private CsJobBuildArtifactService csJobBuildArtifactService;
 
     @Resource
-    private JobBuildArtifactDecorator jobBuildArtifactDecorator;
-
-    @Resource
     private CsCiJobService csCiJobService;
 
     @Resource
@@ -74,9 +71,6 @@ public class JobDeploymentDecorator extends BaseDecorator {
 
     @Resource
     private JobTplDecorator jobTplDecorator;
-
-    @Resource
-    private UserDecorator userDecorator;
 
     public CdJobBuildVO.JobBuild decorator(CsCdJobBuild jobBuild, Integer extend) {
         JobBuildContext context = buildJobBuildContext(Lists.newArrayList(jobBuild));
@@ -178,7 +172,7 @@ public class JobDeploymentDecorator extends BaseDecorator {
     private List<BuildArtifactVO.BuildArtifact> acqArtifacts(CdJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
         List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.DEPLOYMENT.getType(), jobBuild.getId());
         if (!CollectionUtils.isEmpty(artifacts)) {
-            return jobBuildArtifactDecorator.decorator(artifacts, context.getCsOssBucket());
+            return JenkinsUtil.decoratorBuildArtifacts(artifacts, context.getCsOssBucket());
         } else {
             return Collections.EMPTY_LIST;
         }

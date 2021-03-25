@@ -28,6 +28,5 @@ public class UserApiTokenDecorator {
         List<UserApiTokenVO.UserApiToken> apiTokens = BeanCopierUtil.copyListProperties(userApiTokens, UserApiTokenVO.UserApiToken.class)
                 .stream().peek(e -> e.setToken("申请后不可查看")).collect(Collectors.toList());
         user.setApiTokens(apiTokens);
-
     }
 }

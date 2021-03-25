@@ -12,12 +12,17 @@ import lombok.NoArgsConstructor;
  */
 public class ServerGroupTypeVO {
 
+    public interface IServerGroupType {
+        void setServerGroupType(ServerGroupTypeVO.ServerGroupType serverGroupType);
+        Integer getGrpType();
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel
     public static class ServerGroupType {
 
-        @ApiModelProperty(value = "主键",example="1")
+        @ApiModelProperty(value = "主键", example = "1")
         private Integer id;
 
         @ApiModelProperty(value = "组类型名称")
@@ -26,7 +31,7 @@ public class ServerGroupTypeVO {
         @ApiModelProperty(value = "颜色值")
         private String color;
 
-        @ApiModelProperty(value = "组类型值",example="1")
+        @ApiModelProperty(value = "组类型值", example = "1")
         private Integer grpType;
 
         @ApiModelProperty(value = "描述")

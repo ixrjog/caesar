@@ -22,9 +22,10 @@ public class GitlabVersionDecorator {
     public void decorator(GitlabInstanceVO.IVersion iVersion) {
         try {
             GitlabVersion gitlabVersion = gitlabHandler.getVersion(iVersion.getInstanceName());
-            GitlabInstanceVO.Version version = new GitlabInstanceVO.Version();
-            version.setVersion(gitlabVersion.getVersion());
-            version.setRevision(gitlabVersion.getRevision());
+            GitlabInstanceVO.Version version = GitlabInstanceVO.Version.builder()
+                    .version(gitlabVersion.getVersion())
+                    .revision(gitlabVersion.getRevision())
+                    .build();
             iVersion.setVersion(version);
         } catch (IOException ignored) {
         }

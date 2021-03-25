@@ -34,8 +34,8 @@ public class SonarQubeDecorator {
     @Resource
     private SonarConfig sonarConfig;
 
-    public void decorator(SonarQubeVO.ISonarQube iSonarQube){
-        if(!iSonarQube.enableSonar()) return;
+    public void decorator(SonarQubeVO.ISonarQube iSonarQube) {
+        if (!iSonarQube.enableSonar()) return;
         CsApplication csApplication = csApplicationService.queryCsApplicationById(iSonarQube.getApplicationId());
         String projectKey = Joiner.on("_").join(csApplication.getApplicationKey(), iSonarQube.getJobKey());
         iSonarQube.setSonarQube(buildSonarQube(projectKey));

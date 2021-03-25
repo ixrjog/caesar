@@ -3,11 +3,8 @@ package com.baiyi.caesar.decorator.jenkins;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
-import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
-import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
-import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +19,13 @@ import javax.annotation.Resource;
 public class JobTplDecorator {
 
     @Resource
-    private CsJenkinsInstanceService jenkinsInstanceService;
-
-    @Resource
     private CsJobTplService csJobTplService;
 
     @Resource
     private TagDecorator tagDecorator;
+
+    @Resource
+    private JenkinsInstanceDecorator jenkinsInstanceDecorator;
 
     public void decorator(JobTplVO.IJobTpl iJobTpl){
         if (IDUtil.isEmpty(iJobTpl.getJobTplId())) return;
@@ -40,10 +37,7 @@ public class JobTplDecorator {
     public JobTplVO.JobTpl decorator(JobTplVO.JobTpl jobTpl, Integer extend) {
         if (extend == 0) return jobTpl;
 
-        CsJenkinsInstance csJenkinsInstance = jenkinsInstanceService.queryCsJenkinsInstanceById(jobTpl.getJenkinsInstanceId());
-        if (csJenkinsInstance != null)
-            jobTpl.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
-
+        jenkinsInstanceDecorator.decorator(jobTpl);
         // 装饰 标签
         tagDecorator.decorator(jobTpl);
 

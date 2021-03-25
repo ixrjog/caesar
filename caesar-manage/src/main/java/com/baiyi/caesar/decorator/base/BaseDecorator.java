@@ -5,9 +5,13 @@ import com.baiyi.caesar.decorator.aliyun.OssBucketDecorator;
 import com.baiyi.caesar.decorator.application.BuildViewDecorator;
 import com.baiyi.caesar.decorator.dingtalk.DingtalkDecorator;
 import com.baiyi.caesar.decorator.env.EnvDecorator;
-import com.baiyi.caesar.decorator.jenkins.JenkinsParameterDecorator;
+import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
+import com.baiyi.caesar.decorator.gitlab.GitlabVersionDecorator;
+import com.baiyi.caesar.decorator.jenkins.JenkinsVersionDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
 import com.baiyi.caesar.decorator.jenkins.util.BuildTimeUtil;
+import com.baiyi.caesar.decorator.jenkins.util.JenkinsUtil;
+import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
 import com.baiyi.caesar.decorator.sonar.SonarQubeDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
@@ -19,9 +23,12 @@ import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
+import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
+import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.domain.vo.sonar.SonarQubeVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
@@ -52,9 +59,6 @@ public class BaseDecorator<T> {
     private JobTplDecorator jobTplDecorator;
 
     @Resource
-    private JenkinsParameterDecorator jenkinsParameterDecorator;
-
-    @Resource
     private BuildViewDecorator buildViewDecorator;
 
     @Resource
@@ -83,6 +87,46 @@ public class BaseDecorator<T> {
 
     @Resource
     private ServerGroupDecorator serverGroupDecorator;
+
+    @Resource
+    private GitlabInstanceDecorator gitlabInstanceDecorator;
+
+    @Resource
+    private GitlabVersionDecorator gitlabVersionDecorator;
+
+    @Resource
+    private ServerDecorator serverDecorator;
+
+    @Resource
+    private JenkinsVersionDecorator jenkinsVersionDecorator;
+
+    protected void decoratorJenkinsInstance(T t) {
+        if (t instanceof JenkinsInstanceVO.IJenkinsVersion)
+            jenkinsVersionDecorator.decorator((JenkinsInstanceVO.IJenkinsVersion) t);
+        if (t instanceof ServerVO.IServer)
+            serverDecorator.decorator((ServerVO.IServer) t);
+        if (t instanceof ServerGroupVO.IServerGroup)
+            serverGroupDecorator.decorator((ServerGroupVO.IServerGroup) t);
+
+    }
+
+
+    protected void decoratorGitlabInstance(T t) {
+        if (t instanceof ServerVO.IServer)
+            serverDecorator.decorator((ServerVO.IServer) t);
+        if (t instanceof GitlabInstanceVO.IVersion)
+            gitlabVersionDecorator.decorator((GitlabInstanceVO.IVersion) t); // 版本
+    }
+
+
+    protected void decoratorBaseGitlab(T t) {
+        if (t instanceof GitlabInstanceVO.IInstance)
+            gitlabInstanceDecorator.decorator((GitlabInstanceVO.IInstance) t);
+
+        // 装饰 标签
+        if (t instanceof TagVO.ITags)
+            tagDecorator.decorator((TagVO.ITags) t);
+    }
 
     protected void decoratorServer(T t) {
         // 环境
@@ -116,7 +160,7 @@ public class BaseDecorator<T> {
             jobTplDecorator.decorator((JobTplVO.IJobTpl) t);  // 任务模版
 
         if (t instanceof JenkinsVO.IJenkinsParameter)
-            jenkinsParameterDecorator.decorator((JenkinsVO.IJenkinsParameter) t);   // 参数
+            JenkinsUtil.decoratorParameter((JenkinsVO.IJenkinsParameter) t);  // 参数
 
         if (t instanceof CiJobBuildVO.IBuildView)
             buildViewDecorator.decorator((CiJobBuildVO.IBuildView) t);    // buildViews

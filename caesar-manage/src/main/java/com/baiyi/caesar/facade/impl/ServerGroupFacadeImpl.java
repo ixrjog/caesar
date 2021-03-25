@@ -6,7 +6,7 @@ import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.*;
 import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
-import com.baiyi.caesar.decorator.server.ServerTreeDecorator;
+import com.baiyi.caesar.decorator.server.util.ServerTreeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -80,9 +80,6 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Resource
     private RedisUtil redisUtil;
-
-    @Resource
-    private ServerTreeDecorator serverTreeDecorator;
 
     @Resource
     private ServerCacheFacade serverCacheFacade;
@@ -340,7 +337,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
             treeSize.addAndGet(getServerGroupMapSize(serverGroupMap));
             // 组装缓存
             assembleServerTreeHostPatternMap(serverTreeHostPatternMap, serverGroupMap);
-            treeList.add(serverTreeDecorator.decorator(e, serverGroupMap));
+            treeList.add(ServerTreeUtil.decorator(e, serverGroupMap));
         });
         ServerTreeVO.MyServerTree myServerTree = ServerTreeVO.MyServerTree.builder()
                 .userId(ocUser.getId())

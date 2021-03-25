@@ -1,10 +1,8 @@
 package com.baiyi.caesar.decorator.gitlab;
 
-import com.baiyi.caesar.decorator.tag.TagDecorator;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @Author baiyi
@@ -12,21 +10,11 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @Component
-public class GitlabProjectDecorator {
-
-    @Resource
-    private GitlabInstanceDecorator gitlabInstanceDecorator;
-
-    @Resource
-    private TagDecorator tagDecorator;
+public class GitlabProjectDecorator extends BaseDecorator {
 
     public GitlabProjectVO.Project decorator(GitlabProjectVO.Project project, Integer extend) {
         if (extend == 0) return project;
-
-        gitlabInstanceDecorator.decorator(project);
-
-        tagDecorator.decorator(project);       // 装饰 标签
-
+        decoratorBaseGitlab(project);
         return project;
     }
 

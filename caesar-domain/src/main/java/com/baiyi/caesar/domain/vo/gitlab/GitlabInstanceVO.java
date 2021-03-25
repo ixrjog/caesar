@@ -3,6 +3,7 @@ package com.baiyi.caesar.domain.vo.gitlab;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -75,7 +76,7 @@ public class GitlabInstanceVO {
     }
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
     public static class Version {
         private String version;

@@ -24,7 +24,7 @@ public class ServerGroupVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class ServerGroup {
+    public static class ServerGroup implements ServerGroupTypeVO.IServerGroupType {
 
         private ServerGroupTypeVO.ServerGroupType serverGroupType;
 

@@ -27,9 +27,19 @@ public class JobTplVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobTpl implements TagVO.ITags {
+    public static class JobTpl implements TagVO.ITags, JenkinsInstanceVO.IInstance {
 
         private int businessType = BusinessType.JENKINS_TPL.getType();
+
+        @Override
+        public void setInstance(JenkinsInstanceVO.Instance instance) {
+            this.jenkinsInstance = instance;
+        }
+
+        @Override
+        public Integer getInstanceId() {
+            return this.jenkinsInstanceId;
+        }
 
         @Override
         public int getBusinessId() {
