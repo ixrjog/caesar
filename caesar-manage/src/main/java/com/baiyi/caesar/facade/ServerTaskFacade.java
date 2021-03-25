@@ -48,8 +48,6 @@ public interface ServerTaskFacade {
 
     ServerTaskVO.ServerTask queryServerTaskByTaskId(int taskId);
 
-    BusinessWrapper<Boolean> createAnsibleHosts();
-
     BusinessWrapper<Boolean> abortServerTask(int taskId);
 
     BusinessWrapper<Boolean> abortServerTaskMember(int memberId);

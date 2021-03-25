@@ -82,14 +82,14 @@ public class GitlabWebhooksConsumerImpl implements GitlabWebhooksConsumer {
             // 查询对应的job
             List<CsCiJob> ciJobs = csCiJobService.queryCsCiJobByScmMemberIdAndBranch(m.getId(), branch);
             if (!CollectionUtils.isEmpty(ciJobs)) {
-                for (CsCiJob job : ciJobs) {
+                ciJobs.forEach(job -> {
                     IBuildJobHandler buildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(job.getJobType());
                     buildJobHandler.build(job, csGitlabWebhook.getUsername());
                     csGitlabWebhook.setIsConsumed(true);
                     csGitlabWebhook.setIsTrigger(true);
                     csGitlabWebhook.setJobKey(job.getJobKey());
                     csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
-                }
+                });
             }
         });
     }
@@ -103,10 +103,11 @@ public class GitlabWebhooksConsumerImpl implements GitlabWebhooksConsumer {
         OcTag ocTag = ocTagService.queryOcTagByKey(AUTO_BUILD);
         if (ocTag == null)
             return false;
-        BusinessTagVO.BusinessTag businessTag = new BusinessTagVO.BusinessTag();
-        businessTag.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
-        businessTag.setBusinessId(projectId);
-        businessTag.setTagId(ocTag.getId());
+        BusinessTagVO.BusinessTag businessTag =  BusinessTagVO.BusinessTag.builder()
+                .businessType(BusinessType.GITLAB_PROJECT.getType())
+                .businessId(projectId)
+                .tagId(ocTag.getId())
+                .build();
         return ocBusinessTagService.queryOcBusinessTagByUniqueKey(businessTag) != null;
     }
 

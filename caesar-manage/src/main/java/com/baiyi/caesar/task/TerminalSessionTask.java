@@ -1,6 +1,7 @@
 package com.baiyi.caesar.task;
 
 import com.baiyi.caesar.facade.TerminalFacade;
+import com.baiyi.caesar.task.base.BaseTask;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class TerminalSessionTask extends BaseTask{
+public class TerminalSessionTask extends BaseTask {
 
     @Resource
     private TerminalFacade terminalFacade;

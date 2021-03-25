@@ -2,8 +2,8 @@ package com.baiyi.caesar.domain.vo.tag;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 public class BusinessTagVO {
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
     public static class BusinessTag {
 

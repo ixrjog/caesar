@@ -272,19 +272,19 @@ public class WorkorderFacadeImpl implements WorkorderFacade {
             return new BusinessWrapper<>(ErrorEnum.WORKORDER_TICKET_PHASE_ERROR);
         try {
             // 删除工单条目
-            ocWorkorderTicketEntryService.queryOcWorkorderTicketEntryByTicketId(id).forEach(e -> {
-                ocWorkorderTicketEntryService.deleteOcWorkorderTicketEntryById(e.getId());
-            });
+            ocWorkorderTicketEntryService.queryOcWorkorderTicketEntryByTicketId(id).forEach(e ->
+                    ocWorkorderTicketEntryService.deleteOcWorkorderTicketEntryById(e.getId())
+            );
 
             // 删除工单流程
-            ocWorkorderTicketFlowService.queryOcWorkorderTicketByTicketId(id).forEach(e -> {
-                ocWorkorderTicketFlowService.deleteOcWorkorderTicketFlowById(e.getId());
-            });
+            ocWorkorderTicketFlowService.queryOcWorkorderTicketByTicketId(id).forEach(e ->
+                    ocWorkorderTicketFlowService.deleteOcWorkorderTicketFlowById(e.getId())
+            );
 
             // 删除工单订阅
-            ocWorkorderTicketSubscribeService.queryOcWorkorderTicketSubscribeByTicketId(id).forEach(e -> {
-                ocWorkorderTicketSubscribeService.deleteOcWorkorderTicketSubscribeById(e.getId());
-            });
+            ocWorkorderTicketSubscribeService.queryOcWorkorderTicketSubscribeByTicketId(id).forEach(e ->
+                    ocWorkorderTicketSubscribeService.deleteOcWorkorderTicketSubscribeById(e.getId())
+            );
             // 删除工单
             ocWorkorderTicketService.deleteOcWorkorderTicketById(id);
         } catch (Exception e) {

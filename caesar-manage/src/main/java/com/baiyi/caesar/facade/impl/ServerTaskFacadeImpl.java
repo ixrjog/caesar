@@ -25,12 +25,11 @@ import com.baiyi.caesar.domain.param.ansible.AnsiblePlaybookParam;
 import com.baiyi.caesar.domain.param.ansible.AnsibleScriptParam;
 import com.baiyi.caesar.domain.param.ansible.ServerTaskHistoryParam;
 import com.baiyi.caesar.domain.param.server.ServerTaskExecutorParam;
-import com.baiyi.caesar.domain.vo.ansible.AnsibleVersionVO;
 import com.baiyi.caesar.domain.vo.ansible.AnsiblePlaybookVO;
 import com.baiyi.caesar.domain.vo.ansible.AnsibleScriptVO;
+import com.baiyi.caesar.domain.vo.ansible.AnsibleVersionVO;
 import com.baiyi.caesar.domain.vo.preview.PreviewFileVO;
 import com.baiyi.caesar.domain.vo.server.ServerTaskVO;
-import com.baiyi.caesar.facade.AttributeFacade;
 import com.baiyi.caesar.facade.ServerTaskFacade;
 import com.baiyi.caesar.facade.UserFacade;
 import com.baiyi.caesar.facade.UserPermissionFacade;
@@ -65,9 +64,6 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
 
     @Resource
     private ServerTaskDecorator serverTaskDecorator;
-
-    @Resource
-    private AttributeFacade attributeFacade;
 
     @Resource
     private OcAnsiblePlaybookService ocAnsiblePlaybookService;
@@ -213,12 +209,6 @@ public class ServerTaskFacadeImpl implements ServerTaskFacade {
         OcServerTask ocServerTask = ocServerTaskService.queryOcServerTaskById(taskId);
         ServerTaskVO.ServerTask serverTask = BeanCopierUtil.copyProperties(ocServerTask, ServerTaskVO.ServerTask.class);
         return serverTaskDecorator.decorator(serverTask);
-    }
-
-    @Override
-    public BusinessWrapper<Boolean> createAnsibleHosts() {
-        attributeFacade.createAnsibleHostsTask();
-        return BusinessWrapper.SUCCESS;
     }
 
     @Override

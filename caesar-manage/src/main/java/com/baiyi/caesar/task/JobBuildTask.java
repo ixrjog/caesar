@@ -1,6 +1,7 @@
 package com.baiyi.caesar.task;
 
 import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.task.base.BaseTask;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;

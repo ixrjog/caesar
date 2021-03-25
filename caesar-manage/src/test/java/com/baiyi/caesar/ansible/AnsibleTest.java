@@ -5,7 +5,6 @@ import com.baiyi.caesar.ansible.handler.AnsibleExecutorHandler;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.vo.server.PreviewAttributeVO;
-import com.baiyi.caesar.facade.impl.AttributeFacadeImpl;
 import com.baiyi.caesar.factory.attribute.impl.AttributeAnsible;
 import com.baiyi.caesar.service.server.OcServerGroupService;
 import com.google.common.base.Joiner;
@@ -35,9 +34,6 @@ public class AnsibleTest extends BaseUnit {
     @Resource
     private OcServerGroupService ocServerGroupService;
 
-    @Resource
-    private AttributeFacadeImpl attributeFacadeImpl;
-
     @Test
     void aTest() {
         String str = "10.200.1.40 | Cdsdg => { aaa , bbb , ccc }" ;
@@ -61,15 +57,6 @@ public class AnsibleTest extends BaseUnit {
         System.err.println( Joiner.on(",").join(tags));
     }
 
-    @Test
-    void aaaTest() {
-
-        long startTime = new Date().getTime();
-        attributeFacadeImpl.createAnsibleHostsTask();
-        long endTime = new Date().getTime();
-        System.err.println("消耗时间:" + (endTime - startTime));
-
-    }
 
     @Test
     void executorTest() {

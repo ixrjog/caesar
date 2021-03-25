@@ -1,4 +1,4 @@
-package com.baiyi.caesar.task;
+package com.baiyi.caesar.task.base;
 
 import com.baiyi.caesar.facade.CaesarInstanceFacade;
 import lombok.extern.slf4j.Slf4j;

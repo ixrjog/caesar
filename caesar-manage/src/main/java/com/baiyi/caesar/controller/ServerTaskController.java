@@ -113,12 +113,6 @@ public class ServerTaskController {
         return new HttpResult<>(serverTaskFacade.queryServerTaskByTaskId(taskId));
     }
 
-    @ApiOperation(value = "创建ansible主机配置文件")
-    @GetMapping(value = "/ansible/hosts/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> createAnsibleHosts() {
-        return new HttpResult<>(serverTaskFacade.createAnsibleHosts());
-    }
-
     @ApiOperation(value = "中止任务")
     @GetMapping(value = "/abort", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> abortServerTask(@Valid int taskId) {

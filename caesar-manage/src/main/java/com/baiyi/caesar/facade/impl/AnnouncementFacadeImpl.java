@@ -24,14 +24,14 @@ public class AnnouncementFacadeImpl implements AnnouncementFacade {
     private CsAnnouncementService csAnnouncementService;
 
     public AnnouncementVO.AnnouncementCarousel queryAnnouncementCarousel() {
-        List<CsAnnouncement> csAnnouncements = filterAnnouncements(csAnnouncementService.queryCsAnnouncementByValid());
+        List<CsAnnouncement> csAnnouncements = filter(csAnnouncementService.queryCsAnnouncementByValid());
         return AnnouncementVO.AnnouncementCarousel.builder()
                 .announcements(BeanCopierUtil.copyListProperties(csAnnouncements, AnnouncementVO.Announcement.class))
                 .isShow(!CollectionUtils.isEmpty(csAnnouncements))
                 .build();
     }
 
-    private List<CsAnnouncement> filterAnnouncements(List<CsAnnouncement> csAnnouncements) {
+    private List<CsAnnouncement> filter(List<CsAnnouncement> csAnnouncements) {
         if (CollectionUtils.isEmpty(csAnnouncements))
             return csAnnouncements;
         return csAnnouncements.stream().filter(e ->

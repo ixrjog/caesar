@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public class GitlabBranchConvert {
 
     public static GitlabBranchVO.Option build(String label, List<GitlabBranchVO.BaseBranch> branches) {
-        return  GitlabBranchVO.Option.builder()
+        return GitlabBranchVO.Option.builder()
                 .label(label)
                 .options(convert(branches))
                 .build();
     }
 
-    private static List<GitlabBranchVO.Children> convert(List<GitlabBranchVO.BaseBranch> branches){
+    private static List<GitlabBranchVO.Children> convert(List<GitlabBranchVO.BaseBranch> branches) {
         return branches.stream().map(e -> {
             GitlabBranchVO.Children children = new GitlabBranchVO.Children();
             children.setLabel(e.getName());
@@ -35,43 +35,25 @@ public class GitlabBranchConvert {
     public static List<GitlabBranchVO.BaseBranch> convertBranches(List<GitlabBranch> branches) {
         if (CollectionUtils.isEmpty(branches))
             return Lists.newArrayList();
-        return branches.stream().map(e -> {
-           return   GitlabBranchVO.BaseBranch.builder()
-                    .name(e.getName())
-                    .commit(e.getCommit().getId())
-                    .commitMessage(e.getCommit().getMessage())
-                    .build();
-//
-//
-//
-//
-//            GitlabBranchVO.Branch branch = new GitlabBranchVO.Branch();
-//            branch.setName(e.getName());
-//            branch.setCommit(e.getCommit().getId());
-//            branch.setCommitMessage(e.getCommit().getMessage());
-//            return branch;
-        }).collect(Collectors.toList());
+        return branches.stream().map(e ->
+                GitlabBranchVO.BaseBranch.builder()
+                        .name(e.getName())
+                        .commit(e.getCommit().getId())
+                        .commitMessage(e.getCommit().getMessage())
+                        .build()
+        ).collect(Collectors.toList());
     }
 
     public static List<GitlabBranchVO.BaseBranch> convertTags(List<GitlabTag> tags) {
         if (CollectionUtils.isEmpty(tags))
             return Lists.newArrayList();
-        return tags.stream().map(e -> {
-//            GitlabBranchVO.Tag tag = new GitlabBranchVO.Tag();
-//            tag.setName(e.getName());
-//            tag.setMessage(e.getMessage());
-//            tag.setCommit(e.getCommit().getId());
-//            tag.setCommitMessage(e.getCommit().getMessage());
-
-            return GitlabBranchVO.BaseBranch.builder()
-                    .name(e.getName())
-                    .message(e.getMessage())
-                    .commit(e.getCommit().getId())
-                    .commitMessage(e.getCommit().getMessage())
-                    .build();
-
-
-
-        }).collect(Collectors.toList());
+        return tags.stream().map(e ->
+                GitlabBranchVO.BaseBranch.builder()
+                        .name(e.getName())
+                        .message(e.getMessage())
+                        .commit(e.getCommit().getId())
+                        .commitMessage(e.getCommit().getMessage())
+                        .build()
+        ).collect(Collectors.toList());
     }
 }

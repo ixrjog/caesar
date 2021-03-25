@@ -42,35 +42,6 @@ public class TaskUtil {
         redisUtil.del(taskSignal);
     }
 
-    /**
-     * 判断任务是否执行中
-     *
-     * @param taskKey
-     * @return
-     */
-    public boolean tryLock(String taskKey) {
-        return redisUtil.hasKey(taskKey);
-    }
 
-    /**
-     * 任务锁
-     *
-     * @param taskKey
-     * @param minute  锁定最大时间
-     */
-    public void lock(String taskKey, int minute) {
-        if (minute == 0)
-            minute = MAX_MINUTE;
-        redisUtil.set(taskKey, true, 60 * minute);
-    }
-
-    /**
-     * 解除任务锁
-     *
-     * @param taskKey
-     */
-    public void unlock(String taskKey) {
-        redisUtil.del(taskKey);
-    }
 
 }
