@@ -2,7 +2,6 @@ package com.baiyi.caesar.factory.engine.impl;
 
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
@@ -10,6 +9,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RedisKeyUtil;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildExecutor;

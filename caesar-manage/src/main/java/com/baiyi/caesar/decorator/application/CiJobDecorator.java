@@ -1,10 +1,10 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;

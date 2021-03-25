@@ -1,8 +1,8 @@
 package com.baiyi.caesar.dingtalk.impl;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
+import com.baiyi.caesar.domain.base.BuildType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

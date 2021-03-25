@@ -1,11 +1,11 @@
 package com.baiyi.caesar.dingtalk.impl;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateBuilder;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateMap;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;
 import com.google.common.base.Joiner;

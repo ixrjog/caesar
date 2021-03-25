@@ -3,7 +3,6 @@ package com.baiyi.caesar.facade.jenkins.impl;
 
 import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BuildOutputType;
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.JenkinsUtil;
@@ -13,6 +12,7 @@ import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;

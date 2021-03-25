@@ -2,11 +2,11 @@ package com.baiyi.caesar.jenkins;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
 import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;

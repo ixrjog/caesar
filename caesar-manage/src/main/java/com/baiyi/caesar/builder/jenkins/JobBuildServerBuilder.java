@@ -1,8 +1,8 @@
 package com.baiyi.caesar.builder.jenkins;
 
 import com.baiyi.caesar.bo.jenkins.JobBuildServerBO;
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.jenkins.context.DeploymentJobContext;

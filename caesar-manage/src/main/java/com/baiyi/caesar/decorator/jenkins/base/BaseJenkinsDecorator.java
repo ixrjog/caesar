@@ -1,6 +1,5 @@
 package com.baiyi.caesar.decorator.jenkins.base;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.common.util.TimeAgoUtil;
@@ -8,6 +7,7 @@ import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.decorator.jenkins.util.BuildTimeUtil;
 import com.baiyi.caesar.decorator.jenkins.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.user.UserDecorator;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;

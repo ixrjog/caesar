@@ -1,6 +1,5 @@
 package com.baiyi.caesar.dingtalk.impl;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.base.NoticeType;
 import com.baiyi.caesar.common.config.HostConfig;
@@ -14,6 +13,7 @@ import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.dingtalk.util.AtUserUtils;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.user.UserParam;
 import com.baiyi.caesar.jenkins.context.BuildJobContext;

@@ -1,6 +1,5 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.HashUtil;
@@ -11,6 +10,7 @@ import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;

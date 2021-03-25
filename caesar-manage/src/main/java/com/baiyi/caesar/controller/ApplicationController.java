@@ -1,8 +1,8 @@
 package com.baiyi.caesar.controller;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;

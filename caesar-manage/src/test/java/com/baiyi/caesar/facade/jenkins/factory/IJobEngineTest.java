@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade.jenkins.factory;
 
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;

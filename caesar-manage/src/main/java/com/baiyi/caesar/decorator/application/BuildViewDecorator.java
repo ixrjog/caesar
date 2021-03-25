@@ -1,9 +1,9 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
 import com.baiyi.caesar.domain.DataTable;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;

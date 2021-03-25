@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.jenkins.factory.impl;
 
 import com.baiyi.caesar.builder.jenkins.JobEngineBuilder;
-import com.baiyi.caesar.common.base.BuildType;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
