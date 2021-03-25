@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.application;
 
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
@@ -43,7 +44,7 @@ public class ApplicationVO {
     @ApiModel
     public static class ScmMember implements TagVO.ITags {
 
-        private int businessType;
+        private int businessType = BusinessType.GITLAB_PROJECT.getType();
 
         @Override
         public int getBusinessId() {

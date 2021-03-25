@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -12,6 +13,18 @@ import java.util.Date;
  * @Version 1.0
  */
 public class BuildArtifactVO {
+
+    public interface IBuildArtifacts {
+
+        Integer getBuildId();
+
+        int getBuildType();
+
+        void setArtifacts(List<BuildArtifact> artifacts);
+
+        void setNoArtifact(Boolean noArtifact); // 没有构件（前端下拉列表禁止选中）
+
+    }
 
     @Data
     @NoArgsConstructor

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -13,6 +14,16 @@ import java.util.Date;
  * @Version 1.0
  */
 public class BuildExecutorVO {
+
+    public interface IBuildExecutors {
+
+        Integer getBuildId();
+
+        int getBuildType();
+
+        void setExecutors(List<BuildExecutor> executors);
+
+    }
 
     @Data
     @NoArgsConstructor

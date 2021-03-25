@@ -17,7 +17,10 @@ public class BuildViewVO {
     @Data
     @Builder
     @ApiModel
-    public static class JobBuildView {
+    public static class JobBuildView implements BuildExecutorVO.IBuildExecutors {
+
+        private Integer buildId;
+        private int buildType;
 
         private List<BuildExecutorVO.BuildExecutor> executors;
 

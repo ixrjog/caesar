@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.build;
 
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.base.AgoVO;
 import com.baiyi.caesar.domain.vo.base.BuildTimeVO;
@@ -23,17 +24,38 @@ import java.util.List;
 public class CdJobBuildVO {
 
     public interface IBuildView {
-        Integer getCdJobId();
 
+        Integer getCdJobId();
         void setBuildViews(List<BuildViewVO.JobBuildView> buildViews);
+    }
+
+    public interface IDeploymentServers {
+
+        void setServers(List<DeploymentServerVO.BuildServer> servers);
+        Integer getBuildId();
     }
 
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, Serializable {
+    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, BuildArtifactVO.IBuildArtifacts, JobEngineVO.IJobEngine,
+            BuildExecutorVO.IBuildExecutors, IDeploymentServers, Serializable {
 
         private static final long serialVersionUID = 1322824272757498254L;
+
+        @Override
+        public Integer getBuildId() {
+            return this.id;
+        }
+
+        @Override
+        public void setNoArtifact(Boolean noArtifact) {
+        }
+
+        @Override
+        public int getBuildType() {
+            return BuildType.DEPLOYMENT.getType();
+        }
 
         @Override
         public Date getAgoTime() {

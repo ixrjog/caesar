@@ -2,10 +2,13 @@ package com.baiyi.caesar.decorator.jenkins.util;
 
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.common.util.bae64.FileSizeUtils;
+import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildArtifact;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
 import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
+import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsVO;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -29,7 +32,6 @@ public class JenkinsUtil {
         iJenkinsParameter.setParameters(params);
     }
 
-
     public static List<BuildArtifactVO.BuildArtifact> decoratorBuildArtifacts(List<CsJobBuildArtifact> artifacts, CsOssBucket csOssBucket) {
         if (CollectionUtils.isEmpty(artifacts))
             return Lists.newArrayList();
@@ -50,6 +52,18 @@ public class JenkinsUtil {
 
     private static String buildOssBucketUrl(CsOssBucket csOssBucket) {
         return "https://" + Joiner.on(".").join(csOssBucket.getName(), csOssBucket.getExtranetEndpoint());
+    }
+
+    public static CiJobBuildVO.BaseCommit buildCommitDetails(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
+        CiJobBuildVO.BaseCommit baseCommit = new CiJobBuildVO.BaseCommit();
+        baseCommit.setCommit(jobBuild.getCommit());
+        baseCommit.setCommitUrl(GitlabUtil.buildCommitUrl(context.getCsGitlabProject().getWebUrl(), jobBuild.getCommit()));
+        return baseCommit;
+    }
+
+    public static boolean buildSupportRollback(JobBuildContext context) {
+        // 支持回滚
+        return context.getJobTpl() != null && context.getJobTpl().getSupportRollback() != null && context.getJobTpl().getSupportRollback();
 
     }
 

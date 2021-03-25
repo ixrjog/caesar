@@ -1,7 +1,6 @@
 package com.baiyi.caesar.decorator.application;
 
 import com.baiyi.caesar.decorator.tag.TagDecorator;
-import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,6 @@ public class ApplicationScmMemberDecorator {
 
     public ApplicationVO.ScmMember decorator(ApplicationVO.ScmMember scmMember, Integer extend) {
         // 装饰 标签
-        scmMember.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
         tagDecorator.decorator(scmMember);
         return scmMember;
     }

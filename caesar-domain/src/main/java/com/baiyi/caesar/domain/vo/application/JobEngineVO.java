@@ -15,6 +15,15 @@ import java.util.Date;
  */
 public class JobEngineVO {
 
+    public interface IJobEngine {
+
+        void setJobEngine(JobEngineVO.JobEngine jobEngine);
+
+        JobEngineVO.JobEngine getJobEngine();
+
+        Integer getJobEngineId();
+    }
+
     @Data
     @NoArgsConstructor
     @ApiModel

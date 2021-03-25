@@ -1,9 +1,11 @@
 package com.baiyi.caesar.domain.vo.build;
 
 
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.domain.vo.base.AgoVO;
 import com.baiyi.caesar.domain.vo.base.BuildTimeVO;
+import com.baiyi.caesar.domain.vo.base.JobBuildVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -32,9 +34,20 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, Serializable {
+    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, BuildArtifactVO.IBuildArtifacts, JobEngineVO.IJobEngine, JobBuildVO.iJobBuild,
+            IBuildChanges, BuildExecutorVO.IBuildExecutors, Serializable {
 
         private static final long serialVersionUID = -448531182053453517L;
+
+        @Override
+        public Integer getBuildId() {
+            return this.id;
+        }
+
+        @Override
+        public int getBuildType() {
+            return BuildType.BUILD.getType();
+        }
 
         @Override
         public Date getAgoTime() {
@@ -111,6 +124,14 @@ public class CiJobBuildVO {
 
         private String commit;
         private String commitUrl;
+    }
+
+    public interface IBuildChanges {
+
+        Integer getBuildId();
+
+        void setChanges(List<BuildChange> changes);
+
     }
 
 

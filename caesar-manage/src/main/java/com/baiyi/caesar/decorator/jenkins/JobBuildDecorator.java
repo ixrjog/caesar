@@ -1,38 +1,32 @@
 package com.baiyi.caesar.decorator.jenkins;
 
-import com.baiyi.caesar.common.base.BuildType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.common.util.IDUtil;
-import com.baiyi.caesar.common.util.TimeUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
-import com.baiyi.caesar.decorator.base.BaseDecorator;
+import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
 import com.baiyi.caesar.decorator.jenkins.context.JobBuildContext;
 import com.baiyi.caesar.decorator.jenkins.util.JenkinsUtil;
-import com.baiyi.caesar.decorator.user.UserDecorator;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.domain.vo.build.BuildArtifactVO;
-import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import com.baiyi.caesar.domain.vo.build.CiJobBuildVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
-import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.service.aliyun.CsOssBucketService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
-import com.baiyi.caesar.service.jenkins.*;
-import com.baiyi.caesar.service.server.OcServerService;
-import com.google.common.base.Joiner;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
+import com.baiyi.caesar.service.jenkins.CsJobTplService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.decorator.base.BaseDecorator.NOT_EXTEND;
 
 /**
  * @Author baiyi
@@ -40,7 +34,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class JobBuildDecorator extends BaseDecorator {
+public class JobBuildDecorator extends BaseJenkinsDecorator {
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -49,22 +43,10 @@ public class JobBuildDecorator extends BaseDecorator {
     private JobEngineDecorator jobEngineDecorator;
 
     @Resource
-    private CsJobBuildArtifactService csJobBuildArtifactService;
-
-    @Resource
     private CsCiJobService csCiJobService;
 
     @Resource
     private CsOssBucketService ossBucketService;
-
-    @Resource
-    private CsJobBuildChangeService csJobBuildChangeService;
-
-    @Resource
-    private CsJobBuildExecutorService csJobBuildExecutorService;
-
-    @Resource
-    private OcServerService ocServerService;
 
     @Resource
     private CsApplicationScmMemberService csApplicationScmMemberService;
@@ -77,9 +59,6 @@ public class JobBuildDecorator extends BaseDecorator {
 
     @Resource
     private JobTplDecorator jobTplDecorator;
-
-    @Resource
-    private UserDecorator userDecorator;
 
     public List<CiJobBuildVO.JobBuild> decorator(List<CsCiJobBuild> jobBuilds, Integer extend) {
         JobBuildContext context = buildJobBuildContext(jobBuilds);
@@ -129,114 +108,24 @@ public class JobBuildDecorator extends BaseDecorator {
         return jobEngineMap;
     }
 
-    private List<BuildArtifactVO.BuildArtifact> acqArtifacts(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        List<CsJobBuildArtifact> artifacts = csJobBuildArtifactService.queryCsJobBuildArtifactByBuildId(BuildType.BUILD.getType(), jobBuild.getId());
-        if (!CollectionUtils.isEmpty(artifacts)) {
-            return JenkinsUtil.decoratorBuildArtifacts(artifacts, context.getCsOssBucket());
-        } else {
-            return Collections.EMPTY_LIST;
-        }
-    }
 
     public CiJobBuildVO.JobBuild decorator(CsCiJobBuild csCiJobBuild, JobBuildContext context, Integer extend) {
         CiJobBuildVO.JobBuild jobBuild = BeanCopierUtil.copyProperties(csCiJobBuild, CiJobBuildVO.JobBuild.class);
 
-        decoratorJobBuild(jobBuild,extend);
+        decoratorJobBuild(jobBuild, extend);
 
         if (NOT_EXTEND == extend) return jobBuild;
 
-        // 组装构件
-        jobBuild.setArtifacts(acqArtifacts(jobBuild, context));
-        jobBuild.setNoArtifact(CollectionUtils.isEmpty(jobBuild.getArtifacts()));
-        // 组装工作引擎
-        jobBuild.setJobEngine(acqJobEngine(jobBuild, context));
-        jobBuild.setJobBuildUrl(buildJobDetailUrl(jobBuild));
-        // 组装变更记录
-        jobBuild.setChanges(getChanges(jobBuild, context));
-
-        jobBuild.setExecutors(getBuildExecutorByBuildId(jobBuild.getId()));
-        // 组装Commit详情
-        jobBuild.setCommitDetails(acqCommitDetails(jobBuild, context));
-        // 支持回滚
-        jobBuild.setSupportRollback(acqSupportRollback(context));
+        decoratorBuildArtifacts(jobBuild, context);  // 装饰 构件
+        decoratorJobEngine(jobBuild, context);    // 装饰 工作引擎
+        decoratorJobDetailUrl(jobBuild); // 装饰 任务详情Url
+        decoratorBuildChanges(jobBuild, context);  // 装饰 变更记录
+        decoratorBuildExecutors(jobBuild); // 装饰 执行器
+        jobBuild.setCommitDetails(JenkinsUtil.buildCommitDetails(jobBuild, context));  // 组装Commit详情
+        jobBuild.setSupportRollback(JenkinsUtil.buildSupportRollback(context));  // 支持回滚
 
         return jobBuild;
     }
 
-    private boolean acqSupportRollback(JobBuildContext context) {
-        // 支持回滚
-        return context.getJobTpl() != null && context.getJobTpl().getSupportRollback() != null && context.getJobTpl().getSupportRollback();
-
-    }
-
-    private CiJobBuildVO.BaseCommit acqCommitDetails(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        CiJobBuildVO.BaseCommit baseCommit = new CiJobBuildVO.BaseCommit();
-        baseCommit.setCommit(jobBuild.getCommit());
-        baseCommit.setCommitUrl(GitlabUtil.buildCommitUrl(context.getCsGitlabProject().getWebUrl(), jobBuild.getCommit()));
-        return baseCommit;
-    }
-
-
-    private String acqBuildTimes(CiJobBuildVO.JobBuild jobBuild) {
-        if (jobBuild.getStartTime() != null && jobBuild.getEndTime() != null) {
-            long buildTime = jobBuild.getEndTime().getTime() - jobBuild.getStartTime().getTime();
-            return TimeUtil.acqBuildTime(buildTime);
-        }
-        return "";
-    }
-
-    public List<BuildExecutorVO.BuildExecutor> getBuildExecutorByBuildId(int buildId) {
-        List<CsJobBuildExecutor> executors = csJobBuildExecutorService.queryCsJobBuildExecutorByBuildId(BuildType.BUILD.getType(), buildId);
-        return executors.stream().map(e -> {
-                    BuildExecutorVO.BuildExecutor buildExecutor = BeanCopierUtil.copyProperties(e, BuildExecutorVO.BuildExecutor.class);
-                    OcServer ocServer = ocServerService.queryOcServerByIp(buildExecutor.getPrivateIp());
-                    if (ocServer != null)
-                        buildExecutor.setServer(BeanCopierUtil.copyProperties(ocServer, ServerVO.Server.class));
-                    return buildExecutor;
-                }
-        ).collect(Collectors.toList());
-    }
-
-    private List<CiJobBuildVO.BuildChange> getBuildChanges(CsGitlabProject csGitlabProject, int buildId) {
-        List<CsJobBuildChange> changes = csJobBuildChangeService.queryCsJobBuildChangeByBuildId(BuildType.BUILD.getType(), buildId);
-        return changes.stream().map(e -> {
-            CiJobBuildVO.BuildChange buildChange = BeanCopierUtil.copyProperties(e, CiJobBuildVO.BuildChange.class);
-            buildChange.setShortCommitId(buildChange.getCommitId().substring(0, 7));
-
-            buildChange.setCommitUrl(GitlabUtil.buildCommitUrl(csGitlabProject.getWebUrl(), buildChange.getCommitId()));
-            return buildChange;
-        }).collect(Collectors.toList());
-    }
-
-    private List<CiJobBuildVO.BuildChange> getChanges(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        return getBuildChanges(context.getCsGitlabProject(), jobBuild.getId());
-    }
-
-    /**
-     * 获取工作引擎
-     *
-     * @param jobBuild
-     * @param context
-     * @return
-     */
-    private JobEngineVO.JobEngine acqJobEngine(CiJobBuildVO.JobBuild jobBuild, JobBuildContext context) {
-        return context.getJobEngineMap().get(jobBuild.getJobEngineId());
-    }
-
-    /**
-     * 装饰工作引擎
-     * e.g:
-     *  https://cc2.xinc818.com/blue/organizations/jenkins/CAESAR_caesar-server-build-prod/detail/CAESAR_caesar-server-build-prod/47/pipeline/
-     * @param jobBuild
-     */
-    private String buildJobDetailUrl(CiJobBuildVO.JobBuild jobBuild) {
-        return Joiner.on("/").skipNulls().join(jobBuild.getJobEngine().getJenkinsInstance().getUrl(),
-                "blue/organizations/jenkins",
-                jobBuild.getJobName(),
-                "detail",
-                jobBuild.getJobName(),
-                jobBuild.getEngineBuildNumber(),
-                "pipeline");
-    }
 
 }
