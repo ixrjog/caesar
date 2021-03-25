@@ -1,6 +1,5 @@
 package com.baiyi.caesar.decorator.dingtalk;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
@@ -36,8 +35,6 @@ public class DingtalkDecorator {
         dingtalk.setDingtalkToken("");
         if (extend == 0) return dingtalk;
         // 装饰 标签
-
-        dingtalk.setBusinessType(BusinessType.DINGTALK.getType());
         tagDecorator.decorator(dingtalk);
 
         return dingtalk;

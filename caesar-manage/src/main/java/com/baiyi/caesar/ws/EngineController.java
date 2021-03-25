@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.baiyi.caesar.ws.TerminalWSController.WEBSOCKET_TIMEOUT;
+
 /**
  * @Author baiyi
  * @Date 2021/3/18 11:08 上午
@@ -31,7 +33,7 @@ public final class EngineController {
     private Session session = null;
 
     // 当前会话 uuid
-     private final String sessionId = UUID.randomUUID().toString();
+    private final String sessionId = UUID.randomUUID().toString();
 
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
     private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
@@ -40,7 +42,9 @@ public final class EngineController {
     public void onOpen(Session session) {
         this.session = session;
         sessionSet.add(session);
-        log.info("连接成功！");
+        int cnt = onlineCount.incrementAndGet(); // 在线数加1
+        log.info("引擎视图有连接加入，当前连接数为：{}", cnt);
+        session.setMaxIdleTimeout(WEBSOCKET_TIMEOUT);
         // 线程启动
         Runnable run = new JobOutputTask(sessionId, session);
         Thread thread = new Thread(run);
@@ -54,7 +58,7 @@ public final class EngineController {
     public void onClose() {
         sessionSet.remove(session);
         int cnt = onlineCount.decrementAndGet();
-        log.info("有连接关闭，当前连接数为：{}", cnt);
+        log.info("引擎视图有连接关闭，当前连接数为：{}", cnt);
     }
 
 }

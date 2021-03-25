@@ -19,7 +19,7 @@ public class DingtalkConfig {
 
     private String url;
 
-    public String getWebHook(String dingtalkToken) {
+    public String buildWebHook(String dingtalkToken) {
         return Joiner.on("").join(url, "?", ACCESS_TOKEN, "=", dingtalkToken);
     }
 

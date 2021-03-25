@@ -103,7 +103,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
     }
 
     private String buildWebHook(CsDingtalk csDingtalk) {
-        return dingtalkConfig.getWebHook(decryptToken(csDingtalk.getDingtalkToken()));
+        return dingtalkConfig.buildWebHook(decryptToken(csDingtalk.getDingtalkToken()));
     }
 
     /**

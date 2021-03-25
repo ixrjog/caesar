@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade.impl;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.vo.user.UserVO;

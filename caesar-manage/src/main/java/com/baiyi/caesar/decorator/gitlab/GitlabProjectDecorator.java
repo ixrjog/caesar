@@ -1,6 +1,5 @@
 package com.baiyi.caesar.decorator.gitlab;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ public class GitlabProjectDecorator {
 
         gitlabInstanceDecorator.decorator(project);
 
-        project.setBusinessType(BusinessType.GITLAB_PROJECT.getType());
         tagDecorator.decorator(project);       // 装饰 标签
 
         return project;

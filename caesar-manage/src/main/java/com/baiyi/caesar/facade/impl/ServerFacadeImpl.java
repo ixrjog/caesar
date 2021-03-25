@@ -1,7 +1,6 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.builder.ServerBuilder;
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.common.util.RegexUtil;
@@ -9,6 +8,7 @@ import com.baiyi.caesar.decorator.server.ServerDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerAttribute;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;

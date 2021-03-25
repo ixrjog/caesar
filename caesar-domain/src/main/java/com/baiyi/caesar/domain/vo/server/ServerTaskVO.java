@@ -2,6 +2,7 @@ package com.baiyi.caesar.domain.vo.server;
 
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import io.swagger.annotations.ApiModel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -52,7 +53,7 @@ public class ServerTaskVO {
     }
 
     @Data
-    @NoArgsConstructor
+    @Builder
     @ApiModel
     public static class ServerTastStatistics {
 

@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.gitlab;
 
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class GitlabProjectVO {
     @ApiModel
     public static class Project implements TagVO.ITags,GitlabInstanceVO.IInstance {
 
-        private int businessType;
+        private int businessType = BusinessType.GITLAB_PROJECT.getType();
 
         @Override
         public int getBusinessId() {

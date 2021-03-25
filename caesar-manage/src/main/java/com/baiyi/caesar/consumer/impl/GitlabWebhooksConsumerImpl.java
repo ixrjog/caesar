@@ -1,9 +1,9 @@
 package com.baiyi.caesar.consumer.impl;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;

@@ -1,11 +1,11 @@
 package com.baiyi.caesar.factory.xterm.impl;
 
 import com.baiyi.caesar.common.base.AccessLevel;
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.SettingName;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.IOUtil;
 import com.baiyi.caesar.common.util.bae64.CacheKeyUtils;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.bo.SSHKeyCredential;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.facade.*;

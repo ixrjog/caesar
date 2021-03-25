@@ -90,7 +90,7 @@ public class DingtalkFacadeImpl implements DingtalkFacade {
     public BusinessWrapper<Boolean> testDingtalkById(int id) {
         DingtalkContent content = DingtalkContent.builder()
                 .msg(JSON.toJSONString(TestMessage.builder().build()))
-                .webHook(dingtalkConfig.getWebHook(acqDingtalkTokenById(id)))
+                .webHook(dingtalkConfig.buildWebHook(acqDingtalkTokenById(id)))
                 .build();
         try {
             dingtalkHandler.doNotify(content);

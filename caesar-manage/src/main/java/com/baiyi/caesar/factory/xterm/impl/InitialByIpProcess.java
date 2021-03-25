@@ -1,8 +1,8 @@
 package com.baiyi.caesar.factory.xterm.impl;
 
 import com.baiyi.caesar.builder.TerminalSessionInstanceBuilder;
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.XTermRequestStatus;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;

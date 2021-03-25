@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.dingtalk;
 
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class DingtalkVO {
     @ApiModel
     public static class Dingtalk implements TagVO.ITags {
 
-        private int businessType;
+        private int businessType = BusinessType.DINGTALK.getType();
 
         @Override
         public int getBusinessId() {

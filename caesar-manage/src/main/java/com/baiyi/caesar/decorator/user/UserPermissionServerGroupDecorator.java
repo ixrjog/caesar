@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.user;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;

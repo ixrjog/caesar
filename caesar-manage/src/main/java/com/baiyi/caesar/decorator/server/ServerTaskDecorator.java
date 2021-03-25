@@ -89,8 +89,6 @@ public class ServerTaskDecorator {
     private void invokeMemberList(ServerTaskVO.ServerTask serverTask, List<OcServerTaskMember> memberList) {
         Map<String, List<ServerTaskMemberVO.ServerTaskMember>> memberMap = Maps.newHashMap();
 
-        ServerTaskVO.ServerTastStatistics taskStatistics = new ServerTaskVO.ServerTastStatistics();
-
         int successfulCount = 0;
         int failedCount = 0;
         int errorCount = 0;
@@ -117,10 +115,13 @@ public class ServerTaskDecorator {
                     break;
             }
         }
-        taskStatistics.setTotal(memberList.size());
-        taskStatistics.setSuccessfulCount(successfulCount);
-        taskStatistics.setFailedCount(failedCount);
-        taskStatistics.setErrorCount(errorCount);
+        ServerTaskVO.ServerTastStatistics taskStatistics = ServerTaskVO.ServerTastStatistics.builder()
+                .total(memberList.size())
+                .successfulCount(successfulCount)
+                .failedCount(failedCount)
+                .errorCount(errorCount)
+                .build();
+
         serverTask.setMemberMap(memberMap);
         serverTask.setTaskStatistics(taskStatistics);
     }

@@ -1,8 +1,8 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsApplicationServerGroup;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;

@@ -1,4 +1,4 @@
-package com.baiyi.caesar.common.base;
+package com.baiyi.caesar.domain.base;
 
 /**
  * @Author baiyi

@@ -8,8 +8,10 @@ import com.baiyi.caesar.decorator.env.EnvDecorator;
 import com.baiyi.caesar.decorator.jenkins.JenkinsParameterDecorator;
 import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
 import com.baiyi.caesar.decorator.jenkins.util.BuildTimeUtil;
+import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
 import com.baiyi.caesar.decorator.sonar.SonarQubeDecorator;
-import com.baiyi.caesar.decorator.user.UserDecorator;
+import com.baiyi.caesar.decorator.tag.TagDecorator;
+import com.baiyi.caesar.decorator.user.*;
 import com.baiyi.caesar.domain.vo.aliyun.OssBucketVO;
 import com.baiyi.caesar.domain.vo.base.AgoVO;
 import com.baiyi.caesar.domain.vo.base.BuildTimeVO;
@@ -19,7 +21,10 @@ import com.baiyi.caesar.domain.vo.dingtalk.DingtalkVO;
 import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
+import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.domain.vo.sonar.SonarQubeVO;
+import com.baiyi.caesar.domain.vo.tag.TagVO;
+import com.baiyi.caesar.domain.vo.user.UserGroupVO;
 import com.baiyi.caesar.domain.vo.user.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -60,6 +65,47 @@ public class BaseDecorator<T> {
 
     @Resource
     private SonarQubeDecorator sonarQubeDecorator;
+
+    @Resource
+    private UserGroupDecorator userGroupDecorator;
+
+    @Resource
+    private UserPermissionServerGroupDecorator userPermissionServerGroupDecorator;
+
+    @Resource
+    private UserApiTokenDecorator userApiTokenDecorator;
+
+    @Resource
+    private UserCredentialDecorator userCredentialDecorator;
+
+    @Resource
+    private TagDecorator tagDecorator;
+
+    @Resource
+    private ServerGroupDecorator serverGroupDecorator;
+
+    protected void decoratorServer(T t) {
+        // 环境
+        if (t instanceof EnvVO.IEnv)
+            envDecorator.decorator((EnvVO.IEnv) t);
+        // 标签
+        if (t instanceof TagVO.ITags)
+            tagDecorator.decorator((TagVO.ITags) t);
+
+        // 服务器组
+        if (t instanceof ServerGroupVO.IServerGroup)
+            serverGroupDecorator.decorator((ServerGroupVO.IServerGroup) t);
+    }
+
+    protected void decoratorUser(T t) {
+        if (t instanceof UserGroupVO.IUserGroups)
+            userGroupDecorator.decorator((UserGroupVO.IUserGroups) t);  // 装饰 用户组
+        if (t instanceof UserVO.User) {
+            userPermissionServerGroupDecorator.decorator((UserVO.User) t); // 装饰 服务器组
+            userApiTokenDecorator.decorator((UserVO.User) t);  // 装饰 ApiToken
+            userCredentialDecorator.decorator((UserVO.User) t);    // 装饰 凭据
+        }
+    }
 
     protected void decoratorJob(T t) {
         // 装饰 环境信息

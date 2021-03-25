@@ -1,6 +1,5 @@
 package com.baiyi.caesar.decorator.jenkins;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
@@ -46,7 +45,6 @@ public class JobTplDecorator {
             jobTpl.setJenkinsInstance(BeanCopierUtil.copyProperties(csJenkinsInstance, JenkinsInstanceVO.Instance.class));
 
         // 装饰 标签
-        jobTpl.setBusinessType(BusinessType.JENKINS_TPL.getType());
         tagDecorator.decorator(jobTpl);
 
         return jobTpl;

@@ -1,5 +1,6 @@
 package com.baiyi.caesar.domain.vo.gitlab;
 
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class GitlabGroupVO {
     @ApiModel
     public static class Group implements TagVO.ITags, GitlabInstanceVO.IInstance {
 
-        private int businessType;
+        private int businessType = BusinessType.GITLAB_GROUP.getType();
 
         @Override
         public int getBusinessId() {

@@ -1,6 +1,5 @@
 package com.baiyi.caesar.server.facade.impl;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.config.ServerAttributeConfig;
 import com.baiyi.caesar.common.config.serverAttribute.AttributeGroup;
@@ -9,6 +8,7 @@ import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.ServerAttributeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
 import com.baiyi.caesar.domain.generator.caesar.OcServerAttribute;
 import com.baiyi.caesar.domain.generator.caesar.OcServerGroup;

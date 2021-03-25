@@ -1,7 +1,7 @@
 package com.baiyi.caesar.decorator.application;
 
-import com.baiyi.caesar.common.base.BusinessType;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
+import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import org.springframework.stereotype.Component;
 

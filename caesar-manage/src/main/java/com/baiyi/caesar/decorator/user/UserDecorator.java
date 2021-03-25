@@ -1,6 +1,7 @@
 package com.baiyi.caesar.decorator.user;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
+import com.baiyi.caesar.decorator.base.BaseDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcUserGroup;
 import com.baiyi.caesar.domain.vo.user.UserGroupVO;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Component("UserDecorator")
-public class UserDecorator {
+public class UserDecorator extends BaseDecorator {
 
     @Resource
     private OcUserService ocUserService;
@@ -31,23 +32,11 @@ public class UserDecorator {
     private OcUserGroupService ocUserGroupService;
 
     @Resource
-    private UserApiTokenDecorator userApiTokenDecorator;
-
-    @Resource
-    private UserGroupDecorator userGroupDecorator;
-
-    @Resource
     private PersonRepo personRepo;
 
-    @Resource
-    private UserCredentialDecorator userCredentialDecorator;
-
-    @Resource
-    private UserPermissionServerGroupDecorator userPermissionServerGroupDecorator;
-
     public void decorator(UserVO.IUser iUser) {
-        OcUser ocUser =   ocUserService.queryOcUserByUsername(iUser.getUsername());
-        if(ocUser != null)
+        OcUser ocUser = ocUserService.queryOcUserByUsername(iUser.getUsername());
+        if (ocUser != null)
             iUser.setUser(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
     }
 
@@ -55,10 +44,7 @@ public class UserDecorator {
     public UserVO.User decorator(UserVO.User user, Integer extend) {
         user.setPassword("");
         if (extend == null || extend == 0) return user;
-        userGroupDecorator.decorator(user);  // 装饰 用户组
-        userPermissionServerGroupDecorator.decorator(user); // 装饰 服务器组
-        userApiTokenDecorator.decorator(user);  // 装饰 ApiToken
-        userCredentialDecorator.decorator(user);    // 装饰 凭据
+        decoratorUser(user);
         // 用户属性
         Map<String, Object> attributeMap = Maps.newHashMap();
         user.setAttributeMap(attributeMap);

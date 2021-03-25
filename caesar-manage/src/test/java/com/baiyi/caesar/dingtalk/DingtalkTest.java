@@ -54,7 +54,7 @@ public class DingtalkTest extends BaseUnit {
     void doNotifyTest() {
         DingtalkContent content = DingtalkContent.builder()
                 .msg(JSON.toJSONString(TestMessage.builder().build()))
-                .webHook(dingtalkConfig.getWebHook(dingtalkFacade.acqDingtalkTokenById(1)))
+                .webHook(dingtalkConfig.buildWebHook(dingtalkFacade.acqDingtalkTokenById(1)))
                 .build();
         try {
             dingtalkHandler.doNotify(content);
