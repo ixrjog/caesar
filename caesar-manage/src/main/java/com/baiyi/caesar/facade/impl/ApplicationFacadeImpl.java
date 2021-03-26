@@ -359,7 +359,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
-        return jenkinsCiJobFacade.queryJobEngine(buildType, jobId);
+        return jenkinsCiJobFacade.queryJobEngines(buildType, jobId);
     }
 
     @Override

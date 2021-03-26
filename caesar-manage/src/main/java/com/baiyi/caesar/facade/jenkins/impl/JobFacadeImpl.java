@@ -32,7 +32,6 @@ import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.DeploymentJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
-import com.baiyi.caesar.factory.jenkins.IDeploymentJobHandler;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.*;
 import com.offbytwo.jenkins.model.Build;
@@ -124,16 +123,13 @@ public class JobFacadeImpl implements JobFacade {
         BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
         if (!tryAuthorizedUserWrapper.isSuccess())
             return tryAuthorizedUserWrapper;
-        // 校正引擎
-        BusinessWrapper<Boolean> correctionWrapper = JobEngineFactory.getJobEngineByKey(BuildType.BUILD.getType())
-                .correctionJobEngine(csCiJob.getId());
-        if (!correctionWrapper.isSuccess())
-            return correctionWrapper;
+        correctionJobEngine(BuildType.BUILD.getType(), csCiJob.getId());    // 校正引擎
 
         BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType())
                 .build(csCiJob, buildParam);
         return BusinessWrapper.SUCCESS;
     }
+
 
     @Override
     public BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob) {
@@ -146,7 +142,7 @@ public class JobFacadeImpl implements JobFacade {
         // 应用管理员
         OcUserPermission ocUserPermission
                 = userPermissionFacade.queryUserPermissionByUniqueKey(operationUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId());
-        if (ocUserPermission != null && "ADMIN".equalsIgnoreCase(ocUserPermission.getRoleName()))
+        if (ocUserPermission != null && "ADMIN" .equalsIgnoreCase(ocUserPermission.getRoleName()))
             return BusinessWrapper.SUCCESS;
 
         List<OcUserPermission> permissions = userPermissionFacade.queryBusinessPermission(BusinessType.APPLICATION_BUILD_JOB.getType(), csCiJob.getId());
@@ -178,14 +174,8 @@ public class JobFacadeImpl implements JobFacade {
     @Override
     public BusinessWrapper<Boolean> buildCdJob(JobDeploymentParam.DeploymentParam deploymentParam) {
         CsCdJob csCdJob = csCdJobService.queryCsCdJobById((deploymentParam.getCdJobId()));
-        // 校正引擎
-        IJobEngine iJobEngine = JobEngineFactory.getJobEngineByKey(BuildType.DEPLOYMENT.getType());
-        BusinessWrapper<Boolean> correctionWrapper = iJobEngine.correctionJobEngine(csCdJob.getId());
-        if (!correctionWrapper.isSuccess())
-            return correctionWrapper;
-
-        IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(csCdJob.getJobType());
-        iDeploymentJobHandler.deployment(csCdJob, deploymentParam);
+        correctionJobEngine(BuildType.DEPLOYMENT.getType(), csCdJob.getId());    // 校正引擎
+        DeploymentJobHandlerFactory.getDeploymentJobByKey(csCdJob.getJobType()).deployment(csCdJob, deploymentParam);
         return BusinessWrapper.SUCCESS;
     }
 
@@ -242,7 +232,7 @@ public class JobFacadeImpl implements JobFacade {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (InterruptedException ie) {
-            log.error("error {}",ie.getMessage());
+            log.error("error {}", ie.getMessage());
             ie.printStackTrace();
         }
 

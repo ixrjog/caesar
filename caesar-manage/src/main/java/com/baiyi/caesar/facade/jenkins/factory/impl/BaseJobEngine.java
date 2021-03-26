@@ -75,18 +75,20 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     @Override
     public BusinessWrapper<Boolean> correctionJobEngine(int jobId) {
         List<CsJobEngine> csJobEngines = acqJobEngine(jobId);
-        if (!CollectionUtils.isEmpty(csJobEngines))
-            for (CsJobEngine csJobEngine : csJobEngines) {
-                CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
-                if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
-                    try {
-                        JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
-                        saveCsJobEngineBuildNumber(csJobEngine, job.getNextBuildNumber());
-                    } catch (Exception ex) {
-                        return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
-                    }
+        if (CollectionUtils.isEmpty(csJobEngines)) return BusinessWrapper.SUCCESS;
+
+        for (CsJobEngine csJobEngine : csJobEngines) {
+            CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceById(csJobEngine.getJenkinsInstanceId());
+            if(!csJenkinsInstance.getIsActive()) break; // 引擎被关闭
+            if (jenkinsServerHandler.isActive(csJenkinsInstance.getName())) {
+                try {
+                    JobWithDetails job = jenkinsServerHandler.getJob(csJenkinsInstance.getName(), csJobEngine.getName());
+                    saveCsJobEngineBuildNumber(csJobEngine, job.getNextBuildNumber());
+                } catch (Exception ex) {
+                    return new BusinessWrapper<>(ErrorEnum.JENKINS_CORRECTION_JOB_ENGINE);
                 }
             }
+        }
         return BusinessWrapper.SUCCESS;
     }
 

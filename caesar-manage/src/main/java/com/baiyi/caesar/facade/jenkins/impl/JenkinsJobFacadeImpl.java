@@ -79,10 +79,9 @@ public class JenkinsJobFacadeImpl implements JenkinsJobFacade {
     }
 
     @Override
-    public List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId) {
-        List<CsJobEngine> list = csJobEngineService.queryCsJobEngineByJobId(buildType, jobId);
-        return list.stream().map(e ->
-                ciJobEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class))
-        ).collect(Collectors.toList());
+    public List<JobEngineVO.JobEngine> queryJobEngines(int buildType, int jobId) {
+        return csJobEngineService.queryCsJobEngineByJobId(buildType, jobId).stream().map(e ->
+                        ciJobEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class))
+                ).collect(Collectors.toList());
     }
 }

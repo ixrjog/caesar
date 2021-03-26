@@ -32,5 +32,5 @@ public interface JenkinsJobFacade {
 
 
 
-    List<JobEngineVO.JobEngine> queryJobEngine(int buildType, int jobId);
+    List<JobEngineVO.JobEngine> queryJobEngines(int buildType, int jobId);
 }
