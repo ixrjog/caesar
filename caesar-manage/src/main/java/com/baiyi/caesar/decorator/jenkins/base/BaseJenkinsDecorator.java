@@ -101,9 +101,9 @@ public class BaseJenkinsDecorator<T> {
      */
     protected void decoratorJobDetailUrl(T t) {
         if (!(t instanceof JobEngineVO.IJobEngine)) return;
-        if (!(t instanceof JobBuildVO.iJobBuild)) return;
+        if (!(t instanceof JobBuildVO.IJobBuild)) return;
         JobEngineVO.IJobEngine iJobEngine = (JobEngineVO.IJobEngine) t;
-        JobBuildVO.iJobBuild iJobBuild = (JobBuildVO.iJobBuild) t;
+        JobBuildVO.IJobBuild iJobBuild = (JobBuildVO.IJobBuild) t;
 
         String url = Joiner.on("/").skipNulls().join(iJobEngine.getJobEngine().getJenkinsInstance().getUrl(),
                 "blue/organizations/jenkins",

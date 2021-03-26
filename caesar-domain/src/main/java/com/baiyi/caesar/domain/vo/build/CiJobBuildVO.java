@@ -34,7 +34,7 @@ public class CiJobBuildVO {
     @Data
     @NoArgsConstructor
     @ApiModel
-    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, BuildArtifactVO.IBuildArtifacts, JobEngineVO.IJobEngine, JobBuildVO.iJobBuild,
+    public static class JobBuild implements UserVO.IUser, AgoVO.IAgo, BuildTimeVO.IBuildTime, BuildArtifactVO.IBuildArtifacts, JobEngineVO.IJobEngine, JobBuildVO.IJobBuild,
             IBuildChanges, BuildExecutorVO.IBuildExecutors, Serializable {
 
         private static final long serialVersionUID = -448531182053453517L;

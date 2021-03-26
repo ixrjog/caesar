@@ -7,7 +7,7 @@ package com.baiyi.caesar.domain.vo.base;
  */
 public class JobBuildVO {
 
-    public interface iJobBuild {
+    public interface IJobBuild {
 
         String getJobName();
 
