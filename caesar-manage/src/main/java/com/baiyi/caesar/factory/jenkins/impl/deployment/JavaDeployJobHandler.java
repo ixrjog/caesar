@@ -70,9 +70,6 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
                 .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCdJob.getJobBuildNumber(), jobParamDetail))
                 .build();
         jobParamDetail.putParams(jenkinsJobParamsMap.getParams());
-
-
-
         return jobParamDetail;
     }
 

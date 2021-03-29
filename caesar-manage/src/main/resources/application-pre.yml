@@ -12,7 +12,7 @@ white:
 caesar:
   version: 1.0.0
   openTask: true
-  url: https://caesar.ops.yangege.cn
+  url: https://caesar.xinc818.com
 
 spring:
   profiles:

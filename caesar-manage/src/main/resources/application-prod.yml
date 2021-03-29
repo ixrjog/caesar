@@ -10,9 +10,9 @@ white:
   urls: /*.js;/*.css;/*.jpg;/swagger-resources/*;/error;/webjars/*;/swagger-ui/*;v2/*;
 
 caesar:
-  version: 1.0.0
+  version: 1.0.1
   openTask: true
-  url: https://caesar.ops.yangege.cn
+  url: https://caesar.xinc818.com
 
 spring:
   profiles:

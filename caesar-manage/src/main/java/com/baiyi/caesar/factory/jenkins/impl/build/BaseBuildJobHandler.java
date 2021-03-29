@@ -101,7 +101,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private EnvFacade envFacade;
 
     @Resource
-    private TaskEngineCenter jobEngineCenter;
+    private TaskEngineCenter taskEngineCenter;
 
     public static final boolean SEND_DINGTALK_MESSAGE = false;
 
@@ -197,7 +197,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                     .jobParamDetail(parametersContext)
                     .build();
             buildStartNotify(context); // 通知
-            jobEngineCenter.trackBuildTask(context);  // 追踪任务
+            taskEngineCenter.trackBuildTask(context);  // 追踪任务
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -240,7 +240,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsApplicationScmMember csApplicationScmMember = csApplicationScmMemberService.queryCsApplicationScmMemberById(scmMemberId);
         return csGitlabProjectService.queryCsGitlabProjectById(csApplicationScmMember.getScmId());
     }
-
 
     private void buildStartNotify(BuildJobContext context) {
         if (context.getJobBuild().getIsSilence()) // 消息静默

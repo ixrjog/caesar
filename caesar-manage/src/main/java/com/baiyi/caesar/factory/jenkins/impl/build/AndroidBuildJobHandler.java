@@ -33,10 +33,10 @@ public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuil
         JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
-                .paramEntry(BUILD_TYPE,buildParam)
-                .paramEntry(PRODUCT_FLAVOR,buildParam)
+                .paramEntry(BUILD_TYPE, buildParam)
+                .paramEntry(PRODUCT_FLAVOR, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
-                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), context))
+                .paramEntry(OSS_JOB_URL, JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), context))
                 .build();
         context.putParams(jenkinsJobParamsMap.getParams());
 

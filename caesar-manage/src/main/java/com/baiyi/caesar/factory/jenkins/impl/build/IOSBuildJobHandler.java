@@ -36,7 +36,7 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
                 .paramEntry(POD_UPDATE, buildParam)
                 .paramEntry(PUB_GET, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
-                .paramEntry(OSS_JOB_URL,JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), context))
+                .paramEntry(OSS_JOB_URL, JobParamUtils.getOssJobUrl(csCiJob.getJobBuildNumber(), context))
                 .build();
         context.putParams(jenkinsJobParamsMap.getParams());
 

@@ -231,7 +231,7 @@ public class LdapHandler {
             DirContextAdapter adapter = (DirContextAdapter) ldapTemplate.lookup(ldapConfig.buildUserDN(username));
             String cn = adapter.getStringAttribute(ldapConfig.getCustomByKey(LdapConfig.Attributes.USER_ID));
             if (username.equalsIgnoreCase(cn)) return true;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return false;
     }
