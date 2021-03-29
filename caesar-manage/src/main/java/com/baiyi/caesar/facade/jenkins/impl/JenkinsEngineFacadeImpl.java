@@ -107,8 +107,16 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
             computerMap.keySet().forEach(k -> {
                 if (!k.equals(MASTER)) {
                     List<EngineVO.Children> executors = buildExecutors(computerMap.get(k));
+                    Computer computer = computerMap.get(k);
+                    String name = k;
+                    try {
+                        if (computer.details().getOffline())
+                            name += "offline";
+                    } catch (IOException e) {
+                        log.error("查询节点状态错误!, name = {}, err= {} ", k, e.getMessage());
+                    }
                     EngineVO.Children node = EngineVO.Children.builder()
-                            .name(k)
+                            .name(name)
                             .children(executors)
                             .value(executors.size())
                             .build();
