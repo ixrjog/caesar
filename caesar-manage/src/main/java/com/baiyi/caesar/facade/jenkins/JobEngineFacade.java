@@ -9,7 +9,7 @@ import java.util.List;
  * @Date 2020/8/3 4:33 下午
  * @Version 1.0
  */
-public interface JenkinsJobFacade {
+public interface JobEngineFacade {
 
 
     /**

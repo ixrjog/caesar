@@ -8,7 +8,7 @@ import com.baiyi.caesar.domain.vo.tree.EngineVO;
  * @Version 1.0
  */
 
-public interface JenkinsEngineFacade {
+public interface EngineFacade {
 
     EngineVO.Children buildEngineChart();
 

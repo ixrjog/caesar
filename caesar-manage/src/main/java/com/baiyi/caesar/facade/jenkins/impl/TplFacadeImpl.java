@@ -4,7 +4,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
-import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
+import com.baiyi.caesar.facade.jenkins.TplFacade;
 import com.baiyi.caesar.jenkins.config.JenkinsConfig;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Component
-public class JenkinsTplFacadeImpl implements JenkinsTplFacade {
+public class TplFacadeImpl implements TplFacade {
 
     @Resource
     private JenkinsConfig jenkinsConfig;

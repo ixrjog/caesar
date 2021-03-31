@@ -11,7 +11,7 @@ import java.util.List;
  * @Version 1.0
  */
 
-public interface JenkinsTplFacade {
+public interface TplFacade {
 
     String getJobContent(int instanceId, String jobName) throws IOException;
 

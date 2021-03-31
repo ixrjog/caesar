@@ -249,18 +249,23 @@
             <url>http://mvnrepository.com/artifact/</url>
         </repository>
 
-        <!--        <repository>-->
-        <!--            <id>maven-ali</id>-->
-        <!--            <url>https://maven.aliyun.com/repository/public/</url>-->
-        <!--            <releases>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </releases>-->
-        <!--            <snapshots>-->
-        <!--                <enabled>true</enabled>-->
-        <!--                <updatePolicy>always</updatePolicy>-->
-        <!--                <checksumPolicy>fail</checksumPolicy>-->
-        <!--            </snapshots>-->
-        <!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>maven repo1</id>-->
+<!--            <url>https://repo1.maven.org/maven2/</url>-->
+<!--        </repository>-->
+
+        <repository>
+            <id>maven-ali</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
 
     </repositories>
 
@@ -283,12 +288,12 @@
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Internal Snapshot</name>
-            <url>http://nexus.ops.yangege.cn/repository/maven-snapshots/</url>
+            <url>http://maven.xinc818.com/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>nexus-releases</id>
             <name>Releases</name>
-            <url>http://nexus.ops.yangege.cn/repository/maven-releases/</url>
+            <url>http://maven.xinc818.com/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
     <!--    <build>-->

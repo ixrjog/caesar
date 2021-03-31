@@ -35,6 +35,8 @@ public class TimeUtil {
      */
     public static long secondTime = 1000;
 
+    public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm.SSS'Z'";
+
     /**
      * 字符串时间格式
      */
@@ -355,6 +357,15 @@ public class TimeUtil {
 
     public static Date acqGmtDate(String time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        try {
+            return format.parse(time);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
+    public static Date convertTime(String time,String timeFormat){
+        SimpleDateFormat format = new SimpleDateFormat(timeFormat);
         try {
             return format.parse(time);
         } catch (ParseException e) {

@@ -25,7 +25,7 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.ServerGroupFacade;
 import com.baiyi.caesar.facade.UserFacade;
 import com.baiyi.caesar.facade.UserPermissionFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
@@ -111,7 +111,7 @@ public class JobFacadeImpl implements JobFacade {
     private RedisUtil redisUtil;
 
     @Resource
-    private JenkinsJobFacade jenkinsJobFacade;
+    private JobEngineFacade jenkinsJobFacade;
 
     @Resource
     private UserPermissionFacade userPermissionFacade;

@@ -1,18 +1,16 @@
 package com.baiyi.caesar.jenkins.handler;
 
-import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
-import com.baiyi.caesar.jenkins.http.Authentication;
-import com.baiyi.caesar.jenkins.http.HttpUtil;
-import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
+import com.baiyi.caesar.jenkins.api.clinet.JenkinsClient;
+import com.baiyi.caesar.jenkins.api.mapper.PipelineNodeMapper;
+import com.baiyi.caesar.jenkins.api.model.PipelineNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -24,41 +22,26 @@ import java.io.IOException;
 public class JenkinsBlueHandler {
 
     @Resource
-    private CsJenkinsInstanceService csJenkinsInstanceService;
+    private JenkinsClient jenkinsClient;
 
-    @Resource
-    private StringEncryptor stringEncryptor;
+    public interface BlueURL {
+        String BASE = "blue/rest/organizations/jenkins";
+        String RUNS = "runs";
+        String NODES = "nodes";
+        String PIPLINES = "pipelines";
+    }
 
-
-    public void test1() {
-        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceByName("master-1");
-        Authentication authentication = Authentication.FREE;
-        String api = Joiner.on("/").join(csJenkinsInstance.getUrl(),
-                "blue/rest/jwt-auth/token");
+    public List<PipelineNode> getJobRunNodes(String serverName, String jobName, Integer buildNumber) {
+        // https://cc1.xinc818.com/blue/rest/organizations/jenkins/pipelines/ACCOUNT_account-server-build-prod/runs/1/nodes/?limit=10000
+        String api = Joiner.on("/").join(BlueURL.BASE, BlueURL.PIPLINES, jobName, BlueURL.RUNS, buildNumber, BlueURL.NODES);
         try {
-            JsonNode jn = HttpUtil.httpGetExecutor(api, Maps.newHashMap(), authentication);
-            System.err.println(jn.toString());
+            JsonNode jn =jenkinsClient.get(serverName, api);
+            return new PipelineNodeMapper().mapFromJson(jn);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
-    public void test2() {
 
-        CsJenkinsInstance csJenkinsInstance = csJenkinsInstanceService.queryCsJenkinsInstanceByName("master-1");
-        Authentication authentication = Authentication.builder()
-                .header(Authentication.Header.AUTHENTICATION)
-                .token("Bearer " + stringEncryptor.decrypt(csJenkinsInstance.getToken()))
-                .build();
-        String api = Joiner.on("/").join(csJenkinsInstance.getUrl(),
-                "blue/rest/organizations/jenkins/pipelines/ACCOUNT_account-server-build-prod/runs/1/nodes/");
-        try {
-            JsonNode jn = HttpUtil.httpGetExecutor(api, Maps.newHashMap(), authentication);
-            System.err.println(jn.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

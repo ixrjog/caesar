@@ -21,7 +21,7 @@ import com.baiyi.caesar.domain.param.user.UserBusinessGroupParam;
 import com.baiyi.caesar.domain.vo.application.*;
 import com.baiyi.caesar.domain.vo.server.ServerGroupVO;
 import com.baiyi.caesar.facade.*;
-import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.opscloud.OpscloudServer;
@@ -88,7 +88,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private ApplicationEngineDecorator applicationEngineDecorator;
 
     @Resource
-    private JenkinsJobFacade jenkinsCiJobFacade;
+    private JobEngineFacade jenkinsCiJobFacade;
 
     @Resource
     private UserPermissionFacade userPermissionFacade;

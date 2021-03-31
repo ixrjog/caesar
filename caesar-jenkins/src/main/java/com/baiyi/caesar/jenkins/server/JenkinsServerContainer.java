@@ -31,24 +31,17 @@ public class JenkinsServerContainer implements InitializingBean {
     @Resource
     private StringEncryptor stringEncryptor;
 
-    private JenkinsServer buildServer(CsJenkinsInstance jenkinsInstance) {
-        try {
-            URI host = new URI(jenkinsInstance.getUrl());
-            return new JenkinsServer(host, jenkinsInstance.getUsername(), stringEncryptor.decrypt(jenkinsInstance.getToken()));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private JenkinsServer buildServer(CsJenkinsInstance jenkinsInstance) throws URISyntaxException {
+        return new JenkinsServer(new URI(jenkinsInstance.getUrl()), jenkinsInstance.getUsername(), stringEncryptor.decrypt(jenkinsInstance.getToken()));
     }
 
     private void initialServer() {
         JenkinsServerContainer.serverContainer = Maps.newHashMap();
-        csJenkinsInstanceService.queryAll().forEach(e -> {
+        csJenkinsInstanceService.queryAll().forEach(i -> {
             try {
-                JenkinsServer jenkinsServer = buildServer(e);
-                if (jenkinsServer != null)
-                    JenkinsServerContainer.serverContainer.put(e.getName(), jenkinsServer);
-            } catch (Exception ignored) {
+                JenkinsServerContainer.serverContainer.put(i.getName(), buildServer(i));
+            } catch (URISyntaxException e) {
+                log.error("创建Jenkins服务器失败! name = {}", i.getName());
             }
         });
     }

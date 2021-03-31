@@ -1,4 +1,4 @@
-package com.baiyi.caesar.jenkins.http;
+package com.baiyi.caesar.jenkins.api.http;
 
 import lombok.Builder;
 import lombok.Data;

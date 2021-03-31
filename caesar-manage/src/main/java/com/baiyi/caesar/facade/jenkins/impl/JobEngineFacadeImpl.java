@@ -6,7 +6,7 @@ import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
-import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class JenkinsJobFacadeImpl implements JenkinsJobFacade {
+public class JobEngineFacadeImpl implements JobEngineFacade {
 
     @Resource
     private CsJobEngineService csJobEngineService;

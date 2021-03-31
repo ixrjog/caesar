@@ -3,7 +3,7 @@ package com.baiyi.caesar.facade.jenkins.impl;
 import com.baiyi.caesar.common.config.CachingConfig;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.tree.EngineVO;
-import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
+import com.baiyi.caesar.facade.jenkins.EngineFacade;
 import com.baiyi.caesar.factory.jenkins.model.JobBuild;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
+public class EngineFacadeImpl implements EngineFacade {
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
@@ -59,7 +59,7 @@ public class JenkinsEngineFacadeImpl implements JenkinsEngineFacade {
                 .children(instances)
                 .value(instances.size())
                 .build();
-        JenkinsEngineFacadeImpl.chart = chart;
+        EngineFacadeImpl.chart = chart;
         return chart;
     }
 

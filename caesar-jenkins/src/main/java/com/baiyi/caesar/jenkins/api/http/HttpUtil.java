@@ -1,4 +1,4 @@
-package com.baiyi.caesar.jenkins.http;
+package com.baiyi.caesar.jenkins.api.http;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.common.util.JSONMapper;

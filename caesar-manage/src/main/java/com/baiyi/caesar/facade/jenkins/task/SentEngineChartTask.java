@@ -28,7 +28,7 @@
 package com.baiyi.caesar.facade.jenkins.task;
 
 import com.alibaba.fastjson.JSON;
-import com.baiyi.caesar.facade.jenkins.impl.JenkinsEngineFacadeImpl;
+import com.baiyi.caesar.facade.jenkins.impl.EngineFacadeImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.websocket.Session;
@@ -53,8 +53,8 @@ public class SentEngineChartTask implements Runnable {
     public void run() {
         while (session.isOpen()) {
             try {
-                if (JenkinsEngineFacadeImpl.chart != null) {
-                    session.getBasicRemote().sendText(JSON.toJSONString(JenkinsEngineFacadeImpl.chart));
+                if (EngineFacadeImpl.chart != null) {
+                    session.getBasicRemote().sendText(JSON.toJSONString(EngineFacadeImpl.chart));
                 }
                 Thread.sleep(SLEEP);
             } catch (Exception ex) {

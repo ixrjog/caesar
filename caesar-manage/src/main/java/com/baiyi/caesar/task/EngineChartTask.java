@@ -1,6 +1,6 @@
 package com.baiyi.caesar.task;
 
-import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
+import com.baiyi.caesar.facade.jenkins.EngineFacade;
 import com.baiyi.caesar.task.base.BaseTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 public class EngineChartTask extends BaseTask {
 
     @Resource
-    private JenkinsEngineFacade jenkinsEngineFacade;
+    private EngineFacade jenkinsEngineFacade;
 
     /**
      * 引擎视图

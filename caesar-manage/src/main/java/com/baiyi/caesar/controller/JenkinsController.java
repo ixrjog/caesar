@@ -13,7 +13,7 @@ import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.tree.EngineVO;
 import com.baiyi.caesar.facade.JenkinsFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsEngineFacade;
+import com.baiyi.caesar.facade.jenkins.EngineFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class JenkinsController {
     private JenkinsFacade jenkinsFacade;
 
     @Resource
-    private JenkinsEngineFacade jenkinsEngineFacade;
+    private EngineFacade jenkinsEngineFacade;
 
     @ApiOperation(value = "设置Jenkins实例是否有效")
     @GetMapping(value = "/instance/active/set", produces = MediaType.APPLICATION_JSON_VALUE)

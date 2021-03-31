@@ -13,6 +13,7 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>com.baiyi</groupId>
             <artifactId>caesar-common</artifactId>
@@ -28,6 +29,13 @@
             <artifactId>jenkins-client</artifactId>
             <version>0.3.8</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.kev1nst</groupId>-->
+<!--            <artifactId>jenkins-rest</artifactId>-->
+<!--            <version>1.0.1</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
 </project>

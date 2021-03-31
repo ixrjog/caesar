@@ -22,7 +22,7 @@ import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.facade.JenkinsFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsTplFacade;
+import com.baiyi.caesar.facade.jenkins.TplFacade;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.jenkins.server.JenkinsServerContainer;
 import com.baiyi.caesar.service.jenkins.*;
@@ -64,7 +64,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     private StringEncryptor stringEncryptor;
 
     @Resource
-    private JenkinsTplFacade jenkinsTplFacade;
+    private TplFacade jenkinsTplFacade;
 
     @Resource
     private CsCiJobService csCiJobService;

@@ -10,7 +10,7 @@ import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 import com.baiyi.caesar.facade.ServerBaseFacade;
-import com.baiyi.caesar.facade.jenkins.JenkinsJobFacade;
+import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.factory.engine.ITaskEngineHandler;
 import com.baiyi.caesar.factory.engine.TaskEngineHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
@@ -49,7 +49,7 @@ public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements
     private CsJobEngineService csJobEngineService;
 
     @Resource
-    private JenkinsJobFacade jenkinsJobFacade;
+    private JobEngineFacade jenkinsJobFacade;
 
     @Resource
     private CsJenkinsInstanceService csJenkinsInstanceService;
