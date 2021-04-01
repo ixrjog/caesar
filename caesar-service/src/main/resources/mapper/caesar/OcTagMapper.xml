@@ -13,12 +13,11 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
 
-    <select id="queryOcTagByParam"
-            parameterType="com.baiyi.caesar.domain.param.tag.TagParam$TagPageQuery"
+    <select id="queryOcTagByParam" parameterType="com.baiyi.caesar.domain.param.tag.TagParam$TagPageQuery"
             resultMap="BaseResultMap">
         select * from oc_tag
         <where>
-            <if test="tagKey != null and tagKey!= ''">
+            <if test="tagKey != null and tagKey != ''">
                 and tag_key like "%" #{tagKey} "%"
             </if>
         </where>
@@ -28,21 +27,25 @@
     <select id="queryOcTagByBusinessParam" parameterType="com.baiyi.caesar.domain.param.tag.TagParam$BusinessQuery"
             resultMap="BaseResultMap">
         select * from oc_tag
-        where id in ( select tag_id from oc_business_tag where business_id = #{businessId} and business_type =
-        #{businessType} )
-        <if test="tagKey != null and tagKey!= ''">
-            and tag_key like "%" #{tagKey} "%"
-        </if>
+        <where>
+            id in ( select tag_id from oc_business_tag where business_id = #{businessId} and business_type =
+            #{businessType} )
+            <if test="tagKey != null and tagKey!= ''">
+                and tag_key like "%" #{tagKey} "%"
+            </if>
+        </where>
     </select>
 
     <select id="queryOcTagNotInByBusinessParam"
             parameterType="com.baiyi.caesar.domain.param.tag.TagParam$BusinessQuery"
             resultMap="BaseResultMap">
         select * from oc_tag
-        where id not in ( select tag_id from oc_business_tag where business_id = 1 and business_type = 1 )
-        <if test="tagKey != null and tagKey!= ''">
-            and tag_key like "%" #{tagKey} "%"
-        </if>
+        <where>
+            id not in ( select tag_id from oc_business_tag where business_id = 1 and business_type = 1 )
+            <if test="tagKey != null and tagKey!= ''">
+                and tag_key like "%" #{tagKey} "%"
+            </if>
+        </where>
     </select>
 
 </mapper>
