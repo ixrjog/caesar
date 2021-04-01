@@ -41,7 +41,7 @@ public class PipelineController {
 
     private Session session = null;
 
-    private static String username = null;
+    private String username = null;
 
     // 超时时间1H
     public static final Long WEBSOCKET_TIMEOUT = 60 * 60 * 1000L;
@@ -102,16 +102,17 @@ public class PipelineController {
             InitialMessage initialMessage = buildInitialMessage(message);
             String username = authBaseFacade.getUserByToken(initialMessage.getToken());
             SessionUtil.setUsername(username); // 设置当前会话用户身份
-            PipelineController.username = username;
+            this.username = username;
             return;
         }
         if (PipelineStatus.QUERY_TASK.getCode().equals(status)) {
             QueryMessage queryMessage = buildQueryMessage(message);
-            List<JenkinsPipelineVO.Pipeline> pipelines ;
+            List<JenkinsPipelineVO.Pipeline> pipelines;
+            log.info("查询流水线任务详情! username = {}", this.username);
             if (queryMessage.getBuildType() == 0) {
-                pipelines = pipelineFacade.queryBuildJobPipelines(PipelineController.username);
+                pipelines = pipelineFacade.queryBuildJobPipelines(this.username);
             } else {
-                pipelines = pipelineFacade.queryDeploymentJobPipelines(PipelineController.username);
+                pipelines = pipelineFacade.queryDeploymentJobPipelines(this.username);
             }
             String jsonStr = JSON.toJSONString(pipelines);
             try {
@@ -119,7 +120,7 @@ public class PipelineController {
             } catch (IOException e) {
                 log.error("发送数据错误！ sessionId = {}", sessionId);
             }
-            pipelineFacade.queryBuildJobPipelines(PipelineController.username);
+            pipelineFacade.queryBuildJobPipelines(this.username);
         }
     }
 

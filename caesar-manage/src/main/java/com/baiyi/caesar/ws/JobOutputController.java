@@ -60,7 +60,6 @@ public final class JobOutputController {
         }
     }
 
-
     /**
      * 连接关闭调用的方法
      */
