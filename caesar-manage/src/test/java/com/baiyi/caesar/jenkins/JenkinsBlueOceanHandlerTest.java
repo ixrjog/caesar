@@ -23,7 +23,7 @@ public class JenkinsBlueOceanHandlerTest extends BaseUnit {
 
     @Test
     void pipelineNodeTest() {
-        List<PipelineNode> nodes = jenkinsBlueOceanHandler.getJobRunNodes("master-1", "ACCOUNT_account-server-build-prod", 1);
+        List<PipelineNode> nodes = jenkinsBlueOceanHandler.queryJobRunNodes("master-1", "ACCOUNT_account-server-build-prod", 1);
         nodes.forEach(e -> {
             System.err.println(JSON.toJSON(e));
         });

@@ -92,6 +92,16 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     }
 
     @Override
+    public List<CsCdJobBuild> queryMyCdJobBuild(String username, int size){
+        PageHelper.startPage(1, size);
+        Example example = new Example(CsCdJobBuild.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username", username);
+        example.setOrderByClause("create_time desc");
+        return csCdJobBuildMapper.selectByExample(example);
+    }
+
+    @Override
     public CsCdJobBuild queryCsCdJobBuildByUniqueKey(int cdJobId, int jobBuildNumber) {
         Example example = new Example(CsCdJobBuild.class);
         Example.Criteria criteria = example.createCriteria();

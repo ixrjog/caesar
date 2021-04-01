@@ -34,6 +34,7 @@ public interface CsCdJobBuildService {
 
     void deleteCsCdJobBuildById(int id);
 
+    List<CsCdJobBuild> queryMyCdJobBuild(String username, int size);
 
     CsCdJobBuild queryCsCdJobBuildByUniqueKey(int cdJobId, int jobBuildNumber);
 

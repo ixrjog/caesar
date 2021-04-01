@@ -88,26 +88,21 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
-    public List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
-
-//    <select id="queryCsCiJobBuildArtifactParam"
-//        parameterType="com.baiyi.caesar.domain.param.jenkins.JobBuildParam$JobBuildArtifactQuery"
-//        resultMap="BaseResultMap">
-//        select * from cs_ci_job_build as a0
-//        where ci_job_id = #{ciJobId}
-//        and build_status = 'SUCCESS'
-//        and (select count(*) from cs_job_build_artifact where build_id = a0.id) != 0
-//        order by job_build_number desc
-//    </select>
-
-
+    public List<CsCiJobBuild> queryMyCiJobBuild(String username,int size) {
+        PageHelper.startPage(1, size);
         Example example = new Example(CsCiJobBuild.class);
         Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username", username);
+        example.setOrderByClause("create_time desc");
+        return csCiJobBuildMapper.selectByExample(example);
+    }
 
+    @Override
+    public List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query) {
+        Example example = new Example(CsCiJobBuild.class);
+        Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("ciJobId", query.getCiJobId());
         criteria.andEqualTo("buildStatus", "SUCCESS");
-
-
         example.setOrderByClause("job_build_number desc");
         return csCiJobBuildMapper.selectByExampleAndRowBounds(example, new RowBounds(0, query.getSize()));
     }

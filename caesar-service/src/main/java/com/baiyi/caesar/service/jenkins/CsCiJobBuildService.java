@@ -30,6 +30,14 @@ public interface CsCiJobBuildService {
 
     List<CsCiJobBuild> queryCiJobBuildByCiJobId(int ciJobId);
 
+    /**
+     * 查询我的任务
+     * @param username
+     * @param size
+     * @return
+     */
+    List<CsCiJobBuild> queryMyCiJobBuild(String username,int size);
+
     List<CsCiJobBuild> queryCiJobBuildArtifact(JobBuildParam.JobBuildArtifactQuery query);
 
     CsCiJobBuild queryCiJobBuildById(int id);

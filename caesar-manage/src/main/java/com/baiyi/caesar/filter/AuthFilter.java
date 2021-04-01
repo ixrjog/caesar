@@ -39,7 +39,8 @@ public class AuthFilter extends OncePerRequestFilter {
             "/webjars",
             "/ws/xterm",
             "/ws/engine",
-            "/ws/job/output"
+            "/ws/job/output",
+            "/ws/pipeline"
     };
 
     @Override

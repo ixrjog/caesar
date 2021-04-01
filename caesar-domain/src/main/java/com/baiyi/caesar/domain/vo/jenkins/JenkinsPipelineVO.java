@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * @Author baiyi
  * @Date 2021/3/30 6:04 下午
@@ -11,11 +14,28 @@ import lombok.Data;
  */
 public class JenkinsPipelineVO {
 
+
     @Data
     @Builder
     @ApiModel
-    public static class Node {
+    public static class Pipeline implements Serializable {
 
+        private static final long serialVersionUID = -1020196514240621058L;
+        private List<Node> nodes;
+        private String jobName;
+        private Integer jobBuildNumber;
+        private Integer id;
+        private Boolean isRunning;
+
+    }
+
+
+    @Data
+    @Builder
+    @ApiModel
+    public static class Node implements Serializable {
+
+        private static final long serialVersionUID = -1465972308441846486L;
         private String name;
         private String state;
         @Builder.Default

@@ -39,6 +39,7 @@ public class CachingConfig extends CachingConfigurerSupport {
         String SETTING = "Caesar:Setting";
         String ENGINE_CHART = "Caesar:EngineChart";
         String DASHBOARD = "Caesar:Dashboard";
+        String JOB_RUN_NODES = "Caesar:JobRunNodes";
     }
 
 
@@ -51,6 +52,7 @@ public class CachingConfig extends CachingConfigurerSupport {
         cacheNames.add(CacheRepositories.DASHBOARD);
         cacheNames.add(CacheRepositories.SETTING);
         cacheNames.add(CacheRepositories.ENGINE_CHART);
+        cacheNames.add(CacheRepositories.JOB_RUN_NODES);
         // 使用自定义的缓存配置初始化一个cacheManager
         RedisCacheManager cacheManager = RedisCacheManager.builder(factory)
                 // 注意这两句的调用顺序，一定要先调用该方法设置初始化的缓存名，
@@ -71,6 +73,7 @@ public class CachingConfig extends CachingConfigurerSupport {
         configMap.put(CacheRepositories.SETTING, config.entryTtl(Duration.ofMinutes(10)));
         configMap.put(CacheRepositories.ENGINE_CHART, config.entryTtl(Duration.ofSeconds(5)));
         configMap.put(CacheRepositories.DASHBOARD, config.entryTtl(Duration.ofMinutes(1)));
+        configMap.put(CacheRepositories.JOB_RUN_NODES,config.entryTtl(Duration.ofMinutes(10)));
         return configMap;
     }
 

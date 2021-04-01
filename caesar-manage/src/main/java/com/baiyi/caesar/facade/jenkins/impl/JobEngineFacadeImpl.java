@@ -84,4 +84,11 @@ public class JobEngineFacadeImpl implements JobEngineFacade {
                         ciJobEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class))
                 ).collect(Collectors.toList());
     }
+
+    @Override
+    public String acqJenkinsServerName(Integer jobEngineId) {
+        CsJobEngine jobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
+        CsJenkinsInstance instance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobEngine.getJenkinsInstanceId());
+        return instance.getName();
+    }
 }

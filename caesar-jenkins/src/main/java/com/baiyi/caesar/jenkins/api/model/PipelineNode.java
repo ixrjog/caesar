@@ -3,6 +3,8 @@ package com.baiyi.caesar.jenkins.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author baiyi
  * @Date 2021/3/30 2:39 下午
@@ -10,8 +12,9 @@ import lombok.Data;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PipelineNode {
+public class PipelineNode implements Serializable {
 
+    private static final long serialVersionUID = 3296485885509924301L;
     /**
      * actions: []
      * causeOfBlockage: null

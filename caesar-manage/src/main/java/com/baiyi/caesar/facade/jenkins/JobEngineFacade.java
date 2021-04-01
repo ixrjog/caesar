@@ -33,4 +33,6 @@ public interface JobEngineFacade {
 
 
     List<JobEngineVO.JobEngine> queryJobEngines(int buildType, int jobId);
+
+    String acqJenkinsServerName(Integer jobEngineId);
 }

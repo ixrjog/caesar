@@ -2,6 +2,7 @@ package com.baiyi.caesar.jenkins.util;
 
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.jenkins.api.model.PipelineNode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +14,39 @@ import java.util.stream.Collectors;
  */
 public class PipelineUtil {
 
+
+    public interface States {
+        String FINISHED = "FINISHED";
+        String RUNNING = "RUNNING";
+
+    }
+
+    public interface Results {
+        String SUCCESS = "SUCCESS";
+        String UNKNOWN = "UNKNOWN";
+    }
+
     public static List<JenkinsPipelineVO.Node> convert(List<PipelineNode> nodes) {
         return nodes.stream().map(e ->
                 JenkinsPipelineVO.Node.builder()
                         .name(e.getDisplayName())
                         .id(e.getId())
-                        .state(e.getState())
+                        .state(convertState(e))
                         .build()
         ).collect(Collectors.toList());
+    }
+
+    private static String convertState(PipelineNode node) {
+        if (StringUtils.isEmpty(node.getState()))
+            return "not_built";
+        switch (node.getState()) {
+            case States.FINISHED:
+                return node.getResult();
+            case States.RUNNING:
+                return "running";
+            default:
+                return "not_built";
+        }
+
     }
 }
