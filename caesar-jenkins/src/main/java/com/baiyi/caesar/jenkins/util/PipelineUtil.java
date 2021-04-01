@@ -18,6 +18,7 @@ public class PipelineUtil {
     public interface States {
         String FINISHED = "FINISHED";
         String RUNNING = "RUNNING";
+        String SKIPPED = "SKIPPED";
 
     }
 
@@ -43,7 +44,9 @@ public class PipelineUtil {
             case States.FINISHED:
                 return node.getResult();
             case States.RUNNING:
-                return "running";
+                return States.RUNNING.toLowerCase();
+            case States.SKIPPED:
+                return States.SKIPPED.toLowerCase();
             default:
                 return "not_built";
         }
