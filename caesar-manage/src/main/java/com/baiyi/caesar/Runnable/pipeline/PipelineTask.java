@@ -37,7 +37,7 @@ public class PipelineTask implements Runnable {
                 PipelineSessionUtil.PipelineContext pipelineContext = PipelineSessionUtil.getUserBySessionId(this.sessionId);
                 if (pipelineContext != null && pipelineContext.getBuildType() != null) {
                     Instant inst = Instant.now();
-                    List<JenkinsPipelineVO.Pipeline> pipelines = ;
+                    List<JenkinsPipelineVO.Pipeline> pipelines;
                     if (pipelineContext.getBuildType() == 0) {
                         pipelines = pipelineFacade.queryBuildJobPipelines("baiyi");
                     } else {
