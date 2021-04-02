@@ -37,7 +37,12 @@ public class PipelineTask implements Runnable {
                 PipelineSessionUtil.PipelineContext pipelineContext = PipelineSessionUtil.getUserBySessionId(this.sessionId);
                 if (pipelineContext != null && pipelineContext.getBuildType() != null) {
                     Instant inst = Instant.now();
-                    List<JenkinsPipelineVO.Pipeline> pipelines = pipelineFacade.queryBuildJobPipelines("baiyi");
+                    List<JenkinsPipelineVO.Pipeline> pipelines = ;
+                    if (pipelineContext.getBuildType() == 0) {
+                        pipelines = pipelineFacade.queryBuildJobPipelines("baiyi");
+                    } else {
+                        pipelines = pipelineFacade.queryDeploymentJobPipelines("baiyi");
+                    }
                     if (CollectionUtils.isNotEmpty(pipelines)) {
                         String jsonStr = JSON.toJSONString(pipelines);
                         session.getBasicRemote().sendText(jsonStr);
