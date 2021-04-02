@@ -38,7 +38,7 @@ public final class TerminalWSController implements InitializingBean {
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
     private static CopyOnWriteArraySet<Session> sessionSet = new CopyOnWriteArraySet<>();
     // 当前会话 uuid
-    private final String sessionId = UUID.randomUUID().toString();
+    private String sessionId = null;
 
     private Session session = null;
 
@@ -69,6 +69,7 @@ public final class TerminalWSController implements InitializingBean {
     public void onOpen(Session session) {
         // this.sessionId = UUID.randomUUID().toString();
         log.info("终端会话尝试链接，sessionId = {}", sessionId);
+        this.sessionId = UUID.randomUUID().toString();
         OcTerminalSession ocTerminalSession = TerminalSessionBuilder.build(sessionId, serverAddr);
         terminalFacade.addOcTerminalSession(ocTerminalSession);
         this.ocTerminalSession = ocTerminalSession;

@@ -14,4 +14,6 @@ public class InitialMessage extends BaseMessage {
 
     private String token;
 
+    private Integer buildType;
+
 }
