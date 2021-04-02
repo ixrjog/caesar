@@ -3,7 +3,9 @@ package com.baiyi.caesar.jenkins.util;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.jenkins.api.model.PipelineNode;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,8 @@ public class PipelineUtil {
     }
 
     public static List<JenkinsPipelineVO.Node> convert(List<PipelineNode> nodes) {
+        if(CollectionUtils.isEmpty(nodes))
+            return Collections.EMPTY_LIST;
         return nodes.stream().map(e ->
                 JenkinsPipelineVO.Node.builder()
                         .name(e.getDisplayName())
