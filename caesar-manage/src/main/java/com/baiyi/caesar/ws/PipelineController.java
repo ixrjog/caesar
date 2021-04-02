@@ -18,6 +18,8 @@ import org.springframework.util.StringUtils;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -106,9 +108,11 @@ public class PipelineController {
             return;
         }
         if (PipelineStatus.QUERY_TASK.getCode().equals(status)) {
+            Instant inst1 = Instant.now();
+            log.info("启动成功! 耗时:{}/s", Duration.between(inst1, Instant.now()).getSeconds());
+
             QueryMessage queryMessage = buildQueryMessage(message);
             List<JenkinsPipelineVO.Pipeline> pipelines;
-            log.info("查询流水线任务详情! username = {}", this.username);
             if (queryMessage.getBuildType() == 0) {
                 pipelines = pipelineFacade.queryBuildJobPipelines(this.username);
             } else {
@@ -117,10 +121,11 @@ public class PipelineController {
             String jsonStr = JSON.toJSONString(pipelines);
             try {
                 session.getBasicRemote().sendText(jsonStr);
+                log.info("查询流水线任务详情! username = {}, buildType = {}, 耗时:{}/s", this.username, queryMessage.getBuildType(), Duration.between(inst1, Instant.now()).getSeconds());
             } catch (IOException e) {
                 log.error("发送数据错误！ sessionId = {}", sessionId);
             }
-            pipelineFacade.queryBuildJobPipelines(this.username);
+
         }
     }
 

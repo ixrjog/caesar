@@ -1,5 +1,6 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
+import com.baiyi.caesar.common.config.CachingConfig;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.application.JobEngineDecorator;
 import com.baiyi.caesar.domain.base.BuildType;
@@ -13,6 +14,7 @@ import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsJenkinsInstanceService;
 import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -86,6 +88,7 @@ public class JobEngineFacadeImpl implements JobEngineFacade {
     }
 
     @Override
+    @Cacheable(cacheNames = CachingConfig.CacheRepositories.COMMON, unless = "#result == null")
     public String acqJenkinsServerName(Integer jobEngineId) {
         CsJobEngine jobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
         CsJenkinsInstance instance = csJenkinsInstanceService.queryCsJenkinsInstanceById(jobEngine.getJenkinsInstanceId());

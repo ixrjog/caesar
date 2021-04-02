@@ -51,7 +51,6 @@ public class PipelineFacadeImpl implements PipelineFacade {
             } else {
                 nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
             }
-            if (CollectionUtils.isEmpty(nodes)) continue;
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))

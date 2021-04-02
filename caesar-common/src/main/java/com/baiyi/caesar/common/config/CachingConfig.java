@@ -34,6 +34,7 @@ public class CachingConfig extends CachingConfigurerSupport {
 
 
     public interface CacheRepositories {
+        String COMMON = "Caesar:Common";
         String ANSIBLE = "Caesar:AnsibleRepo";
         String ATTRIBUTE = "Caesar:Attribute";
         String SETTING = "Caesar:Setting";
@@ -47,6 +48,7 @@ public class CachingConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 设置一个初始化的缓存空间set集合
         Set<String> cacheNames = new HashSet<>();
+        cacheNames.add(CacheRepositories.COMMON);
         cacheNames.add(CacheRepositories.ANSIBLE);
         cacheNames.add(CacheRepositories.ATTRIBUTE);
         cacheNames.add(CacheRepositories.DASHBOARD);
@@ -68,6 +70,7 @@ public class CachingConfig extends CachingConfigurerSupport {
         config = config.entryTtl(Duration.ofMinutes(1))
                 // 不缓存空值
                 .disableCachingNullValues();
+        configMap.put(CacheRepositories.COMMON, config.entryTtl(Duration.ofMinutes(10)));
         configMap.put(CacheRepositories.ANSIBLE, config.entryTtl(Duration.ofDays(7)));
         configMap.put(CacheRepositories.ATTRIBUTE, config.entryTtl(Duration.ofDays(7)));
         configMap.put(CacheRepositories.SETTING, config.entryTtl(Duration.ofMinutes(10)));
