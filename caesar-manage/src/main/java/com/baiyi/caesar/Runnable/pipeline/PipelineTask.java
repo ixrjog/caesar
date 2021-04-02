@@ -39,9 +39,9 @@ public class PipelineTask implements Runnable {
                     Instant inst = Instant.now();
                     List<JenkinsPipelineVO.Pipeline> pipelines;
                     if (pipelineContext.getBuildType() == 0) {
-                        pipelines = pipelineFacade.queryBuildJobPipelines("baiyi");
+                        pipelines = pipelineFacade.queryBuildJobPipelines(pipelineContext.getUsername());
                     } else {
-                        pipelines = pipelineFacade.queryDeploymentJobPipelines("baiyi");
+                        pipelines = pipelineFacade.queryDeploymentJobPipelines(pipelineContext.getUsername());
                     }
                     if (CollectionUtils.isNotEmpty(pipelines)) {
                         String jsonStr = JSON.toJSONString(pipelines);
