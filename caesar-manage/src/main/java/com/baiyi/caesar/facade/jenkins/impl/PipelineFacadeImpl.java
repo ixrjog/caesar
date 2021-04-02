@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class PipelineFacadeImpl implements PipelineFacade {
 
-    public static final int MY_TASK_SIZE = 5;
+    public static final int MY_TASK_SIZE = 3;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
