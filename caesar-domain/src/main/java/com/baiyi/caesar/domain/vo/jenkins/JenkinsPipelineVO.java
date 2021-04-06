@@ -1,10 +1,12 @@
 package com.baiyi.caesar.domain.vo.jenkins;
 
+import com.baiyi.caesar.domain.vo.base.AgoVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public class JenkinsPipelineVO {
     @Data
     @Builder
     @ApiModel
-    public static class Pipeline implements Serializable {
+    public static class Pipeline implements AgoVO.IAgo, Serializable {
 
         private static final long serialVersionUID = -1020196514240621058L;
         private List<Node> nodes;
@@ -26,6 +28,14 @@ public class JenkinsPipelineVO {
         private Integer jobBuildNumber;
         private Integer id;
         private Boolean isRunning;
+        private Date startTime;
+
+        @Override
+        public Date getAgoTime() {
+            return startTime;
+        }
+
+        private String ago;
 
     }
 

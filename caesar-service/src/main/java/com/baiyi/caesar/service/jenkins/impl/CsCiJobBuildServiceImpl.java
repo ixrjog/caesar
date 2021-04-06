@@ -10,6 +10,7 @@ import com.baiyi.caesar.mapper.caesar.CsCiJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -88,11 +89,13 @@ public class CsCiJobBuildServiceImpl implements CsCiJobBuildService {
     }
 
     @Override
-    public List<CsCiJobBuild> queryMyCiJobBuild(String username,int size) {
+    public List<CsCiJobBuild> queryMyCiJobBuild(String username, int size) {
         PageHelper.startPage(1, size);
         Example example = new Example(CsCiJobBuild.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("username", username);
+        if (!StringUtils.isEmpty(username)) {
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("username", username);
+        }
         example.setOrderByClause("create_time desc");
         return csCiJobBuildMapper.selectByExample(example);
     }

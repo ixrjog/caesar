@@ -1,5 +1,6 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
+import com.baiyi.caesar.common.util.TimeAgoUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
@@ -12,7 +13,6 @@ import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class PipelineFacadeImpl implements PipelineFacade {
 
-    public static final int MY_TASK_SIZE = 3;
+    public static final int MAX_QUERY_SIZE = 4;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -39,9 +39,15 @@ public class PipelineFacadeImpl implements PipelineFacade {
     @Resource
     private JobEngineFacade jobEngineFacade;
 
+    private int buildQuerySize(Integer size) {
+        if (size == null || size > MAX_QUERY_SIZE)
+            return MAX_QUERY_SIZE;
+        return size;
+    }
+
     @Override
-    public List<JenkinsPipelineVO.Pipeline> queryBuildJobPipelines(String username) {
-        List<CsCiJobBuild> builds = csCiJobBuildService.queryMyCiJobBuild(username, MY_TASK_SIZE);
+    public List<JenkinsPipelineVO.Pipeline> queryBuildJobPipelines(String username, Integer size) {
+        List<CsCiJobBuild> builds = csCiJobBuildService.queryMyCiJobBuild(username, buildQuerySize(size));
         List<JenkinsPipelineVO.Pipeline> pipelines = Lists.newArrayList();
         for (CsCiJobBuild build : builds) {
             String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
@@ -57,15 +63,17 @@ public class PipelineFacadeImpl implements PipelineFacade {
                     .jobName(build.getJobName())
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
+                    .startTime(build.getStartTime())
                     .build();
+            TimeAgoUtil.decorator(pipeline);
             pipelines.add(pipeline);
         }
         return pipelines;
     }
 
     @Override
-    public List<JenkinsPipelineVO.Pipeline> queryDeploymentJobPipelines(String username) {
-        List<CsCdJobBuild> builds = csCdJobBuildService.queryMyCdJobBuild(username, MY_TASK_SIZE);
+    public List<JenkinsPipelineVO.Pipeline> queryDeploymentJobPipelines(String username, Integer size) {
+        List<CsCdJobBuild> builds = csCdJobBuildService.queryMyCdJobBuild(username, buildQuerySize(size));
         List<JenkinsPipelineVO.Pipeline> pipelines = Lists.newArrayList();
         for (CsCdJobBuild build : builds) {
             String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
@@ -75,14 +83,15 @@ public class PipelineFacadeImpl implements PipelineFacade {
             } else {
                 nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
             }
-            if (CollectionUtils.isEmpty(nodes)) continue;
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))
                     .jobName(build.getJobName())
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
+                    .startTime(build.getStartTime())
                     .build();
+            TimeAgoUtil.decorator(pipeline);
             pipelines.add(pipeline);
         }
         return pipelines;

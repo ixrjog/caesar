@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -30,7 +31,8 @@ public class JenkinsClient {
 
     public JsonNode get(String serverName, String api) throws IOException {
         CsJenkinsInstance instance = csJenkinsInstanceService.queryCsJenkinsInstanceByName(serverName);
-        String auth = new String(Base64.getEncoder().encode(String.format("%s:%s", instance.getUsername(), stringEncryptor.decrypt(instance.getToken())).getBytes("utf-8")), "utf-8");
+        String auth = new String(Base64.getEncoder().encode(String.format("%s:%s", instance.getUsername(),
+                stringEncryptor.decrypt(instance.getToken())).getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
         Authentication authentication = Authentication.builder()
                 .header("Authorization")
                 .token("Basic " + auth)

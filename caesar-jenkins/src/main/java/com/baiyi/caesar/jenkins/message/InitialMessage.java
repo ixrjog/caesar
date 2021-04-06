@@ -12,8 +12,16 @@ import lombok.EqualsAndHashCode;
 @Data
 public class InitialMessage extends BaseMessage {
 
+    public interface QueryType {
+        String ALL = "ALL";
+    }
+
     private String token;
 
     private Integer buildType;
+
+    private String queryType;
+
+    private Integer querySize;
 
 }

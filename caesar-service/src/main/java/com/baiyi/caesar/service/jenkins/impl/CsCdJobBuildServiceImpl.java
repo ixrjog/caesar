@@ -8,6 +8,7 @@ import com.baiyi.caesar.mapper.caesar.CsCdJobBuildMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -95,8 +96,10 @@ public class CsCdJobBuildServiceImpl implements CsCdJobBuildService {
     public List<CsCdJobBuild> queryMyCdJobBuild(String username, int size){
         PageHelper.startPage(1, size);
         Example example = new Example(CsCdJobBuild.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("username", username);
+        if (!StringUtils.isEmpty(username)) {
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("username", username);
+        }
         example.setOrderByClause("create_time desc");
         return csCdJobBuildMapper.selectByExample(example);
     }

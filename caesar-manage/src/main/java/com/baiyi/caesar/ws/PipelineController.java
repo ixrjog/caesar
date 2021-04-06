@@ -105,8 +105,13 @@ public class PipelineController {
             String username = authBaseFacade.getUserByToken(initialMessage.getToken());
             SessionUtil.setUsername(username); // 设置当前会话用户身份
             this.username = username;
-            PipelineSessionUtil.setUserSession(this.sessionId, username, initialMessage.getBuildType());
-
+            PipelineSessionUtil.PipelineContext context = PipelineSessionUtil.PipelineContext.builder()
+                    .buildType(initialMessage.getBuildType())
+                    .queryType(initialMessage.getQueryType())
+                    .username(username)
+                    .querySize(initialMessage.getQuerySize())
+                    .build();
+            PipelineSessionUtil.setUserSession(this.sessionId, context);
         }
     }
 

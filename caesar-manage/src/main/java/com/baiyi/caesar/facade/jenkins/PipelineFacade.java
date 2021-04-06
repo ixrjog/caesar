@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface PipelineFacade {
 
-    List<JenkinsPipelineVO.Pipeline> queryBuildJobPipelines(String username);
+    List<JenkinsPipelineVO.Pipeline> queryBuildJobPipelines(String username,Integer size);
 
-    List<JenkinsPipelineVO.Pipeline> queryDeploymentJobPipelines(String username);
+    List<JenkinsPipelineVO.Pipeline> queryDeploymentJobPipelines(String username,Integer size);
 }

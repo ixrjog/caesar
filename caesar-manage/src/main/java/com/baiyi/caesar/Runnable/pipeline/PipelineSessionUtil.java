@@ -22,16 +22,13 @@ public class PipelineSessionUtil {
     public static class PipelineContext {
         private String username;
         private Integer buildType;
+        private String queryType;
+        private Integer querySize;
     }
 
     private static Map<String, PipelineContext> userSessionsMap = new ConcurrentHashMap<>();
 
-    public static void setUserSession(String sessionId, String username,Integer buildType) {
-        PipelineContext context = PipelineContext.builder()
-                .buildType(buildType)
-                .username(username)
-                .build();
-
+    public static void setUserSession(String sessionId, PipelineSessionUtil.PipelineContext context) {
         userSessionsMap.put(sessionId, context);
     }
 

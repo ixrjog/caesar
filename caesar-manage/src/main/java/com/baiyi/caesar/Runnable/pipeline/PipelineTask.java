@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.common.util.InstantUtil;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.facade.jenkins.PipelineFacade;
+import com.baiyi.caesar.jenkins.message.InitialMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -34,20 +35,21 @@ public class PipelineTask implements Runnable {
     public void run() {
         while (session.isOpen()) {
             try {
-                PipelineSessionUtil.PipelineContext pipelineContext = PipelineSessionUtil.getUserBySessionId(this.sessionId);
-                if (pipelineContext != null && pipelineContext.getBuildType() != null) {
+                PipelineSessionUtil.PipelineContext context = PipelineSessionUtil.getUserBySessionId(this.sessionId);
+                if (context != null && context.getBuildType() != null) {
                     Instant inst = Instant.now();
                     List<JenkinsPipelineVO.Pipeline> pipelines;
-                    if (pipelineContext.getBuildType() == 0) {
-                        pipelines = pipelineFacade.queryBuildJobPipelines(pipelineContext.getUsername());
+                    String queryUsername = InitialMessage.QueryType.ALL.equalsIgnoreCase(context.getQueryType()) ? null : context.getUsername();
+                    if (context.getBuildType() == 0) {
+                        pipelines = pipelineFacade.queryBuildJobPipelines(queryUsername,context.getQuerySize());
                     } else {
-                        pipelines = pipelineFacade.queryDeploymentJobPipelines(pipelineContext.getUsername());
+                        pipelines = pipelineFacade.queryDeploymentJobPipelines(queryUsername,context.getQuerySize());
                     }
                     if (CollectionUtils.isNotEmpty(pipelines)) {
                         String jsonStr = JSON.toJSONString(pipelines);
                         session.getBasicRemote().sendText(jsonStr);
-                        String buildTypeStr = pipelineContext.getBuildType() == 0 ? "构建" : "部署";
-                        log.info("推送{}流水线任务详情! sessionId = {}, username = {}, 耗时: {}/ms", buildTypeStr, this.sessionId, pipelineContext.getUsername(), InstantUtil.timerMillis(inst));
+                        String buildTypeStr = context.getBuildType() == 0 ? "构建" : "部署";
+                        log.info("推送{}流水线任务详情! sessionId = {}, username = {}, 耗时: {}/ms", buildTypeStr, this.sessionId, context.getUsername(), InstantUtil.timerMillis(inst));
                     }
                 }
                 Thread.sleep(4000);
