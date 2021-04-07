@@ -1,6 +1,7 @@
 package com.baiyi.caesar.domain.vo.jenkins;
 
 import com.baiyi.caesar.domain.vo.base.AgoVO;
+import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
@@ -20,9 +21,17 @@ public class JenkinsPipelineVO {
     @Data
     @Builder
     @ApiModel
-    public static class Pipeline implements AgoVO.IAgo, Serializable {
+    public static class Pipeline implements AgoVO.IAgo, BuildExecutorVO.IBuildExecutors, Serializable {
 
         private static final long serialVersionUID = -1020196514240621058L;
+
+        @Override
+        public Integer getBuildId() {
+            return id;
+        }
+        private int buildType;
+        private List<BuildExecutorVO.BuildExecutor> executors;
+
         private List<Node> nodes;
         private String jobName;
         private Integer jobBuildNumber;

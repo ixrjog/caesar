@@ -1,6 +1,8 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
 import com.baiyi.caesar.common.util.TimeAgoUtil;
+import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
+import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
@@ -23,7 +25,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Service
-public class PipelineFacadeImpl implements PipelineFacade {
+public class PipelineFacadeImpl extends BaseJenkinsDecorator implements PipelineFacade {
 
     public static final int MAX_QUERY_SIZE = 4;
 
@@ -32,6 +34,7 @@ public class PipelineFacadeImpl implements PipelineFacade {
 
     @Resource
     private CsCdJobBuildService csCdJobBuildService;
+
 
     @Resource
     private JenkinsBlueHandler jenkinsBlueHandler;
@@ -64,8 +67,9 @@ public class PipelineFacadeImpl implements PipelineFacade {
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
+                    .buildType(BuildType.BUILD.getType())
                     .build();
-            TimeAgoUtil.decorator(pipeline);
+            decorator(pipeline);
             pipelines.add(pipeline);
         }
         return pipelines;
@@ -90,11 +94,17 @@ public class PipelineFacadeImpl implements PipelineFacade {
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
+                    .buildType(BuildType.DEPLOYMENT.getType())
                     .build();
-            TimeAgoUtil.decorator(pipeline);
+            decorator(pipeline);
             pipelines.add(pipeline);
         }
         return pipelines;
+    }
+
+    private void decorator(JenkinsPipelineVO.Pipeline pipeline){
+        decoratorBuildExecutors(pipeline);
+        TimeAgoUtil.decorator(pipeline);
     }
 
 
