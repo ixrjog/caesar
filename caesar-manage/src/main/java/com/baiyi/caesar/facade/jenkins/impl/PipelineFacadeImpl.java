@@ -15,6 +15,7 @@ import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -60,6 +61,8 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             } else {
                 nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
             }
+            if (CollectionUtils.isEmpty(nodes)) // 加入队列状态
+                nodes = Lists.newArrayList(PipelineNode.QUEUE);
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))
@@ -102,7 +105,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
         return pipelines;
     }
 
-    private void decorator(JenkinsPipelineVO.Pipeline pipeline){
+    private void decorator(JenkinsPipelineVO.Pipeline pipeline) {
         decoratorBuildExecutors(pipeline);
         TimeAgoUtil.decorator(pipeline);
     }

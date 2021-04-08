@@ -1,5 +1,6 @@
 package com.baiyi.caesar.jenkins.api.model;
 
+import com.baiyi.caesar.jenkins.util.PipelineUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -15,6 +16,15 @@ import java.io.Serializable;
 public class PipelineNode implements Serializable {
 
     private static final long serialVersionUID = 3296485885509924301L;
+
+    public final static PipelineNode QUEUE = new PipelineNode();
+
+    public PipelineNode() {
+        this.state = PipelineUtil.States.PAUSED;
+        this.id = String.valueOf(1);
+        this.displayName = "Queue";
+    }
+
     /**
      * actions: []
      * causeOfBlockage: null

@@ -21,6 +21,7 @@ public class PipelineUtil {
         String FINISHED = "FINISHED";
         String RUNNING = "RUNNING";
         String SKIPPED = "SKIPPED";
+        String PAUSED = "PAUSED";
 
     }
 
