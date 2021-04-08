@@ -49,9 +49,11 @@ public class PipelineUtil {
             case States.FINISHED:
                 return node.getResult();
             case States.RUNNING:
-                return States.RUNNING.toLowerCase();
+                return States.RUNNING;
             case States.SKIPPED:
-                return States.SKIPPED.toLowerCase();
+                return States.SKIPPED;
+            case States.PAUSED:
+                return States.PAUSED;
             default:
                 return "not_built";
         }
