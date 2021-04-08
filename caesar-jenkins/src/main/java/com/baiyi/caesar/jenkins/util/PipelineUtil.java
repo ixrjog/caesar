@@ -51,7 +51,7 @@ public class PipelineUtil {
             case States.RUNNING:
                 return States.RUNNING;
             case States.SKIPPED:
-                return States.SKIPPED;
+                return States.SKIPPED.toLowerCase();
             case States.PAUSED:
                 return States.PAUSED;
             default:
