@@ -45,7 +45,7 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
         JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
-                .paramEntry(IS_SONAR, buildParam)
+                .paramEntry(IS_SONAR, buildParam.getIsSonar())
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
                 .paramEntryIsRollback(acqRollbackArtifact(buildParam)) // Rollback
                 .build();

@@ -88,7 +88,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             }
         }
         if (size > 1) {
-            Integer h = 120 + 45 * (size - 1);
+            Integer h = 120 + 50 * (size - 1);
             pipeline.setChartHeight(h + "px");
         }
     }

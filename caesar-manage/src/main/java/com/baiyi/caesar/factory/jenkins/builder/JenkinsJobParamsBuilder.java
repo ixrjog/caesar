@@ -42,6 +42,12 @@ public class JenkinsJobParamsBuilder {
         return this;
     }
 
+    public JenkinsJobParamsBuilder paramEntry(String paramName, Boolean value) {
+        if (value != null)
+            paramsMap.putParam(paramName, Boolean.toString(value));
+        return this;
+    }
+
     public JenkinsJobParamsBuilder paramEntry(String paramName, JobDeploymentParam.DeploymentParam deploymentParam) {
         if (deploymentParam.getParamMap().containsKey(paramName))
             paramsMap.putParam(paramName, deploymentParam.getParamMap().get(paramName));

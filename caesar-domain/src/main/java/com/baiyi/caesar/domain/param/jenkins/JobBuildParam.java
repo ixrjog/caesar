@@ -84,6 +84,9 @@ public class JobBuildParam {
         @ApiModelProperty(value = "回滚操作")
         private Boolean isRollback;
 
+        @ApiModelProperty(value = "质量管理")
+        private Boolean isSonar;
+
         @ApiModelProperty(value = "自定义参数")
         private Map<String, String> paramMap;
 

@@ -20,7 +20,7 @@ class PipelineFacadeTest extends BaseUnit {
 
     @Test
     void test() {
-        List<JenkinsPipelineVO.Pipeline> pipelines = pipelineFacade.queryBuildJobPipelines("baiyi",3);
+        List<JenkinsPipelineVO.Pipeline> pipelines = pipelineFacade.queryBuildJobPipelines("baiyi",1);
         System.err.println(JSON.toJSON(pipelines));
     }
 
