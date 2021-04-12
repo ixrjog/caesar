@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -61,4 +62,6 @@ public class PipelineNode implements Serializable {
     private String startTime;
     private String state;
     private String type;
+
+    private List<PipelineNode> children;
 }

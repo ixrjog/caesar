@@ -2,6 +2,7 @@ package com.baiyi.caesar.domain.vo.jenkins;
 
 import com.baiyi.caesar.domain.vo.base.AgoVO;
 import com.baiyi.caesar.domain.vo.build.BuildExecutorVO;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +30,12 @@ public class JenkinsPipelineVO {
         public Integer getBuildId() {
             return id;
         }
+
         private int buildType;
         private List<BuildExecutorVO.BuildExecutor> executors;
+
+        @Builder.Default
+        private String  chartHeight = "120px";
 
         private List<Node> nodes;
         private String jobName;
@@ -55,6 +60,7 @@ public class JenkinsPipelineVO {
     public static class Node implements Serializable {
 
         private static final long serialVersionUID = -1465972308441846486L;
+        private String firstParent;
         private String name;
         private String state;
         @Builder.Default
@@ -62,6 +68,8 @@ public class JenkinsPipelineVO {
         private String id;
         @Builder.Default
         private String type = "STAGE";
+        @Builder.Default
+        private List<Node> children = Lists.newArrayList();
 
     }
 }

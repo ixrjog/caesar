@@ -72,10 +72,25 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
                     .startTime(build.getStartTime())
                     .buildType(BuildType.BUILD.getType())
                     .build();
+            setChartHeight(pipeline);
             decorator(pipeline);
             pipelines.add(pipeline);
         }
         return pipelines;
+    }
+
+    private void setChartHeight(JenkinsPipelineVO.Pipeline pipeline) {
+        int size = 0;
+        for (JenkinsPipelineVO.Node node : pipeline.getNodes()) {
+            if (!CollectionUtils.isEmpty(node.getChildren())) {
+                if (node.getChildren().size() > size)
+                    size = node.getChildren().size();
+            }
+        }
+        if (size > 1) {
+            Integer h = 120 + 45 * (size - 1);
+            pipeline.setChartHeight(h + "px");
+        }
     }
 
     @Override
@@ -99,6 +114,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
                     .startTime(build.getStartTime())
                     .buildType(BuildType.DEPLOYMENT.getType())
                     .build();
+            setChartHeight(pipeline);
             decorator(pipeline);
             pipelines.add(pipeline);
         }
