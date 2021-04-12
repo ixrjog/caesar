@@ -104,15 +104,18 @@ public class BaseJenkinsDecorator<T> {
         if (!(t instanceof JobBuildVO.IJobBuild)) return;
         JobEngineVO.IJobEngine iJobEngine = (JobEngineVO.IJobEngine) t;
         JobBuildVO.IJobBuild iJobBuild = (JobBuildVO.IJobBuild) t;
+        try{
+            String url = Joiner.on("/").skipNulls().join(iJobEngine.getJobEngine().getJenkinsInstance().getUrl(),
+                    "blue/organizations/jenkins",
+                    iJobBuild.getJobName(),
+                    "detail",
+                    iJobBuild.getJobName(),
+                    iJobBuild.getEngineBuildNumber(),
+                    "pipeline");
+            iJobBuild.setJobBuildUrl(url);
+        }catch (NullPointerException ignored){
+        }
 
-        String url = Joiner.on("/").skipNulls().join(iJobEngine.getJobEngine().getJenkinsInstance().getUrl(),
-                "blue/organizations/jenkins",
-                iJobBuild.getJobName(),
-                "detail",
-                iJobBuild.getJobName(),
-                iJobBuild.getEngineBuildNumber(),
-                "pipeline");
-        iJobBuild.setJobBuildUrl(url);
     }
 
     protected void decoratorBuildArtifacts(BuildArtifactVO.IBuildArtifacts iBuildArtifacts, JobBuildContext context) {
