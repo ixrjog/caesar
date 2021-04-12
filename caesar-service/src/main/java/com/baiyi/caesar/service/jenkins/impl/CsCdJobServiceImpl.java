@@ -7,6 +7,7 @@ import com.baiyi.caesar.mapper.caesar.CsCdJobMapper;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -36,7 +37,8 @@ public class CsCdJobServiceImpl implements CsCdJobService {
         Example example = new Example(CsCdJob.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("jobTplId", pageQuery.getJobTplId());
-        criteria.andLike("name", "%" + pageQuery.getQueryName() + "%").orLike("comment", "%" + pageQuery.getQueryName() + "%");
+        if (!StringUtils.isBlank(pageQuery.getQueryName()))
+            criteria.andLike("name", "%" + pageQuery.getQueryName() + "%").orLike("comment", "%" + pageQuery.getQueryName() + "%");
         Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsCdJob> list = csCdJobMapper.selectByExample(example);
         return new DataTable<>(list, page.getTotal());
@@ -51,7 +53,7 @@ public class CsCdJobServiceImpl implements CsCdJobService {
     }
 
     @Override
-    public List<CsCdJob> selectAll(){
+    public List<CsCdJob> selectAll() {
         return csCdJobMapper.selectAll();
     }
 
