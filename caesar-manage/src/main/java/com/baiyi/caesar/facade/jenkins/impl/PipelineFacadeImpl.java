@@ -105,6 +105,8 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             } else {
                 nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
             }
+            if (CollectionUtils.isEmpty(nodes)) // 加入队列状态
+                nodes = Lists.newArrayList(PipelineNode.QUEUE);
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))
