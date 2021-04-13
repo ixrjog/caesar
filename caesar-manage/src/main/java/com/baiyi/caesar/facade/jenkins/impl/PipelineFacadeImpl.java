@@ -60,9 +60,13 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             if (CollectionUtils.isEmpty(steps)) return "";
             PipelineStep step = steps.get(0);
             return jenkinsBlueHandler.queryJobRunNodesStepLog(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId(), step.getId());
-
         } else {
-            return "";
+            CsCdJobBuild build = csCdJobBuildService.queryCdJobBuildById(query.getBuildId());
+            String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            List<PipelineStep> steps = jenkinsBlueHandler.queryJobRunNodesSteps(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId());
+            if (CollectionUtils.isEmpty(steps)) return "";
+            PipelineStep step = steps.get(0);
+            return jenkinsBlueHandler.queryJobRunNodesStepLog(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId(), step.getId());
         }
 
     }
