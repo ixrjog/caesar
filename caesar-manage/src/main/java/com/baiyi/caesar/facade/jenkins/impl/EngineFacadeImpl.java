@@ -111,7 +111,7 @@ public class EngineFacadeImpl implements EngineFacade {
                     String name = k;
                     try {
                         if (computer.details().getOffline())
-                            name += "offline";
+                            name += "(offline)";
                     } catch (IOException e) {
                         log.error("查询节点状态错误!, name = {}, err= {} ", k, e.getMessage());
                     }
