@@ -62,6 +62,17 @@ public class HttpUtil {
         return "?" + Joiner.on("&").join(s);
     }
 
+
+    public static String httpGetExecutorCommon(String url, Map<String, String> param, Authentication authentication) throws IOException {
+        HttpGet httpGet = new HttpGet(url + buildGetParam(param));
+        settingRequest(httpGet, authentication);
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpResponse response = httpClient.execute(httpGet, new HttpClientContext());
+        HttpEntity entity = response.getEntity();
+        byte[] data = EntityUtils.toByteArray(entity);
+        return new String(data);
+    }
+
     public static JsonNode httpGetExecutor(String url, Map<String, String> param, Authentication authentication) throws IOException {
         HttpGet httpGet = new HttpGet(url + buildGetParam(param));
         settingRequest(httpGet, authentication);

@@ -5,10 +5,12 @@ import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
 import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.param.pipeline.PipelineNodeStepLogParam;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.PipelineFacade;
 import com.baiyi.caesar.jenkins.api.model.PipelineNode;
+import com.baiyi.caesar.jenkins.api.model.PipelineStep;
 import com.baiyi.caesar.jenkins.handler.JenkinsBlueHandler;
 import com.baiyi.caesar.jenkins.util.PipelineUtil;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
@@ -48,6 +50,23 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             return MAX_QUERY_SIZE;
         return size;
     }
+
+    @Override
+    public String queryPipelineNodeLog(PipelineNodeStepLogParam.PipelineNodeStepLogQuery query) {
+        if (query.getBuildType() == 0) {
+            CsCiJobBuild build = csCiJobBuildService.queryCiJobBuildById(query.getBuildId());
+            String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            List<PipelineStep> steps = jenkinsBlueHandler.queryJobRunNodesSteps(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId());
+            if (CollectionUtils.isEmpty(steps)) return "";
+            PipelineStep step = steps.get(0);
+            return jenkinsBlueHandler.queryJobRunNodesStepLog(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId(), step.getId());
+
+        } else {
+            return "";
+        }
+
+    }
+
 
     @Override
     public List<JenkinsPipelineVO.Pipeline> queryBuildJobPipelines(String username, Integer size) {

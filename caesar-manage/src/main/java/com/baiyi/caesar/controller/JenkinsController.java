@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.param.application.CdJobParam;
 import com.baiyi.caesar.domain.param.application.CiJobParam;
 import com.baiyi.caesar.domain.param.jenkins.JenkinsInstanceParam;
 import com.baiyi.caesar.domain.param.jenkins.JobTplParam;
+import com.baiyi.caesar.domain.param.pipeline.PipelineNodeStepLogParam;
 import com.baiyi.caesar.domain.vo.application.CdJobVO;
 import com.baiyi.caesar.domain.vo.application.CiJobVO;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsInstanceVO;
@@ -14,6 +15,7 @@ import com.baiyi.caesar.domain.vo.jenkins.JobTplVO;
 import com.baiyi.caesar.domain.vo.tree.EngineVO;
 import com.baiyi.caesar.facade.JenkinsFacade;
 import com.baiyi.caesar.facade.jenkins.EngineFacade;
+import com.baiyi.caesar.facade.jenkins.PipelineFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -38,6 +40,9 @@ public class JenkinsController {
 
     @Resource
     private EngineFacade jenkinsEngineFacade;
+
+    @Resource
+    private PipelineFacade pipelineFacade;
 
     @ApiOperation(value = "设置Jenkins实例是否有效")
     @GetMapping(value = "/instance/active/set", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -146,5 +151,11 @@ public class JenkinsController {
     @GetMapping(value = "/engine/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<EngineVO.Children> queryEngineStatus() {
         return new HttpResult<>(jenkinsEngineFacade.buildEngineChart());
+    }
+
+    @ApiOperation(value = "查询流水线节点步骤日志")
+    @PostMapping(value = "/pipeline/node/step/log/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<String> queryPipelineNodeStepLog(@RequestBody @Valid PipelineNodeStepLogParam.PipelineNodeStepLogQuery query) {
+        return new HttpResult<>(pipelineFacade.queryPipelineNodeLog(query));
     }
 }

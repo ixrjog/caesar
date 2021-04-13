@@ -63,5 +63,6 @@ public class PipelineNode implements Serializable {
     private String state;
     private String type;
 
+
     private List<PipelineNode> children;
 }

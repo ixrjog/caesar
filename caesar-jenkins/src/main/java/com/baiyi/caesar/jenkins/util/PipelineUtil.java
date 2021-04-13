@@ -52,7 +52,6 @@ public class PipelineUtil {
             return Collections.EMPTY_LIST;
 
         List<JenkinsPipelineVO.Node> result = Lists.newArrayList();
-
         for (PipelineNode pn : nodes) {
             JenkinsPipelineVO.Node node = JenkinsPipelineVO.Node.builder()
                     .firstParent(pn.getFirstParent())
