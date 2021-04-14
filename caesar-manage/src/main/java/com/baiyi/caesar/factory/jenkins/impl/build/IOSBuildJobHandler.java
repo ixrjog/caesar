@@ -33,6 +33,7 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
         JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
+                .paramEntry(BUILD_TYPE, buildParam)
                 .paramEntry(POD_UPDATE, buildParam)
                 .paramEntry(PUB_GET, buildParam)
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
