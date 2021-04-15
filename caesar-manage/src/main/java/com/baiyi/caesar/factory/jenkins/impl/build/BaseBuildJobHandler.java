@@ -3,6 +3,7 @@ package com.baiyi.caesar.factory.jenkins.impl.build;
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CiJobBuildBuilder;
 import com.baiyi.caesar.common.base.NoticePhase;
+import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
@@ -120,16 +121,10 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
      * @param csCiJob
      * @return
      */
-    protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCiJob csCiJob) {
-        if (isLimitConcurrentJob()) {
-            if (csCiJobBuildService.queryLatestCiJobBuildByCiJobId(csCiJob.getId()).stream().allMatch(CsCiJobBuild::getFinalized)) {
-                return BusinessWrapper.SUCCESS;
-            } else {
-                return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
-            }
-        } else {
-            return BusinessWrapper.SUCCESS;
-        }
+    protected void tryLimitConcurrentJob(CsCiJob csCiJob) throws BuildRuntimeException {
+        if (isLimitConcurrentJob())
+            if (!csCiJobBuildService.queryLatestCiJobBuildByCiJobId(csCiJob.getId()).stream().allMatch(CsCiJobBuild::getFinalized))
+                throw new BuildRuntimeException(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
     }
 
     protected boolean isLimitConcurrentJob() {
@@ -138,7 +133,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     @Override
     public void build(CsCiJob csCiJob, String username) {
-        if (!tryLimitConcurrentJob(csCiJob).isSuccess()) return;
+        tryLimitConcurrentJob(csCiJob);
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParametersContext jobParamDetail = buildJobParametersContext(csApplication, csCiJob);
@@ -147,8 +142,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     @Override
     public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        BusinessWrapper<Boolean> wrapper = tryLimitConcurrentJob(csCiJob);
-        if (!wrapper.isSuccess()) return wrapper;
+        tryLimitConcurrentJob(csCiJob);
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
         JobParametersContext context = buildJobParametersContext(csApplication, csCiJob, buildParam);

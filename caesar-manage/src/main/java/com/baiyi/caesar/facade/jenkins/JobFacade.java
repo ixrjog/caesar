@@ -2,7 +2,6 @@ package com.baiyi.caesar.facade.jenkins;
 
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
-import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.domain.param.jenkins.JobDeploymentParam;
 import com.baiyi.caesar.domain.vo.build.CdJobBuildVO;
@@ -19,8 +18,6 @@ import java.util.List;
  */
 
 public interface JobFacade {
-
-    BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob);
 
     BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam);
 

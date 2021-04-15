@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
 
-import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.base.BuildOutputType;
+import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.JenkinsUtil;
@@ -27,6 +27,7 @@ import com.baiyi.caesar.facade.UserFacade;
 import com.baiyi.caesar.facade.UserPermissionFacade;
 import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.facade.jenkins.check.TryAuthorized;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
@@ -116,59 +117,33 @@ public class JobFacadeImpl implements JobFacade {
     @Resource
     private UserPermissionFacade userPermissionFacade;
 
+    @Resource
+    private TryAuthorized tryAuthorized;
+
     @Override
     public BusinessWrapper<Boolean> buildCiJob(JobBuildParam.BuildParam buildParam) {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById((buildParam.getCiJobId()));
-        // 鉴权
-        BusinessWrapper<Boolean> tryAuthorizedUserWrapper = tryAuthorizedUser(csCiJob);
-        if (!tryAuthorizedUserWrapper.isSuccess())
-            return tryAuthorizedUserWrapper;
+        tryAuthorized.tryAuthorizedUser(csCiJob);     // 鉴权
         correctionJobEngine(BuildType.BUILD.getType(), csCiJob.getId());    // 校正引擎
-
         BuildJobHandlerFactory.getBuildJobByKey(csCiJob.getJobType())
                 .build(csCiJob, buildParam);
-        return BusinessWrapper.SUCCESS;
-    }
-
-
-    @Override
-    public BusinessWrapper<Boolean> tryAuthorizedUser(CsCiJob csCiJob) {
-        OcUser operationUser = userFacade.getOcUserBySession();
-        // 允许运维操作
-        BusinessWrapper<Boolean> checkAccessLevelWrapper = userPermissionFacade.checkAccessLevel(operationUser, AccessLevel.OPS.getLevel());
-        if (checkAccessLevelWrapper.isSuccess())
-            return checkAccessLevelWrapper;
-
-        // 应用管理员
-        OcUserPermission ocUserPermission
-                = userPermissionFacade.queryUserPermissionByUniqueKey(operationUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId());
-        if (ocUserPermission != null && "ADMIN" .equalsIgnoreCase(ocUserPermission.getRoleName()))
-            return BusinessWrapper.SUCCESS;
-
-        List<OcUserPermission> permissions = userPermissionFacade.queryBusinessPermission(BusinessType.APPLICATION_BUILD_JOB.getType(), csCiJob.getId());
-        // 判断是否有任务授权
-        if (CollectionUtils.isEmpty(permissions)) {
-            // 鉴权到应用
-            if (!userPermissionFacade.tryUserBusinessPermission(operationUser.getId(), BusinessType.APPLICATION.getType(), csCiJob.getApplicationId()))
-                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
-        } else {
-            // 鉴权到job
-            if (permissions.stream().noneMatch(e -> e.getUserId().equals(operationUser.getId())))
-                return new BusinessWrapper<>(ErrorEnum.APPLICATION_JOB_AUTHENTICATION_FAILUER_2);
-        }
         return BusinessWrapper.SUCCESS;
     }
 
     @Override
     public BusinessWrapper<Boolean> abortCiJobBuild(int ciBuildId) {
         OcUser operationUser = userFacade.getOcUserBySession();
+        tryAbortUser(ciBuildId, operationUser);
+        redisUtil.set(RedisKeyUtil.getJobBuildAbortKey(ciBuildId), operationUser.getUsername(), 600);
+        return BusinessWrapper.SUCCESS;
+    }
+
+    private void tryAbortUser(int ciBuildId, OcUser operationUser) throws BuildRuntimeException {
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(ciBuildId);
         if (!csCiJobBuild.getUsername().equals(operationUser.getUsername())) {
             if (!applicationFacade.isApplicationAdmin(csCiJobBuild.getApplicationId(), operationUser.getId()))
-                return new BusinessWrapper<>(ErrorEnum.AUTHENTICATION_FAILUER);
+                throw new BuildRuntimeException(ErrorEnum.AUTHENTICATION_FAILUER);
         }
-        redisUtil.set(RedisKeyUtil.getJobBuildAbortKey(ciBuildId), operationUser.getUsername(), 600);
-        return BusinessWrapper.SUCCESS;
     }
 
     @Override

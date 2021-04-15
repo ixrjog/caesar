@@ -1,6 +1,5 @@
 package com.baiyi.caesar.jenkins;
 
-import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
@@ -11,6 +10,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsJobTpl;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.facade.jenkins.JobFacade;
+import com.baiyi.caesar.facade.jenkins.check.TryAuthorized;
 import com.baiyi.caesar.jenkins.handler.JenkinsServerHandler;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.jenkins.CsJobTplService;
@@ -44,6 +44,9 @@ public class JobTest extends BaseUnit {
 
     @Resource
     private CsCiJobService csCiJobService;
+
+    @Resource
+    private TryAuthorized tryAuthorized;
 
     @Test
     void testCorrectionJobEngine() {
@@ -124,7 +127,6 @@ public class JobTest extends BaseUnit {
     }
 
 
-
     @Test
     void testJobDelete() {
         // 删除构建任务
@@ -138,11 +140,10 @@ public class JobTest extends BaseUnit {
     @Test
     void testTryAuthorizedUser() {
 
-
-        SessionUtil.setUsername("gechong");
+        SessionUtil.setUsername("baiyi");
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(4);
-        BusinessWrapper<Boolean> wrapper = jobFacade.tryAuthorizedUser(csCiJob);
-        System.err.println(JSON.toJSON(wrapper));
+        tryAuthorized.tryAuthorizedUser(csCiJob);
+
     }
 
 }
