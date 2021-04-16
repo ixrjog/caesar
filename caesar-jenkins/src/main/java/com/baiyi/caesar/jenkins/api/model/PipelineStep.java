@@ -22,4 +22,6 @@ public class PipelineStep implements Serializable {
     private String result;
     private String state;
     private String type;
+
+    private String log;
 }

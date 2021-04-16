@@ -16,7 +16,6 @@ import com.baiyi.caesar.jenkins.handler.JenkinsBlueHandler;
 import com.baiyi.caesar.jenkins.util.PipelineUtil;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
-import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,9 +46,6 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
     @Resource
     private JobEngineFacade jobEngineFacade;
 
-    @Resource
-    private CsJobEngineService csJobEngineService;
-
     private int buildQuerySize(Integer size) {
         if (size == null || size > MAX_QUERY_SIZE)
             return MAX_QUERY_SIZE;
@@ -73,7 +69,34 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
             PipelineStep step = steps.get(0);
             return jenkinsBlueHandler.queryJobRunNodesStepLog(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId(), step.getId());
         }
+    }
 
+    public List<PipelineStep> queryPipelineNodeSteps(PipelineNodeStepLogParam.PipelineNodeStepLogQuery query) {
+        List<PipelineStep> steps;
+        String serverName ;
+        String jobName ;
+        Integer engineBuildNumber ;
+        if (query.getBuildType() == 0) {
+            CsCiJobBuild build = csCiJobBuildService.queryCiJobBuildById(query.getBuildId());
+            serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            steps = jenkinsBlueHandler.queryJobRunNodesSteps(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId());
+            if (CollectionUtils.isEmpty(steps)) return steps;
+            engineBuildNumber = build.getEngineBuildNumber();
+            jobName = build.getJobName();
+        } else {
+            CsCdJobBuild build = csCdJobBuildService.queryCdJobBuildById(query.getBuildId());
+            serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            steps = jenkinsBlueHandler.queryJobRunNodesSteps(serverName, build.getJobName(), build.getEngineBuildNumber(), query.getNodeId());
+            if (CollectionUtils.isEmpty(steps)) return steps;
+            engineBuildNumber = build.getEngineBuildNumber();
+            jobName = build.getJobName();
+        }
+        setStepsLog(steps, serverName, jobName, engineBuildNumber, query.getNodeId());
+        return steps;
+    }
+
+    private void setStepsLog(List<PipelineStep> steps, String serverName, String jobName, Integer engineBuildNumber, Integer nodeId) {
+        steps.forEach(e -> e.setLog(jenkinsBlueHandler.queryJobRunNodesStepLog(serverName, jobName, engineBuildNumber, nodeId, e.getId())));
     }
 
 

@@ -16,6 +16,7 @@ import com.baiyi.caesar.domain.vo.tree.EngineVO;
 import com.baiyi.caesar.facade.JenkinsFacade;
 import com.baiyi.caesar.facade.jenkins.EngineFacade;
 import com.baiyi.caesar.facade.jenkins.PipelineFacade;
+import com.baiyi.caesar.jenkins.api.model.PipelineStep;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -158,4 +159,11 @@ public class JenkinsController {
     public HttpResult<String> queryPipelineNodeStepLog(@RequestBody @Valid PipelineNodeStepLogParam.PipelineNodeStepLogQuery query) {
         return new HttpResult<>(pipelineFacade.queryPipelineNodeLog(query));
     }
+
+    @ApiOperation(value = "查询流水线节点步骤")
+    @PostMapping(value = "/pipeline/node/steps/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<PipelineStep>> queryPipelineNodeSteps(@RequestBody @Valid PipelineNodeStepLogParam.PipelineNodeStepLogQuery query) {
+        return new HttpResult<>(pipelineFacade.queryPipelineNodeSteps(query));
+    }
+
 }
