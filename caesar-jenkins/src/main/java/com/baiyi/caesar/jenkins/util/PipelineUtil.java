@@ -2,14 +2,13 @@ package com.baiyi.caesar.jenkins.util;
 
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.jenkins.api.model.PipelineNode;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author baiyi
@@ -32,20 +31,6 @@ public class PipelineUtil {
         String UNKNOWN = "UNKNOWN";
     }
 
-    private static Map<String, List<PipelineNode>> convertMap(List<PipelineNode> nodes) {
-        Map<String, List<PipelineNode>> nodeMap = Maps.newHashMap();
-        for (PipelineNode node : nodes) {
-            if (node.getFirstParent() == null) {
-                node.setFirstParent("0");
-            }
-            if (nodeMap.containsKey(node.getFirstParent())) {
-                nodeMap.get(node.getFirstParent()).add(node);
-            } else {
-                nodeMap.put(node.getFirstParent(), Lists.newArrayList(node));
-            }
-        }
-        return nodeMap;
-    }
 
     public static List<JenkinsPipelineVO.Node> convert(List<PipelineNode> nodes) {
         if (CollectionUtils.isEmpty(nodes))
@@ -95,5 +80,33 @@ public class PipelineUtil {
                 return "not_built";
         }
 
+    }
+
+    /**
+     * e.g:
+     * https://cc2.xinc818.com/blue/organizations/jenkins/CAESAR_caesar-server-build-prod/detail/CAESAR_caesar-server-build-prod
+     * https://cc2.xinc818.com/blue/organizations/jenkins/MAGICIAN_magician-server-dev/activity
+     *
+     * @param jenkinsInstanceUrl
+     * @param jobName
+     * @return
+     */
+    public static String buildJobBaseUrl(String jenkinsInstanceUrl, String jobName) {
+        return Joiner.on("/").skipNulls().join(jenkinsInstanceUrl,
+                "blue/organizations/jenkins",
+                jobName);
+
+    }
+
+    /**
+     * eg
+     * https://cc2.xinc818.com/blue/organizations/jenkins/CAESAR_caesar-server-build-prod/detail/CAESAR_caesar-server-build-prod/47/pipeline/
+     * @param jobBaseUrl
+     * @param jobName
+     * @param buildNumber
+     * @return
+     */
+    public static String buildJobBuildUrl(String jobBaseUrl,String jobName, Integer buildNumber) {
+        return Joiner.on("/").skipNulls().join(jobBaseUrl,"detail", jobName,buildNumber, "pipeline");
     }
 }

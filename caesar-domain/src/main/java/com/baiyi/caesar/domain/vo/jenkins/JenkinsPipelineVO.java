@@ -39,6 +39,10 @@ public class JenkinsPipelineVO {
 
         private List<Node> nodes;
         private String jobName;
+
+        private String jobUrl;
+        private String buildUrl;
+
         private Integer jobBuildNumber;
         private Integer id;
         private Boolean isRunning;

@@ -1,5 +1,6 @@
 package com.baiyi.caesar.facade.jenkins;
 
+import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.vo.application.JobEngineVO;
 
 import java.util.List;
@@ -30,9 +31,9 @@ public interface JobEngineFacade {
 
     boolean deleteJobDeploymentEngine(int jobId);
 
-
-
     List<JobEngineVO.JobEngine> queryJobEngines(int buildType, int jobId);
+
+    CsJenkinsInstance acqJenkinsServer(Integer jobEngineId);
 
     String acqJenkinsServerName(Integer jobEngineId);
 }

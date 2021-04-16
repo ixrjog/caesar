@@ -5,6 +5,7 @@ import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
 import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
+import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.param.pipeline.PipelineNodeStepLogParam;
 import com.baiyi.caesar.domain.vo.jenkins.JenkinsPipelineVO;
 import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
@@ -15,6 +16,7 @@ import com.baiyi.caesar.jenkins.handler.JenkinsBlueHandler;
 import com.baiyi.caesar.jenkins.util.PipelineUtil;
 import com.baiyi.caesar.service.jenkins.CsCdJobBuildService;
 import com.baiyi.caesar.service.jenkins.CsCiJobBuildService;
+import com.baiyi.caesar.service.jenkins.CsJobEngineService;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -44,6 +46,9 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
 
     @Resource
     private JobEngineFacade jobEngineFacade;
+
+    @Resource
+    private CsJobEngineService csJobEngineService;
 
     private int buildQuerySize(Integer size) {
         if (size == null || size > MAX_QUERY_SIZE)
@@ -77,19 +82,23 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
         List<CsCiJobBuild> builds = csCiJobBuildService.queryMyCiJobBuild(username, buildQuerySize(size));
         List<JenkinsPipelineVO.Pipeline> pipelines = Lists.newArrayList();
         for (CsCiJobBuild build : builds) {
-            String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            CsJenkinsInstance csJenkinsInstance = jobEngineFacade.acqJenkinsServer(build.getJobEngineId());
             List<PipelineNode> nodes;
             if (build.getFinalized()) {
-                nodes = jenkinsBlueHandler.queryJobRunNodesByCache(serverName, build.getJobName(), build.getEngineBuildNumber());
+                nodes = jenkinsBlueHandler.queryJobRunNodesByCache(csJenkinsInstance.getName(), build.getJobName(), build.getEngineBuildNumber());
             } else {
-                nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
+                nodes = jenkinsBlueHandler.queryJobRunNodes(csJenkinsInstance.getName(), build.getJobName(), build.getEngineBuildNumber());
             }
             if (CollectionUtils.isEmpty(nodes)) // 加入队列状态
                 nodes = Lists.newArrayList(PipelineNode.QUEUE);
+            String jobBaseUrl = PipelineUtil.buildJobBaseUrl(csJenkinsInstance.getUrl(), build.getJobName());
+
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))
                     .jobName(build.getJobName())
+                    .jobUrl(jobBaseUrl + "/activity")
+                    .buildUrl(PipelineUtil.buildJobBuildUrl(jobBaseUrl, build.getJobName(), build.getEngineBuildNumber()))
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
@@ -121,19 +130,23 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
         List<CsCdJobBuild> builds = csCdJobBuildService.queryMyCdJobBuild(username, buildQuerySize(size));
         List<JenkinsPipelineVO.Pipeline> pipelines = Lists.newArrayList();
         for (CsCdJobBuild build : builds) {
-            String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
+            CsJenkinsInstance csJenkinsInstance = jobEngineFacade.acqJenkinsServer(build.getJobEngineId());
+            // String serverName = jobEngineFacade.acqJenkinsServerName(build.getJobEngineId());
             List<PipelineNode> nodes;
             if (build.getFinalized()) {
-                nodes = jenkinsBlueHandler.queryJobRunNodesByCache(serverName, build.getJobName(), build.getEngineBuildNumber());
+                nodes = jenkinsBlueHandler.queryJobRunNodesByCache(csJenkinsInstance.getName(), build.getJobName(), build.getEngineBuildNumber());
             } else {
-                nodes = jenkinsBlueHandler.queryJobRunNodes(serverName, build.getJobName(), build.getEngineBuildNumber());
+                nodes = jenkinsBlueHandler.queryJobRunNodes(csJenkinsInstance.getName(), build.getJobName(), build.getEngineBuildNumber());
             }
             if (CollectionUtils.isEmpty(nodes)) // 加入队列状态
                 nodes = Lists.newArrayList(PipelineNode.QUEUE);
+            String jobBaseUrl = PipelineUtil.buildJobBaseUrl(csJenkinsInstance.getUrl(), build.getJobName());
             JenkinsPipelineVO.Pipeline pipeline = JenkinsPipelineVO.Pipeline.builder()
                     .id(build.getId())
                     .nodes(PipelineUtil.convert(nodes))
                     .jobName(build.getJobName())
+                    .jobUrl(jobBaseUrl + "/activity")
+                    .buildUrl(PipelineUtil.buildJobBuildUrl(jobBaseUrl, build.getJobName(), build.getEngineBuildNumber()))
                     .jobBuildNumber(build.getJobBuildNumber())
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
