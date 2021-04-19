@@ -41,8 +41,8 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
     }
 
     @Override
-    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = super.buildJobParametersContext(csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(IS_SONAR, buildParam.getIsSonar())

@@ -208,6 +208,9 @@ public enum ErrorEnum {
     JENKINS_CORRECTION_JOB_ENGINE(12001,"校正任务引擎错误！"),
     JENKINS_DELETE_JOB_BUILD_DETAILS_ERROR(12001,"删除任务构建详情错误！"),
     JENKINS_DELETE_JOB_ENGINE_ERROR(12001,"删除任务构建引擎错误！"),
+    JENKINS_PARAM_HOST_PATTERN_EMPTY(12001,"部署任务'主机分组'参数不能为空！"),
+    JENKINS_PARAM_HOST_PATTERN_ERROR(12001,"部署任务'主机分组'参数错误，参数不存在服务器分组中！"),
+    JENKINS_PARAM_SERVER_GROUP_EMPTY(12001,"部署任务'服务器组'配置不能为空！"),
 
     BLOCK_RULE_P0(13001,"封网中，禁用发布平台！"),
     BLOCK_RULE_P1(13001,"封网中，非管理员禁用发布平台！"),

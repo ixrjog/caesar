@@ -1,12 +1,11 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
 import com.baiyi.caesar.common.base.JobType;
-import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
-import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsBuilder;
+import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import com.baiyi.caesar.util.JobParamUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +28,8 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
     }
 
     @Override
-    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = super.buildJobParametersContext(csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(BUILD_TYPE, buildParam)

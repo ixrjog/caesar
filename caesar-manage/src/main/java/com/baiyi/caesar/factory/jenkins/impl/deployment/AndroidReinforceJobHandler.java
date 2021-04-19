@@ -40,8 +40,8 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
     }
 
     @Override
-    protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        JobParametersContext jobParamDetail = super.acqBaseBuildParams(csApplication, csCdJob, deploymentParam);
+    protected JobParametersContext buildBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+        JobParametersContext jobParamDetail = super.buildBaseBuildParams(csApplication, csCdJob, deploymentParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCdJob.getJobBuildNumber()))

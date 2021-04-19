@@ -32,8 +32,8 @@ public class H5BuildJobHandler extends BaseBuildJobHandler implements IBuildJobH
 
 
     @Override
-    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParametersContext context = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = super.buildJobParametersContext(csCiJob, buildParam);
         if (isRollback(buildParam)) {
             CsCiJobBuild csCiJobBuild = queryCiJobBuildById(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
             context.putParam(BRANCH, csCiJobBuild.getCommit()); // 使用回滚任务的Commit

@@ -1,7 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
 import com.baiyi.caesar.common.base.JobType;
-import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -28,8 +27,8 @@ public class PythonBuildJobHandler extends BaseBuildJobHandler implements IBuild
     }
 
     @Override
-    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParametersContext jobParamDetail = super.buildJobParametersContext(csApplication, csCiJob, buildParam);
+    protected JobParametersContext buildJobParametersContext(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext jobParamDetail = super.buildJobParametersContext(csCiJob, buildParam);
 
         JenkinsJobParamsMap jenkinsJobParamsMap = JenkinsJobParamsBuilder.newBuilder()
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))

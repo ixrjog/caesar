@@ -134,19 +134,24 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     @Override
     public void build(CsCiJob csCiJob, String username) {
         tryLimitConcurrentJob(csCiJob);
-        CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         raiseJobBuildNumber(csCiJob); // buildNumber +1
-        JobParametersContext jobParamDetail = buildJobParametersContext(csApplication, csCiJob);
-        build(csCiJob, csApplication, jobParamDetail, username, SEND_DINGTALK_MESSAGE);
+        JobParametersContext jobParamDetail = buildJobParametersContext(csCiJob);
+        build(csCiJob, jobParamDetail, username, SEND_DINGTALK_MESSAGE);
     }
 
     @Override
-    public BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        tryLimitConcurrentJob(csCiJob);
-        CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
-        raiseJobBuildNumber(csCiJob); // buildNumber +1
-        JobParametersContext context = buildJobParametersContext(csApplication, csCiJob, buildParam);
-        return build(csCiJob, csApplication, context, SessionUtil.getUsername(), buildParam.getIsSilence());
+    public BusinessWrapper<Boolean> build(CsCiJob buildJob, JobBuildParam.BuildParam buildParam) {
+        tryLimitConcurrentJob(buildJob);
+        raiseJobBuildNumber(buildJob); // buildNumber +1
+        JobParametersContext context = buildJobParametersContext(buildJob, buildParam);
+        return doBuild(buildJob, SessionUtil.getUsername(), context, buildParam.getIsSilence());
+    }
+
+
+    private BusinessWrapper<Boolean> doBuild(CsCiJob buildJob, String username, JobParametersContext jobParamDetail, Boolean isSilence) {
+        tryLimitConcurrentJob(buildJob);
+        raiseJobBuildNumber(buildJob); // buildNumber +1
+        return build(buildJob, jobParamDetail, username, isSilence);
     }
 
     /**
@@ -159,19 +164,19 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     protected void updateHostStatus(CsApplication csApplication, Map<String, String> params, int status) {
     }
 
-    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, CsApplication csApplication, JobParametersContext parametersContext, String username, Boolean isSilence) {
+    private BusinessWrapper<Boolean> build(CsCiJob csCiJob, JobParametersContext parametersContext, String username, Boolean isSilence) {
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csCiJob);
         if (!jobEngineWrapper.isSuccess())
             return new BusinessWrapper<>(jobEngineWrapper.getCode(), jobEngineWrapper.getDesc());
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         CsGitlabProject csGitlabProject = acqGitlabProjectByScmMemberId(csCiJob.getScmMemberId());
         GitlabBranch gitlabBranch = acqGitlabBranch(csGitlabProject, parametersContext.getParams().getOrDefault(BRANCH, ""));
-        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(csApplication, csCiJob, jobEngine, parametersContext, gitlabBranch, username, isSilence);
-        updateHostStatus(csApplication, parametersContext.getParams(), HOST_STATUS_DISABLE);
+        CsCiJobBuild csCiJobBuild = CiJobBuildBuilder.build(parametersContext.getApplication(), csCiJob, jobEngine, parametersContext, gitlabBranch, username, isSilence);
+        updateHostStatus(parametersContext.getApplication(), parametersContext.getParams(), HOST_STATUS_DISABLE);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCiJobBuild.getJobName()).details();
             if (job == null) {
-                updateHostStatus(csApplication, parametersContext.getParams(), HOST_STATUS_ENABLE);
+                updateHostStatus(parametersContext.getApplication(), parametersContext.getParams(), HOST_STATUS_ENABLE);
                 return new BusinessWrapper<>(100001, "Jenkins引擎故障，无法获取任务详情");
             }
             QueueReference queueReference = build(job, parametersContext.getParams());
@@ -252,14 +257,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         csCiJobService.updateCsCiJob(csJob);
     }
 
-    /**
-     * 取任务build参数
-     *
-     * @param csCiJob
-     * @return
-     */
-    protected JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob, JobBuildParam.BuildParam buildParam) {
-        JobParametersContext context = buildJobParametersContext(csApplication, csCiJob);
+    protected CsCiJobBuild queryCiJobBuildById(int id) {
+        return csCiJobBuildService.queryCiJobBuildById(id);
+    }
+
+
+    protected JobParametersContext buildJobParametersContext(CsCiJob buildJob, JobBuildParam.BuildParam buildParam) {
+        JobParametersContext context = buildJobParametersContext(buildJob);
         if (!StringUtils.isEmpty(buildParam.getBranch()))
             context.getParams().put(BRANCH, buildParam.getBranch());
         // 回滚
@@ -272,11 +276,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         return context;
     }
 
-    protected CsCiJobBuild queryCiJobBuildById(int id) {
-        return csCiJobBuildService.queryCiJobBuildById(id);
-    }
-
-    private JobParametersContext buildJobParametersContext(CsApplication csApplication, CsCiJob csCiJob) {
+    private JobParametersContext buildJobParametersContext(CsCiJob csCiJob) {
+        CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
         CsApplicationScmMember csApplicationScmMember = applicationFacade.queryScmMemberById(csCiJob.getScmMemberId());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCiJob.getParameterYaml());
@@ -292,6 +293,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                 .build();
 
         return JobParametersContext.builder()
+                .application(csApplication)
                 .jenkinsJobParameters(jenkinsJobParameters)
                 .params(jenkinsJobParamsMap.getParams())
                 .csOssBucket(csOssBucket)

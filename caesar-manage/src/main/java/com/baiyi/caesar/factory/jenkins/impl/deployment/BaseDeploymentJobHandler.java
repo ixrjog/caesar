@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CdJobBuildBuilder;
 import com.baiyi.caesar.common.base.JobType;
 import com.baiyi.caesar.common.base.NoticePhase;
+import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.JenkinsUtil;
 import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
@@ -103,16 +104,10 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
      * @param csCdJob
      * @return
      */
-    protected BusinessWrapper<Boolean> tryLimitConcurrentJob(CsCdJob csCdJob) {
-        if (isLimitConcurrentJob()) {
-            if (csCdJobBuildService.queryLastCdJobBuild(csCdJob.getId()).stream().allMatch(CsCdJobBuild::getFinalized)) {
-                return BusinessWrapper.SUCCESS;
-            } else {
-                return new BusinessWrapper<>(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
-            }
-        } else {
-            return BusinessWrapper.SUCCESS;
-        }
+    protected void tryLimitConcurrentJob(CsCdJob csCdJob) {
+        if (isLimitConcurrentJob())
+            if (!csCdJobBuildService.queryLastCdJobBuild(csCdJob.getId()).stream().allMatch(CsCdJobBuild::getFinalized))
+                throw new BuildRuntimeException(ErrorEnum.JENKINS_LIMIT_CONCURRENT_JOB);
     }
 
     protected boolean isLimitConcurrentJob() {
@@ -131,9 +126,7 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
     @Override
     public BusinessWrapper<Boolean> deployment(CsCdJob csJob, JobDeploymentParam.DeploymentParam deploymentParam) {
-        BusinessWrapper<Boolean> limitWrapper = tryLimitConcurrentJob(csJob);
-        if (!limitWrapper.isSuccess()) return limitWrapper;
-
+        tryLimitConcurrentJob(csJob);
         CsApplication csApplication = queryApplicationById(csJob.getApplicationId());
         BusinessWrapper<JobEngineVO.JobEngine> jobEngineWrapper = acqJobEngine(csJob);
         if (!jobEngineWrapper.isSuccess())
@@ -141,7 +134,9 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
 
         JobEngineVO.JobEngine jobEngine = jobEngineWrapper.getBody();
         raiseJobBuildNumber(csJob); // buildNumber +1
-        JobParametersContext jobParamDetail = acqBaseBuildParams(csApplication, csJob, deploymentParam);
+        JobParametersContext jobParamDetail = buildBaseBuildParams(csApplication, csJob, deploymentParam);
+        // 校验参数
+        checkParameters(jobParamDetail);
 
         CsCdJobBuild csCdJobBuild = CdJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, deploymentParam.getCiBuildId());
         if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
@@ -199,12 +194,20 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
     }
 
     /**
+     * 校验参数
+     *
+     * @param jobParametersContext
+     */
+    protected void checkParameters(JobParametersContext jobParametersContext) {
+    }
+
+    /**
      * 取任务build参数
      *
      * @param csCdJob
      * @return
      */
-    protected JobParametersContext acqBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
+    protected JobParametersContext buildBaseBuildParams(CsApplication csApplication, CsCdJob csCdJob, JobDeploymentParam.DeploymentParam deploymentParam) {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCdJob.getParameterYaml());
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(csCdJob.getCiJobId());
         CsOssBucket csOssBucket = csOssBucketService.queryCsOssBucketById(csCiJob.getOssBucketId());
@@ -224,6 +227,8 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(deploymentParam.getCiBuildId());
 
         return JobParametersContext.builder()
+                .buildJob(csCiJob)
+                .application(csApplication)
                 .jenkinsJobParameters(jenkinsJobParameters)
                 .params(jenkinsJobParamsMap.getParams())
                 .csOssBucket(csOssBucket)

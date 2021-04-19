@@ -1,6 +1,8 @@
 package com.baiyi.caesar.jenkins.context;
 
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
+import com.baiyi.caesar.domain.generator.caesar.CsApplication;
+import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +27,8 @@ public class JobParametersContext {
     @Builder.Default
     private Boolean isRollback = false;
 
+    private CsApplication application;
+
     private CsOssBucket csOssBucket;
 
     private String jobName;
@@ -32,6 +36,9 @@ public class JobParametersContext {
     private JenkinsJobParameters jenkinsJobParameters;
 
     private Map<String, String> params;
+
+    private CsCiJob buildJob;
+
 
     public void putParam(String paramName, String paramValue) {
         this.params.put(paramName, paramValue);
