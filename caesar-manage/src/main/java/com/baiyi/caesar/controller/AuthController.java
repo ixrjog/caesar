@@ -9,6 +9,7 @@ import com.baiyi.caesar.domain.param.auth.UserRoleParam;
 import com.baiyi.caesar.domain.vo.auth.*;
 import com.baiyi.caesar.domain.vo.auth.menu.MenuVO;
 import com.baiyi.caesar.facade.AuthFacade;
+import com.baiyi.caesar.facade.TokenFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -29,6 +30,9 @@ import java.util.List;
 public class AuthController {
     @Resource
     private AuthFacade authFacade;
+
+    @Resource
+    private TokenFacade tokenFacade;
 
     @ApiOperation(value = "分页查询role列表")
     @GetMapping(value = "/role/page/query", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -188,5 +192,13 @@ public class AuthController {
     public HttpResult<AuthMenuVO.Menu> queryRoleMenuByRoleId(@RequestParam int roleId) {
         return new HttpResult<>(authFacade.queryRoleMenuByRoleId(roleId));
     }
+
+    @ApiOperation(value = "吊销所有用户token")
+    @PutMapping(value = "/token/revoke", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> revokeAllUserToken() {
+        tokenFacade.revokeAllUserToken();
+        return HttpResult.SUCCESS;
+    }
+
 
 }

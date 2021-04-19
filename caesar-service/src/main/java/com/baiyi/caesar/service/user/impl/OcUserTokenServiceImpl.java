@@ -32,7 +32,7 @@ public class OcUserTokenServiceImpl implements OcUserTokenService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("valid", true);
         criteria.andEqualTo("token", token);
-        PageHelper.startPage(1 ,1);
+        PageHelper.startPage(1, 1);
         return ocUserTokenMapper.selectOneByExample(example);
     }
 
@@ -46,13 +46,21 @@ public class OcUserTokenServiceImpl implements OcUserTokenService {
     }
 
     @Override
-    public List<OcUserToken> queryValidOcUserTokenByUsername(String username,int size) {
+    public List<OcUserToken> queryValidOcUserTokenByUsername(String username, int size) {
         Example example = new Example(OcUserToken.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("valid", true);
         criteria.andEqualTo("username", username);
         example.setOrderByClause("create_time");
         PageHelper.startPage(1, size);
+        return ocUserTokenMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<OcUserToken> queryOcUserTokenByValid() {
+        Example example = new Example(OcUserToken.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("valid", true);
         return ocUserTokenMapper.selectByExample(example);
     }
 

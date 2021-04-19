@@ -23,7 +23,13 @@ public interface OcUserTokenService {
 
     int countValidOcUserTokenByUsername(String username);
 
-    List<OcUserToken> queryValidOcUserTokenByUsername(String username,int size);
+    List<OcUserToken> queryValidOcUserTokenByUsername(String username, int size);
+
+    /**
+     * 查询所有有效的Token
+     * @return
+     */
+    List<OcUserToken> queryOcUserTokenByValid();
 
     /**
      * 查询用户有效的Token
