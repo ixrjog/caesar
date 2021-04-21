@@ -194,7 +194,7 @@ public class AuthController {
     }
 
     @ApiOperation(value = "吊销所有用户token")
-    @PutMapping(value = "/token/revoke", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/token/revoke", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> revokeAllUserToken() {
         tokenFacade.revokeAllUserToken();
         return HttpResult.SUCCESS;
