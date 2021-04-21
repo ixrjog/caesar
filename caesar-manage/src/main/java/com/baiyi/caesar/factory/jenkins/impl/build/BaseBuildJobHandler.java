@@ -145,7 +145,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         JobParametersContext context = buildJobParametersContext(buildJob, buildParam);
         return build(buildJob, context, SessionUtil.getUsername(), buildParam.getIsSilence());
     }
-    
+
 
     /**
      * impl重写

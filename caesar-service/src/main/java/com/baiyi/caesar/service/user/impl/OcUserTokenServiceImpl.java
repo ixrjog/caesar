@@ -57,14 +57,6 @@ public class OcUserTokenServiceImpl implements OcUserTokenService {
     }
 
     @Override
-    public List<OcUserToken> queryOcUserTokenByValid() {
-        Example example = new Example(OcUserToken.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("valid", true);
-        return ocUserTokenMapper.selectByExample(example);
-    }
-
-    @Override
     public List<OcUserToken> queryOcUserTokenByUsername(String username) {
         Example example = new Example(OcUserToken.class);
         Example.Criteria criteria = example.createCriteria();
@@ -79,6 +71,16 @@ public class OcUserTokenServiceImpl implements OcUserTokenService {
         ocUserTokenMapper.updateByPrimaryKey(ocUserToken);
     }
 
+
+    @Override
+    public void revokeAllUserToken() {
+        Example example = new Example(OcUserToken.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("valid", true);
+        OcUserToken ocUserToken = new OcUserToken();
+        ocUserToken.setValid(false);
+        ocUserTokenMapper.updateByExampleSelective(ocUserToken, example);
+    }
     @Override
     public int checkUserHasResourceAuthorize(String token, String resourceName) {
         return ocUserTokenMapper.checkUserHasResourceAuthorize(token, resourceName);

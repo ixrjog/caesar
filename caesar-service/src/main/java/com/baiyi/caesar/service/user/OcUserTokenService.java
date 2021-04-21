@@ -26,12 +26,6 @@ public interface OcUserTokenService {
     List<OcUserToken> queryValidOcUserTokenByUsername(String username, int size);
 
     /**
-     * 查询所有有效的Token
-     * @return
-     */
-    List<OcUserToken> queryOcUserTokenByValid();
-
-    /**
      * 查询用户有效的Token
      *
      * @param username
@@ -45,6 +39,8 @@ public interface OcUserTokenService {
      * @param ocUserToken
      */
     void updateOcUserTokenInvalid(OcUserToken ocUserToken);
+
+    void revokeAllUserToken();
 
     /**
      * 判断用户是否可访问某个资源
