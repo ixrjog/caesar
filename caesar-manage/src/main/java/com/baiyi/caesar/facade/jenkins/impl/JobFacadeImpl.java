@@ -244,36 +244,13 @@ public class JobFacadeImpl implements JobFacade {
         JenkinsJobParameters jenkinsJobParameters = JenkinsUtil.convert(csCdJob.getParameterYaml());
         Map<String, String> paramMap = JenkinsUtil.convert(jenkinsJobParameters);
         if (!paramMap.containsKey(SERVER_GRUOP))
-            return new BusinessWrapper(ErrorEnum.JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED);
+            throw new BuildRuntimeException(ErrorEnum.JENKINS_JOB_TPL_HOST_PATTERN_IS_NOT_CONFIGURED);
         String serverGroupName = paramMap.get(SERVER_GRUOP);
         List<ApplicationServerGroupVO.ApplicationServerGroup> serverGroups = applicationFacade.queryApplicationServerGroupByApplicationId(csCdJob.getApplicationId());
         // 鉴权（必须在应用中指定服务器组配置）
         if (serverGroups.stream().noneMatch(e -> e.getServerGroupName().equals(serverGroupName)))
-            return new BusinessWrapper<>(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
-
-        BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> hostPatternWrapper
-                = serverGroupFacade.queryServerGroupHostPattern(serverGroupName, csCiJob.getEnvType());
-        if (!hostPatternWrapper.isSuccess())
-            return hostPatternWrapper;
-
-        if (paramMap.containsKey(HOST_PATTERN)) {
-            String hostPattern = paramMap.get(HOST_PATTERN);
-            try {
-                // 默认选中主机分组
-                ServerGroupHostPatternVO.HostPattern hp = acqHostPattern(hostPatternWrapper.getBody(), hostPattern);
-            } catch (NullPointerException e) {
-
-            }
-        }
+            throw new BuildRuntimeException(ErrorEnum.APPLICATION_SERVERGROUP_NON_COMPLIANCE);
         return serverGroupFacade.queryServerGroupHostPattern(serverGroupName, csCiJob.getEnvType());
-    }
-
-    private ServerGroupHostPatternVO.HostPattern acqHostPattern(List<ServerGroupHostPatternVO.HostPattern> hostPatterns, String hostPattern) throws NullPointerException {
-        for (ServerGroupHostPatternVO.HostPattern h : hostPatterns) {
-            if (h.getHostPattern().equals(hostPattern))
-                return h;
-        }
-        throw new NullPointerException();
     }
 
     /**

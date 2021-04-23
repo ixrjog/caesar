@@ -39,6 +39,8 @@ public class ServerVO {
 
         private int businessType;
 
+        private String displayName;
+
         @Override
         public int getBusinessId() {
             return id;

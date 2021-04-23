@@ -3,6 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.account.AccountCenter;
 import com.baiyi.caesar.builder.UserPermissionBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
+import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.*;
 import com.baiyi.caesar.decorator.server.ServerGroupDecorator;
@@ -92,6 +93,9 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
 
     @Resource
     private EnvFacade envFacade;
+
+    @Resource
+    private ServerBaseFacade serverBaseFacade;
 
     public static final boolean ACTION_ADD = true;
     public static final boolean ACTION_UPDATE = false;
@@ -391,19 +395,33 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
             });
             return new BusinessWrapper(hostPatterns);
         } catch (IOException ignored) {
-            return new BusinessWrapper<>(ErrorEnum.SERVER_GROUP_QUERY_FAILED);
         }
+        throw new BuildRuntimeException(ErrorEnum.SERVER_GROUP_QUERY_FAILED);
     }
 
-    private List<ServerVO.Server> convert(List<OcServer> ocServers) {
-        List<ServerVO.Server> servers = BeanCopierUtil.copyListProperties(ocServers, ServerVO.Server.class);
-        return servers.stream().peek(s -> {
+    private List<ServerVO.Server> convert(List<OcServer> servers) {
+//        List<ServerVO.Server> servers = BeanCopierUtil.copyListProperties(ocServers, ServerVO.Server.class);
+//       servers.stream().peek(s -> {
+//            CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
+//            ServerBaseFacade
+//            if (csJobBuildServer != null) {
+//                ServerVO.DeployVersion deployVersion = BeanCopierUtil.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
+//                s.setDeployVersion(deployVersion);
+//                s.setDeployVersion(ServerBaseFacade.acqServerName(s));
+//            }
+//        }).collect(Collectors.toList());
+        return servers.stream().map(s -> {
+            ServerVO.Server server = BeanCopierUtil.copyProperties(s, ServerVO.Server.class);
             CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
             if (csJobBuildServer != null) {
                 ServerVO.DeployVersion deployVersion = BeanCopierUtil.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
-                s.setDeployVersion(deployVersion);
+                server.setDeployVersion(deployVersion);
+                server.setDisplayName(ServerBaseFacade.acqServerName(s));
             }
+            return server;
         }).collect(Collectors.toList());
+
+
     }
 
 }
