@@ -117,6 +117,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Resource
     private OcUserService ocUserService;
 
+
     @Override
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         DataTable<CsApplication> table = csApplicationService.queryCsApplicationByParam(pageQuery);
@@ -124,11 +125,18 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
+    /**
+     * Caesar管理员可查看所有应用
+     *
+     * @param pageQuery
+     * @return
+     */
     @Override
     public DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         ApplicationParam.MyApplicationPageQuery myApplicationPageQuery = BeanCopierUtil.copyProperties(pageQuery, ApplicationParam.MyApplicationPageQuery.class);
         OcUser ocUser = userFacade.getOcUserBySession();
-        myApplicationPageQuery.setUserId(ocUser.getId());
+        if (!userPermissionFacade.checkAccessLevel(ocUser, AccessLevel.OPS.getLevel()).isSuccess())
+            myApplicationPageQuery.setUserId(ocUser.getId());
         DataTable<CsApplication> table = csApplicationService.queryMyCsApplicationByParam(myApplicationPageQuery);
         List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
