@@ -410,8 +410,6 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
             }
             return server;
         }).collect(Collectors.toList());
-
-
     }
 
 }
