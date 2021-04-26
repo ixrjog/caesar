@@ -400,16 +400,6 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     }
 
     private List<ServerVO.Server> convert(List<OcServer> servers) {
-//        List<ServerVO.Server> servers = BeanCopierUtil.copyListProperties(ocServers, ServerVO.Server.class);
-//       servers.stream().peek(s -> {
-//            CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
-//            ServerBaseFacade
-//            if (csJobBuildServer != null) {
-//                ServerVO.DeployVersion deployVersion = BeanCopierUtil.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
-//                s.setDeployVersion(deployVersion);
-//                s.setDeployVersion(ServerBaseFacade.acqServerName(s));
-//            }
-//        }).collect(Collectors.toList());
         return servers.stream().map(s -> {
             ServerVO.Server server = BeanCopierUtil.copyProperties(s, ServerVO.Server.class);
             CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
