@@ -44,7 +44,7 @@ public class ApplicationController {
 
     @ApiOperation(value = "分页查询我的应用配置")
     @PostMapping(value = "/my/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<DataTable<ApplicationVO.Application>> queryMyApplicationPage(@RequestBody @Valid ApplicationParam.ApplicationPageQuery pageQuery) {
+    public HttpResult<DataTable<ApplicationVO.Application>> queryMyApplicationPage(@RequestBody @Valid ApplicationParam.MyApplicationPageQuery pageQuery) {
         return new HttpResult<>(applicationFacade.queryMyApplicationPage(pageQuery));
     }
 

@@ -132,12 +132,20 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
      * @return
      */
     @Override
-    public DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
-        ApplicationParam.MyApplicationPageQuery myApplicationPageQuery = BeanCopierUtil.copyProperties(pageQuery, ApplicationParam.MyApplicationPageQuery.class);
+    public DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.MyApplicationPageQuery pageQuery) {
         OcUser ocUser = userFacade.getOcUserBySession();
-        if (!userPermissionFacade.checkAccessLevel(ocUser, AccessLevel.OPS.getLevel()).isSuccess())
-            myApplicationPageQuery.setUserId(ocUser.getId());
-        DataTable<CsApplication> table = csApplicationService.queryMyCsApplicationByParam(myApplicationPageQuery);
+        pageQuery.setUserId(ocUser.getId());
+        boolean queryAll = false;
+        if (pageQuery.getIsAll() != null && pageQuery.getIsAll()) {
+            if (userPermissionFacade.checkAccessLevel(ocUser, AccessLevel.OPS.getLevel()).isSuccess())
+                queryAll = true;
+        }
+        DataTable<CsApplication> table;
+        if (queryAll) {
+            table = csApplicationService.queryCsApplicationByParam(BeanCopierUtil.copyProperties(pageQuery, ApplicationParam.ApplicationPageQuery.class));
+        } else {
+            table = csApplicationService.queryMyCsApplicationByParam(pageQuery);
+        }
         List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
         return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }

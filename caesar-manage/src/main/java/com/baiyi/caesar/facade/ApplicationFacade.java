@@ -21,7 +21,7 @@ public interface ApplicationFacade {
 
     DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery);
 
-    DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery);
+    DataTable<ApplicationVO.Application> queryMyApplicationPage(ApplicationParam.MyApplicationPageQuery pageQuery);
 
     List<ApplicationVO.ScmMember> queryApplicationScmMemberByApplicationId(int applicationId);
 

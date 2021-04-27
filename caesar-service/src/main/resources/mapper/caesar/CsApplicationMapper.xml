@@ -37,9 +37,7 @@
             resultMap="BaseResultMap">
         select a0.* from oc_user_permission a1
         inner join cs_application a0 on a0.id = a1.business_id and a1.business_type = 8
-        <if test="userId != null">
-            and a1.user_id = #{userId}
-        </if>
+        and a1.user_id = #{userId}
         <where>
             <if test="queryName != null and queryName != ''">
                 a0.name like "%" #{queryName} "%" or a0.application_key like "%" #{queryName} "%"

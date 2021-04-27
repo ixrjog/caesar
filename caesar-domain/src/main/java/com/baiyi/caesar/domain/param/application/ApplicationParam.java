@@ -22,7 +22,7 @@ public class ApplicationParam {
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @ApiModel
-    public static class ApplicationPageQuery extends PageParam{
+    public static class ApplicationPageQuery extends PageParam {
 
         @ApiModelProperty(value = "关键字查询")
         private String queryName;
@@ -49,6 +49,9 @@ public class ApplicationParam {
 
         @ApiModelProperty(value = "扩展属性", example = "1")
         private Integer extend;
+
+        @ApiModelProperty(value = "管理员查阅所有应用", example = "true")
+        private Boolean isAll;
     }
 
 
