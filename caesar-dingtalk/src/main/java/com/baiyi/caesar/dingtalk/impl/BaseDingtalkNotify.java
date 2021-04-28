@@ -188,6 +188,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
                 .paramEntryByUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
                 .paramEntryByChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
                 .paramEntryByBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)
+                .paramEntryByHref(context.getCsCiJob().getHref())
                 .build();
         return templateMap.getTemplate();
     }

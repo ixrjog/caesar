@@ -109,6 +109,7 @@ public class CiJobVO {
         private Date updateTime;
         private Date createTime;
         private String parameterYaml;
+        private String href;
         private String comment;
 
     }

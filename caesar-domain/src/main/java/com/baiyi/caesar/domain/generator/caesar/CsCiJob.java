@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_ci_job")
 public class CsCiJob {
@@ -47,6 +47,12 @@ public class CsCiJob {
     private Boolean enableTag;
 
     /**
+     * 启用sonar
+     */
+    @Column(name = "enable_sonar")
+    private Boolean enableSonar;
+
+    /**
      * 仓库成员id
      */
     @Column(name = "scm_member_id")
@@ -76,12 +82,6 @@ public class CsCiJob {
     private Integer deploymentJobId;
 
     /**
-     * 启用sonar
-     */
-    @Column(name = "enable_sonar")
-    private Boolean enableSonar;
-
-    /**
      * 通知所有人
      */
     @Column(name = "at_all")
@@ -98,6 +98,11 @@ public class CsCiJob {
      */
     @Column(name = "dingtalk_id")
     private Integer dingtalkId;
+
+    /**
+     * 任务超文本链接
+     */
+    private String href;
 
     /**
      * 更新时间
@@ -259,6 +264,24 @@ public class CsCiJob {
     }
 
     /**
+     * 获取启用sonar
+     *
+     * @return enable_sonar - 启用sonar
+     */
+    public Boolean getEnableSonar() {
+        return enableSonar;
+    }
+
+    /**
+     * 设置启用sonar
+     *
+     * @param enableSonar 启用sonar
+     */
+    public void setEnableSonar(Boolean enableSonar) {
+        this.enableSonar = enableSonar;
+    }
+
+    /**
      * 获取仓库成员id
      *
      * @return scm_member_id - 仓库成员id
@@ -349,24 +372,6 @@ public class CsCiJob {
     }
 
     /**
-     * 获取启用sonar
-     *
-     * @return enable_sonar - 启用sonar
-     */
-    public Boolean getEnableSonar() {
-        return enableSonar;
-    }
-
-    /**
-     * 设置启用sonar
-     *
-     * @param enableSonar 启用sonar
-     */
-    public void setEnableSonar(Boolean enableSonar) {
-        this.enableSonar = enableSonar;
-    }
-
-    /**
      * 获取通知所有人
      *
      * @return at_all - 通知所有人
@@ -418,6 +423,24 @@ public class CsCiJob {
      */
     public void setDingtalkId(Integer dingtalkId) {
         this.dingtalkId = dingtalkId;
+    }
+
+    /**
+     * 获取任务超文本链接
+     *
+     * @return href - 任务超文本链接
+     */
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * 设置任务超文本链接
+     *
+     * @param href 任务超文本链接
+     */
+    public void setHref(String href) {
+        this.href = href;
     }
 
     /**

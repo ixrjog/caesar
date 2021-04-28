@@ -41,9 +41,9 @@ public class PipelineTask implements Runnable {
                     List<JenkinsPipelineVO.Pipeline> pipelines;
                     String queryUsername = InitialMessage.QueryType.ALL.equalsIgnoreCase(context.getQueryType()) ? null : context.getUsername();
                     if (context.getBuildType() == 0) {
-                        pipelines = pipelineFacade.queryBuildJobPipelines(queryUsername,context.getQuerySize());
+                        pipelines = pipelineFacade.queryBuildJobPipelines(queryUsername, context.getQuerySize());
                     } else {
-                        pipelines = pipelineFacade.queryDeploymentJobPipelines(queryUsername,context.getQuerySize());
+                        pipelines = pipelineFacade.queryDeploymentJobPipelines(queryUsername, context.getQuerySize());
                     }
                     if (CollectionUtils.isNotEmpty(pipelines)) {
                         String jsonStr = JSON.toJSONString(pipelines);
@@ -54,7 +54,7 @@ public class PipelineTask implements Runnable {
                 }
                 Thread.sleep(4000);
             } catch (Exception ex) {
-                log.error(ex.toString(), ex);
+                //  log.error(ex.toString(), ex);
             }
         }
     }

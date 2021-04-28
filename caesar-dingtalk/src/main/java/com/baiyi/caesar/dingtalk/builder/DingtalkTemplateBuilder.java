@@ -32,6 +32,8 @@ public class DingtalkTemplateBuilder {
     public static final String USERS = "users";
     public static final String BUILD_STATUS = "buildStatus";
 
+    public static final String HREF = "href";
+
     public static final String CHANGES = "changes";
 
     public static final String VERSION_NAME = "versionName";
@@ -132,6 +134,11 @@ public class DingtalkTemplateBuilder {
 
     public DingtalkTemplateBuilder paramEntryByBuildNumber(Integer buildNumber) {
         templateMap.putContent(BUILD_NUMBER, buildNumber);
+        return this;
+    }
+
+    public DingtalkTemplateBuilder paramEntryByHref(String href) {
+        templateMap.putContent(HREF, href);
         return this;
     }
 

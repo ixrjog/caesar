@@ -1,7 +1,7 @@
 package com.baiyi.caesar.domain.generator.caesar;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "cs_cd_job")
 public class CsCdJob {
@@ -50,16 +50,18 @@ public class CsCdJob {
     @Column(name = "job_tpl_id")
     private Integer jobTplId;
 
+    private String href;
+
     /**
      * 更新时间
      */
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
      * 创建时间
      */
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
@@ -221,6 +223,20 @@ public class CsCdJob {
      */
     public void setJobTplId(Integer jobTplId) {
         this.jobTplId = jobTplId;
+    }
+
+    /**
+     * @return href
+     */
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * @param href
+     */
+    public void setHref(String href) {
+        this.href = href;
     }
 
     /**

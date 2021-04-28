@@ -13,15 +13,16 @@
     <result column="env_type" jdbcType="INTEGER" property="envType" />
     <result column="job_type" jdbcType="VARCHAR" property="jobType" />
     <result column="enable_tag" jdbcType="BIT" property="enableTag" />
+    <result column="enable_sonar" jdbcType="BIT" property="enableSonar" />
     <result column="scm_member_id" jdbcType="INTEGER" property="scmMemberId" />
     <result column="job_build_number" jdbcType="INTEGER" property="jobBuildNumber" />
     <result column="hide" jdbcType="BIT" property="hide" />
     <result column="job_tpl_id" jdbcType="INTEGER" property="jobTplId" />
     <result column="deployment_job_id" jdbcType="INTEGER" property="deploymentJobId" />
-    <result column="enable_sonar" jdbcType="TINYINT" property="enableSonar" />
     <result column="at_all" jdbcType="BIT" property="atAll" />
     <result column="oss_bucket_id" jdbcType="INTEGER" property="ossBucketId" />
     <result column="dingtalk_id" jdbcType="INTEGER" property="dingtalkId" />
+    <result column="href" jdbcType="VARCHAR" property="href" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="parameter_yaml" jdbcType="LONGVARCHAR" property="parameterYaml" />
