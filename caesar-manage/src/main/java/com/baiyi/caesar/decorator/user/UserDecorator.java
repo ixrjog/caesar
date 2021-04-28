@@ -36,8 +36,10 @@ public class UserDecorator extends BaseDecorator {
 
     public void decorator(UserVO.IUser iUser) {
         OcUser ocUser = ocUserService.queryOcUserByUsername(iUser.getUsername());
-        if (ocUser != null)
-            iUser.setUser(BeanCopierUtil.copyProperties(ocUser, UserVO.User.class));
+        if (ocUser == null) return;
+        UserVO.User user = BeanCopierUtil.copyProperties(ocUser, UserVO.User.class);
+        user.setPassword("");
+        iUser.setUser(user);
     }
 
     // from mysql

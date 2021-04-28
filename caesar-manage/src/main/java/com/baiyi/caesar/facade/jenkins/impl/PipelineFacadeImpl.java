@@ -2,6 +2,7 @@ package com.baiyi.caesar.facade.jenkins.impl;
 
 import com.baiyi.caesar.common.util.TimeAgoUtil;
 import com.baiyi.caesar.decorator.jenkins.base.BaseJenkinsDecorator;
+import com.baiyi.caesar.decorator.user.UserDecorator;
 import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJobBuild;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
@@ -32,6 +33,9 @@ import java.util.List;
 public class PipelineFacadeImpl extends BaseJenkinsDecorator implements PipelineFacade {
 
     public static final int MAX_QUERY_SIZE = 4;
+
+    @Resource
+    private UserDecorator userDecorator;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -126,6 +130,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
                     .buildType(BuildType.BUILD.getType())
+                    .username(build.getUsername())
                     .build();
             setChartHeight(pipeline);
             decorator(pipeline);
@@ -174,6 +179,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
                     .isRunning(!build.getFinalized())
                     .startTime(build.getStartTime())
                     .buildType(BuildType.DEPLOYMENT.getType())
+                    .username(build.getUsername())
                     .build();
             setChartHeight(pipeline);
             decorator(pipeline);
@@ -185,6 +191,7 @@ public class PipelineFacadeImpl extends BaseJenkinsDecorator implements Pipeline
     private void decorator(JenkinsPipelineVO.Pipeline pipeline) {
         decoratorBuildExecutors(pipeline);
         TimeAgoUtil.decorator(pipeline);
+        userDecorator.decorator(pipeline);
     }
 
 
