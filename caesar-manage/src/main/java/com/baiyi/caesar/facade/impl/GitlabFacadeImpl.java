@@ -132,7 +132,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "daily", "gray"};
 
-    public static final String DEFAULT_DEF_BRANCH = "master";
+    public static final String DEFAULT_REF_BRANCH = "master";
 
     private BusinessWrapper<GitlabBranchVO.BaseBranch> queryGitlabProjectBranchCommit(int id, String branch) {
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(id);
@@ -360,7 +360,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
             }
             try {
                 if (gitlabBranch == null)
-                    gitlabBranchHandler.createBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch, DEFAULT_DEF_BRANCH);
+                    gitlabBranchHandler.createBranch(csGitlabInstance.getName(), csGitlabProject.getProjectId(), branch, DEFAULT_REF_BRANCH);
             } catch (IOException ignored) {
             }
         }
