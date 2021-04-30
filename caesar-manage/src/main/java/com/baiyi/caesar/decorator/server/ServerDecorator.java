@@ -22,9 +22,14 @@ public class ServerDecorator extends BaseDecorator {
     @Resource
     private OcServerService ocServerService;
 
+
+    @Resource
+    private ServerGroupTypeDecorator serverGroupTypeDecorator;
+
     public ServerVO.Server decorator(ServerVO.Server server) {
         server.setBusinessType(BusinessType.SERVER.getType());
         decoratorServer(server);
+        serverGroupTypeDecorator.decorator(server.getServerGroup());
         return server;
     }
 
