@@ -1,7 +1,7 @@
 Welcome to the caesar wiki!
 
 # Caesar(凯撒持续集成平台)简介
-<img src="https://img.shields.io/badge/version-0.0.1-brightgreen.svg"></img>
+<img src="https://img.shields.io/badge/version-1.1.0-brightgreen.svg"></img>
 <img src="https://img.shields.io/badge/java-8-brightgreen.svg"></img> 
 <img src="https://img.shields.io/badge/springboot-2.2.2.RELEASE-brightgreen.svg"></img> 
 <img src="https://img.shields.io/badge/mysql-8-brightgreen.svg"></img> 
