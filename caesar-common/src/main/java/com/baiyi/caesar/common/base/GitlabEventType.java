@@ -7,7 +7,7 @@ package com.baiyi.caesar.common.base;
  */
 public enum  GitlabEventType {
     PUSH(0, "push"),
-    TAG_PUSh(1, "tag_push"),
+    TAG_PUSH(1, "tag_push"),
     MERGE_REQUEST(2, "merge_request"),
     REPOSITORY_UPDATE(3, "repository_update"),
     PROJECT_CREATE(4, "project_create"),

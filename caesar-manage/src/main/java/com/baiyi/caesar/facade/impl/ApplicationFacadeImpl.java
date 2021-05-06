@@ -286,7 +286,6 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         CsCiJob csCiJob = csCiJobService.queryCsCiJobById(cdJob.getCiJobId());
         csCiJob.setDeploymentJobId(csCdJob.getId());
         csCiJobService.updateCsCiJob(csCiJob);
-
         return BusinessWrapper.SUCCESS;
     }
 
