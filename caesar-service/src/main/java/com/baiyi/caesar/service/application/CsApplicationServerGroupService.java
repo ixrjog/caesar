@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface CsApplicationServerGroupService {
 
+    List<CsApplicationServerGroup> selectAll();
+
     List<CsApplicationServerGroup> queryCsApplicationServerGroupByApplicationId(int applicationId);
 
     CsApplicationServerGroup queryCsApplicationServerGroupByUniqueKey(CsApplicationServerGroup csApplicationServerGroup);
@@ -20,4 +22,5 @@ public interface CsApplicationServerGroupService {
     void updateCsApplicationServerGroup(CsApplicationServerGroup csApplicationServerGroup);
 
     void deleteCsApplicationServerGroupById(int id);
+
 }

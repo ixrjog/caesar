@@ -146,7 +146,7 @@ public class RegexUtil {
     public static boolean isJobKeyRule(String key) {
         if (key.endsWith("-") || key.startsWith("-"))
             return false;
-        return key.matches("[a-z0-9-]{3,64}");
+        return key.matches("[a-z0-9-_]{3,64}");
     }
 
     public static boolean isApplicationKeyRule(String key) {

@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.engine.impl;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RedisKeyUtil;
@@ -77,7 +77,7 @@ public class DeploymentTaskEngineHandler<T extends BaseJobContext> extends BaseT
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
                     buildEndNotify(context); // 任务结束通知
-                    if (context.getCsCdJob().getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+                    if (context.getCsCdJob().getJobType().equals(JobTypeEnum.JAVA_DEPLOYMENT.getType()))
                         updateHostStatus(context.getCsApplication(), context.getJobParamDetail().getParams(), HOST_STATUS_ENABLE);
                     break;
                 }

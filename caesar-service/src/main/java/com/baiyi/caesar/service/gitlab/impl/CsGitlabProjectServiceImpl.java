@@ -40,6 +40,16 @@ public class CsGitlabProjectServiceImpl implements CsGitlabProjectService {
     }
 
     @Override
+    public List<CsGitlabProject> queryCsGitlabProjectByInstanceIdAndNamespacePath(Integer instanceId,String namespacePath) {
+        Example example = new Example(CsGitlabProject.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("instanceId", instanceId);
+        criteria.andEqualTo("namespacePath",namespacePath);
+        return csGitlabProjectMapper.selectByExample(example);
+    }
+
+
+    @Override
     public int countCsGitlabProjectByInstanceId(Integer instanceId) {
         Example example = new Example(CsGitlabProject.class);
         Example.Criteria criteria = example.createCriteria();

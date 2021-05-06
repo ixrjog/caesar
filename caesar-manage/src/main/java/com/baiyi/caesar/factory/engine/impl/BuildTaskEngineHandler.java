@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.engine.impl;
 import com.baiyi.caesar.builder.jenkins.JobBuildArtifactBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildChangeBuilder;
 import com.baiyi.caesar.builder.jenkins.JobBuildExecutorBuilder;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RedisKeyUtil;
@@ -84,7 +84,7 @@ public class BuildTaskEngineHandler<T extends BaseJobContext> extends BaseTaskEn
                     context.setBuildWithDetails(buildWithDetails);
                     recordJobBuild(context);
                     buildEndNotify(context);
-                    if (context.getCsCiJob().getJobType().equals(JobType.JAVA.getType()))
+                    if (context.getCsCiJob().getJobType().equals(JobTypeEnum.JAVA.getType()))
                         updateHostStatus(context.getCsApplication(), context.getJobParamDetail().getParams(), HOST_STATUS_ENABLE);
                     break;
                 }

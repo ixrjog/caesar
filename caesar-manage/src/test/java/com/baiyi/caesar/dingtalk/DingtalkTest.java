@@ -2,7 +2,7 @@ package com.baiyi.caesar.dingtalk;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
@@ -70,7 +70,7 @@ public class DingtalkTest extends BaseUnit {
 
     @Test
     void testBuildNotify() {
-        String jobKey = JobType.HTML5.getType();
+        String jobKey = JobTypeEnum.HTML5.getType();
         IBuildJobHandler iBuildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(jobKey);
         CsCiJobBuild csCiJobBuild = csCiJobBuildService.queryCiJobBuildById(3562);
         BuildJobContext context = iBuildJobHandler.buildJobContext(csCiJobBuild);
@@ -89,7 +89,7 @@ public class DingtalkTest extends BaseUnit {
 
     @Test
     void testDeploymentNotify() {
-        String jobKey = JobType.ANDROID_REINFORCE.getType();
+        String jobKey = JobTypeEnum.ANDROID_REINFORCE.getType();
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(184);
         DeploymentJobContext  context = iDeploymentJobHandler.buildJobContext(csCdJobBuild);
@@ -99,7 +99,7 @@ public class DingtalkTest extends BaseUnit {
 
     @Test
     void testJavaDeploymentNotify() {
-        String jobKey = JobType.JAVA_DEPLOYMENT.getType();
+        String jobKey = JobTypeEnum.JAVA_DEPLOYMENT.getType();
         IDeploymentJobHandler iDeploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(jobKey);
         CsCdJobBuild csCdJobBuild = csCdJobBuildService.queryCdJobBuildById(5);
         DeploymentJobContext  context = iDeploymentJobHandler.buildJobContext(csCdJobBuild);

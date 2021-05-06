@@ -68,12 +68,12 @@ public class GitlabUtil {
         return Joiner.on("/").join(webUrl, COMMIT_BASE, commitId);
     }
 
-    public static CsGitlabInstance filterInstance(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhooks) {
+    public static CsGitlabInstance filterInstance(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhook) {
         for (CsGitlabInstance instance : instances) {
             try {
                 java.net.URL instanceUrl = new java.net.URL(instance.getUrl());
-                java.net.URL webhooksUrl = new java.net.URL(webhooks.getProject().getWeb_url());
-                if (instanceUrl.getHost().equals(webhooksUrl.getHost()))
+                java.net.URL webhookUrl = new java.net.URL(webhook.getProject().getWeb_url());
+                if (instanceUrl.getHost().equals(webhookUrl.getHost()))
                     return instance;
             } catch (MalformedURLException ignored) {
             }

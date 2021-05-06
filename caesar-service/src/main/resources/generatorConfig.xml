@@ -118,7 +118,7 @@ cs_announcement
 cs_block_platform
        -->
 
-        <table tableName="cs_cd_job">
+        <table tableName="cs_application_scm_group">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -23,7 +23,7 @@ public class PythonBuildJobHandler extends BaseBuildJobHandler implements IBuild
 
     @Override
     public String getKey() {
-        return JobType.PYTHON.getType();
+        return JobTypeEnum.PYTHON.getType();
     }
 
     @Override

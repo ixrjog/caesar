@@ -1,7 +1,7 @@
 package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.baiyi.caesar.builder.jenkins.JobBuildServerBuilder;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.RegexUtil;
@@ -44,7 +44,7 @@ public class JavaDeployJobHandler extends BaseDeploymentJobHandler implements ID
 
     @Override
     public String getKey() {
-        return JobType.JAVA_DEPLOYMENT.getType();
+        return JobTypeEnum.JAVA_DEPLOYMENT.getType();
     }
 
     @Resource

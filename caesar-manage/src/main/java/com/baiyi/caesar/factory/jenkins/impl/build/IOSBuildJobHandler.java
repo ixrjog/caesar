@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -24,7 +24,7 @@ public class IOSBuildJobHandler extends BaseBuildJobHandler implements IBuildJob
 
     @Override
     public String getKey() {
-        return JobType.IOS.getType();
+        return JobTypeEnum.IOS.getType();
     }
 
     @Override

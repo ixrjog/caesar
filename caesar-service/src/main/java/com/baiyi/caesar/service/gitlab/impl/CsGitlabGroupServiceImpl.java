@@ -46,6 +46,15 @@ public class CsGitlabGroupServiceImpl implements CsGitlabGroupService {
     }
 
     @Override
+    public  CsGitlabGroup  queryGitlabGroupByInstanceIdAndPath(Integer instanceId, String path){
+        Example example = new Example(CsGitlabGroup.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("instanceId", instanceId);
+        criteria.andEqualTo("path", path);
+        return csGitlabGroupMapper.selectOneByExample(example);
+    }
+
+    @Override
     public CsGitlabGroup queryCsGitlabGroupByUniqueKey(int instanceId, int groupId){
         Example example = new Example(CsGitlabGroup.class);
         Example.Criteria criteria = example.createCriteria();

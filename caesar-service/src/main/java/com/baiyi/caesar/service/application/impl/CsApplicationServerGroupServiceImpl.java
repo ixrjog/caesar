@@ -21,6 +21,11 @@ public class CsApplicationServerGroupServiceImpl implements CsApplicationServerG
     private CsApplicationServerGroupMapper csApplicationServerGroupMapper;
 
     @Override
+    public List<CsApplicationServerGroup> selectAll() {
+        return csApplicationServerGroupMapper.selectAll();
+    }
+
+    @Override
     public List<CsApplicationServerGroup> queryCsApplicationServerGroupByApplicationId(int applicationId) {
         Example example = new Example(CsApplicationServerGroup.class);
         Example.Criteria criteria = example.createCriteria();

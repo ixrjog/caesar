@@ -3,7 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.bo.UserPermissionBO;
 import com.baiyi.caesar.builder.ApplicationScmMemberBuilder;
 import com.baiyi.caesar.common.base.AccessLevel;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
@@ -25,10 +25,8 @@ import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.opscloud.OpscloudServer;
-import com.baiyi.caesar.service.application.CsApplicationEngineService;
-import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
-import com.baiyi.caesar.service.application.CsApplicationServerGroupService;
-import com.baiyi.caesar.service.application.CsApplicationService;
+import com.baiyi.caesar.service.application.*;
+import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.jenkins.CsCdJobService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
@@ -116,6 +114,12 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private OcUserService ocUserService;
+
+    @Resource
+    private CsApplicationScmGroupService csApplicationScmGroupService;
+
+    @Resource
+    private CsGitlabGroupService csGitlabGroupService;
 
 
     @Override
@@ -451,7 +455,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
      */
     @Deprecated
     private BusinessWrapper<Boolean> enhanceAuthentication(CsCiJob csCiJob) {
-        if (!csCiJob.getJobType().equals(JobType.JAVA.getType()))
+        if (!csCiJob.getJobType().equals(JobTypeEnum.JAVA.getType()))
             return BusinessWrapper.SUCCESS;
         if (!"daily".equals(envFacade.queryEnvNameByType(csCiJob.getEnvType())))
             return BusinessWrapper.SUCCESS;
@@ -563,5 +567,26 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             }
         });
 
+    }
+
+    public void syncApplicationScmMember(int applicationId) {
+        List<CsApplicationScmGroup> scmGroups = csApplicationScmGroupService.queryApplicationScmGroupByApplicationId(applicationId);
+        if (CollectionUtils.isEmpty(scmGroups)) return;
+        scmGroups.forEach(e -> {
+            CsGitlabGroup gitlabGroup = csGitlabGroupService.queryCsGitlabGroupById(e.getGroupId());
+            if (gitlabGroup == null) return;
+            csGitlabProjectService.queryCsGitlabProjectByInstanceIdAndNamespacePath(gitlabGroup.getInstanceId(), gitlabGroup.getPath()).forEach(p -> {
+                if (csApplicationScmMemberService.queryCsApplicationScmMemberByUniqueKey(e.getApplicationId(), p.getId()) == null) {
+                    CsApplicationScmMember scmMember = new CsApplicationScmMember();
+                    scmMember.setApplicationId(e.getApplicationId());
+                    scmMember.setScmId(p.getId());
+                    scmMember.setScmType("GITLAB");
+                    scmMember.setScmSshUrl(p.getSshUrl());
+                    scmMember.setComment(p.getDescription());
+                    csApplicationScmMemberService.addCsApplicationScmMember(scmMember);
+                }
+            });
+
+        });
     }
 }

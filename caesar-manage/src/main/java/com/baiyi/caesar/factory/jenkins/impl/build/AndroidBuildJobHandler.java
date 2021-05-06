@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.param.jenkins.JobBuildParam;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
@@ -24,7 +24,7 @@ public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuil
 
     @Override
     public String getKey() {
-        return JobType.ANDROID.getType();
+        return JobTypeEnum.ANDROID.getType();
     }
 
     @Override

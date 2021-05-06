@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
@@ -37,7 +37,7 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
 
     @Override
     public String getKey() {
-        return JobType.JAVA.getType();
+        return JobTypeEnum.JAVA.getType();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
     private CsJobBuildArtifact acqRollbackArtifact(JobBuildParam.BuildParam buildParam) {
         if (isRollback(buildParam)) {
             try {
-                IDeploymentJobHandler deploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(JobType.JAVA_DEPLOYMENT.getType());
+                IDeploymentJobHandler deploymentJobHandler = DeploymentJobHandlerFactory.getDeploymentJobByKey(JobTypeEnum.JAVA_DEPLOYMENT.getType());
                 List<CsJobBuildArtifact> artifacts = deploymentJobHandler.acqBuildArtifacts(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
                 if (!CollectionUtils.isEmpty(artifacts))
                     return artifacts.get(0);

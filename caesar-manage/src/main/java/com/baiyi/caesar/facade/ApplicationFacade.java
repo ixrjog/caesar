@@ -103,4 +103,6 @@ public interface ApplicationFacade {
     BusinessWrapper<Boolean> removeApplicationServerGroup(int id);
 
     void updateApplicationScmMember(CsGitlabProject csGitlabProject);
+
+    void syncApplicationScmMember(int applicationId);
 }

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.baiyi.caesar.common.base.AndroidReinforceChannelType;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCdJob;
@@ -36,7 +36,7 @@ public class AndroidReinforceJobHandler extends BaseDeploymentJobHandler impleme
 
     @Override
     public String getKey() {
-        return JobType.ANDROID_REINFORCE.getType();
+        return JobTypeEnum.ANDROID_REINFORCE.getType();
     }
 
     @Override

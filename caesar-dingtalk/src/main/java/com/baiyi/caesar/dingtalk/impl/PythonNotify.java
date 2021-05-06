@@ -1,6 +1,6 @@
 package com.baiyi.caesar.dingtalk.impl;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateBuilder;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateMap;
@@ -22,7 +22,7 @@ public class PythonNotify extends BaseDingtalkNotify implements IDingtalkNotify 
 
     @Override
     public String getKey() {
-        return JobType.PYTHON.getType();
+        return JobTypeEnum.PYTHON.getType();
     }
 
     @Override

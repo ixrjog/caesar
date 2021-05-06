@@ -3,18 +3,18 @@ package com.baiyi.caesar.decorator.application;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.decorator.tag.TagDecorator;
 import com.baiyi.caesar.domain.base.BusinessType;
-import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
-import com.baiyi.caesar.domain.generator.caesar.CsApplicationServerGroup;
-import com.baiyi.caesar.domain.generator.caesar.OcUser;
-import com.baiyi.caesar.domain.generator.caesar.OcUserPermission;
+import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.application.ApplicationServerGroupVO;
 import com.baiyi.caesar.domain.vo.application.ApplicationVO;
 import com.baiyi.caesar.domain.vo.dashboard.HotApplication;
 import com.baiyi.caesar.domain.vo.tag.TagVO;
 import com.baiyi.caesar.domain.vo.user.UserPermissionVO;
 import com.baiyi.caesar.facade.UserPermissionFacade;
+import com.baiyi.caesar.service.application.CsApplicationScmGroupService;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.application.CsApplicationServerGroupService;
+import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
+import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
@@ -37,6 +37,14 @@ public class ApplicationDecorator {
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Resource
+    private CsApplicationScmGroupService csApplicationScmGroupService;
+
+    @Resource
+    private CsGitlabGroupService csGitlabGroupService;
+
+    @Resource
+    private CsGitlabProjectService csGitlabProjectService;
+    @Resource
     private TagDecorator tagDecorator;
 
     @Resource
@@ -51,11 +59,35 @@ public class ApplicationDecorator {
         return hotApplication;
     }
 
+    private List<CsApplicationScmMember> convert(ApplicationVO.Application application, List<CsGitlabProject> projects) {
+        return projects.stream().map(e -> {
+            CsApplicationScmMember member = new CsApplicationScmMember();
+            member.setApplicationId(application.getId());
+            member.setScmType("GITLAB");
+            member.setScmId(e.getId());
+            member.setScmSshUrl(e.getSshUrl());
+            member.setComment(e.getDescription());
+            return member;
+        }).collect(Collectors.toList());
+    }
+
     public ApplicationVO.Application decorator(ApplicationVO.Application application, Integer extend) {
         if (extend == 0) return application;
-        List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
+        // 先判断是否绑定群组
+       // List<CsApplicationScmGroup> groups = csApplicationScmGroupService.queryApplicationScmGroupByApplicationId(application.getId());
+//        List<CsApplicationScmMember> members = Lists.newArrayList();
+//        if (!CollectionUtils.isEmpty(groups)) {
+//            for (CsApplicationScmGroup group : groups) {
+//                CsGitlabGroup gitlabGroup = csGitlabGroupService.queryCsGitlabGroupById(group.getGroupId());
+//                List<CsGitlabProject> projects = csGitlabProjectService.queryCsGitlabProjectByInstanceIdAndNamespacePath(gitlabGroup.getInstanceId(), gitlabGroup.getPath());
+//                if (!CollectionUtils.isEmpty(projects))
+//                    members.addAll(convert(application, projects));
+//            }
+//        } else {
+//            members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
+//        }
+        List<CsApplicationScmMember>  members = csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(application.getId());
         application.setTags(acqTags(members));
-
         application.setScmMembers(BeanCopierUtil.copyListProperties(members, ApplicationVO.ScmMember.class));
         List<CsApplicationServerGroup> csApplicationServerGroups = csApplicationServerGroupService.queryCsApplicationServerGroupByApplicationId(application.getId());
         if (!CollectionUtils.isEmpty(csApplicationServerGroups))

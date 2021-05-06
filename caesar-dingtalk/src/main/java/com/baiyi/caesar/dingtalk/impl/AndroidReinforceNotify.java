@@ -1,6 +1,6 @@
 package com.baiyi.caesar.dingtalk.impl;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.dingtalk.builder.DingtalkTemplateBuilder;
@@ -25,7 +25,7 @@ public class AndroidReinforceNotify extends BaseDingtalkNotify implements IDingt
 
     @Override
     public String getKey() {
-        return JobType.ANDROID_REINFORCE.getType();
+        return JobTypeEnum.ANDROID_REINFORCE.getType();
     }
 
     @Override

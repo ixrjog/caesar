@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.block.impl;
 
 import com.baiyi.caesar.common.base.BlockRuleLevel;
 import com.baiyi.caesar.common.base.Global;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
@@ -31,7 +31,7 @@ public class BlockRuleP3 extends BaseBlockRule implements IBlockRule {
     @Override
     public BusinessWrapper<Boolean> verify(CsCiJob csCiJob) {
         // 判断任务类型
-        if (!JobType.JAVA.getType().equalsIgnoreCase(csCiJob.getJobType()))
+        if (!JobTypeEnum.JAVA.getType().equalsIgnoreCase(csCiJob.getJobType()))
             return BusinessWrapper.SUCCESS;
         // 判断任务环境
         String envName = getEnvNameByType(csCiJob.getEnvType());

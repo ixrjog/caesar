@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.jenkins.impl.deployment;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.builder.jenkins.CdJobBuildBuilder;
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
@@ -139,14 +139,14 @@ public abstract class BaseDeploymentJobHandler implements IDeploymentJobHandler,
         checkParameters(jobParamDetail);
 
         CsCdJobBuild csCdJobBuild = CdJobBuildBuilder.build(csApplication, csJob, jobEngine, jobParamDetail, deploymentParam.getCiBuildId());
-        if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+        if (csJob.getJobType().equals(JobTypeEnum.JAVA_DEPLOYMENT.getType()))
             updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
         try {
             JobWithDetails job = jenkinsServerHandler.getJob(jobEngine.getJenkinsInstance().getName(), csCdJobBuild.getJobName()).details();
             QueueReference queueReference = build(job, jobParamDetail.getParams());
         } catch (IOException e) {
             e.printStackTrace();
-            if (csJob.getJobType().equals(JobType.JAVA_DEPLOYMENT.getType()))
+            if (csJob.getJobType().equals(JobTypeEnum.JAVA_DEPLOYMENT.getType()))
                 updateHostStatus(csApplication, jobParamDetail.getParams(), HOST_STATUS_DISABLE);
             return new BusinessWrapper<>(100001, "执行任务失败: " + e.getMessage());
         }

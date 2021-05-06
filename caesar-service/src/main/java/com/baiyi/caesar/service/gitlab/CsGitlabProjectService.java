@@ -17,6 +17,8 @@ public interface CsGitlabProjectService {
 
     List<CsGitlabProject> queryCsGitlabProjectByInstanceId(Integer instanceId);
 
+    List<CsGitlabProject> queryCsGitlabProjectByInstanceIdAndNamespacePath(Integer instanceId,String namespacePath);
+
     int countCsGitlabProjectByInstanceId(Integer instanceId);
 
     CsGitlabProject queryCsGitlabProjectById(int id);

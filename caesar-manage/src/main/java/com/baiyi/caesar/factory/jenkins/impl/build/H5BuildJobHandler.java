@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.jenkins.impl.build;
 
-import com.baiyi.caesar.common.base.JobType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJobBuild;
@@ -27,7 +27,7 @@ public class H5BuildJobHandler extends BaseBuildJobHandler implements IBuildJobH
 
     @Override
     public String getKey() {
-        return JobType.HTML5.getType();
+        return JobTypeEnum.HTML5.getType();
     }
 
 
