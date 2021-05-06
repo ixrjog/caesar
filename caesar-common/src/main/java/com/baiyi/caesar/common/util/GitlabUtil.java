@@ -1,8 +1,13 @@
 package com.baiyi.caesar.common.util;
 
+import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.google.common.base.Joiner;
 import org.springframework.util.StringUtils;
+
+import java.net.MalformedURLException;
+import java.util.List;
 
 /**
  * @Author baiyi
@@ -61,5 +66,18 @@ public class GitlabUtil {
      */
     public static String buildCommitUrl(String webUrl, String commitId) {
         return Joiner.on("/").join(webUrl, COMMIT_BASE, commitId);
+    }
+
+    public static CsGitlabInstance filterInstance(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhooks) {
+        for (CsGitlabInstance instance : instances) {
+            try {
+                java.net.URL instanceUrl = new java.net.URL(instance.getUrl());
+                java.net.URL webhooksUrl = new java.net.URL(webhooks.getProject().getWeb_url());
+                if (instanceUrl.getHost().equals(webhooksUrl.getHost()))
+                    return instance;
+            } catch (MalformedURLException ignored) {
+            }
+        }
+        return null;
     }
 }

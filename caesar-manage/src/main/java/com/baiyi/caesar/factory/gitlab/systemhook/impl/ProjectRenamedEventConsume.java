@@ -1,28 +1,27 @@
-package com.baiyi.caesar.factory.gitlab.impl;
+package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
-import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
+import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * @Author baiyi
- * @Date 2020/12/22 10:46 上午
+ * @Date 2020/12/21 4:31 下午
  * @Version 1.0
  */
 @Slf4j
 @Component
-public class GitlabGroupRenamedEventHandler extends BaseGitlabEventHandler implements IGitlabEventHandler {
+public class ProjectRenamedEventConsume extends BaseSystemHookEventConsume implements ISystemHookEventConsume {
 
     @Override
     public String getEventKey() {
-        return GitlabEventType.GROUP_RENAME.getDesc();
+        return GitlabEventType.PROJECT_RENAME.getDesc();
     }
 
     @Override
     public void consumeEvent(GitlabHooksVO.SystemHook systemHook) {
-        consumeGroupEvent(systemHook);
+        consumeProjectEvent(systemHook);
     }
-
 }

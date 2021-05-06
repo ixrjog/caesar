@@ -3,12 +3,10 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.builder.gitlab.GitlabBaseBranchBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabGroupBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
-import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.common.util.IDUtil;
-import com.baiyi.caesar.consumer.GitlabWebhooksConsumer;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
 import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
@@ -27,8 +25,10 @@ import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.facade.EnvFacade;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
-import com.baiyi.caesar.factory.gitlab.GitlabEventHandlerFactory;
-import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
+import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
+import com.baiyi.caesar.factory.gitlab.systemhook.SystemHookEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
+import com.baiyi.caesar.factory.gitlab.webhook.WebhookEventConsumeFactory;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
@@ -39,9 +39,7 @@ import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
-import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
-import com.baiyi.caesar.service.user.OcUserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +51,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,16 +99,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     private GitlabServerContainer gitlabServerContainer;
 
     @Resource
-    private CsGitlabWebhookService csGitlabWebhookService;
-
-    @Resource
-    private OcUserService ocUserService;
-
-    @Resource
     private TagFacade tagFacade;
-
-    @Resource
-    private GitlabWebhooksConsumer gitlabWebhooksConsumer;
 
     @Resource
     private CsApplicationScmMemberService csApplicationScmMemberService;
@@ -159,10 +147,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Async(value = Global.TaskPools.COMMON)
     public void webhooksV1(GitlabHooksVO.Webhook webhook) {
         try {
-            // 处理push事件
-            if (webhook.getEvent_name().equals(PUSH.getDesc())) {
-                saveWebhooks(webhook);
-            }
+            IWebhookEventConsume eventConsume =  WebhookEventConsumeFactory.getWebhookEventConsumeByKey(PUSH.getDesc());
+            if (eventConsume != null)
+                eventConsume.consumeEvent(webhook);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,35 +159,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
     public void systemHooksV1(GitlabHooksVO.SystemHook systemHook) {
         // 处理系统消息
         try {
-            IGitlabEventHandler iGitlabEventHandler = GitlabEventHandlerFactory.getGitlabEventHanlderByKey(systemHook.getEventName());
-            if (iGitlabEventHandler != null)
-                iGitlabEventHandler.consumeEvent(systemHook);
+            ISystemHookEventConsume eventConsume = SystemHookEventConsumeFactory.getSystemHookEventConsumeByKey(systemHook.getEventName());
+            if (eventConsume != null)
+                eventConsume.consumeEvent(systemHook);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void saveWebhooks(GitlabHooksVO.Webhook webhooks) {
-        CsGitlabInstance instance = filter(csGitlabInstanceService.queryAll(), webhooks);
-        if (instance == null)
-            return;
-        OcUser ocUser = ocUserService.queryOcUserByUsername(webhooks.getUser_username());
-        CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhooks, instance, ocUser);
-        csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
-        gitlabWebhooksConsumer.consumerWebhooks(csGitlabWebhook);
-    }
-
-    private CsGitlabInstance filter(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhooks) {
-        for (CsGitlabInstance instance : instances) {
-            try {
-                java.net.URL instanceUrl = new java.net.URL(instance.getUrl());
-                java.net.URL webhooksUrl = new java.net.URL(webhooks.getProject().getWeb_url());
-                if (instanceUrl.getHost().equals(webhooksUrl.getHost()))
-                    return instance;
-            } catch (MalformedURLException ignored) {
-            }
-        }
-        return null;
     }
 
     @Override

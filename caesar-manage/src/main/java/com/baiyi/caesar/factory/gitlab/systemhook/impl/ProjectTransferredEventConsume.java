@@ -1,8 +1,8 @@
-package com.baiyi.caesar.factory.gitlab.impl;
+package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
-import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
+import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component
-public class GitlabProjectTransferredEventHandler extends BaseGitlabEventHandler implements IGitlabEventHandler {
+public class ProjectTransferredEventConsume extends BaseSystemHookEventConsume implements ISystemHookEventConsume {
 
     @Override
     public String getEventKey() {

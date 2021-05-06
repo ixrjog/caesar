@@ -1,11 +1,11 @@
-package com.baiyi.caesar.factory.gitlab.impl;
+package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
-import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
+import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab.api.models.GitlabProject;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class GitlabProjectCreatedEventHandler extends BaseGitlabEventHandler implements IGitlabEventHandler {
+public class ProjectCreatedEventConsume extends BaseSystemHookEventConsume implements ISystemHookEventConsume {
 
     @Override
     public String getEventKey() {

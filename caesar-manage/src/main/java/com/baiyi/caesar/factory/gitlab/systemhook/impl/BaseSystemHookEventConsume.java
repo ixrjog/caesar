@@ -1,4 +1,4 @@
-package com.baiyi.caesar.factory.gitlab.impl;
+package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.builder.gitlab.GitlabSystemHookBuilder;
 import com.baiyi.caesar.common.util.GitlabTokenUtil;
@@ -8,8 +8,8 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabSystemHook;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
 import com.baiyi.caesar.facade.GitlabFacade;
-import com.baiyi.caesar.factory.gitlab.GitlabEventHandlerFactory;
-import com.baiyi.caesar.factory.gitlab.IGitlabEventHandler;
+import com.baiyi.caesar.factory.gitlab.systemhook.SystemHookEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
@@ -35,7 +35,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public abstract class BaseGitlabEventHandler implements IGitlabEventHandler, InitializingBean {
+public abstract class BaseSystemHookEventConsume implements ISystemHookEventConsume, InitializingBean {
 
     @Resource
     private GitlabProjectHandler gitlabProjectHandler;
@@ -145,6 +145,6 @@ public abstract class BaseGitlabEventHandler implements IGitlabEventHandler, Ini
      */
     @Override
     public void afterPropertiesSet() {
-        GitlabEventHandlerFactory.register(this);
+        SystemHookEventConsumeFactory.register(this);
     }
 }

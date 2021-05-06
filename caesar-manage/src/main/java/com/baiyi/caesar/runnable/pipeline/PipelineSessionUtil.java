@@ -1,4 +1,4 @@
-package com.baiyi.caesar.aunnable.pipeline;
+package com.baiyi.caesar.runnable.pipeline;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
