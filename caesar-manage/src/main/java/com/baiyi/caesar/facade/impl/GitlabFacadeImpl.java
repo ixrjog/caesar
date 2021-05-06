@@ -4,7 +4,6 @@ import com.baiyi.caesar.builder.gitlab.GitlabBaseBranchBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabGroupBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
 import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
-import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.GitlabUtil;
@@ -58,6 +57,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.baiyi.caesar.common.base.GitlabEventType.PUSH;
 
 /**
  * @Author baiyi
@@ -159,7 +160,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     public void webhooksV1(GitlabHooksVO.Webhook webhook) {
         try {
             // 处理push事件
-            if (webhook.getEvent_name().equals(GitlabEventType.PUSH.getDesc())) {
+            if (webhook.getEvent_name().equals(PUSH.getDesc())) {
                 saveWebhooks(webhook);
             }
         } catch (Exception e) {

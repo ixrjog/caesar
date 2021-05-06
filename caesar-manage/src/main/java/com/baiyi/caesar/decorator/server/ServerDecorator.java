@@ -22,7 +22,6 @@ public class ServerDecorator extends BaseDecorator {
     @Resource
     private OcServerService ocServerService;
 
-
     @Resource
     private ServerGroupTypeDecorator serverGroupTypeDecorator;
 
