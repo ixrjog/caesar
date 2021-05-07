@@ -10,8 +10,6 @@ import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
-import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
-import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -35,13 +33,7 @@ public class PushEventConsume extends BaseWebhookEventConsume implements IWebhoo
     }
 
     @Resource
-    private CsGitlabWebhookService csGitlabWebhookService;
-
-    @Resource
     private CsApplicationScmMemberService csApplicationScmMemberService;
-
-    @Resource
-    private CsCiJobService csCiJobService;
 
     @Override
     public void consume(CsGitlabWebhook csGitlabWebhook) {
@@ -56,10 +48,10 @@ public class PushEventConsume extends BaseWebhookEventConsume implements IWebhoo
             consumed(csGitlabWebhook);
             return;
         }
-        consumerWebhooks(csGitlabProject, csGitlabWebhook, branch);
+        consumer(csGitlabProject, csGitlabWebhook, branch);
     }
 
-    private void consumerWebhooks(CsGitlabProject csGitlabProject, CsGitlabWebhook csGitlabWebhook, String branch) {
+    private void consumer(CsGitlabProject csGitlabProject, CsGitlabWebhook csGitlabWebhook, String branch) {
         List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
         if (CollectionUtils.isEmpty(members)) {
             consumed(csGitlabWebhook);
@@ -75,7 +67,7 @@ public class PushEventConsume extends BaseWebhookEventConsume implements IWebhoo
                     csGitlabWebhook.setIsConsumed(true);
                     csGitlabWebhook.setIsTrigger(true);
                     csGitlabWebhook.setJobKey(job.getJobKey());
-                    csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
+                    updateEvent(csGitlabWebhook);
                 });
             }
         });

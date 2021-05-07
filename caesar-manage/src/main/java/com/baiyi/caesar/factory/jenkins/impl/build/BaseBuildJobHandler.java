@@ -139,6 +139,14 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     @Override
+    public void build(CsCiJob buildJob, String username, String tag) {
+        raiseJobBuildNumber(buildJob); // buildNumber +1
+        JobParametersContext jobParamDetail = buildJobParametersContext(buildJob);
+        jobParamDetail.getParams().put("branch", tag);
+        build(buildJob, jobParamDetail, username, SEND_DINGTALK_MESSAGE);
+    }
+
+    @Override
     public BusinessWrapper<Boolean> build(CsCiJob buildJob, JobBuildParam.BuildParam buildParam) {
         tryLimitConcurrentJob(buildJob);
         raiseJobBuildNumber(buildJob); // buildNumber +1

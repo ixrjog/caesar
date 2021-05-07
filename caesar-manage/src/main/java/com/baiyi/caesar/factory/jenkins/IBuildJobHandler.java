@@ -30,6 +30,13 @@ public interface IBuildJobHandler {
      */
     void build(CsCiJob csCiJob, String username);
 
+    /**
+     * 自动触发
+     * @param csCiJob
+     * @param username
+     */
+    void build(CsCiJob csCiJob, String username,String tag);
+
     void trackJobBuild(CsCiJobBuild csCiJobBuild);
 
     BuildJobContext buildJobContext(CsCiJobBuild csCiJobBuild);

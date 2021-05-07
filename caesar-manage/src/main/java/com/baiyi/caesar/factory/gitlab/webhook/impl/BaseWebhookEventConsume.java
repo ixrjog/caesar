@@ -12,6 +12,7 @@ import com.baiyi.caesar.factory.gitlab.webhook.WebhookEventConsumeFactory;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
+import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.baiyi.caesar.service.tag.OcBusinessTagService;
 import com.baiyi.caesar.service.tag.OcTagService;
 import com.baiyi.caesar.service.user.OcUserService;
@@ -49,6 +50,9 @@ public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, I
     @Resource
     private OcBusinessTagService ocBusinessTagService;
 
+    @Resource
+    protected CsCiJobService csCiJobService;
+
     public static final String AUTO_BUILD = "AutoBuild";
 
     /**
@@ -66,10 +70,18 @@ public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, I
         consume(csGitlabWebhook);
     }
 
+    protected CsGitlabInstance getGitlabInstanceById(int instanceId) {
+        return csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
+    }
+
     protected abstract void consume(CsGitlabWebhook csGitlabWebhook);
 
     protected CsGitlabProject getProject(CsGitlabWebhook csGitlabWebhook) {
         return csGitlabProjectService.queryCsGitlabProjectByUniqueKey(csGitlabWebhook.getInstanceId(), csGitlabWebhook.getProjectId());
+    }
+
+    protected void updateEvent(CsGitlabWebhook csGitlabWebhook){
+        csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
     }
 
     private CsGitlabWebhook saveEvent(CsGitlabInstance instance, GitlabHooksVO.Webhook webhook) {
