@@ -17,7 +17,7 @@ public enum BusinessErrorCodeEnum implements ErrorCode{
     /** 描述 */
     private final String desc;
 
-    private BusinessErrorCodeEnum(final String code, final String desc) {
+    BusinessErrorCodeEnum(final String code, final String desc) {
         this.code = code;
         this.desc = desc;
     }
