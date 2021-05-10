@@ -1,14 +1,13 @@
 package com.baiyi.caesar.factory.gitlab.webhook.impl;
 
 import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
-import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
-import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
@@ -18,7 +17,6 @@ import com.baiyi.caesar.service.tag.OcTagService;
 import com.baiyi.caesar.service.user.OcUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -61,13 +59,13 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
      * @param webhook
      */
     @Override
-    @Async(value = Global.TaskPools.COMMON)
+    // @Async(value = Global.TaskPools.COMMON)
     public void consumeEvent(GitlabHookVO.Webhook webhook) {
         CsGitlabInstance instance = GitlabUtil.filterInstance(csGitlabInstanceService.queryAll(), webhook);
         if (instance == null)
             return;
         CsGitlabWebhook csGitlabWebhook = saveEvent(instance, webhook);
-        log.info("GitlabEvent: id = {}",csGitlabWebhook.getId());
+        log.info("GitlabEvent: id = {}", csGitlabWebhook.getId());
         consume(csGitlabWebhook);
     }
 
@@ -79,7 +77,7 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
         return csGitlabProjectService.queryCsGitlabProjectByUniqueKey(csGitlabWebhook.getInstanceId(), csGitlabWebhook.getProjectId());
     }
 
-    protected void updateEvent(CsGitlabWebhook csGitlabWebhook){
+    protected void updateEvent(CsGitlabWebhook csGitlabWebhook) {
         csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
     }
 
