@@ -14,4 +14,10 @@ public interface CsApplicationScmGroupService {
     List<CsApplicationScmGroup> queryApplicationScmGroupByApplicationId(int applicationId);
 
     List<CsApplicationScmGroup> queryApplicationScmGroupByGroupId(int groupId);
+
+    CsApplicationScmGroup queryCsApplicationScmGroupByUniqueKey(int applicationId, int groupId);
+
+    void add(CsApplicationScmGroup csApplicationScmGroup);
+
+    void deleteById(int id);
 }

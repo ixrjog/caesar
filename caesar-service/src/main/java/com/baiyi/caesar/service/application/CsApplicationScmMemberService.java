@@ -24,4 +24,5 @@ public interface CsApplicationScmMemberService {
     void updateCsApplicationScmMember(CsApplicationScmMember csApplicationScmMember);
 
     void deleteCsApplicationScmMemberById(int id);
+
 }

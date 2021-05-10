@@ -66,6 +66,29 @@ public class ApplicationVO {
     @Data
     @NoArgsConstructor
     @ApiModel
+    public static class ScmGroup implements TagVO.ITags {
+
+        private int businessType = BusinessType.GITLAB_GROUP.getType();
+
+        @Override
+        public int getBusinessId() {
+            return groupId;
+        }
+
+        private List<TagVO.Tag> tags;
+
+        private Integer id;
+        private Integer applicationId;
+        private Integer groupId;
+        private String name;
+        private String description;
+        private String webUrl;
+        private String comment;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @ApiModel
     public static class Engine implements JenkinsInstanceVO.IInstance {
 
         private JenkinsInstanceVO.Instance instance;

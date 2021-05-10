@@ -12,12 +12,12 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @Component
-public class ApplicationScmMemberDecorator {
+public class ApplicationScmMemberWrap {
 
     @Resource
     private TagDecorator tagDecorator;
 
-    public ApplicationVO.ScmMember decorator(ApplicationVO.ScmMember scmMember, Integer extend) {
+    public ApplicationVO.ScmMember wrap(ApplicationVO.ScmMember scmMember) {
         // 装饰 标签
         tagDecorator.decorator(scmMember);
         return scmMember;

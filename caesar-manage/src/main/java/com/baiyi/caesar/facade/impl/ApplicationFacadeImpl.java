@@ -165,8 +165,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     public List<ApplicationVO.ScmGroup> queryApplicationScmGroupByApplicationId(int applicationId) {
-      return csApplicationScmGroupService.queryApplicationScmGroupByApplicationId(applicationId)
-              .stream().map(e -> applicationScmGroupWrap.wrap(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmGroup.class))).collect(Collectors.toList());
+        return csApplicationScmGroupService.queryApplicationScmGroupByApplicationId(applicationId)
+                .stream().map(e -> applicationScmGroupWrap.wrap(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmGroup.class))).collect(Collectors.toList());
     }
 
     @Override
@@ -231,14 +231,28 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId) {
+    public void addApplicationSCMMember(int applicationId, int projectId) {
         if (csApplicationScmMemberService.queryCsApplicationScmMemberByUniqueKey(applicationId, projectId) != null)
-            return BusinessWrapper.SUCCESS;
+            return;
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectById(projectId);
         CsApplicationScmMember pre = ApplicationScmMemberBuilder
                 .build(applicationId, csGitlabProject);
         csApplicationScmMemberService.addCsApplicationScmMember(pre);
-        return BusinessWrapper.SUCCESS;
+    }
+
+    @Override
+    public void addApplicationSCMGroup(int applicationId, int groupId) {
+        if (csApplicationScmGroupService.queryCsApplicationScmGroupByUniqueKey(applicationId, groupId) != null)
+            return;
+        CsApplicationScmGroup pre = new CsApplicationScmGroup();
+        pre.setApplicationId(applicationId);
+        pre.setGroupId(groupId);
+        csApplicationScmGroupService.add(pre);
+    }
+
+    @Override
+    public void removeApplicationSCMGroup(int id) {
+        csApplicationScmGroupService.deleteById(id);
     }
 
     @Override
@@ -247,9 +261,8 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public BusinessWrapper<Boolean> removeApplicationSCMMember(int id) {
+    public void removeApplicationSCMMember(int id) {
         csApplicationScmMemberService.deleteCsApplicationScmMemberById(id);
-        return BusinessWrapper.SUCCESS;
     }
 
     @Override

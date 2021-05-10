@@ -72,10 +72,44 @@ public class ApplicationController {
         return new HttpResult<>(applicationFacade.deleteApplicationById(id));
     }
 
-    @ApiOperation(value = "查询应用SCM配置")
+    @ApiOperation(value = "查询应用SCM项目配置")
     @GetMapping(value = "/scm/member/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<List<ApplicationVO.ScmMember>> queryApplicationSCMMember(@Valid int applicationId) {
         return new HttpResult<>(applicationFacade.queryApplicationScmMemberByApplicationId(applicationId));
+    }
+
+    @ApiOperation(value = "新增应用SCM配置")
+    @PutMapping(value = "/scm/member/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addApplicationSCMMember(@Valid int applicationId, @Valid int projectId) {
+        applicationFacade.addApplicationSCMMember(applicationId, projectId);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "移除应用SCM配置")
+    @DeleteMapping(value = "/scm/member/remove", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> removeApplicationSCMMember(@Valid int id) {
+        applicationFacade.removeApplicationSCMMember(id);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "查询应用SCM群组配置")
+    @GetMapping(value = "/scm/group/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<List<ApplicationVO.ScmGroup>> queryApplicationSCMGroup(@Valid int applicationId) {
+        return new HttpResult<>(applicationFacade.queryApplicationScmGroupByApplicationId(applicationId));
+    }
+
+    @ApiOperation(value = "新增应用SCM群组配置")
+    @PutMapping(value = "/scm/group/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> addApplicationSCMGroup(@Valid int applicationId, @Valid int groupId) {
+        applicationFacade.addApplicationSCMGroup(applicationId, groupId);
+        return HttpResult.SUCCESS;
+    }
+
+    @ApiOperation(value = "移除应用SCM群组配置")
+    @DeleteMapping(value = "/scm/group/remove", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<Boolean> removeApplicationSCMGroup(@Valid int id) {
+        applicationFacade.removeApplicationSCMGroup(id);
+        return HttpResult.SUCCESS;
     }
 
     @ApiOperation(value = "查询应用SCM分支详情")
@@ -96,17 +130,6 @@ public class ApplicationController {
         return new HttpResult<>(gitlabFacade.queryApplicationSCMMemberBranchCommit(query));
     }
 
-    @ApiOperation(value = "新增应用SCM配置")
-    @PutMapping(value = "/scm/member/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> addApplicationSCMMember(@Valid int applicationId, @Valid int projectId) {
-        return new HttpResult<>(applicationFacade.addApplicationSCMMember(applicationId, projectId));
-    }
-
-    @ApiOperation(value = "移除应用SCM配置")
-    @DeleteMapping(value = "/scm/member/remove", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> removeApplicationSCMMember(@Valid int id) {
-        return new HttpResult<>(applicationFacade.removeApplicationSCMMember(id));
-    }
 
     @ApiOperation(value = "分页查询持续集成任务配置")
     @PostMapping(value = "/ci/job/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

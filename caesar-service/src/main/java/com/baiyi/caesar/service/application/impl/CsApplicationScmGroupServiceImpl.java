@@ -35,4 +35,23 @@ public class CsApplicationScmGroupServiceImpl implements CsApplicationScmGroupSe
         criteria.andEqualTo("groupId", groupId);
         return csApplicationScmGroupMapper.selectByExample(example);
     }
+
+    @Override
+    public CsApplicationScmGroup queryCsApplicationScmGroupByUniqueKey(int applicationId, int groupId) {
+        Example example = new Example(CsApplicationScmGroup.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("applicationId", applicationId);
+        criteria.andEqualTo("groupId", groupId);
+        return csApplicationScmGroupMapper.selectOneByExample(example);
+    }
+
+    @Override
+    public void add(CsApplicationScmGroup csApplicationScmGroup) {
+        csApplicationScmGroupMapper.insert(csApplicationScmGroup);
+    }
+
+    @Override
+    public  void deleteById(int id){
+        csApplicationScmGroupMapper.deleteByPrimaryKey(id);
+    }
 }

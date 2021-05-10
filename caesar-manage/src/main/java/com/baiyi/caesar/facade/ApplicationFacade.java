@@ -50,11 +50,15 @@ public interface ApplicationFacade {
 
     BusinessWrapper<Boolean> deleteApplicationById(int id);
 
-    BusinessWrapper<Boolean> addApplicationSCMMember(int applicationId, int projectId);
+    void addApplicationSCMMember(int applicationId, int projectId);
+
+    void addApplicationSCMGroup(int applicationId, int groupId);
+
+    void removeApplicationSCMGroup(int id);
 
     CsApplicationScmMember queryScmMemberById(int scmMemberId);
 
-    BusinessWrapper<Boolean> removeApplicationSCMMember(int id);
+    void removeApplicationSCMMember(int id);
 
     DataTable<CiJobVO.CiJob> queryCiJobPage(CiJobParam.CiJobPageQuery pageQuery);
 
