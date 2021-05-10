@@ -29,8 +29,8 @@ import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import com.baiyi.caesar.factory.gitlab.systemhook.SystemHookEventConsumeFactory;
-import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
@@ -57,8 +57,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.baiyi.caesar.common.base.GitlabEventType.PUSH;
 
 /**
  * @Author baiyi
@@ -156,7 +154,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Async(value = Global.TaskPools.COMMON)
     public void webhooksV1(GitlabHookVO.Webhook webhook) {
         try {
-            IGitlabEventConsume eventConsume = GitlabEventConsumeFactory.getEventConsumeByKey(PUSH.getDesc());
+            IGitlabEventConsume eventConsume = GitlabEventConsumeFactory.getEventConsumeByKey(webhook.getObject_kind());
             if (eventConsume != null)
                 eventConsume.consumeEvent(webhook);
         } catch (Exception e) {

@@ -6,8 +6,6 @@ import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
-import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
-import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab.api.models.GitlabTag;
 import org.springframework.stereotype.Component;
@@ -23,18 +21,12 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class TagPushEventConsume extends BaseWebhookEventConsume implements IGitlabEventConsume {
+public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitlabEventConsume {
 
     public static final String TAG_REF_PREFIX = "refs/tags/";
 
     @Resource
     private GitlabBranchHandler gitlabBranchHandler;
-
-    @Resource
-    private CsApplicationScmMemberService csApplicationScmMemberService;
-
-    @Resource
-    private CsGitlabProjectService csGitlabProjectService;
 
     @Override
     public String getEventKey() {
@@ -52,12 +44,12 @@ public class TagPushEventConsume extends BaseWebhookEventConsume implements IGit
             log.info("Gitlab Event Consume Error: eventId = {} , tag = {} 不存在!", csGitlabWebhook.getId(), tag);
             return; // tag不存在
         }
-        CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectByUniqueKey(gitlabInstance.getId(), csGitlabWebhook.getProjectId());
+        CsGitlabProject csGitlabProject = gitlabProjectService.queryCsGitlabProjectByUniqueKey(gitlabInstance.getId(), csGitlabWebhook.getProjectId());
         if (csGitlabProject == null) {
             log.info("Gitlab Event Consume Error: eventId = {} , projectId = {} 项目不存在!", csGitlabWebhook.getId(), csGitlabWebhook.getProjectId());
             return;
         }
-        List<CsApplicationScmMember> scmMembers = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
+        List<CsApplicationScmMember> scmMembers = applicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
         if (CollectionUtils.isEmpty(scmMembers)) {
             log.info("Gitlab Event Consume Error: eventId = {} 无可消费目标(scmMember)!", csGitlabWebhook.getId());
             return;

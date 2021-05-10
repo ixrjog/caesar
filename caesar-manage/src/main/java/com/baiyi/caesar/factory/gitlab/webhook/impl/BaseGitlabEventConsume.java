@@ -8,6 +8,7 @@ import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
 import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
 import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
+import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
@@ -28,7 +29,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, InitializingBean {
+public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, InitializingBean {
 
     @Resource
     private CsGitlabInstanceService csGitlabInstanceService;
@@ -40,7 +41,7 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
     private CsGitlabWebhookService csGitlabWebhookService;
 
     @Resource
-    private CsGitlabProjectService csGitlabProjectService;
+    protected CsGitlabProjectService gitlabProjectService;
 
     @Resource
     private OcTagService ocTagService;
@@ -50,6 +51,10 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
 
     @Resource
     protected CsCiJobService csCiJobService;
+
+    @Resource
+    protected CsApplicationScmMemberService applicationScmMemberService;
+
 
     public static final String AUTO_BUILD = "AutoBuild";
 
@@ -66,7 +71,7 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
             return;
         CsGitlabWebhook csGitlabWebhook = saveEvent(instance, webhook);
         log.info("GitlabEvent: id = {}", csGitlabWebhook.getId());
-        consume(csGitlabWebhook);
+        this.consume(csGitlabWebhook);
     }
 
     abstract protected void consume(CsGitlabWebhook csGitlabWebhook);
@@ -76,7 +81,7 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
     }
 
     protected CsGitlabProject getProject(CsGitlabWebhook csGitlabWebhook) {
-        return csGitlabProjectService.queryCsGitlabProjectByUniqueKey(csGitlabWebhook.getInstanceId(), csGitlabWebhook.getProjectId());
+        return gitlabProjectService.queryCsGitlabProjectByUniqueKey(csGitlabWebhook.getInstanceId(), csGitlabWebhook.getProjectId());
     }
 
     protected void updateEvent(CsGitlabWebhook csGitlabWebhook) {

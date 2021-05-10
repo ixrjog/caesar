@@ -9,13 +9,11 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
 import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
-import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -25,15 +23,13 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class PushEventConsume extends BaseWebhookEventConsume implements IGitlabEventConsume {
+public class PushEventConsume extends BaseGitlabEventConsume implements IGitlabEventConsume {
 
     @Override
     public String getEventKey() {
         return GitlabEventType.PUSH.getDesc();
     }
 
-    @Resource
-    private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Override
     protected void consume(CsGitlabWebhook csGitlabWebhook) {
@@ -53,7 +49,7 @@ public class PushEventConsume extends BaseWebhookEventConsume implements IGitlab
     }
 
     private void consumer(CsGitlabProject csGitlabProject, CsGitlabWebhook csGitlabWebhook, String branch) {
-        List<CsApplicationScmMember> members = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
+        List<CsApplicationScmMember> members = applicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
         if (CollectionUtils.isEmpty(members)) {
             consumed(csGitlabWebhook);
             return;
