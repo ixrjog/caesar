@@ -19,7 +19,7 @@ import static com.baiyi.caesar.common.base.Build.*;
  * @Version 1.0
  */
 @Slf4j
-@Component("AndroidCiJobHandler")
+@Component
 public class AndroidBuildJobHandler extends BaseBuildJobHandler implements IBuildJobHandler {
 
     @Override

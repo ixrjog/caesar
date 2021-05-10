@@ -18,7 +18,7 @@ import static com.baiyi.caesar.common.base.Build.JOB_BUILD_NUMBER;
  * @Version 1.0
  */
 @Slf4j
-@Component("PythonCiJobHandler")
+@Component
 public class PythonBuildJobHandler extends BaseBuildJobHandler implements IBuildJobHandler {
 
     @Override

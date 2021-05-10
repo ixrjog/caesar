@@ -29,7 +29,7 @@ import static com.baiyi.caesar.common.base.Build.*;
  * @Version 1.0
  */
 @Slf4j
-@Component("JavaCiJobHandler")
+@Component
 public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJobHandler {
 
     @Resource

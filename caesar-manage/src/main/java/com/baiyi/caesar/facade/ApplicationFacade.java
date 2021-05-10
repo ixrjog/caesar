@@ -25,6 +25,8 @@ public interface ApplicationFacade {
 
     List<ApplicationVO.ScmMember> queryApplicationScmMemberByApplicationId(int applicationId);
 
+    List<ApplicationVO.ScmGroup> queryApplicationScmGroupByApplicationId(int applicationId);
+
     BusinessWrapper<Boolean> addApplication(ApplicationVO.Application application);
 
     /**

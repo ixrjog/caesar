@@ -22,7 +22,7 @@ import static com.baiyi.caesar.common.base.Global.BRANCH;
  * @Version 1.0
  */
 @Slf4j
-@Component("H5CiJobHandler")
+@Component
 public class H5BuildJobHandler extends BaseBuildJobHandler implements IBuildJobHandler {
 
     @Override

@@ -59,13 +59,19 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Resource
+    private CsApplicationScmGroupService csApplicationScmGroupService;
+
+    @Resource
     private CsApplicationEngineService csApplicationEngineService;
 
     @Resource
     private ApplicationDecorator applicationDecorator;
 
     @Resource
-    private ApplicationScmMemberDecorator applicationScmMemberDecorator;
+    private ApplicationScmMemberWrap applicationScmMemberWrap;
+
+    @Resource
+    private ApplicationScmGroupWrap applicationScmGroupWrap;
 
     @Resource
     private CsGitlabProjectService csGitlabProjectService;
@@ -116,9 +122,6 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private OcUserService ocUserService;
 
     @Resource
-    private CsApplicationScmGroupService csApplicationScmGroupService;
-
-    @Resource
     private CsGitlabGroupService csGitlabGroupService;
 
 
@@ -157,7 +160,13 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public List<ApplicationVO.ScmMember> queryApplicationScmMemberByApplicationId(int applicationId) {
         return csApplicationScmMemberService.queryCsApplicationScmMemberByApplicationId(applicationId)
-                .stream().map(e -> applicationScmMemberDecorator.decorator(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmMember.class), 1)).collect(Collectors.toList());
+                .stream().map(e -> applicationScmMemberWrap.wrap(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmMember.class))).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ApplicationVO.ScmGroup> queryApplicationScmGroupByApplicationId(int applicationId) {
+      return csApplicationScmGroupService.queryApplicationScmGroupByApplicationId(applicationId)
+              .stream().map(e -> applicationScmGroupWrap.wrap(BeanCopierUtil.copyProperties(e, ApplicationVO.ScmGroup.class))).collect(Collectors.toList());
     }
 
     @Override

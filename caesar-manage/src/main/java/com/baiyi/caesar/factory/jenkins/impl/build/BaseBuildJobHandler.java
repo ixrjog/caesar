@@ -72,7 +72,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     private ApplicationFacade applicationFacade;
 
     @Resource
-    private TaskEngineCenter jenkinsJobEngineHandler;
+    private TaskEngineCenter taskEngineCenter;
 
     @Resource
     private CsCiJobBuildService csCiJobBuildService;
@@ -100,9 +100,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     @Resource
     private EnvFacade envFacade;
-
-    @Resource
-    private TaskEngineCenter taskEngineCenter;
 
     public static final boolean SEND_DINGTALK_MESSAGE = false;
 
@@ -318,7 +315,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
     }
 
     private JobEngineVO.JobEngine acqJobEngineById(int jobEngineId) {
-        return jenkinsJobEngineHandler.acqJobEngineByJobEngineId(jobEngineId);
+        return taskEngineCenter.acqJobEngineByJobEngineId(jobEngineId);
     }
 
     private QueueReference build(JobWithDetails job, Map<String, String> params) throws IOException {
