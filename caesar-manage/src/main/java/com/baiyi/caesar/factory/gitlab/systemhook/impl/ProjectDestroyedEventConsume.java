@@ -1,7 +1,7 @@
 package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,6 +21,6 @@ public class ProjectDestroyedEventConsume extends BaseSystemHookEventConsume imp
     }
 
     @Override
-    public void consumeEvent(GitlabHooksVO.SystemHook systemHook) {
+    public void consumeEvent(GitlabHookVO.SystemHook systemHook) {
     }
 }

@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.gitlab.webhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.generator.caesar.*;
-import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class TagPushEventConsume extends BaseWebhookEventConsume implements IWebhookEventConsume {
+public class TagPushEventConsume extends BaseWebhookEventConsume implements IGitlabEventConsume {
 
     public static final String TAG_REF_PREFIX = "refs/tags/";
 
@@ -47,8 +47,10 @@ public class TagPushEventConsume extends BaseWebhookEventConsume implements IWeb
         String tag = csGitlabWebhook.getRef().replace(TAG_REF_PREFIX, "");
         CsGitlabInstance gitlabInstance = getGitlabInstanceById(csGitlabWebhook.getInstanceId());
         List<GitlabTag> tags = gitlabBranchHandler.getTags(gitlabInstance.getName(), csGitlabWebhook.getProjectId());
-        if (tags.stream().noneMatch(e -> e.getName().equals(tag))) return; // tag不存在
-
+        if (tags.stream().noneMatch(e -> e.getName().equals(tag))) {
+            log.info("Gitlab Event Consume Error: tag = {} 不存在!",tag);
+            return; // tag不存在
+        }
         CsGitlabProject csGitlabProject = csGitlabProjectService.queryCsGitlabProjectByUniqueKey(gitlabInstance.getId(), csGitlabWebhook.getProjectId());
         if (csGitlabProject == null) return;
         List<CsApplicationScmMember> scmMembers = csApplicationScmMemberService.queryCsApplicationScmMemberByScmId(csGitlabProject.getId());
@@ -57,19 +59,17 @@ public class TagPushEventConsume extends BaseWebhookEventConsume implements IWeb
     }
 
     private void consumer(CsApplicationScmMember scmMember, CsGitlabWebhook csGitlabWebhook, String tag) {
-
         // 查询对应的job
-        List<CsCiJob> ciJobs = csCiJobService.queryCsCiJobByScmMemberId(scmMember.getId());
-        if (!CollectionUtils.isEmpty(ciJobs)) {
-            ciJobs.forEach(job -> {
+        List<CsCiJob> jobs = csCiJobService.queryCsCiJobByScmMemberId(scmMember.getId());
+        if (!CollectionUtils.isEmpty(jobs)) {
+            for(CsCiJob job:jobs){
                 IBuildJobHandler buildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(job.getJobType());
-                buildJobHandler.build(job, csGitlabWebhook.getUsername());
+                buildJobHandler.build(job, csGitlabWebhook.getUsername(),tag);
                 csGitlabWebhook.setIsConsumed(true);
                 csGitlabWebhook.setIsTrigger(true);
                 csGitlabWebhook.setJobKey(job.getJobKey());
                 updateEvent(csGitlabWebhook);
-            });
+            }
         }
-
     }
 }

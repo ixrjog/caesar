@@ -5,10 +5,10 @@ import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
-import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
-import com.baiyi.caesar.factory.gitlab.webhook.WebhookEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
+import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
@@ -30,7 +30,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, InitializingBean {
+public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, InitializingBean {
 
     @Resource
     private CsGitlabInstanceService csGitlabInstanceService;
@@ -62,19 +62,18 @@ public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, I
      */
     @Override
     @Async(value = Global.TaskPools.COMMON)
-    public void consumeEvent(GitlabHooksVO.Webhook webhook) {
+    public void consumeEvent(GitlabHookVO.Webhook webhook) {
         CsGitlabInstance instance = GitlabUtil.filterInstance(csGitlabInstanceService.queryAll(), webhook);
         if (instance == null)
             return;
         CsGitlabWebhook csGitlabWebhook = saveEvent(instance, webhook);
+        log.info("GitlabEvent: id = {}",csGitlabWebhook.getId());
         consume(csGitlabWebhook);
     }
 
     protected CsGitlabInstance getGitlabInstanceById(int instanceId) {
         return csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
     }
-
-    protected abstract void consume(CsGitlabWebhook csGitlabWebhook);
 
     protected CsGitlabProject getProject(CsGitlabWebhook csGitlabWebhook) {
         return csGitlabProjectService.queryCsGitlabProjectByUniqueKey(csGitlabWebhook.getInstanceId(), csGitlabWebhook.getProjectId());
@@ -84,7 +83,7 @@ public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, I
         csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
     }
 
-    private CsGitlabWebhook saveEvent(CsGitlabInstance instance, GitlabHooksVO.Webhook webhook) {
+    private CsGitlabWebhook saveEvent(CsGitlabInstance instance, GitlabHookVO.Webhook webhook) {
         OcUser ocUser = ocUserService.queryOcUserByUsername(webhook.getUser_username());
         CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhook, instance, ocUser);
         csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
@@ -113,6 +112,6 @@ public abstract class BaseWebhookEventConsume implements IWebhookEventConsume, I
      */
     @Override
     public void afterPropertiesSet() {
-        WebhookEventConsumeFactory.register(this);
+        GitlabEventConsumeFactory.register(this);
     }
 }

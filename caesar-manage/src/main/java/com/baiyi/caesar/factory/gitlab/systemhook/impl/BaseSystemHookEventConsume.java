@@ -6,7 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabSystemHook;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.factory.gitlab.systemhook.SystemHookEventConsumeFactory;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
@@ -63,7 +63,7 @@ public abstract class BaseSystemHookEventConsume implements ISystemHookEventCons
      *
      * @param systemHook
      */
-    protected void consumeProjectEvent(GitlabHooksVO.SystemHook systemHook) {
+    protected void consumeProjectEvent(GitlabHookVO.SystemHook systemHook) {
         CsGitlabInstance csGitlabInstance = getGitlabInstance();
         if (csGitlabInstance == null) return;
         CsGitlabSystemHook csGitlabSystemHook = recordSystemHook(csGitlabInstance, systemHook);
@@ -79,7 +79,7 @@ public abstract class BaseSystemHookEventConsume implements ISystemHookEventCons
         csGitlabSystemHookService.updateCsGitlabSystemHook(csGitlabSystemHook);
     }
 
-    private CsGitlabSystemHook recordSystemHook(CsGitlabInstance csGitlabInstance, GitlabHooksVO.SystemHook systemHook) {
+    private CsGitlabSystemHook recordSystemHook(CsGitlabInstance csGitlabInstance, GitlabHookVO.SystemHook systemHook) {
         CsGitlabSystemHook csGitlabSystemHook = GitlabSystemHookBuilder.build(csGitlabInstance, systemHook);
         csGitlabSystemHookService.addCsGitlabSystemHook(csGitlabSystemHook);
         return csGitlabSystemHook;
@@ -90,7 +90,7 @@ public abstract class BaseSystemHookEventConsume implements ISystemHookEventCons
      *
      * @param systemHook
      */
-    protected void consumeGroupEvent(GitlabHooksVO.SystemHook systemHook) {
+    protected void consumeGroupEvent(GitlabHookVO.SystemHook systemHook) {
         CsGitlabInstance csGitlabInstance = getGitlabInstance();
         if (csGitlabInstance == null) return;
         CsGitlabSystemHook csGitlabSystemHook = recordSystemHook(csGitlabInstance, systemHook);

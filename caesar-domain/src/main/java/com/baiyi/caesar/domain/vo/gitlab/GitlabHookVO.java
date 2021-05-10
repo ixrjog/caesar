@@ -13,7 +13,7 @@ import java.util.List;
  * @Date 2020/10/20 11:39 上午
  * @Version 1.0
  */
-public class GitlabHooksVO {
+public class GitlabHookVO {
 
     @Data
     @NoArgsConstructor

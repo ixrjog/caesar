@@ -2,13 +2,11 @@ package com.baiyi.caesar.controller;
 
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.HttpResult;
+import com.baiyi.caesar.domain.param.gitlab.GitlabEventParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabGroupVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabInstanceVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabProjectVO;
+import com.baiyi.caesar.domain.vo.gitlab.*;
 import com.baiyi.caesar.facade.GitlabFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,14 +37,14 @@ public class GitlabController {
      */
     @ApiOperation(value = "Gitlab webhooks")
     @PostMapping(value =  "/v1/webhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHooksVO.Webhook webhook) {
+    public HttpResult<Boolean> trigerWebhooks(@RequestBody GitlabHookVO.Webhook webhook) {
         gitlabFacade.webhooksV1(webhook);
         return HttpResult.SUCCESS;
     }
 
     @ApiOperation(value = "Gitlab system hooks")
     @PostMapping(value =  "/v1/systemhooks", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpResult<Boolean> trigerSystemHooks(@RequestBody GitlabHooksVO.SystemHook systemHook) {
+    public HttpResult<Boolean> trigerSystemHooks(@RequestBody GitlabHookVO.SystemHook systemHook) {
         gitlabFacade.systemHooksV1(systemHook);
         return HttpResult.SUCCESS;
     }
@@ -105,5 +103,11 @@ public class GitlabController {
     @PostMapping(value = "/group/member/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<Boolean> addGitlabGroupMember(@RequestBody @Valid GitlabGroupParam.AddMember addMember) {
         return new HttpResult<>(gitlabFacade.addGitlabGroupMember(addMember));
+    }
+
+    @ApiOperation(value = "分页查Gitlab事件信息")
+    @PostMapping(value = "/event/page/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpResult<DataTable<GitlabEventVO.Event>> queryGitlabEventPage(@RequestBody @Valid GitlabEventParam.GitlabEventPageQuery pageQuery) {
+        return new HttpResult<>(gitlabFacade.queryGitlabEventPage(pageQuery));
     }
 }

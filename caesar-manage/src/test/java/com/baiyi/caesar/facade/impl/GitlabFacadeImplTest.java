@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.GitlabTokenUtil;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.facade.GitlabFacade;
 import org.gitlab.api.models.GitlabUser;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ public class GitlabFacadeImplTest extends BaseUnit {
     @Test
     void systemHooksV1Test() {
         GitlabTokenUtil.setToken("8d8e35c2952d716f29c831b728fa7556");
-        GitlabHooksVO.SystemHook systemHook = new GitlabHooksVO.SystemHook();
+        GitlabHookVO.SystemHook systemHook = new GitlabHookVO.SystemHook();
         systemHook.setEventName("project_create");
         systemHook.setProjectId(211);
         systemHook.setName("baiyitest-1");

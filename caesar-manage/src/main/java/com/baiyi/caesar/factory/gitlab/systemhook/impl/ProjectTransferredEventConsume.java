@@ -1,7 +1,7 @@
 package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class ProjectTransferredEventConsume extends BaseSystemHookEventConsume i
     }
 
     @Override
-    public void consumeEvent(GitlabHooksVO.SystemHook systemHook) {
+    public void consumeEvent(GitlabHookVO.SystemHook systemHook) {
         consumeProjectEvent(systemHook);
     }
 

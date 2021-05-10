@@ -3,7 +3,7 @@ package com.baiyi.caesar.factory.gitlab.systemhook.impl;
 import com.baiyi.caesar.builder.gitlab.GitlabProjectBuilder;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.generator.caesar.*;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.facade.ApplicationFacade;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import com.baiyi.caesar.service.application.CsApplicationScmGroupService;
@@ -43,7 +43,7 @@ public class ProjectCreatedEventConsume extends BaseSystemHookEventConsume imple
     }
 
     @Override
-    public void consumeEvent(GitlabHooksVO.SystemHook systemHook) {
+    public void consumeEvent(GitlabHookVO.SystemHook systemHook) {
         consumeProjectEvent(systemHook);
     }
 

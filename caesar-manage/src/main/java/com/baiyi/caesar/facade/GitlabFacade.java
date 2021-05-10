@@ -6,6 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.gitlab.GitlabEventParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
@@ -25,9 +26,9 @@ public interface GitlabFacade {
 
     DataTable<GitlabInstanceVO.Instance> queryGitlabInstancePage(GitlabInstanceParam.PageQuery pageQuery);
 
-    void webhooksV1(GitlabHooksVO.Webhook webhook);
+    void webhooksV1(GitlabHookVO.Webhook webhook);
 
-    void systemHooksV1(GitlabHooksVO.SystemHook systemHook);
+    void systemHooksV1(GitlabHookVO.SystemHook systemHook);
 
     BusinessWrapper<Boolean> addGitlabInstance(GitlabInstanceVO.Instance instance);
 
@@ -58,5 +59,7 @@ public interface GitlabFacade {
     GitlabUser queryUser(String gitlabName, String usernmae);
 
     boolean isGroupMember(String gitlabName, Integer groupId, GitlabUser user);
+
+    DataTable<GitlabEventVO.Event> queryGitlabEventPage(GitlabEventParam.GitlabEventPageQuery pageQuery);
 
 }

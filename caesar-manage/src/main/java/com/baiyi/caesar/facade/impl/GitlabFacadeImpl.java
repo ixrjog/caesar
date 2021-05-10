@@ -8,6 +8,7 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.GitlabUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.convert.GitlabBranchConvert;
+import com.baiyi.caesar.decorator.gitlab.GitalbEventWarp;
 import com.baiyi.caesar.decorator.gitlab.GitlabGroupDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabInstanceDecorator;
 import com.baiyi.caesar.decorator.gitlab.GitlabProjectDecorator;
@@ -17,6 +18,7 @@ import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.domain.param.gitlab.GitlabEventParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabGroupParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabInstanceParam;
 import com.baiyi.caesar.domain.param.gitlab.GitlabProjectParam;
@@ -27,8 +29,8 @@ import com.baiyi.caesar.facade.GitlabFacade;
 import com.baiyi.caesar.facade.TagFacade;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import com.baiyi.caesar.factory.gitlab.systemhook.SystemHookEventConsumeFactory;
-import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
-import com.baiyi.caesar.factory.gitlab.webhook.WebhookEventConsumeFactory;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
+import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
 import com.baiyi.caesar.gitlab.handler.GitlabBranchHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabGroupHandler;
 import com.baiyi.caesar.gitlab.handler.GitlabProjectHandler;
@@ -39,6 +41,7 @@ import com.baiyi.caesar.service.application.CsApplicationService;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
+import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
 import com.baiyi.caesar.service.jenkins.CsCiJobService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -119,6 +122,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private EnvFacade envFacade;
 
+    @Resource
+    private GitalbEventWarp gitalbEventWarp;
+
+    @Resource
+    private CsGitlabWebhookService gitlabWebhookService;
+
     public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "daily", "gray"};
 
     public static final String DEFAULT_REF_BRANCH = "master";
@@ -145,9 +154,9 @@ public class GitlabFacadeImpl implements GitlabFacade {
 
     @Override
     @Async(value = Global.TaskPools.COMMON)
-    public void webhooksV1(GitlabHooksVO.Webhook webhook) {
+    public void webhooksV1(GitlabHookVO.Webhook webhook) {
         try {
-            IWebhookEventConsume eventConsume =  WebhookEventConsumeFactory.getWebhookEventConsumeByKey(PUSH.getDesc());
+            IGitlabEventConsume eventConsume = GitlabEventConsumeFactory.getEventConsumeByKey(PUSH.getDesc());
             if (eventConsume != null)
                 eventConsume.consumeEvent(webhook);
         } catch (Exception e) {
@@ -156,7 +165,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     }
 
     @Override
-    public void systemHooksV1(GitlabHooksVO.SystemHook systemHook) {
+    public void systemHooksV1(GitlabHookVO.SystemHook systemHook) {
         // 处理系统消息
         try {
             ISystemHookEventConsume eventConsume = SystemHookEventConsumeFactory.getSystemHookEventConsumeByKey(systemHook.getEventName());
@@ -399,6 +408,12 @@ public class GitlabFacadeImpl implements GitlabFacade {
         }
         repository.setOptions(options);
         return new BusinessWrapper<>(repository);
+    }
+
+    @Override
+    public DataTable<GitlabEventVO.Event> queryGitlabEventPage(GitlabEventParam.GitlabEventPageQuery pageQuery) {
+        DataTable<CsGitlabWebhook> table = gitlabWebhookService.queryCsGitlabWebhookByParam(pageQuery);
+        return gitalbEventWarp.wrap(table,pageQuery);
     }
 
 }

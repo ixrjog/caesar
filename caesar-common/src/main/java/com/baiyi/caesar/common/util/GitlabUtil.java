@@ -2,7 +2,7 @@ package com.baiyi.caesar.common.util;
 
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabBranchVO;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.google.common.base.Joiner;
 import org.springframework.util.StringUtils;
 
@@ -68,7 +68,7 @@ public class GitlabUtil {
         return Joiner.on("/").join(webUrl, COMMIT_BASE, commitId);
     }
 
-    public static CsGitlabInstance filterInstance(List<CsGitlabInstance> instances, GitlabHooksVO.Webhook webhook) {
+    public static CsGitlabInstance filterInstance(List<CsGitlabInstance> instances, GitlabHookVO.Webhook webhook) {
         for (CsGitlabInstance instance : instances) {
             try {
                 java.net.URL instanceUrl = new java.net.URL(instance.getUrl());

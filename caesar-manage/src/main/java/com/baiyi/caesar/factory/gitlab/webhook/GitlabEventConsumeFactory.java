@@ -8,15 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2021/5/6 10:37 上午
  * @Version 1.0
  */
-public class WebhookEventConsumeFactory {
+public class GitlabEventConsumeFactory {
 
-    static Map<String, IWebhookEventConsume> context = new ConcurrentHashMap<>();
+    static Map<String, IGitlabEventConsume> context = new ConcurrentHashMap<>();
 
-    public static IWebhookEventConsume getWebhookEventConsumeByKey(String key) {
+    public static IGitlabEventConsume getEventConsumeByKey(String key) {
         return context.get(key);
     }
 
-    public static void register(IWebhookEventConsume bean) {
+    public static void register(IGitlabEventConsume bean) {
         context.put(bean.getEventKey(), bean);
     }
 }

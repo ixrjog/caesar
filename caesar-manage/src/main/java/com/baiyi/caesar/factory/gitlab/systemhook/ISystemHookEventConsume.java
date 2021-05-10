@@ -1,6 +1,6 @@
 package com.baiyi.caesar.factory.gitlab.systemhook;
 
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 
 /**
  * @Author baiyi
@@ -15,6 +15,6 @@ public interface ISystemHookEventConsume {
      * 消费事件
      * @param systemHook
      */
-    void consumeEvent(GitlabHooksVO.SystemHook systemHook);
+    void consumeEvent(GitlabHookVO.SystemHook systemHook);
 
 }

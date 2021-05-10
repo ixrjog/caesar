@@ -5,7 +5,7 @@ import com.baiyi.caesar.bo.gitlab.GitlabSystemHookBO;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabSystemHook;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 
 /**
  * @Author baiyi
@@ -14,7 +14,7 @@ import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
  */
 public class GitlabSystemHookBuilder {
 
-    public static CsGitlabSystemHook build(CsGitlabInstance csGitlabInstance, GitlabHooksVO.SystemHook systemHook) {
+    public static CsGitlabSystemHook build(CsGitlabInstance csGitlabInstance, GitlabHookVO.SystemHook systemHook) {
         GitlabSystemHookBO bo = GitlabSystemHookBO.builder()
                 .instanceId(csGitlabInstance.getId())
                 .projectId(systemHook.getProjectId())

@@ -6,7 +6,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsApplicationScmMember;
 import com.baiyi.caesar.domain.generator.caesar.CsCiJob;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabProject;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
-import com.baiyi.caesar.factory.gitlab.webhook.IWebhookEventConsume;
+import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
 import com.baiyi.caesar.factory.jenkins.IBuildJobHandler;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class PushEventConsume extends BaseWebhookEventConsume implements IWebhookEventConsume {
+public class PushEventConsume extends BaseWebhookEventConsume implements IGitlabEventConsume {
 
     @Override
     public String getEventKey() {

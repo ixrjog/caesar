@@ -7,5 +7,5 @@ package com.baiyi.caesar.domain.param;
  */
 public interface IExtend {
 
-    boolean getExtend();
+    Integer getExtend();
 }

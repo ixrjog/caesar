@@ -4,7 +4,7 @@ import com.baiyi.caesar.builder.gitlab.GitlabGroupBuilder;
 import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabGroup;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabInstance;
-import com.baiyi.caesar.domain.vo.gitlab.GitlabHooksVO;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.baiyi.caesar.factory.gitlab.systemhook.ISystemHookEventConsume;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab.api.models.GitlabGroup;
@@ -25,7 +25,7 @@ public class GroupCreatedEventConsume extends BaseSystemHookEventConsume impleme
     }
 
     @Override
-    public void consumeEvent(GitlabHooksVO.SystemHook systemHook) {
+    public void consumeEvent(GitlabHookVO.SystemHook systemHook) {
         consumeGroupEvent(systemHook);
     }
 

@@ -16,4 +16,5 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="hooks_content" jdbcType="LONGVARCHAR" property="hooksContent" />
   </resultMap>
+
 </mapper>
