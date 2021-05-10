@@ -36,7 +36,8 @@ public class PushEventConsume extends BaseWebhookEventConsume implements IGitlab
     private CsApplicationScmMemberService csApplicationScmMemberService;
 
     @Override
-    public void consume(CsGitlabWebhook csGitlabWebhook) {
+    protected void consume(CsGitlabWebhook csGitlabWebhook) {
+        log.info("Gitlab Push Event Consume: eventId = {} ", csGitlabWebhook.getId());
         CsGitlabProject csGitlabProject = getProject(csGitlabWebhook);
         if (csGitlabProject == null || !isAuthBuild(csGitlabProject.getId())) {
             consumed(csGitlabWebhook);

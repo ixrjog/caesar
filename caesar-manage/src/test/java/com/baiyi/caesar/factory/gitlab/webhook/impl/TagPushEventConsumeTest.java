@@ -1,9 +1,7 @@
 package com.baiyi.caesar.factory.gitlab.webhook.impl;
 
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.common.base.GitlabEventType;
 import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
-import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +20,7 @@ class TagPushEventConsumeTest extends BaseUnit {
     @Test
     void consumeEventTest() {
         CsGitlabWebhook hook = gitlabWebhookService.getById(22251);
-        GitlabEventConsumeFactory.getEventConsumeByKey(GitlabEventType.TAG_PUSH.getDesc()).consume(hook);
+       //  GitlabEventConsumeFactory.getEventConsumeByKey(GitlabEventType.TAG_PUSH.getDesc()).consume(hook);
     }
 
 }

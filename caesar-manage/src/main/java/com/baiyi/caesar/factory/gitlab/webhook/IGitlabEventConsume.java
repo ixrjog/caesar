@@ -1,6 +1,5 @@
 package com.baiyi.caesar.factory.gitlab.webhook;
 
-import com.baiyi.caesar.domain.generator.caesar.CsGitlabWebhook;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 
 /**
@@ -18,5 +17,5 @@ public interface IGitlabEventConsume {
      */
     void consumeEvent(GitlabHookVO.Webhook webhook);
 
-    void consume(CsGitlabWebhook csGitlabWebhook);
+   // void consume(CsGitlabWebhook csGitlabWebhook);
 }

@@ -69,6 +69,8 @@ public abstract class BaseWebhookEventConsume implements IGitlabEventConsume, In
         consume(csGitlabWebhook);
     }
 
+    abstract protected void consume(CsGitlabWebhook csGitlabWebhook);
+
     protected CsGitlabInstance getGitlabInstanceById(int instanceId) {
         return csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
     }

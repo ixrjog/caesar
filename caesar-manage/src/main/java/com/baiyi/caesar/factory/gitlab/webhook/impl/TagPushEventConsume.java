@@ -42,7 +42,8 @@ public class TagPushEventConsume extends BaseWebhookEventConsume implements IGit
     }
 
     @Override
-    public void consume(CsGitlabWebhook csGitlabWebhook) {
+    protected void consume(CsGitlabWebhook csGitlabWebhook) {
+        log.info("Gitlab TagPush Event Consume: eventId = {} ", csGitlabWebhook.getId());
         // 判断tag是否存在
         String tag = csGitlabWebhook.getRef().replace(TAG_REF_PREFIX, "");
         CsGitlabInstance gitlabInstance = getGitlabInstanceById(csGitlabWebhook.getInstanceId());
