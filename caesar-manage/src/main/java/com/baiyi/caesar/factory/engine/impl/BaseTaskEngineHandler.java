@@ -4,7 +4,7 @@ import com.aliyun.oss.model.OSSObjectSummary;
 import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.packer.application.JobEnginePacker;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
@@ -61,7 +61,7 @@ public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements
     protected JenkinsJobHandler jenkinsJobHandler;
 
     @Resource
-    private JobEngineDecorator jobEngineDecorator;
+    private JobEnginePacker jobEngineDecorator;
 
     @Resource
     private OcServerService ocServerService;
@@ -110,7 +110,7 @@ public abstract class BaseTaskEngineHandler<T extends BaseJobContext> implements
         Random random = new Random();
         int n = random.nextInt(activeEngines.size());
         CsJobEngine csCiJobEngine = activeEngines.get(n);
-        return jobEngineDecorator.decorator(BeanCopierUtil.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
+        return jobEngineDecorator.wrap(BeanCopierUtil.copyProperties(csCiJobEngine, JobEngineVO.JobEngine.class));
     }
 
     public boolean tryJenkinsInstanceActive(int jenkinsInstanceId) {

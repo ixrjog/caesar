@@ -17,5 +17,4 @@ public interface IGitlabEventConsume {
      */
     void consumeEvent(GitlabHookVO.Webhook webhook);
 
-   // void consume(CsGitlabWebhook csGitlabWebhook);
 }

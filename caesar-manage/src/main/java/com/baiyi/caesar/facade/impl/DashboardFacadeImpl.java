@@ -1,9 +1,9 @@
 package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.config.CachingConfig;
-import com.baiyi.caesar.decorator.application.ApplicationDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobBuildDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
+import com.baiyi.caesar.packer.application.ApplicationPacker;
+import com.baiyi.caesar.packer.jenkins.JobBuildDecorator;
+import com.baiyi.caesar.packer.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.domain.vo.dashboard.DashboardVO;
 import com.baiyi.caesar.facade.DashboardFacade;
 import com.baiyi.caesar.service.application.CsApplicationService;
@@ -55,7 +55,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
     private CsCdJobBuildService csCdJobBuildService;
 
     @Resource
-    private ApplicationDecorator applicationDecorator;
+    private ApplicationPacker applicationDecorator;
 
     @Override
     @Cacheable(cacheNames = CachingConfig.CacheRepositories.DASHBOARD, key = "'topCard'")
@@ -115,7 +115,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
         final int top = 15;
         DashboardVO.HotTopStatistics charts = new DashboardVO.HotTopStatistics();
         charts.setHotApplications(csCiJobBuildService.queryHotApplication(top)
-                .stream().map(e -> applicationDecorator.decorator(e)).collect(Collectors.toList()));
+                .stream().map(e -> applicationDecorator.wrap(e)).collect(Collectors.toList()));
         charts.setHotUsers(csCiJobBuildService.queryHotUser(top));
         return charts;
     }

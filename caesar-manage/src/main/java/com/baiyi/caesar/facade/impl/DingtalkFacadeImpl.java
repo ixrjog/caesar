@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.dingtalk.DingtalkDecorator;
+import com.baiyi.caesar.packer.dingtalk.DingtalkDecorator;
 import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
 import com.baiyi.caesar.dingtalk.content.DingtalkContent;
 import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;

@@ -1,6 +1,6 @@
 package com.baiyi.caesar.facade.jenkins.factory.impl;
 
-import com.baiyi.caesar.decorator.application.ApplicationEngineDecorator;
+import com.baiyi.caesar.packer.application.ApplicationEnginePacker;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.CsApplication;
@@ -45,7 +45,7 @@ public abstract class BaseJobEngine<T> implements IJobEngine, InitializingBean {
     protected CsJenkinsInstanceService csJenkinsInstanceService;
 
     @Resource
-    private ApplicationEngineDecorator applicationEngineDecorator;
+    private ApplicationEnginePacker applicationEngineDecorator;
 
     @Resource
     private ApplicationFacade applicationFacade;

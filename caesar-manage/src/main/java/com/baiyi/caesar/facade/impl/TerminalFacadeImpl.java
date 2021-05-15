@@ -2,8 +2,8 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.bae64.CacheKeyUtils;
-import com.baiyi.caesar.decorator.terminal.TerminalSessionDecorator;
-import com.baiyi.caesar.decorator.terminal.TerminalSessionInstanceDecorator;
+import com.baiyi.caesar.packer.terminal.TerminalSessionDecorator;
+import com.baiyi.caesar.packer.terminal.TerminalSessionInstanceDecorator;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSession;
 import com.baiyi.caesar.domain.generator.caesar.OcTerminalSessionInstance;

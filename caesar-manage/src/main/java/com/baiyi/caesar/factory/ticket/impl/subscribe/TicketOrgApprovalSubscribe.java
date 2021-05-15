@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.ticket.impl.subscribe;
 
 import com.baiyi.caesar.common.base.TicketPhase;
 import com.baiyi.caesar.common.base.TicketSubscribeType;
-import com.baiyi.caesar.decorator.department.DepartmentMemberDecorator;
+import com.baiyi.caesar.packer.department.DepartmentMemberDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;

@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.jenkins.impl;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.packer.application.JobEnginePacker;
 import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
@@ -39,7 +39,7 @@ public class JobEngineFacadeImpl implements JobEngineFacade {
     private JenkinsServerHandler jenkinsServerHandler;
 
     @Resource
-    private JobEngineDecorator ciJobEngineDecorator;
+    private JobEnginePacker ciJobEngineDecorator;
 
     @Override
     public void createJobEngine(int buildType, int jobId) {
@@ -81,7 +81,7 @@ public class JobEngineFacadeImpl implements JobEngineFacade {
     @Override
     public List<JobEngineVO.JobEngine> queryJobEngines(int buildType, int jobId) {
         return csJobEngineService.queryCsJobEngineByJobId(buildType, jobId).stream().map(e ->
-                ciJobEngineDecorator.decorator(BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class))
+                ciJobEngineDecorator.wrap(BeanCopierUtil.copyProperties(e, JobEngineVO.JobEngine.class))
         ).collect(Collectors.toList());
     }
 

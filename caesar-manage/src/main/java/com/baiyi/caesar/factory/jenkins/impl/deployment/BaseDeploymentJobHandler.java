@@ -7,7 +7,7 @@ import com.baiyi.caesar.common.base.NoticePhase;
 import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.model.JenkinsJobParameters;
 import com.baiyi.caesar.common.util.JenkinsUtil;
-import com.baiyi.caesar.decorator.jenkins.JobDeploymentDecorator;
+import com.baiyi.caesar.packer.jenkins.JobDeploymentDecorator;
 import com.baiyi.caesar.dingtalk.DingtalkNotifyFactory;
 import com.baiyi.caesar.dingtalk.IDingtalkNotify;
 import com.baiyi.caesar.domain.BusinessWrapper;

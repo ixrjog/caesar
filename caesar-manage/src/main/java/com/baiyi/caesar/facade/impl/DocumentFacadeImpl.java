@@ -3,7 +3,7 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.builder.UserDocumentBuilder;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
-import com.baiyi.caesar.decorator.document.DocumentDecorator;
+import com.baiyi.caesar.packer.document.DocumentDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.ErrorEnum;
 import com.baiyi.caesar.domain.generator.caesar.OcDocument;

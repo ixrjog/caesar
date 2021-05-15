@@ -60,7 +60,7 @@ public class AuthController {
         return new HttpResult<>(authFacade.deleteRoleById(id));
     }
 
-    // role resourcbe
+
     @ApiOperation(value = "分页查询角色已绑定的资源列表")
     @GetMapping(value = "/role/resource/bind/page/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpResult<DataTable<ResourceVO.Resource>> queryRoleBindResourcePage(@Valid ResourceParam.BindResourcePageQuery pageQuery) {

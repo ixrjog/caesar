@@ -2,7 +2,7 @@ package com.baiyi.caesar.workorder;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyi.caesar.BaseUnit;
-import com.baiyi.caesar.decorator.department.DepartmentMemberDecorator;
+import com.baiyi.caesar.packer.department.DepartmentMemberDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorder;
 import com.baiyi.caesar.domain.generator.caesar.OcWorkorderApprovalMember;

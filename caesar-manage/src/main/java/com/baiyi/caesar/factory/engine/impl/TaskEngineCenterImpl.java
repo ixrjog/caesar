@@ -2,7 +2,7 @@ package com.baiyi.caesar.factory.engine.impl;
 
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.application.JobEngineDecorator;
+import com.baiyi.caesar.packer.application.JobEnginePacker;
 import com.baiyi.caesar.domain.base.BuildType;
 import com.baiyi.caesar.domain.generator.caesar.CsJenkinsInstance;
 import com.baiyi.caesar.domain.generator.caesar.CsJobEngine;
@@ -37,7 +37,7 @@ public class TaskEngineCenterImpl implements TaskEngineCenter {
     private CsJenkinsInstanceService csJenkinsInstanceService;
 
     @Resource
-    private JobEngineDecorator ciJobEngineDecorator;
+    private JobEnginePacker ciJobEngineDecorator;
 
     @Resource
     private JenkinsServerHandler jenkinsServerHandler;
@@ -45,7 +45,7 @@ public class TaskEngineCenterImpl implements TaskEngineCenter {
     @Override
     public JobEngineVO.JobEngine acqJobEngineByJobEngineId(int jobEngineId) {
         CsJobEngine csJobEngine = csJobEngineService.queryCsJobEngineById(jobEngineId);
-        return ciJobEngineDecorator.decorator(BeanCopierUtil.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
+        return ciJobEngineDecorator.wrap(BeanCopierUtil.copyProperties(csJobEngine, JobEngineVO.JobEngine.class));
     }
 
     @Override

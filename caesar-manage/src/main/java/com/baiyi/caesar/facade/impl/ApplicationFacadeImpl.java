@@ -7,7 +7,7 @@ import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
-import com.baiyi.caesar.decorator.application.*;
+import com.baiyi.caesar.packer.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -65,13 +65,13 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private CsApplicationEngineService csApplicationEngineService;
 
     @Resource
-    private ApplicationDecorator applicationDecorator;
+    private ApplicationPacker applicationDecorator;
 
     @Resource
-    private ApplicationScmMemberWrap applicationScmMemberWrap;
+    private ApplicationScmMemberPacker applicationScmMemberWrap;
 
     @Resource
-    private ApplicationScmGroupWrap applicationScmGroupWrap;
+    private ApplicationScmGroupPacker applicationScmGroupWrap;
 
     @Resource
     private CsGitlabProjectService csGitlabProjectService;
@@ -83,13 +83,13 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     private CsCdJobService csCdJobService;
 
     @Resource
-    private CiJobDecorator ciJobDecorator;
+    private CiJobPacker ciJobDecorator;
 
     @Resource
-    private CdJobDecorator cdJobDecorator;
+    private CdJobPacker cdJobDecorator;
 
     @Resource
-    private ApplicationEngineDecorator applicationEngineDecorator;
+    private ApplicationEnginePacker applicationEngineDecorator;
 
     @Resource
     private JobEngineFacade jenkinsCiJobFacade;
@@ -129,7 +129,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public DataTable<ApplicationVO.Application> queryApplicationPage(ApplicationParam.ApplicationPageQuery pageQuery) {
         DataTable<CsApplication> table = csApplicationService.queryCsApplicationByParam(pageQuery);
         List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
-        return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> applicationDecorator.wrap(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     /**
@@ -154,7 +154,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             table = csApplicationService.queryMyCsApplicationByParam(pageQuery);
         }
         List<ApplicationVO.Application> page = BeanCopierUtil.copyListProperties(table.getData(), ApplicationVO.Application.class);
-        return new DataTable<>(page.stream().map(e -> applicationDecorator.decorator(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> applicationDecorator.wrap(e, ocUser, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
@@ -271,7 +271,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             pageQuery.setShowHide(false);
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
         List<CiJobVO.CiJob> page = BeanCopierUtil.copyListProperties(table.getData(), CiJobVO.CiJob.class);
-        return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> ciJobDecorator.wrap(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

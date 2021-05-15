@@ -32,13 +32,13 @@ import javax.annotation.Resource;
 public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, InitializingBean {
 
     @Resource
-    private CsGitlabInstanceService csGitlabInstanceService;
+    private CsGitlabInstanceService gitlabInstanceService;
 
     @Resource
-    private OcUserService ocUserService;
+    private OcUserService userService;
 
     @Resource
-    private CsGitlabWebhookService csGitlabWebhookService;
+    private CsGitlabWebhookService gitlabWebhookService;
 
     @Resource
     protected CsGitlabProjectService gitlabProjectService;
@@ -47,10 +47,10 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
     private OcTagService ocTagService;
 
     @Resource
-    private OcBusinessTagService ocBusinessTagService;
+    private OcBusinessTagService businessTagService;
 
     @Resource
-    protected CsCiJobService csCiJobService;
+    protected CsCiJobService ciJobService;
 
     @Resource
     protected CsApplicationScmMemberService applicationScmMemberService;
@@ -66,7 +66,7 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
     @Override
     // @Async(value = Global.TaskPools.COMMON)
     public void consumeEvent(GitlabHookVO.Webhook webhook) {
-        CsGitlabInstance instance = GitlabUtil.filterInstance(csGitlabInstanceService.queryAll(), webhook);
+        CsGitlabInstance instance = GitlabUtil.filterInstance(gitlabInstanceService.queryAll(), webhook);
         if (instance == null)
             return;
         CsGitlabWebhook csGitlabWebhook = saveEvent(instance, webhook);
@@ -77,7 +77,7 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
     abstract protected void consume(CsGitlabWebhook csGitlabWebhook);
 
     protected CsGitlabInstance getGitlabInstanceById(int instanceId) {
-        return csGitlabInstanceService.queryCsGitlabInstanceById(instanceId);
+        return gitlabInstanceService.queryCsGitlabInstanceById(instanceId);
     }
 
     protected CsGitlabProject getProject(CsGitlabWebhook csGitlabWebhook) {
@@ -85,19 +85,19 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
     }
 
     protected void updateEvent(CsGitlabWebhook csGitlabWebhook) {
-        csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
+        gitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
     }
 
     private CsGitlabWebhook saveEvent(CsGitlabInstance instance, GitlabHookVO.Webhook webhook) {
-        OcUser ocUser = ocUserService.queryOcUserByUsername(webhook.getUser_username());
+        OcUser ocUser = userService.queryOcUserByUsername(webhook.getUser_username());
         CsGitlabWebhook csGitlabWebhook = GitlabWebhookBuilder.build(webhook, instance, ocUser);
-        csGitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
+        gitlabWebhookService.addCsGitlabWebhook(csGitlabWebhook);
         return csGitlabWebhook;
     }
 
     protected void consumed(CsGitlabWebhook csGitlabWebhook) {
         csGitlabWebhook.setIsConsumed(true);
-        csGitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
+        gitlabWebhookService.updateCsGitlabWebhook(csGitlabWebhook);
     }
 
     protected boolean isAuthBuild(int projectId) {
@@ -109,7 +109,7 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
                 .businessId(projectId)
                 .tagId(ocTag.getId())
                 .build();
-        return ocBusinessTagService.queryOcBusinessTagByUniqueKey(businessTag) != null;
+        return businessTagService.queryOcBusinessTagByUniqueKey(businessTag) != null;
     }
 
     /**

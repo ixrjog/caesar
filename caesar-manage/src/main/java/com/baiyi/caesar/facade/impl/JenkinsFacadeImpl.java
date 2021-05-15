@@ -3,10 +3,10 @@ package com.baiyi.caesar.facade.impl;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.HashUtil;
-import com.baiyi.caesar.decorator.application.CdJobDecorator;
-import com.baiyi.caesar.decorator.application.CiJobDecorator;
-import com.baiyi.caesar.decorator.jenkins.JenkinsInstanceDecorator;
-import com.baiyi.caesar.decorator.jenkins.JobTplDecorator;
+import com.baiyi.caesar.packer.application.CdJobPacker;
+import com.baiyi.caesar.packer.application.CiJobPacker;
+import com.baiyi.caesar.packer.jenkins.JenkinsInstancePacker;
+import com.baiyi.caesar.packer.jenkins.JobTplDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -52,7 +52,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     private CsJobTplService csJobTplService;
 
     @Resource
-    private JenkinsInstanceDecorator jenkinsInstanceDecorator;
+    private JenkinsInstancePacker jenkinsInstanceDecorator;
 
     @Resource
     private JenkinsServerContainer jenkinsServerContainer;
@@ -70,7 +70,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     private CsCiJobService csCiJobService;
 
     @Resource
-    private CiJobDecorator ciJobDecorator;
+    private CiJobPacker ciJobDecorator;
 
     @Resource
     private CsJobEngineService csJobEngineService;
@@ -82,13 +82,13 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
     private CsCdJobService csCdJobService;
 
     @Resource
-    private CdJobDecorator cdJobDecorator;
+    private CdJobPacker cdJobDecorator;
 
     @Override
     public DataTable<JenkinsInstanceVO.Instance> queryJenkinsInstancePage(JenkinsInstanceParam.JenkinsInstancePageQuery pageQuery) {
         DataTable<CsJenkinsInstance> table = csJenkinsInstanceService.queryCsJenkinsInstanceByParam(pageQuery);
         List<JenkinsInstanceVO.Instance> page = BeanCopierUtil.copyListProperties(table.getData(), JenkinsInstanceVO.Instance.class);
-        return new DataTable<>(page.stream().map(e -> jenkinsInstanceDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> jenkinsInstanceDecorator.wrap(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
@@ -199,7 +199,7 @@ public class JenkinsFacadeImpl implements JenkinsFacade {
         DataTable<CsCiJob> table = csCiJobService.queryCsCiJobByParam(pageQuery);
         List<CiJobVO.CiJob> page = BeanCopierUtil.copyListProperties(table.getData(), CiJobVO.CiJob.class);
         CsJobTpl csJobTpl = csJobTplService.queryCsJobTplById(pageQuery.getJobTplId());
-        return new DataTable<>(page.stream().map(e -> ciJobDecorator.decorator(e, csJobTpl)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> ciJobDecorator.wrap(e, csJobTpl)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

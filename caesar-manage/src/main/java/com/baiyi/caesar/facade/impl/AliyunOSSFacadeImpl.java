@@ -4,7 +4,7 @@ import com.baiyi.caesar.aliyun.oss.handler.AliyunOSSHandler;
 import com.baiyi.caesar.builder.OssBucketBuilder;
 import com.baiyi.caesar.common.base.Global;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.aliyun.OssBucketDecorator;
+import com.baiyi.caesar.packer.aliyun.OssBucketPacker;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsOssBucket;
@@ -31,7 +31,7 @@ public class AliyunOSSFacadeImpl implements AliyunOSSFacade {
     private CsOssBucketService csOssBucketService;
 
     @Resource
-    private OssBucketDecorator ossBucketDecorator;
+    private OssBucketPacker ossBucketDecorator;
 
     @Resource
     private AliyunOSSHandler aliyunOSSHandler;
@@ -40,7 +40,7 @@ public class AliyunOSSFacadeImpl implements AliyunOSSFacade {
     public DataTable<OssBucketVO.Bucket> queryOSSBucketPage(OSSBucketParam.BucketPageQuery pageQuery) {
         DataTable<CsOssBucket> table = csOssBucketService.queryCsOssBucketByParam(pageQuery);
         List<OssBucketVO.Bucket> page = BeanCopierUtil.copyListProperties(table.getData(), OssBucketVO.Bucket.class);
-        return new DataTable<>(page.stream().map(e -> ossBucketDecorator.decorator(e, pageQuery.getExtend())).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> ossBucketDecorator.wrap(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

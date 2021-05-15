@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.impl;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.SSHUtil;
-import com.baiyi.caesar.decorator.keybox.KeyboxDecorator;
+import com.baiyi.caesar.packer.keybox.KeyboxDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;

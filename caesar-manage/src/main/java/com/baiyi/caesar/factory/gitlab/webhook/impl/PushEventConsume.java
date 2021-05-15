@@ -56,7 +56,7 @@ public class PushEventConsume extends BaseGitlabEventConsume implements IGitlabE
         }
         members.forEach(m -> {
             // 查询对应的job
-            List<CsCiJob> ciJobs = csCiJobService.queryCsCiJobByScmMemberIdAndBranch(m.getId(), branch);
+            List<CsCiJob> ciJobs = ciJobService.queryCsCiJobByScmMemberIdAndBranch(m.getId(), branch);
             if (!CollectionUtils.isEmpty(ciJobs)) {
                 ciJobs.forEach(job -> {
                     IBuildJobHandler buildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(job.getJobType());

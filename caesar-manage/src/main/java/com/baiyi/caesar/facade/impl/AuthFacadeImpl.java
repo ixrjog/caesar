@@ -6,8 +6,8 @@ import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.IDUtil;
 import com.baiyi.caesar.common.util.MenuUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
-import com.baiyi.caesar.decorator.auth.ResourceDecorator;
-import com.baiyi.caesar.decorator.auth.UserRoleDecorator;
+import com.baiyi.caesar.packer.auth.ResourcePacker;
+import com.baiyi.caesar.packer.auth.UserRoleDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -62,7 +62,7 @@ public class AuthFacadeImpl implements AuthFacade {
     private OcUserService ocUserService;
 
     @Resource
-    private ResourceDecorator resourceDecorator;
+    private ResourcePacker resourceDecorator;
 
     @Resource
     private OcAuthMenuService ocAuthMenuService;
@@ -135,7 +135,7 @@ public class AuthFacadeImpl implements AuthFacade {
     public DataTable<ResourceVO.Resource> queryResourcePage(ResourceParam.PageQuery pageQuery) {
         DataTable<OcAuthResource> table = ocAuthResourceService.queryOcAuthResourceByParam(pageQuery);
         List<ResourceVO.Resource> page = BeanCopierUtil.copyListProperties(table.getData(), ResourceVO.Resource.class);
-        return new DataTable<>(page.stream().map(e -> resourceDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> resourceDecorator.wrap(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override
@@ -231,7 +231,7 @@ public class AuthFacadeImpl implements AuthFacade {
     public DataTable<UserRoleVO.UserRole> queryUserRolePage(UserRoleParam.PageQuery pageQuery) {
         DataTable<OcAuthUserRole> table = ocAuthUserRoleService.queryOcAuthUserRoleByParam(pageQuery);
         List<UserRoleVO.UserRole> page = BeanCopierUtil.copyListProperties(table.getData(), UserRoleVO.UserRole.class);
-        return new DataTable<>(page.stream().map(e -> userRoleDecorator.decorator(e)).collect(Collectors.toList()), table.getTotalNum());
+        return new DataTable<>(page.stream().map(e -> userRoleDecorator.wrap(e)).collect(Collectors.toList()), table.getTotalNum());
     }
 
     @Override

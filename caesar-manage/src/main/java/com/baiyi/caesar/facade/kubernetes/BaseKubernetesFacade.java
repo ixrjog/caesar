@@ -1,7 +1,7 @@
 package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.kubernetes.KubernetesApplicationInstanceDecorator;
+import com.baiyi.caesar.packer.kubernetes.KubernetesApplicationInstanceDecorator;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplication;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesCluster;

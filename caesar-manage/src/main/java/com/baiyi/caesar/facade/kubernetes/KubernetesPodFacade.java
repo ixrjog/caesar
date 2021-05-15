@@ -2,7 +2,7 @@ package com.baiyi.caesar.facade.kubernetes;
 
 import com.baiyi.caesar.builder.kubernetes.KubernetesPodBuilder;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
-import com.baiyi.caesar.decorator.server.ServerDecorator;
+import com.baiyi.caesar.packer.server.ServerDecorator;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesApplicationInstance;
 import com.baiyi.caesar.domain.generator.caesar.OcKubernetesCluster;
