@@ -1,6 +1,7 @@
 package com.baiyi.caesar.factory.gitlab.webhook.impl;
 
 import com.baiyi.caesar.common.base.GitlabEventType;
+import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.factory.jenkins.BuildJobHandlerFactory;
@@ -61,16 +62,18 @@ public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitl
 
     private void consumer(CsApplicationScmMember scmMember, CsGitlabWebhook csGitlabWebhook, String tag) {
         // 查询对应的job
-        List<CsCiJob> jobs = csCiJobService.queryCsCiJobByScmMemberId(scmMember.getId());
+        List<CsCiJob> jobs = ciJobService.queryCsCiJobByScmMemberId(scmMember.getId());
         if (!CollectionUtils.isEmpty(jobs)) {
             for (CsCiJob job : jobs) {
-                log.info("Gitlab Event Consume: eventId = {} , jobId = {}!", csGitlabWebhook.getId(),job.getId());
-                IBuildJobHandler buildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(job.getJobType());
-                buildJobHandler.build(job, csGitlabWebhook.getUsername(), tag);
-                csGitlabWebhook.setIsConsumed(true);
-                csGitlabWebhook.setIsTrigger(true);
-                csGitlabWebhook.setJobKey(job.getJobKey());
-                updateEvent(csGitlabWebhook);
+                if (JobTypeEnum.ANDROID_AAR.getType().equals(job.getJobType())) {
+                    log.info("Gitlab Event Consume: eventId = {} , jobId = {}!", csGitlabWebhook.getId(), job.getId());
+                    IBuildJobHandler buildJobHandler = BuildJobHandlerFactory.getBuildJobByKey(job.getJobType());
+                    buildJobHandler.build(job, csGitlabWebhook.getUsername(), tag);
+                    csGitlabWebhook.setIsConsumed(true);
+                    csGitlabWebhook.setIsTrigger(true);
+                    csGitlabWebhook.setJobKey(job.getJobKey());
+                    updateEvent(csGitlabWebhook);
+                }
             }
         }
     }
