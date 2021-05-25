@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -55,13 +56,21 @@ public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitl
             log.info("Gitlab Event Consume Error: eventId = {} 无可消费目标(scmMember)!", csGitlabWebhook.getId());
             return;
         }
+        boolean isConsumer = false;
         for (CsApplicationScmMember scmMember : scmMembers) {
-            consumer(scmMember, csGitlabWebhook, tag);
+            if (consumer(scmMember, csGitlabWebhook, tag))
+                isConsumer = true;
         }
+        if (isConsumer)
+            try {
+                gitlabBranchHandler.createBranch(gitlabInstance.getName(), csGitlabProject.getProjectId(), "master", "feature/" + tag);
+            } catch (IOException ignored) {
+            }
     }
 
-    private void consumer(CsApplicationScmMember scmMember, CsGitlabWebhook csGitlabWebhook, String tag) {
+    private boolean consumer(CsApplicationScmMember scmMember, CsGitlabWebhook csGitlabWebhook, String tag) {
         // 查询对应的job
+        boolean result = false;
         List<CsCiJob> jobs = ciJobService.queryCsCiJobByScmMemberId(scmMember.getId());
         if (!CollectionUtils.isEmpty(jobs)) {
             for (CsCiJob job : jobs) {
@@ -73,8 +82,10 @@ public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitl
                     csGitlabWebhook.setIsTrigger(true);
                     csGitlabWebhook.setJobKey(job.getJobKey());
                     updateEvent(csGitlabWebhook);
+                    result = true;
                 }
             }
         }
+        return result;
     }
 }
