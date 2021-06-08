@@ -91,6 +91,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
         }
         // 模版变量
         Map<String, Object> contentMap = buildTemplateContent(noticePhase, context);
+        beforeEvent(context, contentMap);
         try {
             CsDingtalk csDingtalk = csDingtalkService.queryCsDingtalkById(context.getCsCiJob().getDingtalkId());
             DingtalkContent dingtalkContent = DingtalkContent.builder()
@@ -100,6 +101,10 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
             dingtalkHandler.doNotify(dingtalkContent);
         } catch (IOException ignored) {
         }
+    }
+
+    protected void beforeEvent(BuildJobContext context, Map<String, Object> contentMap) {
+
     }
 
     private String buildWebHook(CsDingtalk csDingtalk) {
@@ -184,7 +189,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
                 .paramEntryByBuildNumber(context.getJobBuild().getJobBuildNumber())
                 .paramEntryByBranch(context.getJobBuild().getBranch())
                 .paramEntryByCommit(context.getJobBuild().getCommit(), 7)
-                .paramEntryByCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(),"-","commit",context.getJobBuild().getCommit()))
+                .paramEntryByCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(), "-", "commit", context.getJobBuild().getCommit()))
                 .paramEntryByUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
                 .paramEntryByChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
                 .paramEntryByBuildStatus(noticePhase == NoticePhase.END.getType() ? context.getJobBuild().getBuildStatus() : null)

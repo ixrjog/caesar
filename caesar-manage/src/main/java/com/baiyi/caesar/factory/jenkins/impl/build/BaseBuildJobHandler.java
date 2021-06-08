@@ -285,7 +285,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
                 .paramEntry(SSH_URL, csApplicationScmMember != null ? csApplicationScmMember.getScmSshUrl() : null)
                 .paramEntry(BRANCH, csCiJob.getBranch())
                 .paramEntry(APPLICATION_NAME, csApplication.getApplicationKey())
-                .paramEntry(BUCKET_NAME, csOssBucket.getName())
+                .paramEntry(BUCKET_NAME, csOssBucket != null ? csOssBucket.getName() : null)
                 .paramEntry(ENV, envFacade.queryEnvNameByType(csCiJob.getEnvType()))
                 .paramEntry(JOB_BUILD_NUMBER, String.valueOf(csCiJob.getJobBuildNumber()))
                 .build();
