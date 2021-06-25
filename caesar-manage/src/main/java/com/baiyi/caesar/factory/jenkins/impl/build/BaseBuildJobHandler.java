@@ -262,6 +262,8 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
 
     protected JobParametersContext buildJobParametersContext(CsCiJob buildJob, JobBuildParam.BuildParam buildParam) {
         JobParametersContext context = buildJobParametersContext(buildJob);
+        // 注入环境变量
+        context.getParams().put(ENV, envFacade.queryEnvNameByType(buildJob.getEnvType()));
         if (!StringUtils.isEmpty(buildParam.getBranch()))
             context.getParams().put(BRANCH, buildParam.getBranch());
         // 回滚
