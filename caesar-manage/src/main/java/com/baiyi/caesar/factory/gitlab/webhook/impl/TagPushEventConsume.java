@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -61,11 +60,11 @@ public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitl
             if (consumer(scmMember, csGitlabWebhook, tag))
                 isConsumer = true;
         }
-        if (isConsumer)
-            try {
-                gitlabBranchHandler.createBranch(gitlabInstance.getName(), csGitlabProject.getProjectId(), "master", "feature/" + tag);
-            } catch (IOException ignored) {
-            }
+//        if (isConsumer)
+//            try {
+//                gitlabBranchHandler.createBranch(gitlabInstance.getName(), csGitlabProject.getProjectId(), "master", "feature/" + tag);
+//            } catch (IOException ignored) {
+//            }
     }
 
     private boolean consumer(CsApplicationScmMember scmMember, CsGitlabWebhook csGitlabWebhook, String tag) {
