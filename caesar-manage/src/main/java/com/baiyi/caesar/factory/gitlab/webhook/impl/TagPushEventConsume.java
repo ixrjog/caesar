@@ -55,11 +55,11 @@ public class TagPushEventConsume extends BaseGitlabEventConsume implements IGitl
             log.info("Gitlab Event Consume Error: eventId = {} 无可消费目标(scmMember)!", csGitlabWebhook.getId());
             return;
         }
-        boolean isConsumer = false;
-        for (CsApplicationScmMember scmMember : scmMembers) {
-            if (consumer(scmMember, csGitlabWebhook, tag))
-                isConsumer = true;
-        }
+       // boolean isConsumer = false;
+       // for (CsApplicationScmMember scmMember : scmMembers) {
+       //     if (consumer(scmMember, csGitlabWebhook, tag))
+       //         isConsumer = true;
+       //  }
 //        if (isConsumer)
 //            try {
 //                gitlabBranchHandler.createBranch(gitlabInstance.getName(), csGitlabProject.getProjectId(), "master", "feature/" + tag);
