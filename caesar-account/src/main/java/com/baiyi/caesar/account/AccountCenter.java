@@ -69,10 +69,9 @@ public class AccountCenter implements InitializingBean {
             loginVO.setUuid(ocUser.getUuid());
             loginVO.setToken(token);
             authBaseFacade.setOcUserPassword(ocUser, loginParam.getPassword());
-            initialUser(ocUser);
-            return new BusinessWrapper(loginVO);
+            return new BusinessWrapper<>(loginVO);
         } else {
-            return new BusinessWrapper(ErrorEnum.USER_LOGIN_FAILUER);
+            return new BusinessWrapper<>(ErrorEnum.USER_LOGIN_FAILUER);
         }
     }
 
@@ -90,22 +89,10 @@ public class AccountCenter implements InitializingBean {
     private BusinessWrapper<OcUser> getLoginUser(PersonCredential credential) {
         OcUser ocUser = ocUserService.queryOcUserByUsername(credential.getUsername());
         if (ocUser == null)
-            return new BusinessWrapper(ErrorEnum.USER_NOT_EXIST);
+            return new BusinessWrapper<>(ErrorEnum.USER_NOT_EXIST);
         if (!ocUser.getIsActive())
-            return new BusinessWrapper(ErrorEnum.ACCOUNT_IS_DISABLE);
+            return new BusinessWrapper<>(ErrorEnum.ACCOUNT_IS_DISABLE);
         return new BusinessWrapper<>(ocUser);
-    }
-
-    /**
-     * 登录初始化
-     *
-     * @param ocUser
-     */
-    private void initialUser(OcUser ocUser) {
-        try {
-            AccountFactory.getAccountByKey("JumpserverAccount").pushSSHKey(ocUser);
-        } catch (Exception ignored) {
-        }
     }
 
     public Boolean create(String key, OcUser user) {

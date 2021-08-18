@@ -7,17 +7,17 @@
 
 spring:
   ldap:
-    urls: ldap://ldap.xinc818.com:1389
-    base: dc=xincheng,dc=org
+    urls: ldap://47.99.124.140:1389
+    base: dc=befriend,dc=com
     username: 'cn=Directory Manager'
-    password: ENC(QXDPnj4ptUmTrjHXK9f0OAUqcMQYF53X9NnK51Q0CxfhyHQakqKZAO2VUYdIkNuj)
+    password: ENC(ZGq/N+XhylNDRX6o71hwREAgirs4sq5Qbm1cRITFART7jkIyzhwGuym0XW0yiAP1)
 
 
 ldap:
   custom:  {
             # 用户 RDN Key uid | cn
             userId: cn,
-            userBaseDN: ou=Users,
+            userBaseDN: ou=People,
             # 用户对象属性
             userObjectClass: inetOrgPerson,
             # 用户组 RDN Key uid | cn

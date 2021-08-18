@@ -28,7 +28,7 @@ spring:
       - aliyun-core
       - sonar-prod
   redis:
-    host: r-bp11vlmf4cijpn4s1d.redis.rds.aliyuncs.com
+    host: r-bp1hreajj46mots714.redis.rds.aliyuncs.com
     port: 6379
     password: ENC(4R1OwE95Fqmj5TlYcEYeraEDnKzQLZTL52EAGOn675QoaSTE1DQjMg==)
     jedis:
@@ -43,7 +43,7 @@ spring:
 app:
   datasource:
     caesar:
-      url: jdbc:mysql://rm-bp14453fwr49f19cu90130.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
+      url: jdbc:mysql://rm-bp16kam24c4b7pvpy88250.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
       username: caesar
       password: ENC(YSUGOIVnK0sShxj8Lux/D6W6nX75uXGvdDxD/KbJb4o=)
       driver-class-name: com.mysql.cj.jdbc.Driver

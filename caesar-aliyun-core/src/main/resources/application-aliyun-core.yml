@@ -3,11 +3,11 @@
 # regionIds 数组可以写多个
 aliyun:
   account:
-    uid: 1820460406678463
+    uid: 276490728501140772
     master: true
     name: '主账户'
-    accessKeyId: LTAI4G9LMmkjrHZbhs43aKNh
-    secret: ENC(+b3GIgf1S+HA8PkoSL1XkGBjApnIuwytNBtpGbJR4fShUs8hCmgenQ==)
+    accessKeyId: LTAI5tCjchF9xHLsbFgnxSL2
+    secret: ENC(FIWKkziKzSehzGy9aJmQ8aBAqeV2cp20Iat21wkaWoU8agR+PS9p0A==)
     regionId: cn-hangzhou
     regionIds:
       - cn-hangzhou
