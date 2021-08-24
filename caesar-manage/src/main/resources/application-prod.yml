@@ -12,7 +12,7 @@ white:
 caesar:
   version: 1.0.1
   openTask: true
-  url: https://caesar.xinc818.com
+  url: https://caesar.jinweihaowu.com
 
 spring:
   profiles:
@@ -30,7 +30,7 @@ spring:
   redis:
     host: r-bp1hreajj46mots714.redis.rds.aliyuncs.com
     port: 6379
-    password: ENC(4R1OwE95Fqmj5TlYcEYeraEDnKzQLZTL52EAGOn675QoaSTE1DQjMg==)
+    password: ENC(MLby+66v/YuFf/qp9/UY/hxdNNLKEzB4PL5DSIyWAQY=)
     jedis:
       pool:
         max-wait: 5000
@@ -45,7 +45,7 @@ app:
     caesar:
       url: jdbc:mysql://rm-bp16kam24c4b7pvpy88250.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
       username: caesar
-      password: ENC(YSUGOIVnK0sShxj8Lux/D6W6nX75uXGvdDxD/KbJb4o=)
+      password: ENC(7+x4iUCRumd8U0CjIkww/136i2ttodwTr5JJQDwqEcc=)
       driver-class-name: com.mysql.cj.jdbc.Driver
       minimum-idle: 3
       maximum-pool-size: 15
