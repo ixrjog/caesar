@@ -49,8 +49,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.baiyi.caesar.common.base.Build.*;
-import static com.baiyi.caesar.common.base.Global.BRANCH;
-import static com.baiyi.caesar.common.base.Global.EXTEND;
+import static com.baiyi.caesar.common.base.Global.*;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_DISABLE;
 import static com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler.HOST_STATUS_ENABLE;
 
@@ -266,6 +265,13 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         context.getParams().put(ENV, envFacade.queryEnvNameByType(buildJob.getEnvType()));
         if (!StringUtils.isEmpty(buildParam.getBranch()))
             context.getParams().put(BRANCH, buildParam.getBranch());
+
+        CsGitlabProject csGitlabProject = acqGitlabProjectByScmMemberId(buildJob.getScmMemberId());
+        GitlabBranch gitlabBranch = acqGitlabBranch(csGitlabProject, context.getParams().get(BRANCH));
+        String commitId = "00000000";
+        if (gitlabBranch.getCommit() != null)
+            commitId = gitlabBranch.getCommit().getId().substring(0, 8);
+        context.getParams().put(COMMIT_ID, commitId);
         // 回滚
         if (buildParam.getIsRollback() != null && buildParam.getIsRollback()) {
             context.setIsRollback(true);

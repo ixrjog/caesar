@@ -43,4 +43,6 @@ public class Global {
 
     public static final String BRANCH = "branch";
 
+    public static final String COMMIT_ID = "commitId";
+
 }
