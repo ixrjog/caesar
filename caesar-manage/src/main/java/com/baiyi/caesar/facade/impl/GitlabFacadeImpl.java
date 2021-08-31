@@ -126,7 +126,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private CsGitlabWebhookService gitlabWebhookService;
 
-    public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "daily", "gray"};
+    public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "test", "uat", "gray"};
 
     public static final String DEFAULT_REF_BRANCH = "master";
 
@@ -411,7 +411,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Override
     public DataTable<GitlabEventVO.Event> queryGitlabEventPage(GitlabEventParam.GitlabEventPageQuery pageQuery) {
         DataTable<CsGitlabWebhook> table = gitlabWebhookService.queryCsGitlabWebhookByParam(pageQuery);
-        return gitalbEventWarp.wrap(table,pageQuery);
+        return gitalbEventWarp.wrap(table, pageQuery);
     }
 
 }
