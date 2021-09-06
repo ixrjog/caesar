@@ -269,7 +269,7 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         CsGitlabProject csGitlabProject = acqGitlabProjectByScmMemberId(buildJob.getScmMemberId());
         GitlabBranch gitlabBranch = acqGitlabBranch(csGitlabProject, context.getParams().get(BRANCH));
         String commitId = "00000000";
-        if (gitlabBranch.getCommit() != null)
+        if (gitlabBranch != null && gitlabBranch.getCommit() != null)
             commitId = gitlabBranch.getCommit().getId().substring(0, 8);
         context.getParams().put(COMMIT_ID, commitId);
         // 回滚
