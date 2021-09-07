@@ -105,8 +105,8 @@ public class PushEventConsume extends BaseGitlabEventConsume implements IGitlabE
 
     @Override
     protected void doNotify(GitlabHookVO.Webhook webhook) {
-//        if ("ops".equals(webhook.getProject().getNamespace()))
-//            return;
+        if ("ops".equals(webhook.getProject().getNamespace()))
+            return;
         CsDingtalkTemplate csDingtalkTemplate = csDingtalkTemplateService.queryCsDingtalkTemplateByUniqueKey("GITLAB_PUSH_EVENT", 0, 0);
         // 模版变量
         Map<String, Object> contentMap = buildTemplateContent(webhook);
