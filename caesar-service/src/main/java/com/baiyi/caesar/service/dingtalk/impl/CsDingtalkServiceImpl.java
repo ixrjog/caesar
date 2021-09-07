@@ -2,12 +2,14 @@ package com.baiyi.caesar.service.dingtalk.impl;
 
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.generator.caesar.CsDingtalk;
+import com.baiyi.caesar.domain.generator.caesar.CsDingtalkTemplate;
 import com.baiyi.caesar.domain.param.dingtalk.DingtalkParam;
 import com.baiyi.caesar.mapper.caesar.CsDingtalkMapper;
 import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,9 +27,17 @@ public class CsDingtalkServiceImpl implements CsDingtalkService {
 
     @Override
     public DataTable<CsDingtalk> queryCsDingtalkByParam(DingtalkParam.DingtalkPageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsDingtalk> list = csDingtalkMapper.queryCsDingtalkByParam(pageQuery);
         return new DataTable<>(list, page.getTotal());
+    }
+
+    @Override
+    public CsDingtalk getByName(String name) {
+        Example example = new Example(CsDingtalk.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("name", name);
+        return csDingtalkMapper.selectOneByExample(example);
     }
 
     @Override

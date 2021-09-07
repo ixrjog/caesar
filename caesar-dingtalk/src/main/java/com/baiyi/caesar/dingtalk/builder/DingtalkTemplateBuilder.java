@@ -4,11 +4,16 @@ import com.baiyi.caesar.domain.generator.caesar.CsJobBuildChange;
 import com.baiyi.caesar.domain.generator.caesar.CsJobBuildServer;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcUser;
+import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author baiyi
@@ -26,6 +31,7 @@ public class DingtalkTemplateBuilder {
     public static final String BUILD_NUMBER = "buildNumber";
     public static final String BRANCH = "branch";
     public static final String COMMIT = "commit";
+    public static final String COMMITS = "commits";
 
     public static final String COMMIT_URL = "commitUrl";
 
@@ -173,8 +179,21 @@ public class DingtalkTemplateBuilder {
     }
 
     public DingtalkTemplateBuilder paramEntry(String paramName, String value) {
-        if (!StringUtils.isEmpty(value))
+        if (StringUtils.isNotEmpty(value))
             templateMap.putContent(paramName, value);
+        return this;
+    }
+
+    public DingtalkTemplateBuilder paramEntry(String paramName, Object value) {
+        if (ObjectUtils.isNotEmpty(value))
+            templateMap.putContent(paramName, value);
+        return this;
+    }
+
+    public DingtalkTemplateBuilder paramEntryByCommits(List<GitlabHookVO.Commits> commits) {
+        if (!CollectionUtils.isEmpty(commits)) {
+            templateMap.putContent(COMMITS, commits.stream().peek(x -> x.setId(x.getId().substring(0, 7))).collect(Collectors.toList()));
+        }
         return this;
     }
 

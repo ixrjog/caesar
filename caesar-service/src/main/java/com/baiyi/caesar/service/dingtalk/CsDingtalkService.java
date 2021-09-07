@@ -15,6 +15,8 @@ public interface CsDingtalkService {
 
     CsDingtalk queryCsDingtalkById(int id);
 
+    CsDingtalk getByName(String name);
+
     void addCsDingtalk(CsDingtalk csDingtalk);
 
     void updateCsDingtalk(CsDingtalk csDingtalk);

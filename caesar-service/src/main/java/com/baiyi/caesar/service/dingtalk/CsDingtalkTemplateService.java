@@ -9,7 +9,7 @@ import com.baiyi.caesar.domain.generator.caesar.CsDingtalkTemplate;
  */
 public interface CsDingtalkTemplateService {
 
-    CsDingtalkTemplate queryCsDingtalkTemplateByUniqueKey(String jobType, int noticeType,int noticePhase);
+    CsDingtalkTemplate queryCsDingtalkTemplateByUniqueKey(String jobType, int noticeType, int noticePhase);
 
     void addCsDingtalkTemplate(CsDingtalkTemplate csDingtalkTemplate);
 

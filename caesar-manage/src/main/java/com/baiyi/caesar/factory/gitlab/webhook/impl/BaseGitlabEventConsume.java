@@ -2,6 +2,8 @@ package com.baiyi.caesar.factory.gitlab.webhook.impl;
 
 import com.baiyi.caesar.builder.gitlab.GitlabWebhookBuilder;
 import com.baiyi.caesar.common.util.GitlabUtil;
+import com.baiyi.caesar.dingtalk.config.DingtalkConfig;
+import com.baiyi.caesar.dingtalk.handler.DingtalkHandler;
 import com.baiyi.caesar.domain.base.BusinessType;
 import com.baiyi.caesar.domain.generator.caesar.*;
 import com.baiyi.caesar.domain.vo.gitlab.GitlabHookVO;
@@ -9,6 +11,8 @@ import com.baiyi.caesar.domain.vo.tag.BusinessTagVO;
 import com.baiyi.caesar.factory.gitlab.webhook.GitlabEventConsumeFactory;
 import com.baiyi.caesar.factory.gitlab.webhook.IGitlabEventConsume;
 import com.baiyi.caesar.service.application.CsApplicationScmMemberService;
+import com.baiyi.caesar.service.dingtalk.CsDingtalkService;
+import com.baiyi.caesar.service.dingtalk.CsDingtalkTemplateService;
 import com.baiyi.caesar.service.gitlab.CsGitlabInstanceService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
 import com.baiyi.caesar.service.gitlab.CsGitlabWebhookService;
@@ -17,6 +21,7 @@ import com.baiyi.caesar.service.tag.OcBusinessTagService;
 import com.baiyi.caesar.service.tag.OcTagService;
 import com.baiyi.caesar.service.user.OcUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -71,7 +76,11 @@ public abstract class BaseGitlabEventConsume implements IGitlabEventConsume, Ini
             return;
         CsGitlabWebhook csGitlabWebhook = saveEvent(instance, webhook);
         log.info("GitlabEvent: id = {}", csGitlabWebhook.getId());
-        this.consume(csGitlabWebhook);
+        consume(csGitlabWebhook);
+        doNotify(webhook);
+    }
+
+    protected void doNotify(GitlabHookVO.Webhook webhook){
     }
 
     abstract protected void consume(CsGitlabWebhook csGitlabWebhook);
