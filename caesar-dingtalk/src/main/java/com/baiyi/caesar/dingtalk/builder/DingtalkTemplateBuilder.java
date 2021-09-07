@@ -192,7 +192,7 @@ public class DingtalkTemplateBuilder {
 
     public DingtalkTemplateBuilder paramEntryByCommits(List<GitlabHookVO.Commits> commits) {
         if (!CollectionUtils.isEmpty(commits)) {
-            templateMap.putContent(COMMITS, commits.stream().peek(x -> x.setId(x.getId().substring(0, 7))).collect(Collectors.toList()));
+            templateMap.putContent(COMMITS, commits.stream().peek(x -> x.setId(x.getId().substring(0, 8))).collect(Collectors.toList()));
         }
         return this;
     }

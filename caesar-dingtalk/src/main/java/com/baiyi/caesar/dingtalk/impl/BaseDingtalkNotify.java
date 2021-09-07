@@ -188,7 +188,7 @@ public abstract class BaseDingtalkNotify implements IDingtalkNotify, Initializin
                 .paramEntryByConsoleUrl(context.getJobBuild().getJobBuildUrl())
                 .paramEntryByBuildNumber(context.getJobBuild().getJobBuildNumber())
                 .paramEntryByBranch(context.getJobBuild().getBranch())
-                .paramEntryByCommit(context.getJobBuild().getCommit(), 7)
+                .paramEntryByCommit(context.getJobBuild().getCommit(), 8)
                 .paramEntryByCommitUrl(Joiner.on("/").join(context.getCsGitlabProject().getWebUrl(), "-", "commit", context.getJobBuild().getCommit()))
                 .paramEntryByUsers(acqAtUsers(ocUser, context.getCsApplication().getId(), context.getCsCiJob()))
                 .paramEntryByChanges(noticePhase == NoticePhase.END.getType() ? acqChanges(BuildType.BUILD.getType(), context.getJobBuild().getId()) : null)
