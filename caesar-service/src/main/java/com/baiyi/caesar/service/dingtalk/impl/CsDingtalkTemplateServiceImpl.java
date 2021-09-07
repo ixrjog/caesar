@@ -20,12 +20,12 @@ public class CsDingtalkTemplateServiceImpl implements CsDingtalkTemplateService 
     private CsDingtalkTemplateMapper csDingtalkTemplateMapper;
 
     @Override
-    public CsDingtalkTemplate queryCsDingtalkTemplateByUniqueKey(String jobType, int noticeType,int noticePhase) {
+    public CsDingtalkTemplate queryCsDingtalkTemplateByUniqueKey(String jobType, int noticeType, int noticePhase) {
         Example example = new Example(CsDingtalkTemplate.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("jobType", jobType);
         criteria.andEqualTo("noticeType", noticeType);
-        criteria.andEqualTo("noticePhase",noticePhase);
+        criteria.andEqualTo("noticePhase", noticePhase);
         return csDingtalkTemplateMapper.selectOneByExample(example);
     }
 
