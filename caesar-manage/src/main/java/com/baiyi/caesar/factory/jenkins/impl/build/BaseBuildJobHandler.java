@@ -281,7 +281,6 @@ public abstract class BaseBuildJobHandler implements IBuildJobHandler, Initializ
         }
         return context;
     }
-    
 
     private JobParametersContext buildJobParametersContext(CsCiJob csCiJob) {
         CsApplication csApplication = queryApplicationById(csCiJob.getApplicationId());
