@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -192,7 +193,10 @@ public class DingtalkTemplateBuilder {
 
     public DingtalkTemplateBuilder paramEntryByCommits(List<GitlabHookVO.Commits> commits) {
         if (!CollectionUtils.isEmpty(commits)) {
-            List<GitlabHookVO.Commits> commitsList = commits.stream().peek(x -> x.setId(x.getId().substring(0, 8))).collect(Collectors.toList());
+            List<GitlabHookVO.Commits> commitsList = commits.stream()
+                    .peek(x -> x.setId(x.getId().substring(0, 8)))
+                    .sorted(Comparator.comparing(GitlabHookVO.Commits::getTimestamp).reversed())
+                    .collect(Collectors.toList());
             Collections.reverse(commitsList);
             templateMap.putContent(COMMITS, commitsList);
         }
