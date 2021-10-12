@@ -64,6 +64,11 @@
 
         <dependency>
             <groupId>com.baiyi</groupId>
+            <artifactId>caesar-aliyun-cr</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baiyi</groupId>
             <artifactId>caesar-sonar</artifactId>
         </dependency>
 

@@ -26,7 +26,7 @@ public class CsOssBucketServiceImpl implements CsOssBucketService {
 
     @Override
     public DataTable<CsOssBucket> queryCsOssBucketByParam(OSSBucketParam.BucketPageQuery pageQuery) {
-        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength().intValue());
+        Page page = PageHelper.startPage(pageQuery.getPage(), pageQuery.getLength());
         List<CsOssBucket> data = csOssBucketMapper.queryCsOssBucketByParam(pageQuery);
         return new DataTable<>(data, page.getTotal());
     }

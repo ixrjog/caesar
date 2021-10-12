@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiyi.caesar.mapper.caesar.CsAliyunCrInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.baiyi.caesar.domain.generator.caesar.CsAliyunCrInstance">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="region_id" jdbcType="VARCHAR" property="regionId" />
+    <result column="instance_name" jdbcType="VARCHAR" property="instanceName" />
+    <result column="instance_id" jdbcType="VARCHAR" property="instanceId" />
+    <result column="is_active" jdbcType="BIT" property="isActive" />
+    <result column="internet_endpoint" jdbcType="VARCHAR" property="internetEndpoint" />
+    <result column="intranet_endpoint" jdbcType="VARCHAR" property="intranetEndpoint" />
+    <result column="vpc_endpoint" jdbcType="VARCHAR" property="vpcEndpoint" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+    <select id="csAliyunCrInstancePageQuery" parameterType="com.baiyi.caesar.domain.param.aliyun.CrParam$InstancePageQuery" resultMap="BaseResultMap">
+        select * from cs_aliyun_cr_instance
+        <where>
+            <if test="queryName != null and queryName != ''">
+                instance_name like "%" #{queryName} "%"
+            </if>
+            <if test="isActive != null">
+                and is_active = #{isActive}
+            </if>
+        </where>
+        order by is_active desc
+    </select>
+</mapper>

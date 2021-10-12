@@ -90,35 +90,36 @@
          -->
 
         <!--
-cs_jenkins_instance
-cs_gitlab_instance
-cs_gitlab_project
-cs_application
-cs_application_scm_member
-cs_application_engine
-cs_application
-cs_job_tpl
-cs_dingtalk
-cs_ci_job
-cs_oss_bucket
-cs_ci_job_engine
-cs_ci_job_build
-cs_ci_job_build_artifact
-cs_ci_job_build_change
-cs_ci_job_build_executor
-cs_dingtalk_template
-cs_cd_job
-cs_job_build_artifact
-cs_cd_job_build
-cs_job_build_change
-cs_instance
-cs_gitlab_webhook
-cs_gitlab_group
-cs_announcement
-cs_block_platform
+            cs_jenkins_instance
+            cs_gitlab_instance
+            cs_gitlab_project
+            cs_application
+            cs_application_scm_member
+            cs_application_engine
+            cs_application
+            cs_job_tpl
+            cs_dingtalk
+            cs_ci_job
+            cs_oss_bucket
+            cs_ci_job_engine
+            cs_ci_job_build
+            cs_ci_job_build_artifact
+            cs_ci_job_build_change
+            cs_ci_job_build_executor
+            cs_dingtalk_template
+            cs_cd_job
+            cs_job_build_artifact
+            cs_cd_job_build
+            cs_job_build_change
+            cs_instance
+            cs_gitlab_webhook
+            cs_gitlab_group
+            cs_announcement
+            cs_block_platform
+            cs_aliyun_cr_instance
        -->
 
-        <table tableName="cs_dingtalk">
+        <table tableName="cs_aliyun_cr_instance">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
