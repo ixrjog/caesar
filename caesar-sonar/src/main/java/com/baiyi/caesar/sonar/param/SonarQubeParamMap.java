@@ -13,6 +13,7 @@ import java.util.Map;
  */
 @Data
 public class SonarQubeParamMap {
+
     private Map<String, String> params = Maps.newHashMap();
 
     public void putParam(String key, String value) {
