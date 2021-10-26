@@ -1,8 +1,8 @@
 package com.baiyi.caesar.facade;
 
-import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.domain.generator.caesar.OcEnv;
 import com.baiyi.caesar.domain.generator.caesar.OcServer;
+import com.baiyi.caesar.domain.vo.env.EnvVO;
 import com.baiyi.caesar.domain.vo.server.ServerVO;
 import com.baiyi.caesar.service.env.OcEnvService;
 import com.google.common.base.Joiner;
@@ -31,10 +31,20 @@ public class ServerBaseFacade {
      * @return
      */
     public static String acqServerName(ServerVO.Server server) {
-        if(server.getEnv() == null){
-            return acqServerName(BeanCopierUtil.copyProperties(server, OcServer.class));
-        }else{
-            return acqServerName(BeanCopierUtil.copyProperties(server, OcServer.class), BeanCopierUtil.copyProperties(server.getEnv(),OcEnv.class));
+        EnvVO.Env env = server.getEnv();
+        if (env == null) {
+            OcEnv ocEnv = ocEnvService.queryOcEnvByType(server.getEnvType());
+            if (ocEnv == null || ocEnv.getEnvName().equals("prod")) {
+                return Joiner.on("-").join(server.getName(), server.getSerialNumber());
+            } else {
+                return Joiner.on("-").join(server.getName(), ocEnv.getEnvName(), server.getSerialNumber());
+            }
+        } else {
+            if (env == null || env.getEnvName().equals("prod")) {
+                return Joiner.on("-").join(server.getName(), server.getSerialNumber());
+            } else {
+                return Joiner.on("-").join(server.getName(), env.getEnvName(), server.getSerialNumber());
+            }
         }
     }
 

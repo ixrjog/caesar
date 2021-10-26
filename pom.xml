@@ -21,6 +21,7 @@
         <module>caesar-aliyun-oss</module>
         <module>caesar-aliyun-core</module>
         <module>caesar-sonar</module>
+        <module>caesar-opscloud4</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -238,6 +239,12 @@
             <dependency>
                 <groupId>com.baiyi</groupId>
                 <artifactId>caesar-sonar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baiyi</groupId>
+                <artifactId>caesar-opscloud4</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

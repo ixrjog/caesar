@@ -6,6 +6,12 @@ opscloud:
   tokenId: kzThhJusUm6AE7LXT3ih
   apiToken: ENC(eMFM5Ka/WeZ52vq9HHMmJ06w74AXjR/qb9sawXOB0sk=)
 
+opscloud4:
+    url: https://oc4.xinc818.com
+    tokenId: 1da19cc1cedb4eb69037303c16310cc2
+    accessToken: ENC(rbUVoNfTDiVnNn1uu5e3zXux+aZqRKelDxtfMzjYd0KwjP6z7zsXCYBAr6uq1yOc)
+
+
 oc-server-attributes:
   groups:
     -
