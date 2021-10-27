@@ -1,7 +1,9 @@
 package com.baiyi.caesar.opscloud4.service;
 
 import com.baiyi.caesar.common.config.Opscloud4Config;
+import com.baiyi.caesar.domain.param.application.ApplicationParam;
 import com.baiyi.caesar.opscloud4.feign.Opscloud4ServerGroupFeign;
+import com.baiyi.caesar.opscloud4.model.ServerGroupModel;
 import com.baiyi.caesar.opscloud4.model.ServerModel;
 import com.baiyi.caesar.opscloud4.param.ServerGroupParam;
 import feign.Feign;
@@ -36,6 +38,12 @@ public class Opscloud4ServerGroupService {
     public Map<String, List<ServerModel.Server>> queryServerGroupHostPattern(ServerGroupParam.ServerGroupEnvHostPatternQuery query) {
         Opscloud4ServerGroupFeign oc4API = buildFeign();
         ServerModel.HttpResult httpResult = oc4API.queryServerGroupHostPattern(opscloud4Config.getAccessToken(), query);
+        return httpResult.getBody();
+    }
+
+    public ServerGroupModel.DataTable queryServerGroupPage(ApplicationParam.ServerGroupPageQuery query){
+        Opscloud4ServerGroupFeign oc4API = buildFeign();
+        ServerGroupModel.HttpResult httpResult = oc4API.queryServerGroupPage(opscloud4Config.getAccessToken(), query);
         return httpResult.getBody();
     }
 

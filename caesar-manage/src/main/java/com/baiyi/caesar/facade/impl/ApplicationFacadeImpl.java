@@ -7,7 +7,6 @@ import com.baiyi.caesar.common.type.JobTypeEnum;
 import com.baiyi.caesar.common.util.BeanCopierUtil;
 import com.baiyi.caesar.common.util.RegexUtil;
 import com.baiyi.caesar.common.util.SessionUtil;
-import com.baiyi.caesar.packer.application.*;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -25,6 +24,9 @@ import com.baiyi.caesar.facade.jenkins.JobEngineFacade;
 import com.baiyi.caesar.facade.jenkins.factory.IJobEngine;
 import com.baiyi.caesar.facade.jenkins.factory.JobEngineFactory;
 import com.baiyi.caesar.opscloud.OpscloudServer;
+import com.baiyi.caesar.opscloud4.model.ServerGroupModel;
+import com.baiyi.caesar.opscloud4.service.Opscloud4ServerGroupService;
+import com.baiyi.caesar.packer.application.*;
 import com.baiyi.caesar.service.application.*;
 import com.baiyi.caesar.service.gitlab.CsGitlabGroupService;
 import com.baiyi.caesar.service.gitlab.CsGitlabProjectService;
@@ -123,6 +125,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Resource
     private CsGitlabGroupService csGitlabGroupService;
+
+    @Resource
+    private Opscloud4ServerGroupService opscloud4ServerGroupService;
 
 
     @Override
@@ -549,8 +554,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             return serverGroupFacade.queryServerGroupPage(pageQuery);
         } else {
             try {
-                return opscloudServer.queryServerGroupPage(pageQuery);
-            } catch (IOException e) {
+                ServerGroupModel.DataTable dataTable = opscloud4ServerGroupService.queryServerGroupPage(pageQuery);
+                return new DataTable(BeanCopierUtil.copyListProperties(dataTable.getData(), ServerGroupVO.ServerGroup.class), dataTable.getTotalNum());
+                //  return opscloudServer.queryServerGroupPage(pageQuery);
+            } catch (Exception e) {
                 return DataTable.EMPTY;
             }
         }

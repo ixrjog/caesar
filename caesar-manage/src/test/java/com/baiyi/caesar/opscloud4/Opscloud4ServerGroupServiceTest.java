@@ -2,6 +2,8 @@ package com.baiyi.caesar.opscloud4;
 
 import com.baiyi.caesar.BaseUnit;
 import com.baiyi.caesar.common.util.JSONUtil;
+import com.baiyi.caesar.domain.param.application.ApplicationParam;
+import com.baiyi.caesar.opscloud4.model.ServerGroupModel;
 import com.baiyi.caesar.opscloud4.model.ServerModel;
 import com.baiyi.caesar.opscloud4.param.ServerGroupParam;
 import com.baiyi.caesar.opscloud4.service.Opscloud4ServerGroupService;
@@ -29,6 +31,18 @@ public class Opscloud4ServerGroupServiceTest extends BaseUnit {
                 .build();
         Map<String, List<ServerModel.Server>> map = opscloud4ServerGroupService.queryServerGroupHostPattern(query);
         System.out.println(JSONUtil.writeValueAsString(map));
+    }
+
+    // crawler-tools-urc
+    @Test
+    void queryServerGroupPageTest() {
+        ApplicationParam.ServerGroupPageQuery query = ApplicationParam.ServerGroupPageQuery.builder()
+                .build();
+        query.setName( "group_account");
+        query.setPage(1);
+        query.setLength(10);
+        ServerGroupModel.DataTable dataTable = opscloud4ServerGroupService.queryServerGroupPage(query);
+        System.out.println(JSONUtil.writeValueAsString(dataTable));
     }
 
 }
