@@ -6,8 +6,8 @@ aliyun:
     uid: 1820460406678463
     master: true
     name: '主账户'
-    accessKeyId: LTAI4G9LMmkjrHZbhs43aKNh
-    secret: ENC(+b3GIgf1S+HA8PkoSL1XkGBjApnIuwytNBtpGbJR4fShUs8hCmgenQ==)
+    accessKeyId: ENC(sbQA2ertGccwWNJcG5e0CgyIXyLhUaFp4MX++4wYIa4EymKxA7jJfw==)
+    secret: ENC(vuS85SMtRwOeUk0y1Ii/VM6XqyG5AHaMEVZAVERZg0Z9VMQ0JqfGqw==)
     regionId: cn-hangzhou
     regionIds:
       - cn-hangzhou
