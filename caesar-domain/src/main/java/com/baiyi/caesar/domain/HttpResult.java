@@ -1,12 +1,20 @@
 package com.baiyi.caesar.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class HttpResult<T> {
+public class HttpResult<T> implements Serializable {
 
     public static final HttpResult<Boolean> SUCCESS = new HttpResult<>(true);
+
+    private static final long serialVersionUID = 433215564439560523L;
 
     private T body;
 

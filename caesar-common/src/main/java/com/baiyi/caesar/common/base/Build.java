@@ -31,6 +31,8 @@ public class Build {
 
     public static final String OSS_JOB_URL = "ossJobUrl";
 
+    public static final String BUILD_VERSION = "buildVersion";
+
     public static final String POD_UPDATE = "podUpdate";
 
     public static final String PUB_GET = "pubGet";

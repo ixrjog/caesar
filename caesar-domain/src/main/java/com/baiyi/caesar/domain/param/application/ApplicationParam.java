@@ -4,9 +4,7 @@ import com.baiyi.caesar.domain.param.PageParam;
 import com.baiyi.caesar.domain.param.server.ServerGroupParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -99,7 +97,9 @@ public class ApplicationParam {
     }
 
     @EqualsAndHashCode(callSuper = true)
+    @Builder
     @Data
+    @AllArgsConstructor
     @NoArgsConstructor
     @ApiModel
     public static class ServerGroupPageQuery extends ServerGroupParam.PageQuery {

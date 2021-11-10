@@ -6,8 +6,6 @@ import com.baiyi.caesar.common.base.AccessLevel;
 import com.baiyi.caesar.common.exception.build.BuildRuntimeException;
 import com.baiyi.caesar.common.redis.RedisUtil;
 import com.baiyi.caesar.common.util.*;
-import com.baiyi.caesar.packer.server.ServerGroupDecorator;
-import com.baiyi.caesar.packer.server.util.ServerTreeUtil;
 import com.baiyi.caesar.domain.BusinessWrapper;
 import com.baiyi.caesar.domain.DataTable;
 import com.baiyi.caesar.domain.ErrorEnum;
@@ -21,6 +19,10 @@ import com.baiyi.caesar.domain.vo.tree.TreeVO;
 import com.baiyi.caesar.facade.*;
 import com.baiyi.caesar.factory.attribute.impl.AttributeAnsible;
 import com.baiyi.caesar.opscloud.OpscloudServer;
+import com.baiyi.caesar.opscloud4.model.ServerModel;
+import com.baiyi.caesar.opscloud4.service.Opscloud4ServerGroupService;
+import com.baiyi.caesar.packer.server.ServerGroupDecorator;
+import com.baiyi.caesar.packer.server.util.ServerTreeUtil;
 import com.baiyi.caesar.server.facade.ServerAttributeFacade;
 import com.baiyi.caesar.service.jenkins.CsJobBuildServerService;
 import com.baiyi.caesar.service.server.OcServerGroupPropertyService;
@@ -35,7 +37,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -95,7 +96,7 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     private EnvFacade envFacade;
 
     @Resource
-    private ServerBaseFacade serverBaseFacade;
+    private Opscloud4ServerGroupService opscloud4ServerGroupService;
 
     public static final boolean ACTION_ADD = true;
     public static final boolean ACTION_UPDATE = false;
@@ -381,7 +382,12 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
     @Override
     public BusinessWrapper<List<ServerGroupHostPatternVO.HostPattern>> queryServerGroupHostPattern(String serverGroupName, Integer envType) {
         try {
-            Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName, envType);
+            com.baiyi.caesar.opscloud4.param.ServerGroupParam.ServerGroupEnvHostPatternQuery query = com.baiyi.caesar.opscloud4.param.ServerGroupParam.ServerGroupEnvHostPatternQuery.builder()
+                    .serverGroupName(serverGroupName)
+                    .envType(envType)
+                    .build();
+            Map<String, List<ServerModel.Server>> hostPatternMap = opscloud4ServerGroupService.queryServerGroupHostPattern(query);
+            // Map<String, List<OcServer>> hostPatternMap = opscloudServer.queryServerGroupHostPattern(serverGroupName, envType);
             List<ServerGroupHostPatternVO.HostPattern> hostPatterns = Lists.newArrayList();
             String envName = envFacade.queryEnvNameByType(envType);
             hostPatternMap.forEach((k, v) -> {
@@ -389,27 +395,28 @@ public class ServerGroupFacadeImpl implements ServerGroupFacade {
                         .hostPattern(k)
                         .isSelected(false)
                         .isMaster(k.endsWith("-" + envName))
-                        .servers(convert(v))
+                        .servers(toVOList(v))
                         .build();
                 hostPatterns.add(hostPattern);
             });
             return new BusinessWrapper(hostPatterns);
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
         throw new BuildRuntimeException(ErrorEnum.SERVER_GROUP_QUERY_FAILED);
     }
 
-    private List<ServerVO.Server> convert(List<OcServer> servers) {
+    private List<ServerVO.Server> toVOList(List<ServerModel.Server> servers) {
         return servers.stream().map(s -> {
             ServerVO.Server server = BeanCopierUtil.copyProperties(s, ServerVO.Server.class);
             CsJobBuildServer csJobBuildServer = csJobBuildServerService.queryCsJobBuildServerByServerId(s.getId());
+            server.setDisplayName(ServerBaseFacade.acqServerName(server));
             if (csJobBuildServer != null) {
                 ServerVO.DeployVersion deployVersion = BeanCopierUtil.copyProperties(csJobBuildServer, ServerVO.DeployVersion.class);
                 server.setDeployVersion(deployVersion);
-                server.setDisplayName(ServerBaseFacade.acqServerName(s));
             }
             return server;
         }).collect(Collectors.toList());
     }
+
 
 }

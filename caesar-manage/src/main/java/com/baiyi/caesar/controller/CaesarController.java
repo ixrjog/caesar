@@ -38,7 +38,7 @@ public class CaesarController {
     public HttpResult<HealthVO.Health> checkHealth() {
         HealthVO.Health health = caesarInstanceFacade.checkHealth();
         if (health.isHealth()) {
-            return new HttpResult<>(caesarInstanceFacade.checkHealth());
+            return new HttpResult<>(health);
         } else {
             throw new ResourceInactiveException();
         }
