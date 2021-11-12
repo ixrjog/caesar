@@ -1,4 +1,4 @@
 # https://oapi.dingtalk.com/robot/send?access_token=${DINGTALK_TOKEN}
 
 dingtalk:
-  url: https://qyapi.weixin.qq.com/cgi-bin/webhook/send
+  url: https://oapi.dingtalk.com/robot/send

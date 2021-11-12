@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "dingtalk", ignoreInvalidFields = true)
 public class DingtalkConfig {
 
-    private final static String ACCESS_TOKEN = "key";
+    private final static String ACCESS_TOKEN = "access_token";
 
     private String url;
 

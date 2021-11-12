@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class SonarParamsBO {
 
-    public static final String SONAR_BASE_URL = "https://sonar.jinweihaowu.com/api/project_badges/measure?";
+    public static final String SONAR_BASE_URL = "https://sonar.chuanyinet.com/api/project_badges/measure?";
 
     public SonarParamsBO() {
     }

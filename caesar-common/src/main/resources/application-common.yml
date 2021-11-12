@@ -1,5 +1,5 @@
 host:
-  url: https://caesar.jinweihaowu.com
+  url: https://caesar.chuanyinet.com
 
 opscloud:
   url: https://opscloud-in.jinweihaowu.com
@@ -7,9 +7,9 @@ opscloud:
   apiToken: ENC(mKc7pF1X+UyUALaroqRYAHJUBOqbEEGoTQNDi1ltvHE=)
 
 opscloud4:
-    url: https://oc4.xinc818.com
-    tokenId: 1da19cc1cedb4eb69037303c16310cc2
-    accessToken: ENC(rbUVoNfTDiVnNn1uu5e3zXux+aZqRKelDxtfMzjYd0KwjP6z7zsXCYBAr6uq1yOc)
+    url: https://oc.chuanyinet.com
+    tokenId: bf41e5b7b6bf444ea00dcf5b79495733
+    accessToken: ENC(ddaiwAhDBXgNzvApDX+K60Xw/3BGcpJpySFEyNBp3kLIHD3lQw5mYyeY8+7uhrIg)
 
 
 oc-server-attributes:

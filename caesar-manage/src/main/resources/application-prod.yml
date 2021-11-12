@@ -12,7 +12,7 @@ white:
 caesar:
   version: 1.0.1
   openTask: true
-  url: https://caesar.jinweihaowu.com
+  url: https://caesar.chuanyinet.com
 
 spring:
   profiles:
@@ -28,9 +28,9 @@ spring:
       - aliyun-core
       - sonar-prod
   redis:
-    host: r-bp1hreajj46mots714.redis.rds.aliyuncs.com
+    host: r-d7orbny8vlzccq3br0.redis.eu-west-1.rds.aliyuncs.com
     port: 6379
-    password: ENC(MLby+66v/YuFf/qp9/UY/hxdNNLKEzB4PL5DSIyWAQY=)
+    password: gyoxDdXqKSl9c6HK
     jedis:
       pool:
         max-wait: 5000
@@ -43,9 +43,9 @@ spring:
 app:
   datasource:
     caesar:
-      url: jdbc:mysql://rm-bp16kam24c4b7pvpy88250.mysql.rds.aliyuncs.com:3306/caesar?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
+      url: jdbc:mysql://rm-d7oczvp3c5k2su19b.mysql.eu-west-1.rds.aliyuncs.com:3306/caesar-prod?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useInformationSchema=true&tinyInt1isBit=true&nullCatalogMeansCurrent=true&serverTimezone=CTT&allowMultiQueries=true
       username: caesar
-      password: ENC(7+x4iUCRumd8U0CjIkww/136i2ttodwTr5JJQDwqEcc=)
+      password: aJ@&%+-++yY(%V5!jD5Q%nG$*raG2(=y
       driver-class-name: com.mysql.cj.jdbc.Driver
       minimum-idle: 3
       maximum-pool-size: 15
