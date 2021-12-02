@@ -126,7 +126,7 @@ public class GitlabFacadeImpl implements GitlabFacade {
     @Resource
     private CsGitlabWebhookService gitlabWebhookService;
 
-    public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "test", "fat", "uat", "gray"};
+    public static final String[] DEFAULT_DEPLOY_BRANCHES = {"dev", "daily", "gray"};
 
     public static final String DEFAULT_REF_BRANCH = "master";
 
