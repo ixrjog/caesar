@@ -33,7 +33,7 @@ public class SonarQubeHandler {
 
     private static SonarConfig sonarConfig;
 
-    private static final String X_API_KEY = "X-Api-Key";
+    private static final String X_API_KEY = "Authorization";
 
     @Autowired
     private void setSonarConfig(SonarConfig sonarConfig) {
@@ -71,10 +71,10 @@ public class SonarQubeHandler {
     }
 
     private static HttpGet buildHttpGet(String api, Map<String, String> param) {
-        HttpGet httpGet = new HttpGet(Joiner.on("").join(buildUrl(api) , buildGetParam(param)));
+        HttpGet httpGet = new HttpGet(Joiner.on("").join(buildUrl(api), buildGetParam(param)));
         httpGet.setConfig(buildRequestConfig());
         httpGet.setHeader("Content-Type", "application/json;charset=utf-8");
-        httpGet.setHeader(X_API_KEY, sonarConfig.getToken());
+        httpGet.setHeader(X_API_KEY, "Basic " + sonarConfig.toBasic());
         return httpGet;
     }
 
