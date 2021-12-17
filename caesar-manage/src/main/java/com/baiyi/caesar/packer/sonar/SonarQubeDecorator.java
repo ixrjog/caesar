@@ -52,7 +52,9 @@ public class SonarQubeDecorator {
     }
 
     private Map<String, SonarEntry.Measure> convertMeasures(SonarMeasures sonarMeasures) {
-        if (sonarMeasures.getComponent() == null || CollectionUtils.isEmpty(sonarMeasures.getComponent().getMeasures()))
+        if (sonarMeasures == null
+                || sonarMeasures.getComponent() == null
+                || CollectionUtils.isEmpty(sonarMeasures.getComponent().getMeasures()))
             return Maps.newHashMap();
         return sonarMeasures.getComponent().getMeasures().stream().collect(Collectors.toMap(SonarEntry.Measure::getMetric, a -> a, (k1, k2) -> k1));
     }

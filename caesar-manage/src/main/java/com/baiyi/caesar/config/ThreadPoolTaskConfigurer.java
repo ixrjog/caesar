@@ -22,11 +22,11 @@ public class ThreadPoolTaskConfigurer {
     /**
      * 核心线程数（默认线程数）
      */
-    private static final int corePoolSize = 100;
+    private static final int corePoolSize = 200;
     /**
      * 最大线程数
      */
-    private static final int maxPoolSize = 100;
+    private static final int maxPoolSize = 500;
     /**
      * 允许线程空闲时间（单位：默认为秒）
      */
@@ -39,9 +39,6 @@ public class ThreadPoolTaskConfigurer {
      * 线程池名前缀
      */
     private static final String threadNamePrefix = "Async-Service-";
-
-
-
 
     @Bean(name = Global.TaskPools.EXECUTOR)
     public ThreadPoolTaskExecutor getExecutor() {
@@ -69,7 +66,6 @@ public class ThreadPoolTaskConfigurer {
         // 初始化
         executor.setAwaitTerminationSeconds(60);
         executor.initialize();
-
         return executor;
     }
 
@@ -86,7 +82,7 @@ public class ThreadPoolTaskConfigurer {
          *
          * 所以通过上面的描述可知corePoolSize<=maximumPoolSize，poolSize<=maximumPoolSize；而poolSize和corePoolSize无法比较，poolSize是有可能比corePoolSize大的。
          */
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(corePoolSize);
         executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(queueCapacity);
         executor.setKeepAliveSeconds(keepAliveTime);
@@ -99,7 +95,6 @@ public class ThreadPoolTaskConfigurer {
         // 初始化
         executor.setAwaitTerminationSeconds(60);
         executor.initialize();
-
         return executor;
     }
 
