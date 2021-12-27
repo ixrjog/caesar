@@ -44,7 +44,7 @@ public class EngineFacadeImpl implements EngineFacade {
 
     public final static String INACTIVE = "(inactive)";
 
-    public final static String MASTER = "master";
+    public final static String MASTER = "built-in node";
 
     public final static String IDLE = "idle";
 
