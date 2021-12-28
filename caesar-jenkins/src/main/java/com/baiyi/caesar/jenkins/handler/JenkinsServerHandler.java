@@ -13,7 +13,6 @@ import org.springframework.util.StringUtils;
 
 import javax.websocket.Session;
 import java.io.IOException;
-import java.net.HttpRetryException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -119,19 +118,18 @@ public class JenkinsServerHandler {
         }
     }
 
-
     public Map<String, Computer> getComputerMap(String serverName) {
+        Map<String, Computer> map = Maps.newHashMap();
+        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+        assert jenkinsServer != null;
         try {
-            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
-            assert jenkinsServer != null;
-            return jenkinsServer.getComputers();
-        } catch (HttpRetryException hre) {
+            map = jenkinsServer.getComputers();
+        } catch (IOException hre) {
             log.error("Jenkins服务器API接口错误：" + hre.getMessage());
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        } finally {
+            jenkinsServer.close();
         }
+        return map;
     }
 
     public void updateJob(String serverName, String jobName, String jobXml) throws IOException {
@@ -169,8 +167,6 @@ public class JenkinsServerHandler {
         assert jenkinsServer != null;
         jenkinsServer.deleteJob(jobName, CRUMB_FLAG);
     }
-
-
 
 
 }
