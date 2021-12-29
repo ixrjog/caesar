@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -119,17 +120,14 @@ public class JenkinsServerHandler {
     }
 
     public Map<String, Computer> getComputerMap(String serverName) {
-        Map<String, Computer> map = Maps.newHashMap();
-        JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
-        assert jenkinsServer != null;
         try {
-            map = jenkinsServer.getComputers();
+            JenkinsServer jenkinsServer = JenkinsServerContainer.getJenkinsServer(serverName);
+            assert jenkinsServer != null;
+            return jenkinsServer.getComputers();
         } catch (IOException hre) {
             log.error("Jenkins服务器API接口错误：" + hre.getMessage());
-        } finally {
-            jenkinsServer.close();
+            return Collections.emptyMap();
         }
-        return map;
     }
 
     public void updateJob(String serverName, String jobName, String jobXml) throws IOException {
