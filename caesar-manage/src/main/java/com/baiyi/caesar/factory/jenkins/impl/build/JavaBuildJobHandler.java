@@ -14,6 +14,7 @@ import com.baiyi.caesar.factory.jenkins.builder.JenkinsJobParamsMap;
 import com.baiyi.caesar.factory.jenkins.monitor.MonitorHandler;
 import com.baiyi.caesar.jenkins.context.JobParametersContext;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -54,6 +55,9 @@ public class JavaBuildJobHandler extends BaseBuildJobHandler implements IBuildJo
             CsCiJobBuild csCiJobBuild = queryCiJobBuildById(Integer.parseInt(buildParam.getParamMap().get(ROLLBACK_JOB_BUILD_ID)));
             context.setVersionName(csCiJobBuild.getVersionName());
             context.setVersionDesc(csCiJobBuild.getVersionDesc());
+            context.getParams().put(ROLLBACK_JOB_BUILD_NUMBER, String.valueOf(csCiJobBuild.getJobBuildNumber()));
+            String commitId = Strings.isBlank(csCiJobBuild.getCommit()) ? "00000000" : csCiJobBuild.getCommit().substring(0, 8);
+            context.getParams().put(ROLLBACK_COMMIT_ID, commitId);
         }
         return context;
     }

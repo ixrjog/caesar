@@ -42,4 +42,8 @@ public class Build {
     public static final String PRODUCT_FLAVOR = "PRODUCT_FLAVOR";
 
     public static final String ROLLBACK_JOB_BUILD_ID = "rollbackJobBuildId";
+
+    public static final String ROLLBACK_JOB_BUILD_NUMBER = "rollbackJobBuildNumber";
+
+    public static final String ROLLBACK_COMMIT_ID = "rollbackCommitId";
 }
